@@ -1,6 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import BaseLayout from '@layouts/BaseLayout.astro';
 
 // 1. Generate a new path for every collection entry
 export async function getStaticPaths() {
@@ -18,7 +18,7 @@ const { Content } = await entry.render();
   <p>{entry.data.pubDate.toString().slice(0,10)}</p>
   <p><em>{entry.data.description}</em></p>
   <p>Escrito por: {entry.data.author}</p>
-  <img src={entry.data.image.url} width="300" alt={entry.data.image.alt} />
+  <img src={entry.data.image?.url} width="300" alt={entry.data.image?.alt} />
   <div class="tags">
     {entry.data.tags.map((tag) => (
       <p class="tag"><a href={`/tags/${tag}`}>{tag}</a></p>
