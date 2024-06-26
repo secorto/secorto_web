@@ -1,13 +1,13 @@
 ---
 title: "Perficient Latinoamerica"
 excerpt: "Our passion is coding the future"
-image: ../img/perficient/psl_2pc.jpg
+image: "@assets/img/perficient/psl_2pc.jpg"
 role: "Software developer engineer in test"
 responsibilities: "Automatización de pruebas y aseguramiento de calidad"
 gallery:
-  - image: ../img/perficient/perficient_gift.jpg
+  - image: "@assets/img/perficient/perficient_gift.jpg"
     alt: "Regalo de perficient por logro"
-  - image: ../img/perficient/psl_buzo.jpg
+  - image: "@assets/img/perficient/psl_buzo.jpg"
     alt: "En la oficina con el buzo de psl"
 ---
 
