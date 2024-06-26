@@ -2,10 +2,11 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import BlogTags from '@components/BlogTags.astro';
+import ResponsiveIframe from '@components/ResponsiveIframe.astro';
 
 // 1. Generate a new path for every collection entry
 export async function getStaticPaths() {
-  const blogEntries = await getCollection('blog');
+  const blogEntries = await getCollection('talk');
   return blogEntries.map(entry => ({
     params: { slug: entry.slug }, props: { entry },
   }));
@@ -16,13 +17,35 @@ const { Content } = await entry.render();
 
 ---
 <BaseLayout pageTitle={entry.data.title}>
+  {entry.data.video &&
+    <ResponsiveIframe
+      width="100%"
+      height="600"
+      src={entry.data.video}
+      frameBorder="0"
+      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+      allowFullScreen
+      title={`Video de la charla ${entry.data.title}`}
+    />
+  }
   <p>{new Intl.DateTimeFormat("es-CO", { dateStyle: "full" }).format(
     new Date(entry.data.date)
   )}</p>
+
   {entry.data.image &&
     <img src={entry.data.image} width="300" alt="Imagen destacada" />
   }
 
-  <BlogTags route="/blog/tags/" tags={entry.data.tags} />
   <Content />
+  {entry.data.slide &&
+    <ResponsiveIframe
+      src={entry.data.slide}
+      width="100%"
+      height="600"
+      frameBorder="0"
+      title={`Presentación de la charla ${entry.data.title}`}
+    />
+  }
+<BlogTags route="/charla/tags/" tags={entry.data.tags} />
+
 </BaseLayout>

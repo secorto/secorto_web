@@ -1,13 +1,14 @@
 ---
 interface Props {
-	tags: string[];
+	tags: string[],
+  route: string
 }
-const { tags } = Astro.props;
+const { tags, route } = Astro.props;
 ---
 
 <div class="tags">
   {tags.map((tag) => (
-    <p class="tag"><a href={`/blog/tags/${tag}`}>{tag}</a></p>
+    <p class="tag"><a href={`${route}${tag}`}>{tag}</a></p>
   ))}
 </div>
 
