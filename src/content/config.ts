@@ -18,14 +18,14 @@ const blogCollection = defineCollection({
 
 const workCollection = defineCollection({
   type: 'content', // v2.5.0 and later
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     excerpt: z.string(),
-    image: z.string(),
+    image: image(),
     role: z.string(),
     responsibilities: z.string(),
     gallery: z.array(z.object({
-      image: z.string(),
+      image: image(),
       alt: z.string()
     })),
 

@@ -1,0 +1,48 @@
+---
+import { Image } from "astro:assets";
+
+interface GalleryItem {
+  image: ImageMetadata;
+  alt: string;
+}
+
+interface Props {
+	items: GalleryItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<div id="gallery">
+  {items?.map((item) => {
+    return (
+      <a
+        href={item.image.src}
+        target="_blank"
+        rel="noreferrer"
+      >
+        <Image src={item.image} alt={item.alt} width={200}/>
+      </a>
+    )
+  })}
+</div>
+
+
+<style is:global>
+  .pswp__img {
+    object-fit: contain;
+  }
+</style>
+
+<script>
+	import PhotoSwipeLightbox from "photoswipe/lightbox";
+	import "photoswipe/style.css";
+
+	const lightbox = new PhotoSwipeLightbox({
+		gallery: "#gallery",
+		children: "a",
+		pswpModule: () => import("photoswipe"),
+	});
+
+	lightbox.init();
+</script>
