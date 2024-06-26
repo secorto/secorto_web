@@ -2,11 +2,13 @@
 import BaseLayout from '@layouts/BaseLayout.astro'
 import BlogPost from '@components/BlogPost.astro';
 import { getCollection } from 'astro:content';
+import BlogTags from '@components/BlogTags.astro';
 const allPosts = await getCollection('blog');
+const tags = [...new Set(allPosts.map((post) => post.data.tags).flat())];
 const pageTitle = "Blog";
 ---
 <BaseLayout pageTitle={pageTitle}>
-  <p>Aquí es donde publicaré sobre mi viaje de aprendizaje de Astro.</p>
+  <BlogTags tags={tags} />
   <ul>
     {allPosts.map((post) => <BlogPost url={`/blog/${post.slug}`} title={post.data.title} />)}
   </ul>

@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '@layouts/BaseLayout.astro';
+import BlogTags from '@components/BlogTags.astro';
 
 // 1. Generate a new path for every collection entry
 export async function getStaticPaths() {
@@ -15,34 +16,13 @@ const { Content } = await entry.render();
 
 ---
 <BaseLayout pageTitle={entry.data.title}>
-  <p>{entry.data.pubDate.toString().slice(0,10)}</p>
-  <p><em>{entry.data.description}</em></p>
-  <p>Escrito por: {entry.data.author}</p>
-  <img src={entry.data.image?.url} width="300" alt={entry.data.image?.alt} />
-  <div class="tags">
-    {entry.data.tags.map((tag) => (
-      <p class="tag"><a href={`/tags/${tag}`}>{tag}</a></p>
-    ))}
-  </div>
+  <p>{new Intl.DateTimeFormat("es-CO", { dateStyle: "full" }).format(
+    new Date(entry.data.date)
+  )}</p>
+  {entry.data.image &&
+    <img src={entry.data.image} width="300" alt="Imagen destacada" />
+  }
+
+  <BlogTags tags={entry.data.tags} />
   <Content />
 </BaseLayout>
-
-<style>
-  a {
-    color: #00539F;
-  }
-
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
-  }
-
-  .tag {
-    margin: 0.25em;
-    border: dotted 1px #a1a1a1;
-    border-radius: .5em;
-    padding: .5em 1em;
-    font-size: 1.15em;
-    background-color: #F8FCFD;
-  }
-</style>
