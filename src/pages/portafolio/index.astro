@@ -3,10 +3,9 @@ import BaseLayout from '@layouts/BaseLayout.astro'
 import BlogPost from '@components/BlogPost.astro';
 import { getCollection } from 'astro:content';
 const allPosts = await getCollection('work');
-const pageTitle = "Mi blog de aprendizaje de Astro";
+const pageTitle = "Portafolio";
 ---
 <BaseLayout pageTitle={pageTitle}>
-  <p>Aquí es donde publicaré sobre mi viaje de aprendizaje de Astro.</p>
   <ul>
     {allPosts.map((post) => <BlogPost url={`/portafolio/${post.slug}`} title={post.data.title} />)}
   </ul>

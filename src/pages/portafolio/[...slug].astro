@@ -18,7 +18,7 @@ const { Content } = await entry.render();
 ---
 <BaseLayout pageTitle={entry.data.title}>
   <p><em>{entry.data.excerpt}</em></p>
-  <Image src={entry.data.image} width="300" alt="featured image" />
+  <Image src={entry.data.image} alt="featured image" />
   <Content />
   <Gallery items={entry.data.gallery}/>
 </BaseLayout>
