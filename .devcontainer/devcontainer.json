@@ -1,0 +1,25 @@
+{
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+  "features": {
+  },
+  "waitFor": "onCreateCommand",
+  "postCreateCommand": "npm install",
+  "postAttachCommand": {
+    "server": "npm start"
+  },
+  
+  "portsAttributes": {
+    "4321": {
+      "label": "Atro develop",
+      "onAutoForward": "openPreview"
+    }
+  },
+  "forwardPorts": [4321],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "astro-build.astro-vscode"
+      ]
+    }
+  }
+}
