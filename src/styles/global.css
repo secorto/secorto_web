@@ -1,5 +1,51 @@
+:root {
+  --bg-color-light: #ffffff;
+  --bg-color-dark: #232323;
+  --text-color-light: #000000;
+  --text-color-dark: #ffffff;
+  --accent-color-light: #4e4e4e;
+  --accent-color-dark: #757575;
+
+  --colors-text: #222;
+  --colors-primary: #004f53;
+  --colors-background: #fff;
+  --colors-hover: #993399;
+  --colors-secondary: #1B1F23;
+  --colors-muted: hsla(0, 0, 0, 0.2);
+  --colors-highlight: rgba(255, 229, 100, 0.2);
+  --colors-heading: #1F1E24;
+  --colors-blogBg: #eee;
+  --colors-sidebar-background: #004f53;
+  --colors-sidebar-color: #fff;
+  --colors-sidebar-hover: #B8FFFF;
+  --colors-timeline-workBG: #004f53;
+  --colors-timeline-academicBG: #993399;
+  --colors-timeline-previousWorkBG: #777;
+  --colors-timeline-iconColor: #fff;
+}
+
+.dark {
+  --colors-text: #DCDCDC;
+  --colors-primary: #91DEDE;
+  --colors-background: #130302;
+  --colors-hover: #D9BAE8;
+  --colors-secondary: #DCDCDC;
+  --colors-muted: hsla(0, 0%, 100%, 0.2);
+  --colors-highlight: #E7B8FF;
+  --colors-heading: #fff;
+  --colors-blogBg: #0a0a0a;
+  --colors-sidebar-background: #004f53;
+  --colors-sidebar-color: #fff;
+  --colors-sidebar-hover: #B8FFFF;
+  --colors-timeline-workBG: #004f53;
+  --colors-timeline-academicBG: #993399;
+  --colors-timeline-previousWorkBG: #777;
+  --colors-timeline-iconColor: #fff;
+}
+
 html {
-  background-color: #f1f5f9;
+  color: var(--colors-text);
+  background-color: var(--colors-background);
   font-family: sans-serif;
 }
 
@@ -32,14 +78,14 @@ h1 {
   width: 40px;
   height: 5px;
   margin-bottom: 10px;
-  background-color: #ff9776;
+  background-color: var(--colors-primary);
 }
 
 .nav-links {
   width: 100%;
   top: 5rem;
   left: 48px;
-  background-color: #ff9776;
+  color: var(--colors-primary);
   display: none;
   margin: 0;
 }
@@ -54,9 +100,14 @@ h1 {
   text-transform: uppercase;
 }
 
-.nav-links a:hover,
-.nav-links a:focus {
-  background-color: #ff9776;
+a {
+  color: var(--colors-primary);
+  background-color: var(--colors-background);
+}
+
+a:hover,
+a:focus {
+  color: var(--colors-hover);
 }
 
 .expanded {
@@ -80,13 +131,4 @@ h1 {
   .hamburger {
     display: none;
   }
-}
-
-html.dark {
-  background-color: #0d0950;
-  color: #fff;
-}
-
-.dark .nav-links a {
-  color: #fff;
 }
