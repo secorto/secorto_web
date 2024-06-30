@@ -40,7 +40,20 @@ const workCollection = defineCollection({
   }),
 });
 
+const timelineCollection = defineCollection({
+  type: 'data',
+  schema: z.object({
+    date: z.string(),
+    title: z.string(),
+    location: z.string(),
+    place: z.string(),
+    type: z.string()
+  })
+});
+
 export const collections = {
   'blog': blogCollection,
-  'work': workCollection
+  'work': workCollection,
+  "talk": talkCollection,
+  "timeline": timelineCollection
 };
