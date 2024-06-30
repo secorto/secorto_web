@@ -42,18 +42,17 @@ const workCollection = defineCollection({
 
 const timelineCollection = defineCollection({
   type: 'data',
-  schema: z.object({
+  schema: z.array(z.object({
     date: z.string(),
     title: z.string(),
     location: z.string(),
     place: z.string(),
     type: z.string()
-  })
+  })),
 });
 
 export const collections = {
   'blog': blogCollection,
   'work': workCollection,
-  "talk": talkCollection,
-  "timeline": timelineCollection
+  "talk": talkCollection
 };
