@@ -45,7 +45,13 @@ const { Content } = await entry.render();
       frameBorder="0"
       title={`Presentación de la charla ${entry.data.title}`}
     />
+
   }
+
+  {entry.data.gist &&
+    <script src={`${entry.data.gist}.js`} is:inline></script>
+  }
+
 <BlogTags route="/charla/tags/" tags={entry.data.tags} />
 
 </BaseLayout>
