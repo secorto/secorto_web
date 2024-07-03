@@ -8,15 +8,11 @@ const { tags, route } = Astro.props;
 
 <div class="tags">
   {tags.map((tag) => (
-    <p class="tag"><a href={`${route}${tag}`}>{tag}</a></p>
+    <a href={`${route}${tag}`}><p class="tag">{tag}</p></a>
   ))}
 </div>
 
 <style>
-  a {
-    color: #00539F;
-  }
-
   .tags {
     display: flex;
     flex-wrap: wrap;
@@ -24,10 +20,13 @@ const { tags, route } = Astro.props;
 
   .tag {
     margin: 0.25em;
-    border: dotted 1px #a1a1a1;
+    border: dotted 2px var(--colors-primary);
     border-radius: .5em;
     padding: .5em 1em;
     font-size: 1.15em;
-    background-color: #F8FCFD;
+  }
+
+  .tag:hover {
+    border: dotted 2px var(--colors-hover);
   }
 </style>
