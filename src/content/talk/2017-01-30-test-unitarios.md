@@ -5,7 +5,7 @@ tags:
   - testing
 date: 2017-01-30
 image: "@assets/img/talk/test+mocks.png"
-comunidad: Python Barranquilla
+comunidad: pybaq
 ---
 
 Como realizar la creación de pruebas unitarias usando sentinels mock y stubs

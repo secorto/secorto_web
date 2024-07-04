@@ -56,5 +56,7 @@ const timelineCollection = defineCollection({
 export const collections = {
   'blog': blogCollection,
   'work': workCollection,
+  'projects': workCollection,
+  'community': workCollection,
   "talk": talkCollection
 };
