@@ -5,49 +5,9 @@ interface Props {
 const { title } = Astro.props;
 ---
 
-<header class="css-1ezltbg">
-  <div class="css-7rlkf5"></div>
-    <h1 class="css-a95mt9">{title}</h1>
+<header class="header">
+  <div class="header-spacing"></div>
+    <h1 class="header-title">{title}</h1>
   </div>
-  <div class="css-7rlkf5"></div>
+  <div class="header-spacing"></div>
 </header>
-
-<style>
-  .css-9v87cx {
-    margin-left: 0px;
-    transition: margin-left 0.3s ease-in-out 0s;
-    min-height: 95vh;
-    position: relative;
-    
-  }
-  .css-1ezltbg {
-    margin: -10px;
-    display: flex;
-    -webkit-box-align: center;
-    align-items: center;
-    box-shadow: 0 0 8px var(--colors-primary);
-    min-height: 4rem;
-    padding-bottom: 10px;
-  }
-  .css-7rlkf5 {
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .css-1twwsbp {
-    width: 36px;
-    height: 36px;
-    vertical-align: middle;
-    border-radius: 50%;
-    transition: box-shadow 0.5s ease 0s;
-    box-shadow: 2px 2px 8px var(--colors-primary);
-  }
-  .css-a95mt9 {
-    font-size: 42px;
-    color: var(--colors-primary);
-    font-family: Kalam;
-    position: relative;
-    top: 5px;
-    margin: 0px 1rem;
-    font-weight: 400;
-  }
-</style>
