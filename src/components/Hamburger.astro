@@ -1,7 +1,72 @@
 ---
 ---
-<div class="hamburger">
-  <span class="line"></span>
-  <span class="line"></span>
-  <span class="line"></span>
-</div>
+<button aria-label="Alternar barra lateral" class="hamburger css-144p6i6">
+  <div class="line-top"></div>
+  <div class="line-center"></div>
+  <div class="line-bottom"></div>
+</button>
+<div class="css-gdslqq"></div>
+<style>
+  .hamburger {
+    position: fixed;
+    top: 0.6rem;
+    left: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 1.5rem;
+    height: 1.5rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0px;
+    z-index: 101;
+  }
+  .css-gdslqq::before {
+    content: "";
+    top: 0.15rem;
+    left: 0.5rem;
+    position: fixed;
+    width: 48px;
+    height: 48px;
+    background: var(--colors-background);
+    z-index: 99;
+    border-radius: 10px;
+  }
+
+  .hamburger div {
+    width: 1.5rem;
+    height: 0.25rem;
+    background: var(--colors-primary);
+    border-radius: 10px;
+    transition: all 0.3s linear 0s;
+    position: relative;
+    transform-origin: 1px center;
+  }
+  .sidebar-open .hamburger div {
+    background: var(--bg-color-light);
+  }
+  .line-top {
+    transform: rotate(0deg);
+  }
+  .line-center {
+    opacity: 1;
+    transform: translateX(0px);
+  }
+  .line-bottom {
+    transform: rotate(0deg);
+  }
+
+  .sidebar-open .line-top {
+    transform: rotate(45deg);
+  }
+  .sidebar-open .line-center {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  .sidebar-open .line-bottom {
+      transform: rotate(-45deg);
+  }
+
+  
+</style>
