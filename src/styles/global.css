@@ -170,8 +170,6 @@ Sidebar
   -webkit-box-pack: center;
   justify-content: center;
   background: var(--colors-sidebar-background);
-  
-  transform: translateX(-100%);
   height: 100vh;
   text-align: left;
   padding: 1rem;
@@ -181,10 +179,15 @@ Sidebar
   z-index: 100;
   overflow: auto;
   width: 100%;
+  min-height: 300px;
 }
 
-.sidebar.sidebar-open {
-  transform: translateX(0px);
+.sidebar-content {
+  min-height: 300px;
+}
+
+.sidebar-logo {
+  width: 128px;
 }
 
 .sidebar a {
@@ -203,10 +206,37 @@ Sidebar
   overflow-wrap: break-word;
 }
 
+.sidebar a:hover {
+  color: var(--colors-sidebar-hover);
+}
+
+.sidebar-title {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.sidebar-subtitle {
+  font-size: 1rem;
+  margin: 0px;
+}
+
+.sidebar-home-link {
+flex-direction: column;
+text-align: center;
+}
+.sidebar-separator {
+  width: 10%;
+  margin: 1rem auto 0px;
+}
+
+.sidebar.sidebar-open {
+  transform: translateX(0px);
+}
+
 .hamburger {
   position: fixed;
   top: 1.2rem;
-  left: 1rem;
+  left: 1.2rem;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -218,6 +248,7 @@ Sidebar
   padding: 0px;
   z-index: 101;
 }
+
 .hamburger-bg::before {
   content: "";
   top: 0.5rem;
@@ -289,4 +320,19 @@ Sidebar
   top: 5px;
   margin: 0px 1rem;
   font-weight: 400;
+}
+
+@media (min-width: 830px) {
+  .hamburger, .hamburger-bg {
+      display: none;
+    }
+  .sidebar {
+    width: 280px;
+  }
+}
+
+@media (max-width: 829px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
 }

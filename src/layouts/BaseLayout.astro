@@ -19,11 +19,11 @@ const {pageTitle} = Astro.props
   <body>
     <Hamburger />
     <Sidebar />
-    <div class="css-9v87cx">
+    <div class="content">
       <Header title={pageTitle} />
-      <div class="main-content">
+      <main class="main-content">
         <slot />
-      </div>
+      </main>
       <Footer />
     </div>
     <script>
@@ -32,14 +32,14 @@ const {pageTitle} = Astro.props
   </body>
 </html>
 <style>
-.css-9v87cx {
+.content {
   margin-left: 0px;
   transition: margin-left 0.3s ease-in-out 0s;
   min-height: 95vh;
   position: relative;
 }
 @media screen and (min-width: 52em) {
-  .css-9v87cx {
+  .content {
       margin-left: 280px;
   }
 }
