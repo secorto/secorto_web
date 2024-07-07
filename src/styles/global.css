@@ -53,7 +53,7 @@ html {
   margin: 0 auto;
   width: 100%;
   max-width: 100ch;
-  padding: 1rem;
+  padding: 1rem 1rem 7rem;
   line-height: 1.5;
 }
 
@@ -202,7 +202,8 @@ Sidebar
   align-items: center;
   -webkit-box-pack: center;
   justify-content: center;
-  padding-bottom: 0.1em;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
   overflow-wrap: break-word;
 }
 
@@ -315,11 +316,70 @@ text-align: center;
   text-align: center;
   font-size: 42px;
   color: var(--colors-primary);
-  font-family: Kalam;
+  font-family: Kalam, cursive;
   position: relative;
   top: 5px;
   margin: 0px 1rem;
   font-weight: 400;
+}
+
+.footer {
+  margin-top: 1rem;
+  margin-left: 0px;
+  margin-right: 0px;
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  height: 6rem;
+  padding-left: 29px;
+  padding-right: 29px;
+}
+
+.footer-profile {
+  box-sizing: border-box;
+  margin: 14.5px 0px;
+  min-width: 0px;
+  display: flex;
+  -moz-box-align: center;
+  align-items: center;
+  border-top: 1px solid var(--colors-primary);
+  padding-top: 14.5px;
+}
+
+.footer-name {
+  box-sizing: border-box;
+  margin: 0px;
+  min-width: 0px;
+  color: var(--colors-primary);
+  transition: color 0.3s linear;
+  overflow-wrap: break-word;
+  text-decoration: none;
+  font-family: Kalam, cursive;
+  font-size: 2rem;
+}
+
+.footer-avatar {
+  margin-right: 14.5px;
+  border-radius: 50%;
+}
+
+.footer-profile-text {
+  box-sizing: border-box;
+  min-width: 0px;
+  text-align: center;
+  margin: auto;
+}
+
+.footer-container {
+  box-sizing: border-box;
+  margin: 0px auto;
+  min-width: 0px;
+  width: 100%;
+  max-width: 1280px;
+}
+
+.footer p {
+  margin: 0.5rem;
 }
 
 @media (min-width: 830px) {

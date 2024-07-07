@@ -1,17 +1,24 @@
 ---
-import Social from "./Social.astro";
+import { Image } from 'astro:assets';
+import Avatar from "@assets/img/avatar-64.jpg";
 ---
 
-<style>
-  footer {
-    display: flex;
-    gap: 1rem;
-    margin-top: 2rem;
-  }
-</style>
-
-<footer>
-  <Social platform="twitter" username="scot3004" />
-  <Social platform="github" username="scot3004" />
-  <Social platform="youtube" username="scot3004" />
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-profile">
+      <Image src={Avatar} alt="Foto destacada" width="64" height="64" class="footer-avatar" />
+      <div class="footer-profile-text">
+        <p class="css-ekvia8">
+          <a href="https://www.secorto.com/" class="footer-name">Sergio Carlos Orozco Torres</a>
+        </p>
+        <p class="footer-role">Software developer</p>
+        <div class="css-6fm9if">
+          <span>Sígueme en: </span>
+          <a href="https://twitter.com/scot3004" target="_blank" rel="noopener noreferrer" class="css-yze98l">Twitter</a>,
+          <a href="https://github.com/scot3004" target="_blank" rel="noopener noreferrer" class="css-yze98l">GitHub</a>,
+          <a href="https://linkedin.com/in/scot3004" target="_blank" rel="noopener noreferrer" class="css-yze98l">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </div>
 </footer>
