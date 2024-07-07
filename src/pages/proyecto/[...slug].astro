@@ -20,5 +20,7 @@ const { Content } = await entry.render();
   <p><em>{entry.data.excerpt}</em></p>
   <Image src={entry.data.image} alt="featured image" />
   <Content />
-  <Gallery items={entry.data.gallery}/>
+  {entry.data.gallery &&
+    <Gallery items={entry.data.gallery}/>
+  }
 </BaseLayout>

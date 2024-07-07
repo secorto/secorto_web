@@ -17,8 +17,18 @@ const { Content } = await entry.render();
 
 ---
 <BaseLayout pageTitle={entry.data.title}>
-  <p><em>{entry.data.excerpt}</em></p>
   <Image src={entry.data.image} alt="featured image" />
+  <dl>
+    <dt>Rol:</dt><dd>{entry.data.role}</dd>
+    <dt>Acividad</dt><dd>{entry.data.startDate.toLocaleDateString("es-CO")}
+    - {entry.data.endDate ? entry.data.endDate.toLocaleDateString("es-CO") : "actualidad"}</dd>
+    <dt>Responsabilidades</dt><dd>{entry.data.responsibilities}</dd>
+  </dl>
+ <p><em>{entry.data.excerpt}</em></p>
+ <a href={entry.data.website}>Sitio web</a>
+
   <Content />
-  <Gallery items={entry.data.gallery}/>
+  {entry.data.gallery &&
+    <Gallery items={entry.data.gallery}/>
+  }
 </BaseLayout>

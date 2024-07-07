@@ -11,7 +11,6 @@ const blogCollection = defineCollection({
   }),
 });
 
-
 const talkCollection = defineCollection({
   type: 'content',
   schema: z.object({
@@ -34,29 +33,52 @@ const workCollection = defineCollection({
     image: image(),
     role: z.string(),
     responsibilities: z.string(),
+    startDate: z.date(),
+    endDate: z.date().optional(),
+    website: z.string().url(),
     gallery: z.array(z.object({
       image: image(),
       alt: z.string()
-    })),
-
+    })).optional(),
   }),
 });
 
-const timelineCollection = defineCollection({
-  type: 'data',
-  schema: z.array(z.object({
-    date: z.string(),
+const projectsCollection = defineCollection({
+  type: 'content',
+  schema: ({ image }) => z.object({
     title: z.string(),
-    location: z.string(),
-    place: z.string(),
-    type: z.string()
-  })),
+    excerpt: z.string(),
+    image: image(),
+    role: z.string(),
+    responsibilities: z.string(),
+    website: z.string().url().optional(),
+    gallery: z.array(z.object({
+      image: image(),
+      alt: z.string()
+    })).optional(),
+  }),
+});
+
+const communityCollection = defineCollection({
+  type: 'content',
+  schema: ({ image }) => z.object({
+    title: z.string(),
+    excerpt: z.string(),
+    image: image(),
+    role: z.string(),
+    responsibilities: z.string(),
+    website: z.string().url().optional(),
+    gallery: z.array(z.object({
+      image: image(),
+      alt: z.string()
+    })).optional(),
+  }),
 });
 
 export const collections = {
   'blog': blogCollection,
   'work': workCollection,
-  'projects': workCollection,
-  'community': workCollection,
+  'projects': projectsCollection,
+  'community': communityCollection,
   "talk": talkCollection
 };
