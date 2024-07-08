@@ -241,18 +241,14 @@ text-align: center;
 
 .hamburger {
   position: fixed;
-  top: 1.2rem;
-  left: 1.2rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  width: 1.5rem;
-  height: 1.5rem;
-  background: transparent;
+  top: 0.5rem;
+  left: 0.5rem;
+  background: rgba(128, 128, 128, 0.2);
   border: none;
   cursor: pointer;
-  padding: 0px;
+  padding: 0.7rem;
   z-index: 101;
+  border-radius: 10px;
 }
 
 .hamburger-bg::before {
@@ -267,7 +263,15 @@ text-align: center;
   border-radius: 10px;
 }
 
-.hamburger div {
+.hamburger-lines {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.hamburger-lines div {
   width: 1.5rem;
   height: 0.25rem;
   background: var(--colors-primary);
@@ -289,17 +293,17 @@ text-align: center;
 }
 
 .sidebar-open .line-top {
-  transform: rotate(45deg);
+  transform: translateX(3px) rotate(45deg);
 }
 .sidebar-open .line-center {
   opacity: 0;
   transform: translateX(20px);
 }
 .sidebar-open .line-bottom {
-    transform: rotate(-45deg);
+    transform: translateX(3px)  rotate(-45deg);
 }
 
-.sidebar-open.hamburger div {
+.sidebar-open.hamburger .hamburger-lines div {
   background: var(--bg-color-light);
 }
 
