@@ -180,6 +180,7 @@ Sidebar
   overflow: auto;
   width: 100%;
   min-height: 300px;
+  transition: transform 0.3s ease-in-out 0s;
 }
 
 .sidebar-content {
@@ -354,7 +355,7 @@ text-align: center;
   transition: color 0.3s linear;
   overflow-wrap: break-word;
   text-decoration: none;
-  font-family: 'Segoe Script', cursive;
+  font-family:'Dancing Script', 'Segoe Script', 'z003',  cursive;
   font-size: 2rem;
 }
 
