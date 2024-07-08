@@ -11,4 +11,4 @@ endDate: 2013-04-01
 
 Esta fue mi primera experiencia laboral, fue con el programa de apoyo laboral de la universidad donde estudie
 En esta experiencia aprendi a montar servidores proxy, configuración de maquinas linux, mantenimiento de servidores, montaje de servidores web, php
-La foto destacada es un uma participación de un encuentro de semilleros de investigación
+La foto destacada es de mi participación de un encuentro de semilleros de investigación
