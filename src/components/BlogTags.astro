@@ -18,11 +18,15 @@ const { tags, route } = Astro.props;
     flex-wrap: wrap;
   }
 
+  .tags a {
+    text-decoration: none;
+  }
+
   .tag {
-    margin: 0.25em;
+    margin: 0.5rem;
     border: dotted 2px var(--colors-primary);
     border-radius: .5em;
-    padding: .5em 1em;
+    padding: .5rem 1rem;
     font-size: 1.15em;
   }
 
