@@ -316,7 +316,7 @@ text-align: center;
   text-align: center;
   font-size: 42px;
   color: var(--colors-primary);
-  font-family: Kalam, cursive;
+  font-family: sans-serif;
   position: relative;
   top: 5px;
   margin: 0px 1rem;
@@ -354,7 +354,7 @@ text-align: center;
   transition: color 0.3s linear;
   overflow-wrap: break-word;
   text-decoration: none;
-  font-family: Kalam, cursive;
+  font-family: 'Segoe Script', cursive;
   font-size: 2rem;
 }
 
