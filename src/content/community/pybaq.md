@@ -4,6 +4,7 @@ excerpt: "Comunidad de desarrolladores python en la ciudad de Barranquilla."
 image: "@assets/img/pybaq/members.jpg"
 role: "Front-End Developer, QA Speaker"
 responsibilities: "Mantener actualizado el sitio web de la comunidad, Contribuir con charlas sobre testing"
+website: https://pybaq.co/
 gallery:
   - image: "@assets/img/pybaq/charlas.png"
     alt: "Charlas PyBAQ"
