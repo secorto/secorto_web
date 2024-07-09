@@ -1,6 +1,6 @@
 ---
-import '../styles/global.css';
 import BaseLayout from '@layouts/BaseLayout.astro';
+import { getEntry } from 'astro:content';
 
 const pageTitle = "Sobre mi";
 
@@ -11,32 +11,13 @@ const identity = {
   hobbies: ["programación", "videojuegos", "piano"],
 };
 
-const skills = ["HTML", "CSS", "JavaScript", "React", "Astro", "Redacción de documentos"];
-
-const skillColor = "navy";
+const skills = ["HTML", "CSS", "JavaScript", "React", "Astro"];
+const aboutContent = await getEntry('blocks', 'about');
+const { Content } = await aboutContent.render();
 ---
 
 <BaseLayout pageTitle={pageTitle}>
-  <style define:vars={{skillColor}}>
-    .skill {
-      color: var(--skillColor);
-      font-weight: bold;
-    }
-  </style>
-  <h2>... ¡y mi nuevo sitio Astro!</h2>
-
-  <p>Estoy trabajando en el tutorial introductorio de Astro. Esta es la segunda página de mi sitio web, ¡y es la primera que he construido yo mismo!</p>
-
-  <p>Este sitio se irá actualizando a medida que vaya completando más partes del tutorial, ¡así que no dejes de visitarlo para ver cómo va mi viaje!</p>
-
-  <p>He aquí algunos datos sobre mí:</p>
-  <ul>
-    <li>Me llamo {identity.firstName}.</li>
-    <li>Vivo en {identity.country} y trabajo como {identity.occupation}.</li>
-    {identity.hobbies.length >= 2 &&
-      <li>Dos de mis aficiones son: {identity.hobbies[0]} y {identity.hobbies[1]}</li>
-    }
-  </ul>
+  <Content />
   <p>Mis habilidades son:</p>
   <ul>
     {skills.map((skill) => <li class="skill">{skill}</li>)}
