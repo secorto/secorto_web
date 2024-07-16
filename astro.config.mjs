@@ -1,5 +1,7 @@
 import { defineConfig } from 'astro/config';
 
+import sitemap from "@astrojs/sitemap";
+
 // https://astro.build/config
 export default defineConfig({
   site: "https://secorto.com",
@@ -10,5 +12,6 @@ export default defineConfig({
     '/blog/2019-10-22-blog-con-gatsby': '/charla/2019-10-22-blog-con-gatsby',
     '/blog/2018-09-17-patrones-automatizacion-pruebas': '/charla/2018-09-17-patrones-automatizacion-pruebas',
     '/blog/2017-01-30-test-unitarios': '/charla/2017-01-30-test-unitarios'
-  }
+  },
+  integrations: [sitemap()]
 });
