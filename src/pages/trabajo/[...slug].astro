@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import { Image } from "astro:assets";
 import Gallery from '@components/Gallery.astro';
+import { dateFormat } from 'src/scripts/dateFormat';
 
 // 1. Generate a new path for every collection entry
 export async function getStaticPaths() {
@@ -14,14 +15,13 @@ export async function getStaticPaths() {
 // 2. For your template, you can get the entry directly from the prop
 const { entry } = Astro.props;
 const { Content } = await entry.render();
-const intlFormatter = new Intl.DateTimeFormat("es", { dateStyle: "full" });
 ---
 <BaseLayout pageTitle={entry.data.title}>
   <Image src={entry.data.image} alt="featured image" />
   <dl>
     <dt>Rol:</dt><dd>{entry.data.role}</dd>
-    <dt>Actividad:</dt><dd>{intlFormatter.format(entry.data.startDate)}
-    - {entry.data.endDate ? intlFormatter.format(entry.data.endDate) : "actualidad"}</dd>
+    <dt>Actividad:</dt><dd>{dateFormat.format(entry.data.startDate)}
+    - {entry.data.endDate ? dateFormat.format(entry.data.endDate) : "actualidad"}</dd>
     <dt>Responsabilidades:</dt><dd>{entry.data.responsibilities}</dd>
   </dl>
  <p><em>{entry.data.excerpt}</em></p>

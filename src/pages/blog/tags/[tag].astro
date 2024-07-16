@@ -2,6 +2,7 @@
 import BaseLayout from '@layouts/BaseLayout.astro';
 import BlogPost from '@components/BlogPost.astro';
 import { getCollection } from 'astro:content';
+import { dateFormat } from 'src/scripts/dateFormat';
 
 export async function getStaticPaths() {
   const allPosts = (await getCollection('blog')).reverse();
@@ -22,6 +23,7 @@ const { posts } = Astro.props;
 ---
 <BaseLayout pageTitle={tag}>
   <p>Entradas etiquetadas con {tag}</p>
-  <ul>
-    {posts.map((post) => <BlogPost url={`/blog/${post.slug}`} title={post.data.title}/>)}  </ul>
+  <div class="post-list">
+    {posts.map((post) => <BlogPost url={`/blog/${post.slug}`} title={post.data.title} date={dateFormat.format(post.data.date)} />)}
+  </div>
 </BaseLayout>

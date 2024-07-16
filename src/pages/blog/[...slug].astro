@@ -16,13 +16,10 @@ const { Content } = await entry.render();
 
 ---
 <BaseLayout pageTitle={entry.data.title}>
-  <p>{new Intl.DateTimeFormat("es-CO", { dateStyle: "full" }).format(
-    new Date(entry.data.date)
-  )}</p>
+  <p>{new Intl.DateTimeFormat("es-CO", { dateStyle: "full" }).format(entry.data.date)}</p>
   {entry.data.image &&
     <img src={entry.data.image} width="300" alt="Imagen destacada" />
   }
-
   <BlogTags route="/blog/tags/" tags={entry.data.tags} />
   <Content />
 

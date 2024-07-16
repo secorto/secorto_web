@@ -6,7 +6,7 @@ const allPosts = await getCollection('work');
 const pageTitle = "Trabajo";
 ---
 <BaseLayout pageTitle={pageTitle}>
-  <ul>
+  <div class="post-list">
     {allPosts.map((post) => <BlogPost url={`/trabajo/${post.slug}`} title={post.data.title} />)}
-  </ul>
+  </div>
 </BaseLayout>
