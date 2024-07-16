@@ -362,7 +362,18 @@ Sidebar
   margin: 0.5rem;
 }
 
+.content {
+  margin-left: 0px;
+  transition: margin-left 0.3s ease-in-out 0s;
+  min-height: 95vh;
+  position: relative;
+}
+
 @media (min-width: 830px) {
+  .content {
+    margin-left: 280px;
+  }
+
   .hamburger, .hamburger-bg {
     display: none;
   }
