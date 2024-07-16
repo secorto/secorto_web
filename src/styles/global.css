@@ -18,10 +18,6 @@
   --colors-sidebar-background: #004f53;
   --colors-sidebar-color: #fff;
   --colors-sidebar-hover: #B8FFFF;
-  --colors-timeline-workBG: #004f53;
-  --colors-timeline-academicBG: #993399;
-  --colors-timeline-previousWorkBG: #777;
-  --colors-timeline-iconColor: #fff;
 }
 
 .dark {
@@ -34,13 +30,6 @@
   --colors-highlight: #E7B8FF;
   --colors-heading: #fff;
   --colors-blogBg: #0a0a0a;
-  --colors-sidebar-background: #004f53;
-  --colors-sidebar-color: #fff;
-  --colors-sidebar-hover: #B8FFFF;
-  --colors-timeline-workBG: #004f53;
-  --colors-timeline-academicBG: #993399;
-  --colors-timeline-previousWorkBG: #777;
-  --colors-timeline-iconColor: #fff;
 }
 
 html {

@@ -1,33 +1,14 @@
 ---
-import '../styles/global.css';
 import Header from '../components/Header.astro'
-import Hamburger from '../components/Hamburger.astro';
-import Sidebar from '../components/Sidebar.astro';
 import Footer from '../components/Footer.astro';
+import SiteLayout from './SiteLayout.astro';
 
 const {pageTitle} = Astro.props
 ---
-
-<html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} >
-    <title>{pageTitle} | SeCOrTo</title>
-  </head>
-  <body>
-    <Hamburger />
-    <Sidebar />
-    <div class="content">
-      <Header title={pageTitle} />
-      <main class="main-content">
-        <slot />
-      </main>
-      <Footer />
-    </div>
-    <script>
-      import "../scripts/menu.js";
-    </script>
-  </body>
-</html>
+<SiteLayout pageTitle={pageTitle} >
+  <Header title={pageTitle} />
+  <main class="main-content">
+    <slot />
+  </main>
+  <Footer />
+</SiteLayout>
