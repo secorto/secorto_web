@@ -1,1 +1,1 @@
-export const dateFormat = new Intl.DateTimeFormat("es-CO", { dateStyle: "full" });
+export const dateFormat = new Intl.DateTimeFormat("es-CO", { dateStyle: "full", timeZone: 'UTC' });
