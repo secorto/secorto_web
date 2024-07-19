@@ -5,6 +5,7 @@
     function initGiscus() {
         // Get the div that will contain the comments.
         const commentsDiv = document.querySelector('.comments');
+        if (!commentsDiv) return;
         const script = document.createElement('script');
         script.src = 'https://giscus.app/client.js';
         // Set the various settings as data attributes on the script tag.
@@ -18,7 +19,7 @@
         script.setAttribute('data-emit-metadata', '0');
         script.setAttribute('data-lang', "es");
         script.setAttribute('crossorigin', 'anonymous');
-        const theme = (() => {
+        const theme: string = (() => {
             if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
                 return localStorage.getItem('theme');
             }
