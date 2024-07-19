@@ -4,13 +4,6 @@ import { getEntry } from 'astro:content';
 
 const pageTitle = "Sobre mi";
 
-const identity = {
-  firstName: "Sergio",
-  country: "Colombia",
-  occupation: "Software developer engineer in test",
-  hobbies: ["programación", "videojuegos", "piano"],
-};
-
 const skills = ["HTML", "CSS", "JavaScript", "React", "Astro"];
 const aboutContent = await getEntry('blocks', 'about');
 const { Content } = await aboutContent.render();
