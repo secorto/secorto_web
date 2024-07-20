@@ -1,6 +1,7 @@
 name: Reporte de error
 description: Genera un reporte de error para ayudarnos a mejorar
-labels: ["type: bug"]
+title: "[Bug]: "
+labels: ["bug"]
 body:
   - type: markdown
     attributes:
@@ -13,7 +14,7 @@ body:
       label: Verificaciones preliminares
       description: Por favor asegúrese de verificar cada una de las casillas de verificación y de seguir las instrucciones de cada una de ellas.
       options:
-        - label: "Este issue (o propuesta) no es un duplicado, antes de abrir un nuevo issue por favor verifique que no esté reportado acá https://github.com/Scot3004/secorto_web/issues"
+        - label: "Este issue (o propuesta) no es un duplicado, antes de abrir un nuevo issue por favor verifique que no esté reportado acá https://github.com/secorto/secorto_web/issues"
           required: true
   - type: textarea
     attributes:
