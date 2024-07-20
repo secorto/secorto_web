@@ -2,11 +2,21 @@
 import BaseLayout from '@layouts/BaseLayout.astro'
 import BlogPost from '@components/BlogPost.astro';
 import { getCollection } from 'astro:content';
+export const dateFormat = new Intl.DateTimeFormat("es-CO", { month: "long", year: "numeric", timeZone: 'UTC' });
 const allPosts = await getCollection('work');
 const pageTitle = "Trabajo";
 ---
 <BaseLayout pageTitle={pageTitle}>
   <div class="post-list">
-    {allPosts.map((post) => <BlogPost url={`/trabajo/${post.slug}`} title={post.data.title} />)}
+    {allPosts.map((post) => 
+      <BlogPost 
+        url={`/trabajo/${post.slug}`} 
+        title={post.data.title} 
+        date={`${dateFormat.format(post.data.startDate)} - ${post.data.endDate ? dateFormat.format(post.data.endDate) : "actualidad"}`} 
+      >
+        <p>{post.data.role}</p>
+        <p>{post.data.responsibilities}</p>
+      </BlogPost>  
+    )}
   </div>
 </BaseLayout>
