@@ -1,18 +1,41 @@
-# Astro Starter Kit: Basics
+# Scot3004
 
-```sh
-npm create astro@latest -- --template basics
-```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/basics)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/basics/devcontainer.json)
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/secorto/secorto_web)
+[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/devbox/github/secorto/secorto_web)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/secorto/secorto_web?devcontainer_path=.devcontainer/.devcontainer/devcontainer.json)
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Página personal de presentación de Sergio C. Orozco Torres
 
-![just-the-basics](https://github.com/withastro/astro/assets/2244813/a0a5533c-a856-4198-8470-2d67b1d7c554)
+## Motivación
 
-## 🚀 Project Structure
+Practicar el desarrollo front-end para fortalecer habilidades y tener una plantilla base en caso que requiera iniciar otro desarrollo similar
+
+## Objetivos
+
+### Objetivo General
+
+Desarrollar un sitio web informativo que demuestre los conocimientos y habilidades en desarrollo web de Sergio Orozco Torres
+
+### Objetivos específicos
+
+- Presentarme como persona y desarrollador web
+- Compartir todo lo que he aprendido ya sea a traves del blog o del portafolio de experiencias
+- Demostrar buenas practicas a través del código fuente de la página
+
+## Guía de contribución
+
+En este [enlace al archivo contributing.md](./docs/CONTRIBUTING.md) puedes ver como contribuir con el mejoramiento de este proyecto
+
+## Guía de seguridad
+
+En este [enlace al archivo security.md](./SECURITY.md) puedes ver como puedes reportar un issue de seguridad
+
+## Copyright y licencia
+
+Copyright 2023 Scot3004. Este código es lanzado bajo licencia [MIT](LICENSE), también puedes ver [los términos de la licencia MIT traducidos al español](LICENSE_es)
+
+## 🚀 Estructura del proyecto
 
 Inside of your Astro project, you'll see the following folders and files:
 
@@ -36,19 +59,15 @@ There's nothing special about `src/components/`, but that's where we like to put
 
 Any static assets, like images, can be placed in the `public/` directory.
 
-## 🧞 Commands
+## 🧞 Comandos
 
 All commands are run from the root of the project, from a terminal:
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+| Command                   | Action                                                         |
+| :------------------------ | :------------------------------------------------------------- |
+| `npm install`             | Instala las dependencias                                       |
+| `npm run dev`             | Ejecuta el dev server en `localhost:4321`                      |
+| `npm run build`           | Construye el sitio para produccion en `./dist/`                |
+| `npm run preview`         | Previsualiza la compilacion localmente                         |
+| `npm run astro ...`       | Ejecuta commandos de Astro CLI como `astro add`, `astro check` |
+| `npm run astro -- --help` | Obtener ayuda sobre Astro CLI                                  |

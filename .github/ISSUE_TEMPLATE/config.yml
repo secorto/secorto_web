@@ -1,0 +1,9 @@
+
+blank_issues_enabled: false
+contact_links:
+  - name: Sitio web
+    url: https://www.secorto.com
+    about: Este es el sitio web relacionado a este repositorio
+  - name: Preguntas
+    url: https://github.com/secorto/secorto_web/discussions
+    about: Cualquier pregunta que tengas para mi la puedes compartir en este espacio
