@@ -7,11 +7,16 @@ import { dateFormat } from 'src/scripts/dateFormat';
 
 const allPosts = (await getCollection('talk')).reverse();
 const tags = [...new Set(allPosts.map((post) => post.data.tags).flat())];
-const pageTitle = "Charla";
+const pageTitle = "Charlas";
 ---
 <BaseLayout pageTitle={pageTitle}>
   <BlogTags route="/charla/tags/" tags={tags} />
   <div class="post-list">
-    {allPosts.map((post) => <BlogPost url={`/charla/${post.slug}`} title={post.data.title} date={dateFormat.format(post.data.date)} />)}
+    {allPosts.map((post) =>
+      <BlogPost
+        url={`/charla/${post.slug}`}
+        title={post.data.title}
+        date={dateFormat.format(post.data.date)}
+      />)}
   </div>
 </BaseLayout>

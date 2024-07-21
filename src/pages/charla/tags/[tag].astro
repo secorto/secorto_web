@@ -3,10 +3,12 @@ import BaseLayout from '@layouts/BaseLayout.astro';
 import BlogPost from '@components/BlogPost.astro';
 import { getCollection } from 'astro:content';
 import { dateFormat } from 'src/scripts/dateFormat';
+import BlogTags from '@components/BlogTags.astro';
+const allPosts = (await getCollection('talk')).reverse();
+const tags = [...new Set(allPosts.map((post) => post.data.tags).flat())];
 
 export async function getStaticPaths() {
   const allPosts = (await getCollection('talk')).reverse();
-
   const uniqueTags = [...new Set(allPosts.map((post) => post.data.tags).flat())];
 
   return uniqueTags.map((tag) => {
@@ -22,6 +24,7 @@ const { tag } = Astro.params;
 const { posts } = Astro.props;
 ---
 <BaseLayout pageTitle={tag}>
+  <BlogTags route="/charla/tags/" tags={tags} />
   <p>Charlas etiquetadas con {tag}</p>
   <div class="post-list">
     {posts.map((post) => <BlogPost url={`/charla/${post.slug}`} title={post.data.title} date={dateFormat.format(post.data.date)} />)}
