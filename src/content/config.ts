@@ -13,14 +13,14 @@ const blogCollection = defineCollection({
 
 const talkCollection = defineCollection({
   type: 'content',
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     date: z.date(),
     tags: z.array(z.string()),
-    image: z.string().optional(),
+    image: image(),
     comunidad: z.string(),
     video: z.string().optional(),
-    slide: z.string().optional(),
+    slide: z.string(),
     gist: z.string().optional()
   }),
 });
