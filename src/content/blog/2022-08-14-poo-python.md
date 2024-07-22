@@ -1,5 +1,5 @@
 ---
-title: Programación Orientada a objetos en  python
+title: Programación orientada a objetos en python
 tags:
   - dev
   - python
