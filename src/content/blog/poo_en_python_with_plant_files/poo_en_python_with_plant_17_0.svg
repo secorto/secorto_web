@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" height="134px" preserveAspectRatio="none" style="width:128px;height:134px;background:#FFFFFF;" version="1.1" viewBox="0 0 128 134" width="128px" zoomAndPan="magnify"><defs/><g><!--MD5=[8f63dadf5c643e74a34e53c8f0a15d23]
+class Persona--><g id="elem_Persona"><rect fill="#F1F1F1" height="113.1875" id="Persona" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="107" x="7" y="7"/><ellipse cx="30.1" cy="23" fill="#ADD1B2" rx="11" ry="11" style="stroke:#181818;stroke-width:1.0;"/><path d="M32.4438,18.6719 C31.5063,18.2344 30.9125,18.0938 30.0375,18.0938 C27.4125,18.0938 25.4125,20.1719 25.4125,22.8906 L25.4125,24.0156 C25.4125,26.5938 27.5219,28.4844 30.4125,28.4844 C31.6313,28.4844 32.7875,28.1875 33.5375,27.6406 C34.1156,27.2344 34.4438,26.7813 34.4438,26.3906 C34.4438,25.9375 34.0531,25.5469 33.5844,25.5469 C33.3656,25.5469 33.1625,25.625 32.975,25.8125 C32.5219,26.2969 32.5219,26.2969 32.3344,26.3906 C31.9125,26.6563 31.225,26.7813 30.4594,26.7813 C28.4125,26.7813 27.1156,25.6875 27.1156,23.9844 L27.1156,22.8906 C27.1156,21.1094 28.3656,19.7969 30.1,19.7969 C30.6781,19.7969 31.2875,19.9531 31.7563,20.2031 C32.2406,20.4844 32.4125,20.7031 32.5063,21.1094 C32.5688,21.5156 32.6,21.6406 32.7406,21.7656 C32.8813,21.9063 33.1156,22.0156 33.3344,22.0156 C33.6,22.0156 33.8656,21.875 34.0375,21.6563 C34.1469,21.5 34.1781,21.3125 34.1781,20.8906 L34.1781,19.4688 C34.1781,19.0313 34.1625,18.9063 34.0688,18.75 C33.9125,18.4844 33.6313,18.3438 33.3344,18.3438 C33.0375,18.3438 32.8344,18.4375 32.6156,18.75 L32.4438,18.6719 Z " fill="#000000"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="57" x="45.9" y="27.8467">Persona</text><line style="stroke:#181818;stroke-width:0.5;" x1="8" x2="113" y1="39" y2="39"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="57" x="13" y="55.9951">nombre</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="57" x="13" y="72.292">apellido</text><line style="stroke:#181818;stroke-width:0.5;" x1="8" x2="113" y1="79.5938" y2="79.5938"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="84" x="13" y="96.5889">__str__(self)</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="95" x="13" y="112.8857">__repr__(self)</text></g><!--MD5=[e2261d8b661a98c419189cc2f7f4b676]
+@startuml
+Persona : nombre
+Persona : apellido
+
+Persona : __str__(self)
+Persona : __repr__(self)
+@enduml
+
+PlantUML version 1.2022.7beta2(Unknown compile time)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>

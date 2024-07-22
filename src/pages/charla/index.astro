@@ -14,6 +14,7 @@ const pageTitle = "Charlas";
   <div class="post-list">
     {allPosts.map((post) =>
       <BlogPost
+        image={post.data.image}
         url={`/charla/${post.slug}`}
         title={post.data.title}
         date={dateFormat.format(post.data.date)}

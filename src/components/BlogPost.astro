@@ -1,9 +1,13 @@
 ---
-const { title, url, excerpt, date } = Astro.props
+import { Image } from "astro:assets";
+const { title, url, excerpt, date, image } = Astro.props
 ---
 
 <a class="card" href={url}>
   <span class="card-content">
+    {image &&
+      <Image src={image} alt="featured image" />
+    }
     <h2 class="card-title">{title}</h2>
     <div class="card-details">
       {date &&

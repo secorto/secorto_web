@@ -31,10 +31,6 @@ const { Content } = await entry.render();
   }
   <p>{dateFormat.format(entry.data.date)}</p>
 
-  {entry.data.image &&
-    <img src={entry.data.image} width="300" alt="Imagen destacada" />
-  }
-
   <Content />
   {entry.data.slide &&
     <ResponsiveIframe
