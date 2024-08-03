@@ -1,5 +1,7 @@
 # Scot3004
 
+[![SeCOrTo web](https://img.shields.io/endpoint?url=https://cloud.cypress.io/badge/simple/97byr8/master&style=flat-square&logo=cypress)](https://cloud.cypress.io/projects/97byr8/runs)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/414a6ef2-a3ea-48b0-85ba-ba7fbe9f20d1/deploy-status)](https://app.netlify.com/sites/secorto-astro/deploys)
 
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/secorto/secorto_web)
 [![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/devbox/github/secorto/secorto_web)
