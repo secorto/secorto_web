@@ -1,4 +1,4 @@
-it('Blog post se visualiza', () => {
+it('Charlas se visualizan', () => {
   const page = cy.visit('/charla');
   page.get('head title').should('have.text', 'Charlas | SeCOrTo')
   page.get('header h1').should('have.text', 'Charlas');
