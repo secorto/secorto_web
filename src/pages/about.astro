@@ -3,23 +3,10 @@ import BaseLayout from '@layouts/BaseLayout.astro';
 import { getEntry } from 'astro:content';
 
 const pageTitle = "Sobre mi";
-
-const identity = {
-  firstName: "Sergio",
-  country: "Colombia",
-  occupation: "Software developer engineer in test",
-  hobbies: ["programación", "videojuegos", "piano"],
-};
-
-const skills = ["HTML", "CSS", "JavaScript", "React", "Astro"];
 const aboutContent = await getEntry('blocks', 'about');
 const { Content } = await aboutContent.render();
 ---
 
 <BaseLayout pageTitle={pageTitle}>
   <Content />
-  <p>Mis habilidades son:</p>
-  <ul>
-    {skills.map((skill) => <li class="skill">{skill}</li>)}
-  </ul>
 </BaseLayout>

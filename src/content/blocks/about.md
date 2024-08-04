@@ -1,17 +1,12 @@
-Me llamo Sergio Carlos Orozco Torres.
+Soy Sergio Carlos Orozco Torres. Nací en Barranquilla, Atlántico el 30 de abril de 1991.
 
-👨🏼‍🎓 Soy Barranquillero, Especialista en seguridad informática de la Corporación Universitaria Americana.
+En mi fase de colegio era muy dado a pasar en bibliotecas, y mi materia favorita era informática, aunque en aquel entonces dañe algunos de los computadores de la casa luego de varios intentos ya los arreglaba, debido a esto estudie Ingeniería de sistemas, además de una Especialización en seguridad informática en la [Corporación Universitaria Americana](/trabajo/coruniamericana/).
 
-🗺️ Vivo en Itagüí y trabajo
-en [Perficient](/trabajo/perficient/)
-como Software developer engineer in test.
+Antes de finalizar la universidad empecé a trabajar en desarrollo de software dentro de la misma universidad donde estudié y después de graduarme seguí esta línea de trabajo, luego conseguí una vacante en [Informática y tributos](/trabajo/infortributos/) mis aportes estuvieron más que todo en la presentación de la información del software que desarrollamos, si bien en estos momentos vi las primeras charlas sobre Python en la comunidad [Python Barranquilla](/comunidad/pybaq), decidí apostarle al desarrollo front-end en una agencia digital llamada [Joonik](/trabajo/joonik/) acá hice mis primeras automatizaciones con selenium.
+Y en 2018 un año lleno de cambios, me gradué, cambie de trabajo a [Perficient](/trabajo/perficient/) donde llevo 6 años trabajando en calidad de software y decidí mudarme al área metropolitana del valle de aburra (Medellín, Antioquia).
 
-💻 Me gusta mucho el desarrollo de software y he trabajado con  groovy, java, javascript, python, php y typescript.
-Practicando programación en mis tiempos libres logré desarrollar entre otras cosas el sitio web que estás visitando,
-inicialmente lo desarrollé usando Jekyll usa ruby luego GatsbyJS y ahora Astro.
+Me gusta tanto el desarrollo de software que participo en diversas comunidades de software y quise crear mi [portafolio web](/proyecto/scot3004) (este que estas visitando ahora) y afortunadamente puedes ver las diferentes [charlas](/charla) que he dado.
 
-🚴🏾 Ademas del desarrollo web me gusta mucho andar en bici y jugar videojuegos, He logrado ir desde Barranquilla a 200km a la redonda incluyendo Cartagena y Santa marta, ademas de Medellin e Itagüí.
+Me gusta mucho andar en bicicleta y logre ir desde Barranquilla a Cartagena, Santa Marta y otros municipios cercanos, y hoy día que vivo en Itagüí sigo rodando en mi bicicleta.
 
-🎮 En linea puedes encontrarme con alguno de estos 2 nicks: secorto y scot3004 cada uno tiene referencia a mis iniciales.
-
-🇨🇴 Soy colaborador en comunidades de software y he tenido la oportunidad de compartir mis conocimientos a través de [charlas](/charla) 
+También me gusta jugar videojuegos, mis favoritos son aquellos de mundo abierto, entre ellos la saga Assassins Creeds, Genshin Impact o la saga GTA(Grand Theft Auto).
