@@ -2,8 +2,7 @@
 title: ¿Que es Markdown y por qué es importante para JAMstack?
 category: dev
 tags:
-  - gatsby
-  - markdown
+  - jamstack
 date: 2020-08-03
 video: https://www.youtube.com/embed/hu7fStJk2CY
 slide: https://slides-markdown.secorto.com/

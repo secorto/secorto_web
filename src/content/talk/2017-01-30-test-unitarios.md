@@ -2,6 +2,7 @@
 title: Test unitarios
 category: dev
 tags:
+  - python
   - testing
 date: 2017-01-30
 image: "image/test+mocks.png"

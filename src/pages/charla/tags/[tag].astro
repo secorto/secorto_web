@@ -27,6 +27,13 @@ const { posts } = Astro.props;
   <BlogTags route="/charla/tags/" tags={tags} />
   <p>Charlas etiquetadas con {tag}</p>
   <div class="post-list">
-    {posts.map((post) => <BlogPost url={`/charla/${post.slug}`} title={post.data.title} date={dateFormat.format(post.data.date)} />)}
+    {posts.map((post) =>
+      <BlogPost
+        image={post.data.image}
+        url={`/charla/${post.slug}`}
+        title={post.data.title}
+        date={dateFormat.format(post.data.date)}
+      />
+    )}
   </div>
 </BaseLayout>
