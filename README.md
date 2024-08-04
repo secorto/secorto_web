@@ -1,11 +1,7 @@
-# Scot3004
+# secorto.com fuentes
 
 [![SeCOrTo web](https://img.shields.io/endpoint?url=https://cloud.cypress.io/badge/simple/97byr8/master&style=flat-square&logo=cypress)](https://cloud.cypress.io/projects/97byr8/runs)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/414a6ef2-a3ea-48b0-85ba-ba7fbe9f20d1/deploy-status)](https://app.netlify.com/sites/secorto-astro/deploys)
-
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/secorto/secorto_web)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/devbox/github/secorto/secorto_web)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/secorto/secorto_web?devcontainer_path=.devcontainer/.devcontainer/devcontainer.json)
 
 Página personal de presentación de Sergio C. Orozco Torres
 
@@ -37,33 +33,9 @@ En este [enlace al archivo security.md](./SECURITY.md) puedes ver como puedes re
 
 Copyright 2023 Scot3004. Este código es lanzado bajo licencia [MIT](LICENSE), también puedes ver [los términos de la licencia MIT traducidos al español](LICENSE_es)
 
-## 🚀 Estructura del proyecto
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src/
-│   ├── components/
-│   │   └── Card.astro
-│   ├── layouts/
-│   │   └── Layout.astro
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
 ## 🧞 Comandos
 
-All commands are run from the root of the project, from a terminal:
+Puedes ejecutar estos comandos en la carpeta raíz del proyecto:
 
 | Command                   | Action                                                         |
 | :------------------------ | :------------------------------------------------------------- |
@@ -73,3 +45,9 @@ All commands are run from the root of the project, from a terminal:
 | `npm run preview`         | Previsualiza la compilacion localmente                         |
 | `npm run astro ...`       | Ejecuta commandos de Astro CLI como `astro add`, `astro check` |
 | `npm run astro -- --help` | Obtener ayuda sobre Astro CLI                                  |
+
+## Herramientas en la nube
+
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/secorto/secorto_web)
+[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/devbox/github/secorto/secorto_web)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/secorto/secorto_web?devcontainer_path=.devcontainer/.devcontainer/devcontainer.json)

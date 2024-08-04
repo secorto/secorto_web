@@ -157,6 +157,3 @@ Las cuales se ven asi:
 
 Panel de administración de netlify
 ![Deploy preview en netlify](./netlify_preview_deploy.png)
-
-Github action
-![Ejecución de la acción jest](./github_action_jest.png)
