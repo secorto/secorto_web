@@ -13,5 +13,12 @@ export default defineConfig({
     '/blog/2018-09-17-patrones-automatizacion-pruebas': '/charla/2018-09-17-patrones-automatizacion-pruebas',
     '/blog/2017-01-30-test-unitarios': '/charla/2017-01-30-test-unitarios'
   },
-  integrations: [sitemap()]
+  integrations: [sitemap()],
+  i18n: {
+    defaultLocale: "es",
+    locales: ["es", "en"],
+    fallback: {
+      en: "es"
+    },
+  }
 });
