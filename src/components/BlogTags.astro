@@ -1,14 +1,15 @@
 ---
 interface Props {
 	tags: string[],
-  route: string
+  route: string,
+  current?: string
 }
-const { tags, route } = Astro.props;
+const { tags, route, current } = Astro.props;
 ---
 
 <div class="tags">
   {tags.map((tag) => (
-    <a href={`${route}${tag}`}><p class="tag">{tag}</p></a>
+    <a href={`${route}${tag}`} class={current === tag ? "tag active" : "tag"}><p>{tag}</p></a>
   ))}
 </div>
 
@@ -26,11 +27,20 @@ const { tags, route } = Astro.props;
     margin: 0.5rem;
     border: dotted 2px var(--colors-primary);
     border-radius: .5em;
-    padding: .5rem 1rem;
+  }
+
+  .tag.active {
+    border: dashed 2px var(--colors-hover);
+    color: var(--colors-hover);
+  }
+
+  .tag p {
     font-size: 1.15em;
+    padding: .5rem 1rem;
+    margin: 0 auto;
   }
 
   .tag:hover {
-    border: dotted 2px var(--colors-hover);
+    border-color: var(--colors-hover);
   }
 </style>
