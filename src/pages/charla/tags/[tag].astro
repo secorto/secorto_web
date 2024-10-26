@@ -24,7 +24,7 @@ const { tag } = Astro.params;
 const { posts } = Astro.props;
 ---
 <BaseLayout pageTitle={tag}>
-  <BlogTags route="/charla/tags/" tags={tags} />
+  <BlogTags route="/charla/tags/" tags={tags} current={tag}/>
   <p>Charlas etiquetadas con {tag}</p>
   <div class="post-list">
     {posts.map((post) =>
