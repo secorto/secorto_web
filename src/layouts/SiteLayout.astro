@@ -3,6 +3,9 @@ import '../styles/global.css';
 import Hamburger from '../components/Hamburger.astro';
 import Sidebar from '../components/Sidebar.astro';
 
+interface Props {
+  pageTitle: string
+}
 const {pageTitle} = Astro.props
 ---
 
