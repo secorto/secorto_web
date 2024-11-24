@@ -1,9 +1,13 @@
 ---
-const { iframeId, title, ...props} = Astro.props;
+import type { HTMLAttributes } from 'astro/types';
+interface Props extends HTMLAttributes<'iframe'> {
+  title: string
+  [property: string]: unknown
+}
+const { title, ...props} = Astro.props;
 ---
 <div class="iframe-wrapper">
   <iframe
-    id={iframeId}
     title={title}
     {...props}>
   </iframe>

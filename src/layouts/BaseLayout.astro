@@ -3,6 +3,10 @@ import Header from '../components/Header.astro'
 import Footer from '../components/Footer.astro';
 import SiteLayout from './SiteLayout.astro';
 
+interface Props {
+  pageTitle: string
+}
+
 const {pageTitle} = Astro.props
 ---
 <SiteLayout pageTitle={pageTitle} >
