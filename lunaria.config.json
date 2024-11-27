@@ -1,0 +1,29 @@
+{
+  "$schema": "./node_modules/@lunariajs/core/config.schema.json",
+  "repository": {
+    "name": "secorto/secorto_web",
+    "branch": "master"
+  },
+  "files": [
+    {
+      "location": "src/content/blog/**/*.md",
+      "pattern": "src/content/blog/@lang/@path",
+      "type": "universal"
+    },
+    {
+      "location": "src/content/projects/**/*.md",
+      "pattern": "src/content/projects/@lang/@path",
+      "type": "universal"
+    }
+  ],
+  "defaultLocale": {
+    "label": "Español",
+    "lang": "es"
+  },
+  "locales": [
+    {
+      "label": "Ingles",
+      "lang": "en"
+    }
+  ]
+}
