@@ -1,0 +1,41 @@
+---
+import type { InferGetStaticParamsType, InferGetStaticPropsType, GetStaticPaths } from 'astro';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import BlogPost from '@components/BlogPost.astro';
+import { getCollection } from 'astro:content';
+import { enDateFormat } from 'src/scripts/dateFormat';
+import BlogTags from '@components/BlogTags.astro';
+
+export const getStaticPaths = (async () => {
+  const allPosts = (await getCollection('talk')).reverse();
+  const uniqueTags = [...new Set(allPosts.map((post) => post.data.tags).flat())];
+
+  return uniqueTags.map((tag) => {
+    const filteredPosts = allPosts.filter((post) => post.data.tags.includes(tag));
+    return {
+      params: { tag },
+      props: { posts: filteredPosts, tags: uniqueTags },
+    };
+  });
+}) satisfies GetStaticPaths
+
+type Params = InferGetStaticParamsType<typeof getStaticPaths>;
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const { tag } = Astro.params as Params;
+const { posts, tags } = Astro.props as Props;
+---
+<BaseLayout pageTitle={tag}>
+  <BlogTags route="/en/charla/tags/" tags={tags} current={tag}/>
+  <p>Talks tagged with {tag}</p>
+  <div class="post-list">
+    {posts.map((post) =>
+      <BlogPost
+        image={post.data.image}
+        url={`/en/charla/${post.slug}`}
+        title={post.data.title}
+        date={enDateFormat.format(post.data.date)}
+      />
+    )}
+  </div>
+</BaseLayout>
