@@ -1,0 +1,17 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro'
+import BlogPost from '@components/BlogPost.astro';
+import { getCollection } from 'astro:content';
+import BlogTags from '@components/BlogTags.astro';
+import { enDateFormat } from 'src/scripts/dateFormat';
+
+const allPosts = (await getCollection('blog')).reverse();
+const tags = [...new Set(allPosts.map((post) => post.data.tags).flat())];
+const pageTitle = "Blog";
+---
+<BaseLayout pageTitle={pageTitle}>
+  <BlogTags route="/en/blog/tags/" tags={tags} />
+  <div class="post-list">
+    {allPosts.map((post) => <BlogPost url={`/en/blog/${post.slug}`} title={post.data.title} date={enDateFormat.format(post.data.date)} />)}
+  </div>
+</BaseLayout>

@@ -1,0 +1,54 @@
+---
+import type { InferGetStaticPropsType, GetStaticPaths } from 'astro';
+import { getCollection } from 'astro:content';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import BlogTags from '@components/BlogTags.astro';
+import ResponsiveIframe from '@components/ResponsiveIframe.astro';
+import { enDateFormat } from 'src/scripts/dateFormat';
+
+export const getStaticPaths = (async () => {
+  const blogEntries = await getCollection('talk');
+  return blogEntries.map(entry => ({
+    params: { slug: entry.slug }, props: { entry },
+  }));
+}) satisfies GetStaticPaths
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+
+---
+<BaseLayout pageTitle={entry.data.title}>
+  {entry.data.video &&
+    <ResponsiveIframe
+      width="100%"
+      height="600"
+      src={entry.data.video}
+      frameBorder="0"
+      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+      allowFullScreen
+      title={`Video of talk ${entry.data.title}`}
+    />
+  }
+  <p>{enDateFormat.format(entry.data.date)}</p>
+
+  <Content />
+  {entry.data.slide &&
+    <ResponsiveIframe
+      src={entry.data.slide}
+      width="100%"
+      height="600"
+      frameBorder="0"
+      title={`Slides of talk ${entry.data.title}`}
+    />
+
+  }
+
+  {entry.data.gist &&
+    <script src={`${entry.data.gist}.js`} is:inline></script>
+  }
+
+<BlogTags route="/en/charla/tags/" tags={entry.data.tags} />
+
+</BaseLayout>
