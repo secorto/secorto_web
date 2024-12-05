@@ -76,18 +76,10 @@ const communityCollection = defineCollection({
   }),
 });
 
-const blocksCollection = defineCollection({
-  type: 'content',
-  schema: z.object({
-    title: z.string()
-  }),
-});
-
 export const collections = {
   'blog': blogCollection,
   'work': workCollection,
   'projects': projectsCollection,
   'community': communityCollection,
-  "talk": talkCollection,
-  "blocks": blocksCollection
+  "talk": talkCollection
 };
