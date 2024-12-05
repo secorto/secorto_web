@@ -13,7 +13,7 @@ const blogCollection = defineCollection({
 });
 
 const talkCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**\/[^_]*.md', base: "./src/content/talk" }),
   schema: ({ image }) => z.object({
     title: z.string(),
     date: z.date(),

@@ -32,7 +32,7 @@ const { posts, tags } = Astro.props as Props;
     {posts.map((post) =>
       <BlogPost
         image={post.data.image}
-        url={`/charla/${post.slug}`}
+        url={`/charla/${post.id}`}
         title={post.data.title}
         date={dateFormat.format(post.data.date)}
       />
