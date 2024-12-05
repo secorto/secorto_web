@@ -12,6 +12,6 @@ const pageTitle = "Blog";
 <BaseLayout pageTitle={pageTitle}>
   <BlogTags route="/blog/tags/" tags={tags} />
   <div class="post-list">
-    {allPosts.map((post) => <BlogPost url={`/blog/${post.slug}`} title={post.data.title} date={dateFormat.format(post.data.date)} />)}
+    {allPosts.map((post) => <BlogPost url={`/blog/${post.id}`} title={post.data.title} date={dateFormat.format(post.data.date)} />)}
   </div>
 </BaseLayout>
