@@ -1,5 +1,5 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import { Image } from "astro:assets";
 import Gallery from '@components/Gallery.astro';
@@ -8,12 +8,12 @@ import Gallery from '@components/Gallery.astro';
 export async function getStaticPaths() {
   const entries = await getCollection('community');
   return entries.map(entry => ({
-    params: { slug: entry.slug }, props: { entry },
+    params: { id: entry.id }, props: { entry },
   }));
 }
 // 2. For your template, you can get the entry directly from the prop
 const { entry } = Astro.props;
-const { Content } = await entry.render();
+const { Content } = await render(entry);
 
 ---
 <BaseLayout pageTitle={entry.data.title}>

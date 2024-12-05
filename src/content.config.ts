@@ -27,8 +27,8 @@ const talkCollection = defineCollection({
 });
 
 const workCollection = defineCollection({
-  type: 'content',
-  schema: ({ image }) => z.object({
+  loader: glob({ pattern: '**\/[^_]*.md', base: "./src/content/work" }),
+    schema: ({ image }) => z.object({
     title: z.string(),
     excerpt: z.string(),
     image: image(),
@@ -45,7 +45,7 @@ const workCollection = defineCollection({
 });
 
 const projectsCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**\/[^_]*.md', base: "./src/content/projects" }),
   schema: ({ image }) => z.object({
     title: z.string(),
     excerpt: z.string(),
@@ -61,7 +61,7 @@ const projectsCollection = defineCollection({
 });
 
 const communityCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**\/[^_]*.md', base: "./src/content/community" }),
   schema: ({ image }) => z.object({
     title: z.string(),
     excerpt: z.string(),
