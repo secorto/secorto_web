@@ -1,3 +1,6 @@
+---
+title: Sobre mi
+---
 Soy Sergio Carlos Orozco Torres. Nací en Barranquilla, Atlántico el 30 de abril de 1991.
 
 En mi fase de colegio era muy dado a pasar en bibliotecas, y mi materia favorita era informática, aunque en aquel entonces dañe algunos de los computadores de la casa luego de varios intentos ya los arreglaba, debido a esto estudie Ingeniería de sistemas, además de una Especialización en seguridad informática en la [Corporación Universitaria Americana](/trabajo/coruniamericana/).
