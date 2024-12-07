@@ -7,8 +7,8 @@ import { dateFormat } from 'src/scripts/dateFormat';
 import BlogTags from '@components/BlogTags.astro';
 
 export const getStaticPaths = (async () => {
-  const allPosts = (await getCollection('blog')).reverse();
-  const uniqueTags = [...new Set(allPosts.map((post) => post.data.tags).flat())];
+  const allPosts = (await getCollection('blog')).sort((a, b)=> b.id.localeCompare(a.id));
+  const uniqueTags = [...new Set(allPosts.map((post) => post.data.tags).flat())].sort((a, b)=> a.localeCompare(b));
 
   return uniqueTags.map((tag) => {
     const filteredPosts = allPosts.filter((post) => post.data.tags.includes(tag));
