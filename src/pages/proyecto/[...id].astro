@@ -1,32 +1,29 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import { Image } from "astro:assets";
 import Gallery from '@components/Gallery.astro';
-export const dateFormat = new Intl.DateTimeFormat("es-CO", { month: "long", year: "numeric", timeZone: 'UTC' });
 
 // 1. Generate a new path for every collection entry
 export async function getStaticPaths() {
-  const workEntries = await getCollection('work');
-  return workEntries.map(entry => ({
-    params: { slug: entry.slug }, props: { entry },
+  const entries = await getCollection('projects');
+  return entries.map(entry => ({
+    params: { id: entry.id }, props: { entry },
   }));
 }
 // 2. For your template, you can get the entry directly from the prop
 const { entry } = Astro.props;
-const { Content } = await entry.render();
+const { Content } = await render(entry);
+
 ---
 <BaseLayout pageTitle={entry.data.title}>
   <Image src={entry.data.image} alt="featured image" />
+  <p><em>{entry.data.excerpt}</em></p>
+  <a href={entry.data.website}>Sitio web</a>
   <dl>
     <dt>Rol:</dt><dd>{entry.data.role}</dd>
-    <dt>Actividad:</dt><dd>{dateFormat.format(entry.data.startDate)}
-    - {entry.data.endDate ? dateFormat.format(entry.data.endDate) : "actualidad"}</dd>
     <dt>Responsabilidades:</dt><dd>{entry.data.responsibilities}</dd>
   </dl>
- <p><em>{entry.data.excerpt}</em></p>
- <a href={entry.data.website}>Sitio web</a>
-
   <Content />
   {entry.data.gallery &&
     <Gallery items={entry.data.gallery}/>

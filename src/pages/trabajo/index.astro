@@ -8,11 +8,11 @@ const pageTitle = "Trabajo";
 ---
 <BaseLayout pageTitle={pageTitle}>
   <div class="post-list">
-    {allPosts.map((post) => 
-      <BlogPost 
-        url={`/trabajo/${post.slug}`} 
-        title={post.data.title} 
-        date={`${dateFormat.format(post.data.startDate)} - ${post.data.endDate ? dateFormat.format(post.data.endDate) : "actualidad"}`} 
+    {allPosts.map((post) =>
+      <BlogPost
+        url={`/trabajo/${post.id}`}
+        title={post.data.title}
+        date={`${dateFormat.format(post.data.startDate)} - ${post.data.endDate ? dateFormat.format(post.data.endDate) : "actualidad"}`}
       >
         <p>{post.data.role}</p>
         <p>{post.data.responsibilities}</p>

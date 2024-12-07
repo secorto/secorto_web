@@ -1,7 +1,8 @@
 import { z, defineCollection } from 'astro:content';
+import { glob } from 'astro/loaders';
 
 const blogCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**\/[^_]*.md', base: "./src/content/blog" }),
   schema: z.object({
     title: z.string(),
     date: z.date(),
@@ -12,7 +13,7 @@ const blogCollection = defineCollection({
 });
 
 const talkCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**\/[^_]*.md', base: "./src/content/talk" }),
   schema: ({ image }) => z.object({
     title: z.string(),
     date: z.date(),
@@ -26,8 +27,8 @@ const talkCollection = defineCollection({
 });
 
 const workCollection = defineCollection({
-  type: 'content',
-  schema: ({ image }) => z.object({
+  loader: glob({ pattern: '**\/[^_]*.md', base: "./src/content/work" }),
+    schema: ({ image }) => z.object({
     title: z.string(),
     excerpt: z.string(),
     image: image(),
@@ -44,7 +45,7 @@ const workCollection = defineCollection({
 });
 
 const projectsCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**\/[^_]*.md', base: "./src/content/projects" }),
   schema: ({ image }) => z.object({
     title: z.string(),
     excerpt: z.string(),
@@ -60,7 +61,7 @@ const projectsCollection = defineCollection({
 });
 
 const communityCollection = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**\/[^_]*.md', base: "./src/content/community" }),
   schema: ({ image }) => z.object({
     title: z.string(),
     excerpt: z.string(),

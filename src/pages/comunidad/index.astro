@@ -7,10 +7,10 @@ const pageTitle = "Comunidad";
 ---
 <BaseLayout pageTitle={pageTitle}>
   <div class="post-list">
-    {allPosts.map((post) => 
-      <BlogPost 
-        url={`/comunidad/${post.slug}`} 
-        title={post.data.title} 
+    {allPosts.map((post) =>
+      <BlogPost
+        url={`/comunidad/${post.id}`}
+        title={post.data.title}
       >
         <p>{post.data.role}</p>
         <p>{post.data.responsibilities}</p>

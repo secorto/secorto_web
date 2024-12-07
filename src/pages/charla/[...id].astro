@@ -1,6 +1,6 @@
 ---
 import type { InferGetStaticPropsType, GetStaticPaths } from 'astro';
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import BlogTags from '@components/BlogTags.astro';
 import ResponsiveIframe from '@components/ResponsiveIframe.astro';
@@ -9,14 +9,14 @@ import { dateFormat } from 'src/scripts/dateFormat';
 export const getStaticPaths = (async () => {
   const blogEntries = await getCollection('talk');
   return blogEntries.map(entry => ({
-    params: { slug: entry.slug }, props: { entry },
+    params: { id: entry.id }, props: { entry },
   }));
 }) satisfies GetStaticPaths
 
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 
 const { entry } = Astro.props;
-const { Content } = await entry.render();
+const { Content } = await render(entry);
 
 ---
 <BaseLayout pageTitle={entry.data.title}>
