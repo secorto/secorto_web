@@ -20,19 +20,14 @@ const { items } = Astro.props;
         href={item.image.src}
         target="_blank"
         rel="noreferrer"
+        data-pswp-width={item.image.width}
+        data-pswp-height={item.image.height}
       >
         <Image src={item.image} alt={item.alt} width={200}/>
       </a>
     )
   })}
 </div>
-
-
-<style is:global>
-  .pswp__img {
-    object-fit: contain;
-  }
-</style>
 
 <script>
 	import PhotoSwipeLightbox from "photoswipe/lightbox";
