@@ -4,6 +4,7 @@ import { getCollection, render } from 'astro:content';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import BlogTags from '@components/BlogTags.astro';
 import { dateFormat } from 'src/scripts/dateFormat';
+import Comments from '@components/Comments.astro';
 
 export const getStaticPaths = (async () => {
   const blogEntries = await getCollection('blog');
@@ -29,5 +30,5 @@ const { Content } = await render(entry);
   {entry.data.gist &&
     <script src={`${entry.data.gist}.js`} is:inline></script>
   }
-
+  <Comments />
 </BaseLayout>

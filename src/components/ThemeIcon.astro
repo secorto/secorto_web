@@ -52,10 +52,26 @@ type Props = Record<string, never>;
     element.classList.toggle("dark");
 
     const isDark = element.classList.contains("dark");
-    localStorage.setItem("theme", isDark ? "dark" : "light");
+    const theme = isDark ? "dark" : "light"
+    localStorage.setItem("theme", theme);
+    setGiscusTheme(theme);
     document.querySelector('.sidebar-toggle').classList.remove('sidebar-open');
     document.querySelector('.hamburger').classList.remove('sidebar-open');
   }
 
   document.getElementById("themeToggle").addEventListener("click", handleToggleClick);
+
+  function setGiscusTheme(theme) {
+    sendMessage({
+      setConfig: {
+        theme: theme
+      }
+    });
+  }
+
+  function sendMessage(message) {
+    const iframe = document.querySelector('iframe.giscus-frame');
+    if (!iframe) return;
+    iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+  }
 </script>
