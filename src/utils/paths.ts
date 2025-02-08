@@ -24,6 +24,12 @@ export type TagsPath<C extends CollectionWithTags> =  {
 export type EntriesStaticPaths<C extends CollectionKey> = Promise<EntriesPath<C>[]>
 export type TagsStaticPaths<C extends CollectionWithTags> = Promise<TagsPath<C>[]>
 
+
+/**
+ * Generates the static paths of any entry page
+ * @param collectionName should be any CollectionKey defined on astro.config.mjs
+ * @returns A promise with the Entries paths
+ */
 export const getEntriesPaths = async (collectionName: CollectionKey): EntriesStaticPaths<CollectionKey> =>  {
   const entries: CollectionEntry<CollectionKey>[] = await getCollection<CollectionKey>(collectionName);
   return entries.map(entry => ({
@@ -31,6 +37,11 @@ export const getEntriesPaths = async (collectionName: CollectionKey): EntriesSta
   }));
 }
 
+/**
+ * Generates the static paths of a tags page
+ * @param collectionName should be a collection that has tags for example 'blog' or 'talk'
+ * @returns A promise with the Tags paths
+ */
 export async function getTagsPaths(collectionName: CollectionWithTags): TagsStaticPaths<CollectionWithTags> {
   const allPosts = (await getCollection<CollectionWithTags>(collectionName)).sort((a, b)=> b.id.localeCompare(a.id));
   const uniqueTags = [...new Set(allPosts.map((post) => post.data.tags).flat())].sort((a, b)=> a.localeCompare(b));

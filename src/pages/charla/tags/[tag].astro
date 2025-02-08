@@ -3,7 +3,7 @@ import BaseLayout from '@layouts/BaseLayout.astro';
 import BlogPost from '@components/BlogPost.astro';
 import { dateFormat } from 'src/scripts/dateFormat';
 import BlogTags from '@components/BlogTags.astro';
-import { getTagsPaths, type TagsStaticPaths } from 'src/utils';
+import { getTagsPaths, type TagsStaticPaths } from 'src/utils/paths';
 
 export async function getStaticPaths(): TagsStaticPaths<'talk'>  {
   return getTagsPaths('talk')

@@ -4,7 +4,7 @@ import BaseLayout from '@layouts/BaseLayout.astro';
 import BlogTags from '@components/BlogTags.astro';
 import { dateFormat } from 'src/scripts/dateFormat';
 import Comments from '@components/Comments.astro';
-import { getEntriesPaths, type EntriesStaticPaths } from 'src/utils';
+import { getEntriesPaths, type EntriesStaticPaths } from 'src/utils/paths';
 
 export async function getStaticPaths(): EntriesStaticPaths<'blog'>  {
   return getEntriesPaths('blog')
