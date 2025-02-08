@@ -3,10 +3,10 @@ import { render } from 'astro:content';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import { Image } from "astro:assets";
 import Gallery from '@components/Gallery.astro';
-import { getEntriesPaths, type EntriesPath } from 'src/utils';
+import { getEntriesPaths, type EntriesStaticPaths } from 'src/utils';
 export const dateFormat = new Intl.DateTimeFormat("es-CO", { month: "long", year: "numeric", timeZone: 'UTC' });
 
-export async function getStaticPaths(): Promise<EntriesPath<'work'>[]>  {
+export async function getStaticPaths(): EntriesStaticPaths<'work'>  {
   return getEntriesPaths('work')
 }
 const { entry } = Astro.props;

@@ -21,14 +21,17 @@ export type TagsPath<C extends CollectionWithTags> =  {
   }
 }
 
-export const getEntriesPaths = async (collectionName: CollectionKey): Promise<EntriesPath<CollectionKey>[]> =>  {
+export type EntriesStaticPaths<C extends CollectionKey> = Promise<EntriesPath<C>[]>
+export type TagsStaticPaths<C extends CollectionWithTags> = Promise<TagsPath<C>[]>
+
+export const getEntriesPaths = async (collectionName: CollectionKey): EntriesStaticPaths<CollectionKey> =>  {
   const entries: CollectionEntry<CollectionKey>[] = await getCollection<CollectionKey>(collectionName);
   return entries.map(entry => ({
     params: { id: entry.id }, props: { entry },
   }));
 }
 
-export async function getTagsPaths<C extends CollectionWithTags>(collectionName: C): Promise<TagsPath<CollectionWithTags>[]> {
+export async function getTagsPaths(collectionName: CollectionWithTags): TagsStaticPaths<CollectionWithTags> {
   const allPosts = (await getCollection<CollectionWithTags>(collectionName)).sort((a, b)=> b.id.localeCompare(a.id));
   const uniqueTags = [...new Set(allPosts.map((post) => post.data.tags).flat())].sort((a, b)=> a.localeCompare(b));
 

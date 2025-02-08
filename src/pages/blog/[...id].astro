@@ -4,9 +4,9 @@ import BaseLayout from '@layouts/BaseLayout.astro';
 import BlogTags from '@components/BlogTags.astro';
 import { dateFormat } from 'src/scripts/dateFormat';
 import Comments from '@components/Comments.astro';
-import { getEntriesPaths, type EntriesPath } from 'src/utils';
+import { getEntriesPaths, type EntriesStaticPaths } from 'src/utils';
 
-export async function getStaticPaths(): Promise<EntriesPath<'blog'>[]>  {
+export async function getStaticPaths(): EntriesStaticPaths<'blog'>  {
   return getEntriesPaths('blog')
 };
 
