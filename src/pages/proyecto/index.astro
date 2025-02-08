@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro'
-import BlogPost from '@components/BlogPost.astro';
+import Entry from '@components/Entry.astro';
 import { getCollection } from 'astro:content';
 const allPosts = await getCollection('projects');
 const pageTitle = "Proyectos";
@@ -8,13 +8,13 @@ const pageTitle = "Proyectos";
 <BaseLayout pageTitle={pageTitle}>
   <div class="post-list">
     {allPosts.map((post) =>
-      <BlogPost
+      <Entry
         url={`/proyecto/${post.id}`}
         title={post.data.title}
       >
         <p>{post.data.role}</p>
         <p>{post.data.responsibilities}</p>
-      </BlogPost>
+      </Entry>
     )}
   </div>
 </BaseLayout>
