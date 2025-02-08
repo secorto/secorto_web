@@ -4,9 +4,9 @@ import BaseLayout from '@layouts/BaseLayout.astro';
 import BlogTags from '@components/BlogTags.astro';
 import ResponsiveIframe from '@components/ResponsiveIframe.astro';
 import { dateFormat } from 'src/scripts/dateFormat';
-import { getEntriesPaths } from 'src/utils';
+import { getEntriesPaths, type EntriesPath } from 'src/utils';
 
-export const getStaticPaths = async () => {
+export async function getStaticPaths(): Promise<EntriesPath<'talk'>[]>  {
   return getEntriesPaths('talk')
 };
 

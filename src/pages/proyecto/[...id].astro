@@ -3,9 +3,9 @@ import { render } from 'astro:content';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import { Image } from "astro:assets";
 import Gallery from '@components/Gallery.astro';
-import { getEntriesPaths } from 'src/utils';
+import { getEntriesPaths, type EntriesPath } from 'src/utils';
 
-export async function getStaticPaths() {
+export async function getStaticPaths(): Promise<EntriesPath<'projects'>[]>  {
   return getEntriesPaths('projects')
 }
 const { entry } = Astro.props;

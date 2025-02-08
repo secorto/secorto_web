@@ -3,9 +3,9 @@ import BaseLayout from '@layouts/BaseLayout.astro';
 import BlogPost from '@components/BlogPost.astro';
 import { dateFormat } from 'src/scripts/dateFormat';
 import BlogTags from '@components/BlogTags.astro';
-import { getTagsPaths } from 'src/utils';
+import { getTagsPaths, type TagsPath } from 'src/utils';
 
-export async function getStaticPaths() {
+export async function getStaticPaths(): Promise<TagsPath<'blog'>[]>  {
   return getTagsPaths('blog')
 }
 
