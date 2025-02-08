@@ -1,4 +1,10 @@
-export const defaultLang = 'en';
+export const defaultLang = 'es';
+export const showDefaultLang = false;
+
+export const languages = {
+  en: 'English',
+  es: 'Spanish'
+};
 
 export const ui = {
   en: {
@@ -11,6 +17,7 @@ export const ui = {
   },
   es: {
     'nav.about': 'Sobre mi',
+    'nav.blog': 'Blog',
     'nav.work': 'Trabajo',
     'nav.talks': 'Charlas',
     'nav.community': 'Comunidad',
