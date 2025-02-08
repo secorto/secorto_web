@@ -9,7 +9,7 @@ const pageTitle = "Projects";
   <div class="post-list">
     {allPosts.map((post) =>
       <BlogPost
-        url={`/en/proyecto/${post.slug}`}
+        url={`/en/proyecto/${post.id}`}
         title={post.data.title}
       >
         <p>{post.data.role}</p>

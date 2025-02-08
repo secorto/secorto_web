@@ -10,7 +10,7 @@ const pageTitle = "Work";
   <div class="post-list">
     {allPosts.map((post) =>
       <BlogPost
-        url={`/en/trabajo/${post.slug}`}
+        url={`/en/trabajo/${post.id}`}
         title={post.data.title}
         date={`${dateFormat.format(post.data.startDate)} - ${post.data.endDate ? dateFormat.format(post.data.endDate) : "today"}`}
       >

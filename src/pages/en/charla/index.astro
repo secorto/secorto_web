@@ -15,7 +15,7 @@ const pageTitle = "Talks";
     {allPosts.map((post) =>
       <BlogPost
         image={post.data.image}
-        url={`/en/charla/${post.slug}`}
+        url={`/en/charla/${post.id}`}
         title={post.data.title}
         date={enDateFormat.format(post.data.date)}
       />

@@ -9,7 +9,7 @@ const pageTitle = "Community";
   <div class="post-list">
     {allPosts.map((post) =>
       <BlogPost
-        url={`/en/comunidad/${post.slug}`}
+        url={`/en/comunidad/${post.id}`}
         title={post.data.title}
       >
         <p>{post.data.role}</p>
