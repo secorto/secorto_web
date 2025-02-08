@@ -1,29 +1,16 @@
 ---
-import type { InferGetStaticParamsType, InferGetStaticPropsType, GetStaticPaths } from 'astro';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import BlogPost from '@components/BlogPost.astro';
-import { getCollection } from 'astro:content';
 import { dateFormat } from 'src/scripts/dateFormat';
 import BlogTags from '@components/BlogTags.astro';
+import { getTagsPaths, type TagsStaticPaths } from 'src/utils/paths';
 
-export const getStaticPaths = (async () => {
-  const allPosts = (await getCollection('talk')).sort((a, b)=> b.id.localeCompare(a.id));
-  const uniqueTags = [...new Set(allPosts.map((post) => post.data.tags).flat())].sort((a, b)=> a.localeCompare(b));
+export async function getStaticPaths(): TagsStaticPaths<'talk'>  {
+  return getTagsPaths('talk')
+}
 
-  return uniqueTags.map((tag) => {
-    const filteredPosts = allPosts.filter((post) => post.data.tags.includes(tag));
-    return {
-      params: { tag },
-      props: { posts: filteredPosts, tags: uniqueTags },
-    };
-  });
-}) satisfies GetStaticPaths
-
-type Params = InferGetStaticParamsType<typeof getStaticPaths>;
-type Props = InferGetStaticPropsType<typeof getStaticPaths>;
-
-const { tag } = Astro.params as Params;
-const { posts, tags } = Astro.props as Props;
+const { tag } = Astro.params;
+const { posts, tags } = Astro.props;
 ---
 <BaseLayout pageTitle={tag}>
   <BlogTags route="/charla/tags/" tags={tags} current={tag}/>
