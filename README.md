@@ -46,6 +46,20 @@ Puedes ejecutar estos comandos en la carpeta raíz del proyecto:
 | `npm run astro ...`       | Ejecuta commandos de Astro CLI como `astro add`, `astro check` |
 | `npm run astro -- --help` | Obtener ayuda sobre Astro CLI                                  |
 
+## Actualizar paquetes
+
+Primero actualizar astro que su script de actualización ayuda para actualizar configuraciones
+
+```
+npx @astrojs/upgrade
+```
+
+Actualizar otros paquetes
+
+```
+npx npm-check-updates -u
+```
+
 ## Herramientas en la nube
 
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/secorto/secorto_web)

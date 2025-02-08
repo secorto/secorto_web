@@ -16,11 +16,11 @@
     "@astrojs/sitemap": "^3.2.1",
     "astro": "^5.2.5",
     "photoswipe": "^5.4.4",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.3"
   },
   "devDependencies": {
     "axe-core": "^4.10.2",
-    "cypress": "^14.0.1",
+    "cypress": "^14.0.2",
     "cypress-axe": "^1.6.0"
   }
 }
