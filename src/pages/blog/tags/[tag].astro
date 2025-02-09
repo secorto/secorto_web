@@ -1,8 +1,8 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
-import BlogPost from '@components/BlogPost.astro';
+import PostItem from '@components/PostItem.astro';
 import { dateFormat } from 'src/scripts/dateFormat';
-import BlogTags from '@components/BlogTags.astro';
+import Tags from '@components/Tags.astro';
 import { getTagsPaths, type TagsStaticPaths } from 'src/utils/paths';
 
 export async function getStaticPaths(): TagsStaticPaths<'blog'>  {
@@ -13,9 +13,9 @@ const { tag } = Astro.params;
 const { posts, tags } = Astro.props;
 ---
 <BaseLayout pageTitle={tag}>
-  <BlogTags route="/blog/tags/" tags={tags} current={tag}/>
+  <Tags route="/blog/tags/" tags={tags} current={tag}/>
   <p>Entradas etiquetadas con {tag}</p>
   <div class="post-list">
-    {posts.map((post) => <BlogPost url={`/blog/${post.id}`} title={post.data.title} date={dateFormat.format(post.data.date)} />)}
+    {posts.map((post) => <PostItem url={`/blog/${post.id}`} title={post.data.title} date={dateFormat.format(post.data.date)} />)}
   </div>
 </BaseLayout>
