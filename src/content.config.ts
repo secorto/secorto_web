@@ -7,8 +7,7 @@ const blogCollection = defineCollection({
     title: z.string(),
     date: z.date(),
     tags: z.array(z.string()),
-    image: image().optional(),
-    gist: z.string().optional()
+    image: image().optional()
   }),
 });
 
@@ -21,8 +20,7 @@ const talkCollection = defineCollection({
     image: image(),
     comunidad: z.string(),
     video: z.string().optional(),
-    slide: z.string(),
-    gist: z.string().optional()
+    slide: z.string()
   }),
 });
 

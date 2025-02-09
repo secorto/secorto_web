@@ -22,9 +22,5 @@ const { Content } = await render(entry);
   }
   <BlogTags route="/blog/tags/" tags={entry.data.tags} />
   <Content />
-
-  {entry.data.gist &&
-    <script src={`${entry.data.gist}.js`} is:inline></script>
-  }
   <Comments />
 </BaseLayout>

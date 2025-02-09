@@ -27,7 +27,6 @@ const { Content } = await render(entry);
     />
   }
   <p>{dateFormat.format(entry.data.date)}</p>
-
   <Content />
   {entry.data.slide &&
     <ResponsiveIframe
@@ -37,13 +36,6 @@ const { Content } = await render(entry);
       frameBorder="0"
       title={`Presentación de la charla ${entry.data.title}`}
     />
-
   }
-
-  {entry.data.gist &&
-    <script src={`${entry.data.gist}.js`} is:inline></script>
-  }
-
-<BlogTags route="/charla/tags/" tags={entry.data.tags} />
-
+  <BlogTags route="/charla/tags/" tags={entry.data.tags} />
 </BaseLayout>
