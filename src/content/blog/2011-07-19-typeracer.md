@@ -2,7 +2,6 @@
 title: Typeracer
 tags:
   - juegos
-image: http://3.bp.blogspot.com/-AbKDaOs8rOk/TiURJQaF76I/AAAAAAAAAM0/k4OTThXsLew/s72-c/ContrincanteGana.png
 blogger_orig_url: http://scot3004.blogspot.com/2011/07/typeracer.html
 date: 2011-07-19
 ---
