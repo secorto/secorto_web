@@ -1,0 +1,20 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro'
+import BlogPost from '@components/BlogPost.astro';
+import { getCollection } from 'astro:content';
+const allPosts = await getCollection('community');
+const pageTitle = "Community";
+---
+<BaseLayout pageTitle={pageTitle}>
+  <div class="post-list">
+    {allPosts.map((post) =>
+      <BlogPost
+        url={`/en/comunidad/${post.id}`}
+        title={post.data.title}
+      >
+        <p>{post.data.role}</p>
+        <p>{post.data.responsibilities}</p>
+      </BlogPost>
+    )}
+  </div>
+</BaseLayout>
