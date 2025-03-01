@@ -1,34 +1,21 @@
 ---
-import PostItem from '@components/PostItem.astro';
-
-export interface Props {
-  basePath: string,
-	posts: {
-    id: string,
-    data: {
-      title: string,
-      date?: Date
-      image?: any
-      role?: string,
-      responsibilities?: string
-    }
-  }[];
-}
-
-const { posts, basePath } = Astro.props;
-
 ---
 
 <div class="post-list">
-  {posts.map((post) =>
-    <PostItem
-      image={post.data.image}
-      url={`/${basePath}/${post.id}`}
-      title={post.data.title}
-      role={post.data.role}
-      responsibilities={post.data.responsibilities}
-    >
-      <div set:html={Astro.slots.render('default', [post])} />
-    </PostItem>
-  )}
+  <slot>
 </div>
+
+<style>
+.post-list {
+  box-sizing: border-box;
+  margin: 5px 0px 0px;
+  min-width: 0px;
+  display: flex;
+  flex-wrap: wrap;
+  -webkit-box-pack: center;
+  justify-content: center;
+  gap: 3%;
+  background-color: var(--theme-ui-colors-blogBg);
+  padding: 1rem;
+}
+</style>

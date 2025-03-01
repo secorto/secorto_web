@@ -1,0 +1,25 @@
+---
+import PostItem from '@components/PostItem.astro';
+import PostList from './PostList.astro';
+import type { CollectionEntry } from 'astro:content';
+
+export interface Props {
+  basePath: string,
+	posts: CollectionEntry<'projects'|'community'>[];
+}
+
+const { posts, basePath } = Astro.props;
+---
+
+<PostList>
+  {posts.map((post) =>
+    <PostItem
+      image={post.data.image}
+      url={`/${basePath}/${post.id}`}
+      title={post.data.title}
+    >
+      <p>{post.data.role}</p>
+      <p>{post.data.responsibilities}</p>
+    </PostItem>
+  )}
+</PostList>

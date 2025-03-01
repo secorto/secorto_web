@@ -2,7 +2,7 @@
 import BaseLayout from '@layouts/BaseLayout.astro'
 import { getCollection } from 'astro:content';
 import Tags from '@components/Tags.astro';
-import PostListWithDate from '@components/PostListWithDate.astro';
+import ListPost from '@components/ListPost.astro';
 
 const allPosts = (await getCollection('blog')).sort((a, b)=> b.id.localeCompare(a.id));
 const tags = [...new Set(allPosts.map((post) => post.data.tags).flat())].sort((a, b)=> a.localeCompare(b));
@@ -10,5 +10,5 @@ const pageTitle = "Blog";
 ---
 <BaseLayout pageTitle={pageTitle}>
   <Tags route="/blog/tags/" tags={tags} />
-  <PostListWithDate posts={allPosts} basePath='blog' />
+  <ListPost posts={allPosts} basePath='blog' />
 </BaseLayout>

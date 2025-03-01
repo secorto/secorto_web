@@ -3,12 +3,9 @@ import { Image } from "astro:assets";
 interface Props {
 	title: string
   url: string
-  excerpt?: string
   image?: ImageMetadata
-  role?: string
-  responsibilities?: string
 }
-const { title, url, excerpt, image, role, responsibilities } = Astro.props
+const { title, url, image } = Astro.props
 ---
 
 <a class="card" href={url}>
@@ -18,10 +15,7 @@ const { title, url, excerpt, image, role, responsibilities } = Astro.props
     }
     <h2 class="card-title">{title}</h2>
     <div class="card-details">
-      <p class="css-1yhrlyl">{excerpt}</p>
       <slot/>
-      {role && <p>{role}</p>}
-      {responsibilities && <p>{responsibilities}</p>}
     </div>
   </span>
 </a>

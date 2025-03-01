@@ -2,7 +2,7 @@
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Tags from '@components/Tags.astro';
 import { getTagsPaths, type TagsStaticPaths } from 'src/utils/paths';
-import PostListWithDate from '@components/PostListWithDate.astro';
+import ListPost from '@components/ListPost.astro';
 
 export async function getStaticPaths(): TagsStaticPaths<'talk'>  {
   return getTagsPaths('talk')
@@ -14,5 +14,5 @@ const { posts, tags } = Astro.props;
 <BaseLayout pageTitle={tag}>
   <Tags route="/charla/tags/" tags={tags} current={tag}/>
   <p>Charlas etiquetadas con {tag}</p>
-  <PostListWithDate posts={posts} basePath='charla' />
+  <ListPost posts={posts} basePath='charla' />
 </BaseLayout>
