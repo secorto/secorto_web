@@ -24,4 +24,11 @@ export default defineConfig({
       themeCssSelector: () => '.dark'
     })
   ],
+  i18n: {
+    defaultLocale: "es",
+    locales: ["es", "en"],
+    fallback: {
+      en: "es"
+    },
+  }
 });
