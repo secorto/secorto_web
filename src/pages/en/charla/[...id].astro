@@ -1,0 +1,44 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Tags from '@components/Tags.astro';
+import ResponsiveIframe from '@components/ResponsiveIframe.astro';
+import { enDateFormat } from 'src/scripts/dateFormat';
+import { type EntriesStaticPaths, getEntriesPaths } from 'src/utils/paths';
+
+export async function getStaticPaths(): EntriesStaticPaths<'talk'>  {
+  return getEntriesPaths('talk')
+};
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+---
+<BaseLayout pageTitle={entry.data.title}>
+  {entry.data.video &&
+    <ResponsiveIframe
+      width="100%"
+      height="600"
+      src={entry.data.video}
+      frameBorder="0"
+      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+      allowFullScreen
+      title={`Video of talk ${entry.data.title}`}
+    />
+  }
+  <p>{enDateFormat.format(entry.data.date)}</p>
+
+  <Content />
+  {entry.data.slide &&
+    <ResponsiveIframe
+      src={entry.data.slide}
+      width="100%"
+      height="600"
+      frameBorder="0"
+      title={`Slides of talk ${entry.data.title}`}
+    />
+
+  }
+
+  <Tags route="/en/charla/tags/" tags={entry.data.tags} />
+</BaseLayout>

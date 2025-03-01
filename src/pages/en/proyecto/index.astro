@@ -1,0 +1,10 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro'
+import { getCollection } from 'astro:content';
+import ListExperience from '@components/ListExperience.astro';
+const allPosts = await getCollection('projects');
+const pageTitle = "Projects";
+---
+<BaseLayout pageTitle={pageTitle}>
+  <ListExperience posts={allPosts} basePath='en/proyecto' />
+</BaseLayout>
