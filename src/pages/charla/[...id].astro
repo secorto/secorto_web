@@ -1,7 +1,7 @@
 ---
 import { render } from 'astro:content';
 import BaseLayout from '@layouts/BaseLayout.astro';
-import BlogTags from '@components/BlogTags.astro';
+import Tags from '@components/Tags.astro';
 import ResponsiveIframe from '@components/ResponsiveIframe.astro';
 import { dateFormat } from 'src/scripts/dateFormat';
 import { getEntriesPaths, type EntriesStaticPaths } from 'src/utils/paths';
@@ -27,7 +27,6 @@ const { Content } = await render(entry);
     />
   }
   <p>{dateFormat.format(entry.data.date)}</p>
-
   <Content />
   {entry.data.slide &&
     <ResponsiveIframe
@@ -37,13 +36,6 @@ const { Content } = await render(entry);
       frameBorder="0"
       title={`Presentación de la charla ${entry.data.title}`}
     />
-
   }
-
-  {entry.data.gist &&
-    <script src={`${entry.data.gist}.js`} is:inline></script>
-  }
-
-<BlogTags route="/charla/tags/" tags={entry.data.tags} />
-
+  <Tags route="/charla/tags/" tags={entry.data.tags} />
 </BaseLayout>

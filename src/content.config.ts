@@ -3,12 +3,11 @@ import { glob } from 'astro/loaders';
 
 const blogCollection = defineCollection({
   loader: glob({ pattern: '**\/[^_]*.md', base: "./src/content/blog" }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     title: z.string(),
     date: z.date(),
     tags: z.array(z.string()),
-    image: z.string().optional(),
-    gist: z.string().optional()
+    image: image().optional()
   }),
 });
 
@@ -21,8 +20,7 @@ const talkCollection = defineCollection({
     image: image(),
     comunidad: z.string(),
     video: z.string().optional(),
-    slide: z.string(),
-    gist: z.string().optional()
+    slide: z.string()
   }),
 });
 
