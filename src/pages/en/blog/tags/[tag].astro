@@ -1,0 +1,18 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Tags from '@components/Tags.astro';
+import { getTagsPaths, type TagsStaticPaths } from 'src/utils/paths';
+import ListPost from '@components/ListPost.astro';
+
+export async function getStaticPaths(): TagsStaticPaths<'blog'>  {
+  return getTagsPaths('blog')
+}
+
+const { tag } = Astro.params;
+const { posts, tags } = Astro.props;
+---
+<BaseLayout pageTitle={tag}>
+  <Tags route="/en/blog/tags/" tags={tags} current={tag}/>
+  <p>Blog tagged with {tag}</p>
+  <ListPost posts={posts} basePath='en/blog' />
+</BaseLayout>
