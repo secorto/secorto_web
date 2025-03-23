@@ -4,7 +4,7 @@ import BaseLayout from '@layouts/BaseLayout.astro';
 import { Image } from "astro:assets";
 import Gallery from '@components/Gallery.astro';
 import { getEntriesPaths, type EntriesStaticPaths } from 'src/utils/paths';
-export const dateFormat = new Intl.DateTimeFormat("es-CO", { month: "long", year: "numeric", timeZone: 'UTC' });
+import { spanishMonthYear as dateFormat } from '@i18n/dateFormat';
 
 export async function getStaticPaths(): EntriesStaticPaths<'work'>  {
   return getEntriesPaths('work')

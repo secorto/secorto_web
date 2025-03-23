@@ -1,4 +1,5 @@
 import { ui, defaultLang, showDefaultLang } from './ui';
+import { full, monthYear } from '@i18n/dateFormat';
 
 export function getLangFromUrl(url: URL) {
   const [, lang] = url.pathname.split('/');
@@ -16,4 +17,12 @@ export function useTranslatedPath(lang: keyof typeof ui) {
   return function translatePath(path: string, l: string = lang) {
     return !showDefaultLang && l === defaultLang ? path : `/${l}${path}`
   }
+}
+
+export function getFullFormat(url: URL): Intl.DateTimeFormat {
+  return new Intl.DateTimeFormat(getLangFromUrl(url), full);
+}
+
+export function getMonthYearFormat(url: URL): Intl.DateTimeFormat {
+  return new Intl.DateTimeFormat(getLangFromUrl(url), monthYear);
 }
