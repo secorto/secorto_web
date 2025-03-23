@@ -1,9 +1,9 @@
 ---
-import PostItem from '@components/PostItem.astro';
-import PostList from './PostList.astro';
 import type { CollectionEntry } from 'astro:content';
-import PostDate from './PostDate.astro';
-export const dateFormat = new Intl.DateTimeFormat("es-CO", { month: "long", year: "numeric", timeZone: 'UTC' });
+import PostItem from '@components/PostItem.astro';
+import PostList from '@components/PostList.astro';
+import PostDate from '@components/PostDate.astro';
+import { getMonthYearFormat } from '@i18n/utils';
 
 export interface Props {
   basePath: string,
@@ -11,6 +11,7 @@ export interface Props {
 }
 
 const { posts, basePath } = Astro.props;
+const dateFormat = getMonthYearFormat(Astro.url);
 ---
 
 <PostList>

@@ -2,7 +2,7 @@
 import { render } from 'astro:content';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Tags from '@components/Tags.astro';
-import { dateFormat } from 'src/scripts/dateFormat';
+import { spanishFull as dateFormat } from '@i18n/dateFormat';
 import Comments from '@components/Comments.astro';
 import { getEntriesPaths, type EntriesStaticPaths } from 'src/utils/paths';
 import { Image } from "astro:assets";

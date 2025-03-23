@@ -1,9 +1,9 @@
 ---
 import PostItem from '@components/PostItem.astro';
-import PostList from './PostList.astro';
-import { dateFormat } from 'src/scripts/dateFormat';
-import PostDate from './PostDate.astro';
+import PostList from '@components/PostList.astro';
+import PostDate from '@components/PostDate.astro';
 import type { CollectionEntry } from 'astro:content';
+import { getFullFormat } from '@i18n/utils';
 
 export interface Props {
   basePath: string,
@@ -11,6 +11,7 @@ export interface Props {
 }
 
 const { posts, basePath } = Astro.props;
+const dateFormat = getFullFormat(Astro.url);
 ---
 
 <PostList>
