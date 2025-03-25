@@ -1,11 +1,11 @@
 import { darkMode, lightMode } from "./stubs"
 
 const routes = [
-  "/charla/",
-  "/blog/",
-  "/comunidad/",
-  "/trabajo/",
-  "/proyecto/",
+  "/es/charla/",
+  "/es/blog/",
+  "/es/comunidad/",
+  "/es/trabajo/",
+  "/es/proyecto/",
 ]
 
 function testAccessibilityForRoutes() {
@@ -20,12 +20,12 @@ function testAccessibilityForRoutes() {
 
 describe("Accessibility tests", () => {
   it("Dark mode: no detectable accessibility violations on main routes", () => {
-    cy.visit("/", darkMode()).get("main")
+    cy.visit("/es", darkMode()).get("main")
     testAccessibilityForRoutes()
   })
 
   it("Light mode: no detectable accessibility violations on main routes", () => {
-    cy.visit("/", lightMode()).get("main")
+    cy.visit("/es", lightMode()).get("main")
     testAccessibilityForRoutes()
   })
 })

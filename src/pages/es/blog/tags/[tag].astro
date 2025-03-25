@@ -4,15 +4,15 @@ import Tags from '@components/Tags.astro';
 import { getTagsPaths, type TagsStaticPaths } from 'src/utils/paths';
 import ListPost from '@components/ListPost.astro';
 
-export async function getStaticPaths(): TagsStaticPaths<'talk'>  {
-  return getTagsPaths('talk')
+export async function getStaticPaths(): TagsStaticPaths<'blog'>  {
+  return getTagsPaths('blog')
 }
 
 const { tag } = Astro.params;
 const { posts, tags } = Astro.props;
 ---
 <BaseLayout pageTitle={tag}>
-  <Tags route="/charla/tags/" tags={tags} current={tag}/>
-  <p>Charlas etiquetadas con {tag}</p>
-  <ListPost posts={posts} basePath='charla' />
+  <Tags route="/es/blog/tags/" tags={tags} current={tag}/>
+  <p>Entradas etiquetadas con {tag}</p>
+  <ListPost posts={posts} basePath='es/blog' />
 </BaseLayout>
