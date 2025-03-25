@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+const isDev = import.meta.env.DEV;
 
 import sitemap from "@astrojs/sitemap";
 
@@ -28,7 +29,8 @@ export default defineConfig({
     defaultLocale: "es",
     locales: ["es", "en"],
     routing: {
-      prefixDefaultLocale: true
+      prefixDefaultLocale: true,
+      redirectToDefaultLocale: isDev
     }
   }
 });
