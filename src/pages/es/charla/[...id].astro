@@ -15,6 +15,7 @@ const { Content } = await render(entry);
 
 ---
 <BaseLayout pageTitle={entry.data.title}>
+  <Tags route="/es/charla/tags/" tags={entry.data.tags} />
   {entry.data.video &&
     <ResponsiveIframe
       width="100%"
@@ -37,5 +38,4 @@ const { Content } = await render(entry);
       title={`Presentación de la charla ${entry.data.title}`}
     />
   }
-  <Tags route="/charla/tags/" tags={entry.data.tags} />
 </BaseLayout>
