@@ -2,9 +2,9 @@
 import { render } from 'astro:content';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Tags from '@components/Tags.astro';
-import { dateFormat } from 'src/scripts/dateFormat';
+import { englishFull as dateFormat } from '@i18n/dateFormat';
 import Comments from '@components/Comments.astro';
-import { getEntriesPaths, type EntriesStaticPaths } from 'src/utils/paths';
+import { type EntriesStaticPaths, getEntriesPaths } from 'src/utils/paths';
 import { Image } from "astro:assets";
 
 export async function getStaticPaths(): EntriesStaticPaths<'blog'>  {
@@ -16,11 +16,12 @@ const { Content } = await render(entry);
 
 ---
 <BaseLayout pageTitle={entry.data.title}>
+  <Tags route="/en/blog/tags/" tags={entry.data.tags} />
   <p>{dateFormat.format(entry.data.date)}</p>
   {entry.data.image &&
-    <Image src={entry.data.image} alt="Imagen destacada" />
+    <Image src={entry.data.image} alt="Featured image" />
   }
-  <Tags route="/blog/tags/" tags={entry.data.tags} />
   <Content />
+
   <Comments />
 </BaseLayout>

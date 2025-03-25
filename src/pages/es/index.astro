@@ -4,11 +4,11 @@ import intro from '@assets/img/intro.inline.svg?raw'
 import Footer from '@components/Footer.astro';
 import { getRelativeLocaleUrl } from 'astro:i18n';
 
-const pageTitle = "Pagina de inicio/Homepage";
-
+const pageTitle = "Página de inicio";
 ---
 
 <SiteLayout pageTitle={pageTitle}>
+  <Fragment set:html={intro} />
   <main class="main-content">
     <div>
       <h1>Soy Sergio Carlos Orozco Torres</h1>
@@ -16,13 +16,6 @@ const pageTitle = "Pagina de inicio/Homepage";
       <p>🗣️ He dado <a href="charla">charlas</a> en diferentes <a href="comunidad">comunidades</a> por toda Colombia</p>
       <p>📝 Además de haber escrito <a href="blog">articulos</a> sobre diversos temas</p>
       <p>🛠️ Participo en <a href="proyecto">proyectos</a> de código libre</p>
-    </div>
-    <div>
-      <h1>I'm Sergio Carlos Orozco Torres</h1>
-      <p><a href={getRelativeLocaleUrl('en', 'about')}>Computer security specialist</a> with extensive knowledge in <a href="trabajo">software development</a></p>
-      <p>🗣️ I gave <a href={getRelativeLocaleUrl('en', 'charla')}>talks</a> in different <a href="comunidad">communities</a> throughout Colombia</p>
-      <p>📝 Also I writen <a href="blog">a blog</a> about different topics</p>
-      <p>🛠️ I participate in open source <a href="proyecto">projects</a></p>
     </div>
     <slot />
   </main>

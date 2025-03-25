@@ -3,7 +3,7 @@ import { render } from 'astro:content';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Tags from '@components/Tags.astro';
 import ResponsiveIframe from '@components/ResponsiveIframe.astro';
-import { dateFormat } from 'src/scripts/dateFormat';
+import { spanishFull as dateFormat } from '@i18n/dateFormat';
 import { getEntriesPaths, type EntriesStaticPaths } from 'src/utils/paths';
 
 export async function getStaticPaths(): EntriesStaticPaths<'talk'>  {
@@ -15,6 +15,7 @@ const { Content } = await render(entry);
 
 ---
 <BaseLayout pageTitle={entry.data.title}>
+  <Tags route="/es/charla/tags/" tags={entry.data.tags} />
   {entry.data.video &&
     <ResponsiveIframe
       width="100%"
@@ -37,5 +38,4 @@ const { Content } = await render(entry);
       title={`Presentación de la charla ${entry.data.title}`}
     />
   }
-  <Tags route="/charla/tags/" tags={entry.data.tags} />
 </BaseLayout>
