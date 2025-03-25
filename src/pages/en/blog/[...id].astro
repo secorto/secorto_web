@@ -16,11 +16,11 @@ const { Content } = await render(entry);
 
 ---
 <BaseLayout pageTitle={entry.data.title}>
+  <Tags route="/en/blog/tags/" tags={entry.data.tags} />
   <p>{dateFormat.format(entry.data.date)}</p>
   {entry.data.image &&
     <Image src={entry.data.image} alt="Featured image" />
   }
-  <Tags route="/en/blog/tags/" tags={entry.data.tags} />
   <Content />
 
   <Comments />
