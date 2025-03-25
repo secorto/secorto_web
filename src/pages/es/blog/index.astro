@@ -9,6 +9,6 @@ const tags = [...new Set(allPosts.map((post) => post.data.tags).flat())].sort((a
 const pageTitle = "Blog";
 ---
 <BaseLayout pageTitle={pageTitle}>
-  <Tags route="/blog/tags/" tags={tags} />
-  <ListPost posts={allPosts} basePath='blog' />
+  <Tags route="/es/blog/tags/" tags={tags} />
+  <ListPost posts={allPosts} basePath='es/blog' />
 </BaseLayout>
