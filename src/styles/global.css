@@ -16,7 +16,7 @@
   --colors-heading: #1F1E24;
   --colors-blogBg: #eee;
   --colors-sidebar-background: #004f53;
-  --colors-sidebar-color: #fff;
+  --colors-sidebar-text: #fff;
   --colors-sidebar-hover: #B8FFFF;
 }
 
@@ -155,7 +155,7 @@ Sidebar
   font-size: 1.2rem;
   font-weight: 500;
   background: var(--colors-sidebar-background);
-  color: var(--colors-sidebar-color);
+  color: var(--colors-sidebar-text);
   font-family: "Ubuntu", sans-serif;
   text-decoration: none;
   display: flex;
