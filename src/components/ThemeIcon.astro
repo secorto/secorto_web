@@ -34,8 +34,11 @@ const { duration = '500ms' } = Astro.props;
 <style define:vars={{ duration }}>
   .theme-toggle {
     width: 100%;
-    color: var(--colors-sidebar-hover);
+    color: var(--colors-sidebar-text);
     --theme-toggle__expand--duration: var(--duration);
+  }
+  .theme-toggle:hover {
+    color: var(--colors-sidebar-hover);
   }
   .theme-toggle__expand g circle,
   .theme-toggle__expand g path {
