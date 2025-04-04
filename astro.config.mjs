@@ -13,5 +13,13 @@ export default defineConfig({
     '/blog/2018-09-17-patrones-automatizacion-pruebas': '/charla/2018-09-17-patrones-automatizacion-pruebas',
     '/blog/2017-01-30-test-unitarios': '/charla/2017-01-30-test-unitarios'
   },
-  integrations: [sitemap()]
+  integrations: [sitemap()],
+  markdown: {
+    shikiConfig: {
+      themes: {
+        light: 'github-light',
+        dark: 'github-dark',
+      },
+    },
+  },
 });
