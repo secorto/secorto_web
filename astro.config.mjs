@@ -2,6 +2,8 @@ import { defineConfig } from 'astro/config';
 
 import sitemap from "@astrojs/sitemap";
 
+import expressiveCode from 'astro-expressive-code';
+
 // https://astro.build/config
 export default defineConfig({
   site: "https://secorto.com",
@@ -13,5 +15,13 @@ export default defineConfig({
     '/blog/2018-09-17-patrones-automatizacion-pruebas': '/charla/2018-09-17-patrones-automatizacion-pruebas',
     '/blog/2017-01-30-test-unitarios': '/charla/2017-01-30-test-unitarios'
   },
-  integrations: [sitemap()]
+  integrations: [
+    sitemap(),
+    expressiveCode({
+      themes: ['github-light', 'github-dark'],
+      useDarkModeMediaQuery: false,
+      themeCssRoot: 'html',
+      themeCssSelector: () => '.dark'
+    })
+  ],
 });
