@@ -3,28 +3,30 @@ import { render } from 'astro:content';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import { Image } from "astro:assets";
 import Gallery from '@components/Gallery.astro';
-import { getEntriesPaths, type EntriesStaticPaths } from 'src/utils/paths';
-export const dateFormat = new Intl.DateTimeFormat("es-CO", { month: "long", year: "numeric", timeZone: 'UTC' });
+import { type EntriesStaticPaths, getEntriesPaths } from 'src/utils/paths';
+import { englishMonthYear as dateFormat } from '@i18n/dateFormat';
 
 export async function getStaticPaths(): EntriesStaticPaths<'work'>  {
   return getEntriesPaths('work')
 }
+
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 ---
 <BaseLayout pageTitle={entry.data.title}>
   <Image src={entry.data.image} alt="featured image" />
   <dl>
-    <dt>Rol:</dt><dd>{entry.data.role}</dd>
-    <dt>Actividad:</dt><dd>{dateFormat.format(entry.data.startDate)}
-    - {entry.data.endDate ? dateFormat.format(entry.data.endDate) : "actualidad"}</dd>
-    <dt>Responsabilidades:</dt><dd>{entry.data.responsibilities}</dd>
+    <dt>Role:</dt><dd>{entry.data.role}</dd>
+    <dt>Activity:</dt><dd>{dateFormat.format(entry.data.startDate)}
+    - {entry.data.endDate ? dateFormat.format(entry.data.endDate) : "today"}</dd>
+    <dt>Responsibilities:</dt><dd>{entry.data.responsibilities}</dd>
   </dl>
- <p><em>{entry.data.excerpt}</em></p>
- <a href={entry.data.website}>Sitio web</a>
+  <p><em>{entry.data.excerpt}</em></p>
+  <a href={entry.data.website}>Website</a>
 
   <Content />
   {entry.data.gallery &&
     <Gallery items={entry.data.gallery}/>
   }
 </BaseLayout>
+
