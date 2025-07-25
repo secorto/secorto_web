@@ -3,9 +3,10 @@ import BaseLayout from '@layouts/BaseLayout.astro'
 import { getCollection } from 'astro:content';
 import Tags from '@components/Tags.astro';
 import ListPost from '@components/ListPost.astro';
+import { getPostsByLocale, getUniqueTags } from '@utils/paths';
 
-const allPosts = (await getCollection('blog')).sort((a, b)=> b.id.localeCompare(a.id));
-const tags = [...new Set(allPosts.map((post) => post.data.tags).flat())].sort((a, b)=> a.localeCompare(b));
+const allPosts = await getPostsByLocale('blog', 'en');
+const tags = getUniqueTags(allPosts);
 const pageTitle = "Blog";
 ---
 <BaseLayout pageTitle={pageTitle}>

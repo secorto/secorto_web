@@ -25,6 +25,24 @@ export type EntriesStaticPaths<C extends CollectionKey> = Promise<EntriesPath<C>
 export type TagsStaticPaths<C extends CollectionWithTags> = Promise<TagsPath<C>[]>
 
 
+export async function getPostsByLocale<C extends CollectionKey>(
+  collection: C,
+  locale: string
+): Promise<(CollectionEntry<C> & { cleanId: string })[]> {
+  const posts = await getCollection(collection);
+  return posts
+    .filter(post => post.id.startsWith(`${locale}/`))
+    .map(post => ({
+      ...post,
+      cleanId: post.id.split('/').slice(1).join('/'), // Elimina solo el primer segmento
+    }))
+    .sort((a, b) => b.cleanId.localeCompare(a.cleanId));
+}
+
+export function getUniqueTags(posts: any[]) {
+  return [...new Set(posts.map((post) => post.data.tags).flat())].sort((a, b) => a.localeCompare(b));
+}
+
 /**
  * Generates the static paths of any entry page
  * @param collectionName should be any CollectionKey defined on astro.config.mjs
@@ -32,9 +50,15 @@ export type TagsStaticPaths<C extends CollectionWithTags> = Promise<TagsPath<C>[
  */
 export const getEntriesPaths = async (collectionName: CollectionKey): EntriesStaticPaths<CollectionKey> =>  {
   const entries: CollectionEntry<CollectionKey>[] = await getCollection<CollectionKey>(collectionName);
-  return entries.map(entry => ({
-    params: { id: entry.id }, props: { entry },
-  }));
+  return entries.map(entry => {
+    // Extrae el locale y el id limpio
+    const [locale, ...rest] = entry.id.split('/');
+    const cleanId = rest.join('/');
+    return {
+      params: { locale, id: cleanId },
+      props: { entry },
+    };
+  });
 }
 
 /**
@@ -42,14 +66,17 @@ export const getEntriesPaths = async (collectionName: CollectionKey): EntriesSta
  * @param collectionName should be a collection that has tags for example 'blog' or 'talk'
  * @returns A promise with the Tags paths
  */
-export async function getTagsPaths(collectionName: CollectionWithTags): TagsStaticPaths<CollectionWithTags> {
-  const allPosts = (await getCollection<CollectionWithTags>(collectionName)).sort((a, b)=> b.id.localeCompare(a.id));
-  const uniqueTags = [...new Set(allPosts.map((post) => post.data.tags).flat())].sort((a, b)=> a.localeCompare(b));
+export async function getTagsPaths(
+  collectionName: CollectionWithTags,
+  locale: string
+): TagsStaticPaths<CollectionWithTags> {
+  const allPosts = await getPostsByLocale(collectionName, locale);
+  const uniqueTags = getUniqueTags(allPosts);
 
   return uniqueTags.map((tag) => {
     const filteredPosts = allPosts.filter((post) => post.data.tags.includes(tag));
     return {
-      params: { tag },
+      params: { locale, tag },
       props: { posts: filteredPosts, tags: uniqueTags },
     };
   });
