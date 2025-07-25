@@ -1,30 +1,21 @@
 ---
-import SiteLayout from "@layouts/SiteLayout.astro";
-import intro from '@assets/img/intro.inline.svg?raw'
-import Footer from '@components/Footer.astro';
-import { getRelativeLocaleUrl } from 'astro:i18n';
-
-const pageTitle = "Pagina de inicio/Homepage";
-
+const redirectScript = `(function() {
+  const lang = (navigator.language || '').toLowerCase().startsWith('es') ? 'es' : 'en';
+  window.location.replace('/' + lang + '/');
+})();`;
 ---
-
-<SiteLayout pageTitle={pageTitle}>
-  <main class="main-content">
-    <div>
-      <h1>Soy Sergio Carlos Orozco Torres</h1>
-      <p>👨🏼‍🎓 <a href={getRelativeLocaleUrl('es', 'about')}>Especialista en seguridad informática</a> con amplios conocimientos en <a href="trabajo">desarrollo de software</a></p>
-      <p>🗣️ He dado <a href="charla">charlas</a> en diferentes <a href="comunidad">comunidades</a> por toda Colombia</p>
-      <p>📝 Además de haber escrito <a href="blog">articulos</a> sobre diversos temas</p>
-      <p>🛠️ Participo en <a href="proyecto">proyectos</a> de código libre</p>
-    </div>
-    <div>
-      <h1>I'm Sergio Carlos Orozco Torres</h1>
-      <p><a href={getRelativeLocaleUrl('en', 'about')}>Computer security specialist</a> with extensive knowledge in <a href="trabajo">software development</a></p>
-      <p>🗣️ I gave <a href={getRelativeLocaleUrl('en', 'charla')}>talks</a> in different <a href="comunidad">communities</a> throughout Colombia</p>
-      <p>📝 Also I writen <a href="blog">a blog</a> about different topics</p>
-      <p>🛠️ I participate in open source <a href="proyecto">projects</a></p>
-    </div>
-    <slot />
-  </main>
-  <Footer />
-</SiteLayout>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Selecciona tu idioma</title>
+  </head>
+  <body>
+    <p>Detectando tu idioma preferido…</p>
+    <script>
+      {redirectScript}
+    </script>
+    <noscript>
+      <meta http-equiv="refresh" content="0;url=/en/" />
+    </noscript>
+  </body>
+</html>
