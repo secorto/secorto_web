@@ -1,8 +1,4 @@
 ---
-const redirectScript = `(function() {
-  const lang = (navigator.language || '').toLowerCase().startsWith('es') ? 'es' : 'en';
-  window.location.replace('/' + lang + '/');
-})();`;
 ---
 <html lang="en">
   <head>
@@ -12,7 +8,7 @@ const redirectScript = `(function() {
   <body>
     <p>Detectando tu idioma preferido…</p>
     <script>
-      {redirectScript}
+      import "../scripts/language-redirect.js";
     </script>
     <noscript>
       <meta http-equiv="refresh" content="0;url=/en/" />
