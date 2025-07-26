@@ -1,3 +1,4 @@
+import type { UILanguages } from "@i18n/ui";
 import { getCollection } from "astro:content";
 import type { CollectionEntry, CollectionKey } from "astro:content";
 type CollectionWithTags = 'blog'|'talk'
@@ -7,7 +8,7 @@ export type EntryWithCleanId<C extends CollectionKey> = CollectionEntry<C> & { c
 export type EntriesPath<C extends CollectionKey> =  {
   params: {
     id: string,
-    locale: string
+    locale: UILanguages
   },
   props: {
     entry: CollectionEntry<C>
@@ -17,7 +18,7 @@ export type EntriesPath<C extends CollectionKey> =  {
 export type TagsPath<C extends CollectionWithTags> =  {
   params: {
     tag: string,
-    locale: string
+    locale: UILanguages
   },
   props: {
     posts: EntryWithCleanId<C>[],
@@ -58,7 +59,7 @@ export const getEntriesPaths = async (collectionName: CollectionKey): EntriesSta
     const [locale, ...rest] = entry.id.split('/');
     const cleanId = rest.join('/');
     return {
-      params: { locale, id: cleanId },
+      params: { locale: locale as UILanguages, id: cleanId },
       props: { entry },
     };
   });
@@ -79,7 +80,7 @@ export async function getTagsPaths(
   return uniqueTags.map((tag) => {
     const filteredPosts = allPosts.filter((post) => post.data.tags.includes(tag));
     return {
-      params: { locale, tag },
+      params: { locale: locale as UILanguages, tag },
       props: { posts: filteredPosts, tags: uniqueTags },
     };
   });
