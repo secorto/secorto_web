@@ -1,11 +1,11 @@
 ---
 import PostItem from '@components/PostItem.astro';
 import PostList from './PostList.astro';
-import type { CollectionEntry } from 'astro:content';
+import type { EntryWithCleanId } from '@utils/paths';
 
 export interface Props {
   basePath: string,
-	posts: CollectionEntry<'projects'|'community'>[];
+	posts: EntryWithCleanId<'projects'|'community'>[];
 }
 
 const { posts, basePath } = Astro.props;
@@ -15,7 +15,7 @@ const { posts, basePath } = Astro.props;
   {posts.map((post) =>
     <PostItem
       image={post.data.image}
-      url={`/${basePath}/${post.id}`}
+      url={`/${basePath}/${post.cleanId}`}
       title={post.data.title}
     >
       <p>{post.data.role}</p>
