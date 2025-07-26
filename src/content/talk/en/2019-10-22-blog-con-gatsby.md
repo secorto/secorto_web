@@ -1,5 +1,5 @@
 ---
-title: Crea tu propio blog usando Gatsby.js, Graphql y Node.js
+title: Create your own blog using Gatsby.js, Graphql y Node.js
 category: dev
 tags:
   - jamstack

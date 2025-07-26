@@ -1,5 +1,5 @@
 ---
-title: Patrones de automatización de pruebas
+title: Test automation patterns
 category: dev
 tags:
   - python
