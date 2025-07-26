@@ -1,19 +1,19 @@
-import { ui, defaultLang, showDefaultLang } from './ui';
+import { ui, defaultLang, showDefaultLang, type UILanguages } from './ui';
 import { full, monthYear } from '@i18n/dateFormat';
 
 export function getLangFromUrl(url: URL) {
   const [, lang] = url.pathname.split('/');
-  if (lang in ui) return lang as keyof typeof ui;
+  if (lang in ui) return lang as UILanguages;
   return defaultLang;
 }
 
-export function useTranslations(lang: keyof typeof ui) {
+export function useTranslations(lang: UILanguages) {
   return function t(key: keyof typeof ui[typeof defaultLang]) {
     return ui[lang][key] || ui[defaultLang][key];
   }
 }
 
-export function useTranslatedPath(lang: keyof typeof ui) {
+export function useTranslatedPath(lang: UILanguages) {
   return function translatePath(path: string, l: string = lang) {
     return !showDefaultLang && l === defaultLang ? path : `/${l}${path}`
   }
