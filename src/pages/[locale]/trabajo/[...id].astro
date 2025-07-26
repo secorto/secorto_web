@@ -5,7 +5,6 @@ import { Image } from "astro:assets";
 import Gallery from '@components/Gallery.astro';
 import { type EntriesStaticPaths, getEntriesPaths } from 'src/utils/paths';
 import { englishMonthYear as dateFormat } from '@i18n/dateFormat';
-import type { UILanguages } from '@i18n/ui';
 import { useTranslations } from '@i18n/utils';
 
 export async function getStaticPaths(): EntriesStaticPaths<'work'>  {
@@ -16,10 +15,10 @@ const { locale } = Astro.params;
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 
-const t = useTranslations(locale as UILanguages);
+const t = useTranslations(locale);
 ---
 <BaseLayout pageTitle={entry.data.title}>
-  <Image src={entry.data.image} alt={t('work.featured_image')} />
+  <Image src={entry.data.image} alt={t('featured_image')} />
   <dl>
     <dt>{t('work.role')}:</dt><dd>{entry.data.role}</dd>
     <dt>{t('work.activity')}:</dt><dd>{dateFormat.format(entry.data.startDate)}

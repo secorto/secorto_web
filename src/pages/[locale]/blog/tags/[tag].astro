@@ -3,16 +3,18 @@ import BaseLayout from '@layouts/BaseLayout.astro';
 import Tags from '@components/Tags.astro';
 import { getTagsPaths, type TagsStaticPaths } from 'src/utils/paths';
 import ListPost from '@components/ListPost.astro';
+import { useTranslations } from '@i18n/utils';
 
 export async function getStaticPaths(): TagsStaticPaths<'blog'>  {
   return getTagsPaths('blog', 'en')
 }
 
-const { tag } = Astro.params;
+const { tag, locale } = Astro.params;
+const t = useTranslations(locale);
 const { posts, tags } = Astro.props;
 ---
 <BaseLayout pageTitle={tag}>
-  <Tags route="/en/blog/tags/" tags={tags} current={tag}/>
-  <p>Blog tagged with {tag}</p>
-  <ListPost posts={posts} basePath='en/blog' />
+  <Tags route=`/${locale}/blog/tags/`` tags={tags} current={tag}/>
+  <p>{t('blog.tagged')} {tag}</p>
+  <ListPost posts={posts} basePath=`${locale}/blog` />
 </BaseLayout>
