@@ -6,7 +6,7 @@ import ListPost from '@components/ListPost.astro';
 import { useTranslations } from '@i18n/utils';
 
 export async function getStaticPaths(): TagsStaticPaths<'blog'>  {
-  return getTagsPaths('blog', 'en')
+  return [...await getTagsPaths('blog', 'en'), ...await getTagsPaths('blog', 'es')]
 }
 
 const { tag, locale } = Astro.params;
