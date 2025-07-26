@@ -1,0 +1,23 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro'
+import Tags from '@components/Tags.astro';
+import ListPost from '@components/ListPost.astro';
+import { getPostsByLocale, getUniqueTags } from '@utils/paths';
+import { languageKeys } from '@i18n/ui';
+import { useTranslations } from '@i18n/utils';
+
+export async function getStaticPaths() {
+  return languageKeys.map(lang => ({params: { locale: lang }}))
+}
+
+const { locale } = Astro.params;
+const t = useTranslations(locale);
+
+const allPosts = await getPostsByLocale('blog', locale);
+const tags = getUniqueTags(allPosts);
+const pageTitle = t('nav.blog');
+---
+<BaseLayout pageTitle={pageTitle}>
+  <Tags route=`/${locale}/blog/tags/` tags={tags} />
+  <ListPost posts={allPosts} basePath=`${locale}/blog`` />
+</BaseLayout>

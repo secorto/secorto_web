@@ -11,12 +11,13 @@ export async function getStaticPaths(): EntriesStaticPaths<'blog'>  {
   return getEntriesPaths('blog')
 };
 
+const { locale } = Astro.params
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 
 ---
 <BaseLayout pageTitle={entry.data.title}>
-  <Tags route="/en/blog/tags/" tags={entry.data.tags} />
+  <Tags route=`/${locale}/blog/tags/`` tags={entry.data.tags} />
   <p>{dateFormat.format(entry.data.date)}</p>
   {entry.data.image &&
     <Image src={entry.data.image} alt="Featured image" />

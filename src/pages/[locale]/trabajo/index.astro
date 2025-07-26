@@ -1,19 +1,16 @@
 ---
 import ListWork from '@components/ListWork.astro';
-import { type UILanguages } from '@i18n/ui';
+import { languageKeys } from '@i18n/ui';
 import { useTranslations } from '@i18n/utils';
 import BaseLayout from '@layouts/BaseLayout.astro'
 import { getPostsByLocale } from '@utils/paths'
 
 export async function getStaticPaths() {
-  return [
-    {params: {locale: 'es'}},
-    {params: {locale: 'en'}}
-  ]
+  return languageKeys.map(lang => ({params: { locale: lang }}))
 }
 
 const { locale } = Astro.params;
-const t = useTranslations(locale as UILanguages);
+const t = useTranslations(locale);
 const pageTitle = t('nav.work');
 const allPosts = await getPostsByLocale('work', locale);
 ---
