@@ -2,7 +2,7 @@ import { darkMode, lightMode } from "./stubs"
 
 describe("Accessibility tests Dark mode", () => {
   it("Has no detectable accessibility violations on load", () => {
-    cy.visit("/", darkMode()).get("main")
+    cy.visit("/es", darkMode()).get("main")
     cy.injectAxe()
     cy.checkA11y()
     cy.get('[href="/es/charla/"]').click()
@@ -26,7 +26,7 @@ describe("Accessibility tests Dark mode", () => {
 describe("Accessibility tests light mode", () => {
 
   it("Has no detectable accessibility violations on load", () => {
-    cy.visit("/", lightMode()).get("main")
+    cy.visit("/es", lightMode()).get("main")
     cy.injectAxe()
     cy.checkA11y()
     cy.get('[href="/es/charla/"]').click()
