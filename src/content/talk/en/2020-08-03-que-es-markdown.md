@@ -1,5 +1,5 @@
 ---
-title: ¿Que es Markdown y por qué es importante para JAMstack?
+title: What's markdown and why is important for JAMstack?
 category: dev
 tags:
   - jamstack

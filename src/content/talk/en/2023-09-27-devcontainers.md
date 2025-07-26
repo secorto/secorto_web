@@ -1,5 +1,5 @@
 ---
-title: Devcontainers en localhost
+title: Devcontainers on localhost
 category: dev
 tags:
   - python
