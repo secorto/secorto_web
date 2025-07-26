@@ -2,12 +2,12 @@
 import PostItem from '@components/PostItem.astro';
 import PostList from '@components/PostList.astro';
 import PostDate from '@components/PostDate.astro';
-import type { CollectionEntry } from 'astro:content';
 import { getFullFormat } from '@i18n/utils';
+import type { EntryWithCleanId } from '@utils/paths';
 
 export interface Props {
   basePath: string,
-	posts: CollectionEntry<'talk'|'blog'>[];
+	posts: EntryWithCleanId<'talk'|'blog'>[];
 }
 
 const { posts, basePath } = Astro.props;
@@ -18,9 +18,10 @@ const dateFormat = getFullFormat(Astro.url);
   {posts.map((post) =>
     <PostItem
       image={post.data.image}
-      url={`/${basePath}/${post.id}`}
+      url={`/${basePath}/${post.cleanId}`}
       title={post.data.title}
     >
+      {post.cleanId}
       <PostDate>
         {dateFormat.format(post.data.date)}
       </PostDate>

@@ -2,6 +2,8 @@ import { getCollection } from "astro:content";
 import type { CollectionEntry, CollectionKey } from "astro:content";
 type CollectionWithTags = 'blog'|'talk'
 
+export type EntryWithCleanId<C extends CollectionKey> = CollectionEntry<C> & { cleanId: string };
+
 export type EntriesPath<C extends CollectionKey> =  {
   params: {
     id: string
@@ -16,7 +18,7 @@ export type TagsPath<C extends CollectionWithTags> =  {
     tag: string
   },
   props: {
-    posts: CollectionEntry<C>[],
+    posts: EntryWithCleanId<C>[],
     tags: string[]
   }
 }
@@ -24,17 +26,16 @@ export type TagsPath<C extends CollectionWithTags> =  {
 export type EntriesStaticPaths<C extends CollectionKey> = Promise<EntriesPath<C>[]>
 export type TagsStaticPaths<C extends CollectionWithTags> = Promise<TagsPath<C>[]>
 
-
 export async function getPostsByLocale<C extends CollectionKey>(
   collection: C,
   locale: string
-): Promise<(CollectionEntry<C> & { cleanId: string })[]> {
+): Promise<EntryWithCleanId<C>[]> {
   const posts = await getCollection(collection);
   return posts
     .filter(post => post.id.startsWith(`${locale}/`))
     .map(post => ({
       ...post,
-      cleanId: post.id.split('/').slice(1).join('/'), // Elimina solo el primer segmento
+      cleanId: post.id.replace(/^(en|es)\//, '') // Agrega el id limpio
     }))
     .sort((a, b) => b.cleanId.localeCompare(a.cleanId));
 }

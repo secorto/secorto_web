@@ -1,13 +1,13 @@
 ---
-import type { CollectionEntry } from 'astro:content';
 import PostItem from '@components/PostItem.astro';
 import PostList from '@components/PostList.astro';
 import PostDate from '@components/PostDate.astro';
 import { getMonthYearFormat } from '@i18n/utils';
+import type { EntryWithCleanId } from '@utils/paths';
 
 export interface Props {
   basePath: string,
-	posts: CollectionEntry<'work'>[];
+	posts: EntryWithCleanId<'work'>[];
 }
 
 const { posts, basePath } = Astro.props;
@@ -18,7 +18,7 @@ const dateFormat = getMonthYearFormat(Astro.url);
   {posts.map((post) =>
     <PostItem
       image={post.data.image}
-      url={`/${basePath}/${post.id}`}
+      url={`/${basePath}/${post.cleanId}`}
       title={post.data.title}
     >
       <PostDate>

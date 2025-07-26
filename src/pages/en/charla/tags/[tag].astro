@@ -5,7 +5,7 @@ import ListPost from '@components/ListPost.astro';
 import Tags from '@components/Tags.astro';
 
 export async function getStaticPaths(): TagsStaticPaths<'talk'>  {
-  return getTagsPaths('talk')
+  return getTagsPaths('talk', 'en')
 }
 
 const { tag } = Astro.params;

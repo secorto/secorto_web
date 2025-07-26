@@ -1,8 +1,8 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro'
-import { getCollection } from 'astro:content';
 import ListExperience from '@components/ListExperience.astro';
-const allPosts = await getCollection('projects');
+import { getPostsByLocale } from '@utils/paths';
+const allPosts = await getPostsByLocale('projects', 'en');
 const pageTitle = "Projects";
 ---
 <BaseLayout pageTitle={pageTitle}>
