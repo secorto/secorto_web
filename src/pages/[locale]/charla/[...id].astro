@@ -10,12 +10,13 @@ export async function getStaticPaths(): EntriesStaticPaths<'talk'>  {
   return getEntriesPaths('talk')
 };
 
+const { locale } = Astro.params;
 const { entry } = Astro.props;
 const { Content } = await render(entry);
 
 ---
 <BaseLayout pageTitle={entry.data.title}>
-  <Tags route="/en/charla/tags/" tags={entry.data.tags} />
+  <Tags route=`/${locale}/charla/tags/` tags={entry.data.tags} />
   {entry.data.video &&
     <ResponsiveIframe
       width="100%"
