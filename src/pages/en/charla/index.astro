@@ -1,10 +1,10 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro'
-import { getCollection } from 'astro:content';
 import ListPost from '@components/ListPost.astro';
 import Tags from '@components/Tags.astro';
+import { getPostsByLocale } from '@utils/paths';
 
-const allPosts = (await getCollection('talk')).reverse();
+const allPosts = (await getPostsByLocale('talk', 'en'));
 const tags = [...new Set(allPosts.map((post) => post.data.tags).flat())];
 const pageTitle = "Talks";
 ---
