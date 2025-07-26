@@ -1,0 +1,23 @@
+---
+import ListWork from '@components/ListWork.astro';
+import { type UILanguages } from '@i18n/ui';
+import { useTranslations } from '@i18n/utils';
+import BaseLayout from '@layouts/BaseLayout.astro'
+import { getPostsByLocale } from '@utils/paths'
+
+export async function getStaticPaths() {
+  return [
+    {params: {locale: 'es'}},
+    {params: {locale: 'en'}}
+  ]
+}
+
+const { locale } = Astro.params;
+const t = useTranslations(locale as UILanguages);
+const pageTitle = t('nav.work');
+const allPosts = await getPostsByLocale('work', locale);
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  <ListWork posts={allPosts} basePath={`${locale}/trabajo`} />
+</BaseLayout>

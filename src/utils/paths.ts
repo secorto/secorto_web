@@ -6,7 +6,8 @@ export type EntryWithCleanId<C extends CollectionKey> = CollectionEntry<C> & { c
 
 export type EntriesPath<C extends CollectionKey> =  {
   params: {
-    id: string
+    id: string,
+    locale: string
   },
   props: {
     entry: CollectionEntry<C>
@@ -15,7 +16,8 @@ export type EntriesPath<C extends CollectionKey> =  {
 
 export type TagsPath<C extends CollectionWithTags> =  {
   params: {
-    tag: string
+    tag: string,
+    locale: string
   },
   props: {
     posts: EntryWithCleanId<C>[],

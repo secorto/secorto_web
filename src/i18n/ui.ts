@@ -6,6 +6,9 @@ export const languages = {
   es: 'Spanish'
 } as const;
 
+// keyof languages type as typescript type
+export type UILanguages = keyof typeof languages;
+
 export const ui = {
   en: {
     'nav.about': 'About',
@@ -13,7 +16,13 @@ export const ui = {
     'nav.work': 'Work',
     'nav.talks': 'Talks',
     'nav.community': 'Community',
-    'nav.projects': 'Projects'
+    'nav.projects': 'Projects',
+    'work.role': 'Role',
+    'work.activity': 'Activity',
+    'work.responsibilities': 'Responsibilities',
+    'work.website': 'Website',
+    'work.today': 'today',
+    'work.featured_image': 'Featured image'
   },
   es: {
     'nav.about': 'Sobre mi',
@@ -21,6 +30,12 @@ export const ui = {
     'nav.work': 'Trabajo',
     'nav.talks': 'Charlas',
     'nav.community': 'Comunidad',
-    'nav.projects': 'Proyectos'
+    'nav.projects': 'Proyectos',
+    'work.role': 'Rol',
+    'work.activity': 'Actividad',
+    'work.responsibilities': 'Responsabilidades',
+    'work.website': 'Sitio web',
+    'work.today': 'actualidad',
+    'work.featured_image': 'Imagen destacada'
   },
 } as const;

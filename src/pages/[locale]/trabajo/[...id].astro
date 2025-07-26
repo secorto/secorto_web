@@ -5,24 +5,29 @@ import { Image } from "astro:assets";
 import Gallery from '@components/Gallery.astro';
 import { type EntriesStaticPaths, getEntriesPaths } from 'src/utils/paths';
 import { englishMonthYear as dateFormat } from '@i18n/dateFormat';
+import type { UILanguages } from '@i18n/ui';
+import { useTranslations } from '@i18n/utils';
 
 export async function getStaticPaths(): EntriesStaticPaths<'work'>  {
   return getEntriesPaths('work')
 }
 
+const { locale } = Astro.params;
 const { entry } = Astro.props;
 const { Content } = await render(entry);
+
+const t = useTranslations(locale as UILanguages);
 ---
 <BaseLayout pageTitle={entry.data.title}>
-  <Image src={entry.data.image} alt="featured image" />
+  <Image src={entry.data.image} alt={t('work.featured_image')} />
   <dl>
-    <dt>Role:</dt><dd>{entry.data.role}</dd>
-    <dt>Activity:</dt><dd>{dateFormat.format(entry.data.startDate)}
-    - {entry.data.endDate ? dateFormat.format(entry.data.endDate) : "today"}</dd>
-    <dt>Responsibilities:</dt><dd>{entry.data.responsibilities}</dd>
+    <dt>{t('work.role')}:</dt><dd>{entry.data.role}</dd>
+    <dt>{t('work.activity')}:</dt><dd>{dateFormat.format(entry.data.startDate)}
+    - {entry.data.endDate ? dateFormat.format(entry.data.endDate) : t('work.today')}</dd>
+    <dt>{t('work.responsibilities')}:</dt><dd>{entry.data.responsibilities}</dd>
   </dl>
   <p><em>{entry.data.excerpt}</em></p>
-  <a href={entry.data.website}>Website</a>
+  <a href={entry.data.website}>{t('work.website')}</a>
 
   <Content />
   {entry.data.gallery &&

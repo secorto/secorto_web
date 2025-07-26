@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro'
-import { getCollection } from 'astro:content';
 import ListExperience from '@components/ListExperience.astro';
 import { getPostsByLocale } from '@utils/paths';
 const allPosts = await getPostsByLocale('community', 'en');
