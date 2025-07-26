@@ -26,6 +26,8 @@ export const ui = {
     'work.today': 'today',
     'featured_image': 'Featured image',
     'blog.tagged': 'Blog tagged with',
+    'talk.video': 'Video of talk',
+    'talk.slides': 'Slides of talk'
   },
   es: {
     'nav.about': 'Sobre mi',
@@ -41,5 +43,7 @@ export const ui = {
     'work.today': 'actualidad',
     'featured_image': 'Imagen destacada',
     'blog.tagged': 'Entradas etiquetadas con',
+    'talk.video': 'Video de la charla',
+    'talk.slides': 'Presentación de la charla'
   },
 } as const;
