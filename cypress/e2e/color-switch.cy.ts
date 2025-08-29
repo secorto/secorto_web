@@ -1,12 +1,15 @@
 import { lightMode } from "./stubs";
 
 describe('Color switch', () => {
-  it('Sidebar Title is visible on desktop', () => {
+  beforeEach(() => {
     cy.visit('/', lightMode());
-    cy.get('html').should('not.have.class', 'dark')
-    cy.get('#themeToggle').click()
-    cy.get('html').should('have.class', 'dark')
-    cy.get('#themeToggle').click()
-    cy.get('html').should('not.have.class', 'dark')
-  })
-})
+  });
+
+  it('Permite alternar entre modo claro y oscuro', () => {
+    cy.get('html').should('not.have.class', 'dark');
+    cy.get('#themeToggle').click();
+    cy.get('html').should('have.class', 'dark');
+    cy.get('#themeToggle').click();
+    cy.get('html').should('not.have.class', 'dark');
+  });
+});
