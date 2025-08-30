@@ -1,9 +1,9 @@
 ---
-import PostItem from '@components/PostItem.astro';
-import PostList from './PostList.astro';
-import { dateFormat } from 'src/scripts/dateFormat';
-import PostDate from './PostDate.astro';
 import type { CollectionEntry } from 'astro:content';
+import PostDate from '@components/PostDate.astro';
+import PostItem from '@components/PostItem.astro';
+import PostList from '@components/PostList.astro';
+import { dateFormat } from 'src/scripts/dateFormat';
 
 export interface Props {
   basePath: string,
