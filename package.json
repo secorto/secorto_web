@@ -14,13 +14,13 @@
     "@astrojs/check": "^0.9.4",
     "@astrojs/rss": "^4.0.12",
     "@astrojs/sitemap": "^3.5.1",
-    "astro": "^5.13.3",
+    "astro": "^5.13.7",
     "photoswipe": "^5.4.4",
     "typescript": "^5.9.2"
   },
   "devDependencies": {
     "axe-core": "^4.10.3",
-    "cypress": "^14.4.0",
-    "cypress-axe": "^1.6.0"
+    "cypress": "^15.2.0",
+    "cypress-axe": "^1.7.0"
   }
 }
