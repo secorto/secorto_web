@@ -102,17 +102,14 @@ const { duration = '500ms' } = Astro.props;
       return 'light';
   })();
 
-  if (theme === 'light') {
-    document.documentElement.classList.remove('dark');
-  } else {
-    document.documentElement.classList.add('dark');
-  }
+  document.documentElement.classList.add(theme);
 
   window.localStorage.setItem('theme', theme);
 
   const handleToggleClick = () => {
     const element = document.documentElement;
     element.classList.toggle("dark");
+    element.classList.toggle("light");
 
     const isDark = element.classList.contains("dark");
     const theme = isDark ? "dark" : "light"
