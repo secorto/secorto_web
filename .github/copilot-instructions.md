@@ -2,7 +2,8 @@
 
 ## Project Overview
 - **Framework:** Astro
-- **Testing:** Cypress
+- **UI Enhancements:** astro-expressive-code
+- **Testing:** Cypress (with cypress-axe for accessibility)
 - **Language:** TypeScript (preferred)
 - **Semicolons:** Omit semicolons (`;`) unless required by syntax or tooling
 - **Types:** Avoid `any` type; always define custom types or interfaces
@@ -21,11 +22,15 @@
 - Place shared components in `src/components/`
 - Use `src/layouts/` for layout components
 - Static assets go in `public/` or `src/assets/`
+- Use `astro-expressive-code` for code block rendering and syntax highlighting
 
 ## Cypress Specific
 - Place end-to-end tests in `cypress/e2e/`
 - Use TypeScript for Cypress tests
 - Prefer custom Cypress commands and types over using `any`
+- Integrate `cypress-axe` for accessibility checks in tests
+- Place Cypress support files in `cypress/support/`
+- Use `cy.injectAxe()` and `cy.checkA11y()` in tests to ensure accessibility
 
 ## General
 - Keep dependencies up to date
