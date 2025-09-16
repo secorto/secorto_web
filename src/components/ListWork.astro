@@ -1,27 +1,31 @@
 ---
 import PostItem from '@components/PostItem.astro';
-import PostList from './PostList.astro';
-import type { CollectionEntry } from 'astro:content';
-import PostDate from './PostDate.astro';
-export const dateFormat = new Intl.DateTimeFormat("es-CO", { month: "long", year: "numeric", timeZone: 'UTC' });
+import PostList from '@components/PostList.astro';
+import PostDate from '@components/PostDate.astro';
+import { getMonthYearFormat, useTranslations } from '@i18n/utils';
+import type { EntryWithCleanId } from '@utils/paths';
+import type { UILanguages } from '@i18n/ui';
 
 export interface Props {
   basePath: string,
-	posts: CollectionEntry<'work'>[];
+	posts: EntryWithCleanId<'work'>[];
+  lang: UILanguages
 }
 
-const { posts, basePath } = Astro.props;
+const { posts, basePath, lang } = Astro.props;
+const t = useTranslations(lang);
+const dateFormat = getMonthYearFormat(Astro.url);
 ---
 
 <PostList>
   {posts.map((post) =>
     <PostItem
       image={post.data.image}
-      url={`/${basePath}/${post.id}`}
+      url={`/${basePath}/${post.cleanId}`}
       title={post.data.title}
     >
       <PostDate>
-        {`${dateFormat.format(post.data.startDate)} - ${post.data.endDate ? dateFormat.format(post.data.endDate) : "actualidad"}`}
+        {`${dateFormat.format(post.data.startDate)} - ${post.data.endDate ? dateFormat.format(post.data.endDate) : t('work.today')}`}
        </PostDate>
       <p>{post.data.role}</p>
       <p>{post.data.responsibilities}</p>
