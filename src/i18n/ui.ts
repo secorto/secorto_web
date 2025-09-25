@@ -27,7 +27,8 @@ export const ui = {
     'featured_image': 'Featured image',
     'blog.tagged': 'Blog tagged with',
     'talk.video': 'Video of talk',
-    'talk.slides': 'Slides of talk'
+    'talk.slides': 'Slides of talk',
+    'talk.tagged': 'Talks tagged with',
   },
   es: {
     'nav.about': 'Sobre mi',
@@ -44,6 +45,7 @@ export const ui = {
     'featured_image': 'Imagen destacada',
     'blog.tagged': 'Entradas etiquetadas con',
     'talk.video': 'Video de la charla',
-    'talk.slides': 'Presentación de la charla'
+    'talk.slides': 'Presentación de la charla',
+    'talk.tagged': 'Charlas etiquetadas con',
   },
 } as const;
