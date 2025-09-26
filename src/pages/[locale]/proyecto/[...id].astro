@@ -4,12 +4,17 @@ import BaseLayout from '@layouts/BaseLayout.astro';
 import { Image } from "astro:assets";
 import Gallery from '@components/Gallery.astro';
 import { getEntriesPaths, type EntriesStaticPaths } from 'src/utils/paths';
+import { useTranslations } from '@i18n/utils';
 
 export async function getStaticPaths(): EntriesStaticPaths<'projects'>  {
   return getEntriesPaths('projects')
 }
+
+const { locale } = Astro.params;
 const { entry } = Astro.props;
 const { Content } = await render(entry);
+
+const t = useTranslations(locale);
 
 ---
 <BaseLayout pageTitle={entry.data.title}>
@@ -17,8 +22,8 @@ const { Content } = await render(entry);
   <p><em>{entry.data.excerpt}</em></p>
   <a href={entry.data.website}>Sitio web</a>
   <dl>
-    <dt>Rol:</dt><dd>{entry.data.role}</dd>
-    <dt>Responsabilidades:</dt><dd>{entry.data.responsibilities}</dd>
+    <dt>{t('work.role')}:</dt><dd>{entry.data.role}</dd>
+    <dt>{t('work.responsibilities')}:</dt><dd>{entry.data.responsibilities}</dd>
   </dl>
   <Content />
   {entry.data.gallery &&
