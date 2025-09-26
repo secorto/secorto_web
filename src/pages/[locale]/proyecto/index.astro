@@ -1,0 +1,19 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro'
+import ListExperience from '@components/ListExperience.astro';
+import { getPostsByLocale } from '@utils/paths';
+import { languageKeys } from '@i18n/ui';
+import { useTranslations } from '@i18n/utils';
+
+export async function getStaticPaths() {
+  return languageKeys.map(lang => ({params: { locale: lang }}))
+}
+
+const { locale } = Astro.params;
+const t = useTranslations(locale);
+const pageTitle = t('nav.projects');
+const allPosts = await getPostsByLocale('projects', locale);
+---
+<BaseLayout pageTitle={pageTitle}>
+  <ListExperience posts={allPosts} basePath={`${locale}/proyecto`} />
+</BaseLayout>
