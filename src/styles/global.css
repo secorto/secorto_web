@@ -158,11 +158,6 @@ Sidebar
   color: var(--colors-sidebar-text);
   font-family: "Ubuntu", sans-serif;
   text-decoration: none;
-  display: flex;
-  -webkit-box-align: center;
-  align-items: center;
-  -webkit-box-pack: center;
-  justify-content: center;
   padding-top: 0.3em;
   padding-bottom: 0.3em;
   overflow-wrap: break-word;
@@ -198,6 +193,19 @@ Sidebar
 
 .sidebar.sidebar-open {
   transform: translateX(0px);
+}
+
+.sidebar-links a {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+}
+
+.language-picker {
+  display: flex;
+  justify-content: space-around;
 }
 
 .hamburger {
