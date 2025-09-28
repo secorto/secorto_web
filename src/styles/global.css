@@ -195,7 +195,7 @@ Sidebar
   transform: translateX(0px);
 }
 
-.sidebar-links a {
+.sidebar-links a, .sidebar-home-link {
   display: flex;
   -webkit-box-align: center;
   align-items: center;
