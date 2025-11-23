@@ -17,11 +17,11 @@
     "astro": "^5.16.0",
     "astro-expressive-code": "0.41.3",
     "photoswipe": "^5.4.4",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.3"
   },
   "devDependencies": {
-    "axe-core": "^4.10.3",
-    "cypress": "^15.3.0",
+    "axe-core": "^4.11.0",
+    "cypress": "^15.7.0",
     "cypress-axe": "^1.7.0"
   }
 }
