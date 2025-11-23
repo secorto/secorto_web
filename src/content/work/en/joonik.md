@@ -9,8 +9,8 @@ startDate: 2016-06-01
 endDate: 2018-02-10
 ---
 
-En esta empresa di mis primeros pasos en automatización de pruebas e2e con selenium, en esta mi rol era mas orientado a front-end, entre las cosas que alcance a hacer estuvo una pagina con jekyll, varios sitios que usaban wordpress, una tienda el linea con prestashop
+At this company, I took my first steps in end-to-end test automation with Selenium. My role was more front-end oriented, and among the things I accomplished were a website with Jekyll, several WordPress sites, and an online store with PrestaShop.
 
-De las cosas que mas destaco de esta empresa es su enfoque de hacer las cosas, luego hacerlas bien y luego hacerlas mejor
+One of the things I value most about this company is its focus on doing things, then doing them well, and then doing them even better.
 
-El aprendizaje que mas destaco es la frase: no asumas, cuando asumes quedas como un culo y me dejas como un culo, ass you me
+The most important lesson I learned is the phrase: "Don't assume. When you assume, is likely saying ass you, me"

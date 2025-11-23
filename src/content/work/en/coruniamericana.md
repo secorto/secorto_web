@@ -9,7 +9,7 @@ startDate: 2013-01-01
 endDate: 2013-04-01
 ---
 
-Esta fue mi primera experiencia laboral, fue con el programa de apoyo laboral de la universidad donde estudie
-En esta experiencia aprendí a montar servidores proxy, configuración de maquinas linux, mantenimiento de servidores, montaje de servidores web, php
+This was my first work experience, through the university's job placement program.
+In this experience, I learned to set up proxy servers, configure Linux machines, perform server maintenance, set up web servers, and use PHP.
 
-En la universidad participe en el semillero de investigación algunos y aprendí sobre metodologías de investigación, estructurar proyectos de investigación y justo con el semillero de la universidad participamos en un encuentro nacional de semilleros de investigación donde presentamos un proyecto sobre el juego la Cuarta, la foto destacada es cuando estaba en el hotel antes de presentar el proyecto en el encuentro nacional que se realizó en Montería, Colombia.
+At the university, I participated in a research group and learned about research methodologies and structuring research projects. With the university's research group, we participated in a national conference of research groups where we presented a project about the game "La Cuarta." The featured photo is from when I was at the hotel before presenting the project at the national conference held in Montería, Colombia.
