@@ -30,7 +30,12 @@ export default defineConfig({
     locales: ["es", "en"],
     routing: {
       prefixDefaultLocale: true,
-      redirectToDefaultLocale: isDev
+      redirectToDefaultLocale: isDev,
+      fallbackType: "rewrite"
+
+    },
+    fallback: {
+      en: "es"
     }
   }
 });
