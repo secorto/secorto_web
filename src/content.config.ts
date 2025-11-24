@@ -7,7 +7,8 @@ const blogCollection = defineCollection({
     title: z.string(),
     date: z.date(),
     tags: z.array(z.string()),
-    image: image().optional()
+    image: image().optional(),
+    canonical: z.string().optional()
   }),
 });
 
@@ -20,7 +21,8 @@ const talkCollection = defineCollection({
     image: image(),
     comunidad: z.string(),
     video: z.string().optional(),
-    slide: z.string()
+    slide: z.string(),
+    canonical: z.string().optional()
   }),
 });
 
@@ -39,6 +41,7 @@ const workCollection = defineCollection({
       image: image(),
       alt: z.string()
     })).optional(),
+    canonical: z.string().optional(),
   }),
 });
 
@@ -55,6 +58,7 @@ const projectsCollection = defineCollection({
       image: image(),
       alt: z.string()
     })).optional(),
+    canonical: z.string().optional(),
   }),
 });
 
@@ -71,6 +75,7 @@ const communityCollection = defineCollection({
       image: image(),
       alt: z.string()
     })).optional(),
+    canonical: z.string().optional()
   }),
 });
 

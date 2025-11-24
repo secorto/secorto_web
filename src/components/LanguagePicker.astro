@@ -1,15 +1,50 @@
 ---
-import { languages } from '../i18n/ui';
-import { getLangFromUrl, useTranslatedPath } from '../i18n/utils';
+import { translations } from "../i18n/translations";
+import { languages, languageKeys, defaultLang, showDefaultLang, UILanguages } from "../i18n/ui";
+import { resolveCanonical, resolveLocalized } from "../i18n/rootMap";
 
-const lang = getLangFromUrl(Astro.url);
-const translatePath = useTranslatedPath(lang);
-const pathName = Astro.url.pathname;
-const currentPath = pathName.slice(3);
+const segments = Astro.url.pathname.split("/").filter(Boolean);
+const lang = segments[0] as UILanguages;
+const rawSection = segments[1];
+const slug = segments.slice(2).join("/");
 
+const canonicalSection = resolveCanonical(rawSection, lang);
+const isDetailPage = Boolean(slug);
+
+const availableLocales = isDetailPage
+  ? translations[canonicalSection as keyof typeof translations]?.[slug] || {}
+  : {};
+
+const isTagPage = slug.startsWith("tags");
 ---
+
 <div class="language-picker">
-  {Object.entries(languages).map(([lang, label]) => (
-    <a href={translatePath(currentPath, lang)}>{label}</a>
-  ))}
+  {languageKeys.map((targetLang) => {
+    const label = languages[targetLang];
+    const langPrefix =
+      targetLang === defaultLang && !showDefaultLang ? "" : `/${targetLang}`;
+    const localizedSection = resolveLocalized(canonicalSection, targetLang);
+
+
+    // 📌 Caso 1: página de tags (sin traducción de "tag")
+    if (isTagPage) {
+      return <a href={`${langPrefix}/${localizedSection}/${slug}`}>{label}</a>;
+    }
+
+    // 📌 Caso 2: páginas de detalle dentro de colecciones
+    if (isDetailPage && canonicalSection in translations) {
+      const entry = availableLocales[targetLang];
+      if (!entry) {
+        return <span class="disabled">{label} 🔒</span>;
+      }
+      return (
+        <a href={`${langPrefix}/${localizedSection}/${entry.slug}`}>
+          {label}
+        </a>
+      );
+    }
+
+    // 📌 Caso 3: índice de colección (ej. /es/blog) o páginas estáticas (ej. /es/about)
+    return <a href={`${langPrefix}/${localizedSection}`}>{label}</a>;
+  })}
 </div>
