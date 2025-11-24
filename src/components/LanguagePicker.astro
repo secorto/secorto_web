@@ -1,6 +1,7 @@
 ---
 import { translations } from "../i18n/translations";
-import { languages, languageKeys, defaultLang, showDefaultLang, UILanguages } from "../i18n/ui";
+import { languages, languageKeys, defaultLang, showDefaultLang } from "../i18n/ui";
+import type { UILanguages } from "../i18n/ui";
 import { resolveCanonical, resolveLocalized } from "../i18n/rootMap";
 
 const segments = Astro.url.pathname.split("/").filter(Boolean);
