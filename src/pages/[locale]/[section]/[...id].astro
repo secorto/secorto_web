@@ -8,7 +8,7 @@ import { getEntriesPaths } from '@utils/paths'
 import { sectionsConfig } from '@config/sections'
 import { loadEntryByRoute } from '@utils/sectionLoader'
 import { useTranslations } from '@i18n/utils'
-import { languageKeys } from '@i18n/ui'
+import { languageKeys, defaultLang } from '@i18n/ui'
 import type { UILanguages } from '@i18n/ui'
 
 export async function getStaticPaths() {
@@ -86,6 +86,11 @@ const cleanId = entry.id.replace(/^(en|es)\//, '')
 const canonicalLocale = isUntranslated && originLocale ? originLocale : locale
 const canonicalRoute = config.routes[canonicalLocale as UILanguages]
 const canonicalUrl = `https://secorto.com/${canonicalLocale}/${canonicalRoute}/${cleanId}`
+
+// determinar en qué locales existe esta entrada para generar hreflang alternates
+const collectionName = config.collection as any
+const allEntries = await getCollection(collectionName) as any[]
+const availableLocales = languageKeys.filter((lk) => allEntries.some((e: any) => e.id === `${lk}/${cleanId}`))
 const { Content } = await render(entry)
 const pageTitle = entry.data.title || t(config.translationKey)
 const routeSlug = config.routes[locale as UILanguages]
@@ -93,6 +98,12 @@ const routeSlug = config.routes[locale as UILanguages]
 <head>
   <link rel="canonical" href={canonicalUrl} />
   {isUntranslated && <meta name="robots" content="noindex" />}
+  {/* hreflang alternates: solo para locales donde exista la entrada */}
+  {availableLocales.map((lk) => (
+    <link rel="alternate" hreflang={lk} href={`https://secorto.com/${lk}/${config.routes[lk as UILanguages]}/${cleanId}`} />
+  ))}
+  {/* x-default apuntando al idioma por defecto */}
+  <link rel="alternate" hreflang="x-default" href={`https://secorto.com/${defaultLang}/${config.routes[defaultLang as UILanguages]}/${cleanId}`} />
 </head>
 
 <BaseLayout pageTitle={pageTitle}>
