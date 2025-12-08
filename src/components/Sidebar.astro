@@ -1,6 +1,7 @@
 ---
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import { sectionsConfig } from '@config/sections'
 
 import ThemeIcon from './ThemeIcon.astro';
 import LanguagePicker from './LanguagePicker.astro';
@@ -19,13 +20,13 @@ const t = useTranslations(currentLocale);
       <hr class="sidebar-separator">
     </div>
     <div class="sidebar-links">
-      <a href={getRelativeLocaleUrl(currentLocale, 'about')}>{t('nav.about')}</a>
-      <a href={getRelativeLocaleUrl(currentLocale, 'charla')}>{t('nav.talks')}</a>
-      <a href={getRelativeLocaleUrl(currentLocale, 'blog')}>{t('nav.blog')}</a>
-      <a href={getRelativeLocaleUrl(currentLocale, 'trabajo')}>{t('nav.work')}</a>
-      <a href={getRelativeLocaleUrl(currentLocale, 'comunidad')}>{t('nav.community')}</a>
-      <a href={getRelativeLocaleUrl(currentLocale, 'proyecto')}>{t('nav.projects')}</a>
-    </div>
+        <a href={getRelativeLocaleUrl(currentLocale, 'about')}>{t('nav.about')}</a>
+        <a href={`/${currentLocale}/${sectionsConfig.talk.routes[currentLocale]}`}>{t('nav.talks')}</a>
+        <a href={`/${currentLocale}/${sectionsConfig.blog.routes[currentLocale]}`}>{t('nav.blog')}</a>
+        <a href={`/${currentLocale}/${sectionsConfig.work.routes[currentLocale]}`}>{t('nav.work')}</a>
+        <a href={`/${currentLocale}/${sectionsConfig.community.routes[currentLocale]}`}>{t('nav.community')}</a>
+        <a href={`/${currentLocale}/${sectionsConfig.project.routes[currentLocale]}`}>{t('nav.projects')}</a>
+      </div>
     <ThemeIcon />
     <LanguagePicker/>
   </div>

@@ -29,6 +29,8 @@ export const ui = {
     'talk.video': 'Video of talk',
     'talk.slides': 'Slides of talk',
     'talk.tagged': 'Talks tagged with',
+    'post.untranslated_notice': 'This post is not translated into the selected language. You are viewing the original.',
+    'post.view_original': 'View original',
   },
   es: {
     'nav.about': 'Sobre mi',
@@ -47,5 +49,7 @@ export const ui = {
     'talk.video': 'Video de la charla',
     'talk.slides': 'Presentación de la charla',
     'talk.tagged': 'Charlas etiquetadas con',
+    'post.untranslated_notice': 'Esta entrada no está traducida al idioma seleccionado. Estás viendo el original.',
+    'post.view_original': 'Ver original',
   },
 } as const;

@@ -33,6 +33,9 @@ const t = useTranslations(locale as UILanguages)
 // Cargar la entrada basada en section slug / locale / id
 let loaded = await loadEntryByRoute(section, locale as UILanguages, id)
 
+let isUntranslated = false
+let originLocale: UILanguages | null = null
+
 if (!loaded) {
   // Intentar detectar si `section` es el slug en otro idioma (por ejemplo 'trabajo')
   // y redirigir al slug correcto para el locale actual o al locale original que contiene la entrada.
@@ -62,21 +65,43 @@ if (!loaded) {
     if (originLocale) {
       const entryForOrigin = entries.find((e: any) => e.id === `${originLocale}/${id}`)
       if (entryForOrigin) {
-        return new Response(null, { status: 301, headers: { Location: `/${originLocale}/${section}/${id}` } })
+        // En lugar de redirigir, mostramos la entrada original con un aviso de "no traducido"
+        loaded = { config: candidate, entry: entryForOrigin }
+        isUntranslated = true
+        // Mantener originLocale para canonical
+        originLocale = originLocale
       }
     }
   }
 
-  return new Response('Not found', { status: 404 })
+  if (!loaded) {
+    return new Response('Not found', { status: 404 })
+  }
 }
 
 const { config, entry } = loaded
+// calcular cleanId desde entry.id
+const cleanId = entry.id.replace(/^(en|es)\//, '')
+// si mostramos contenido original desde otro locale, usar esa URL como canonical
+const canonicalLocale = isUntranslated && originLocale ? originLocale : locale
+const canonicalRoute = config.routes[canonicalLocale as UILanguages]
+const canonicalUrl = `https://secorto.com/${canonicalLocale}/${canonicalRoute}/${cleanId}`
 const { Content } = await render(entry)
 const pageTitle = entry.data.title || t(config.translationKey)
 const routeSlug = config.routes[locale as UILanguages]
 ---
+<head>
+  <link rel="canonical" href={canonicalUrl} />
+  {isUntranslated && <meta name="robots" content="noindex" />}
+</head>
 
 <BaseLayout pageTitle={pageTitle}>
+  {isUntranslated && (
+    <div class="untranslated-notice" role="status">
+  <p>{t('post.untranslated_notice')}</p>
+      <a href={`/${canonicalLocale}/${canonicalRoute}/${cleanId}`}>{t('post.view_original')}</a>
+    </div>
+  )}
   {config.hasTags && entry.data.tags && (
     <Tags route={`/${locale}/${routeSlug}/tags/`} tags={entry.data.tags} />
   )}
