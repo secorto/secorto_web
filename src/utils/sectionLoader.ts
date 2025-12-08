@@ -1,7 +1,8 @@
 import type { UILanguages } from '@i18n/ui'
-import { getPostsByLocale, getUniqueTags } from '@utils/paths'
+import { getPostsByLocale, getUniqueTags, getEntriesPaths } from '@utils/paths'
 import { getSectionConfigByRoute, sectionsConfig } from '@config/sections'
 import type { SectionType } from '@config/sections'
+import { getCollection } from 'astro:content'
 
 /**
  * Carga dinámicamente los posts y configuración de una sección
@@ -46,4 +47,27 @@ export async function loadSectionByRoute(
     posts,
     tags
   }
+}
+
+/**
+ * Carga una entrada individual basada en la ruta de sección, locale y id limpio
+ * Retorna { config, entry } o null cuando no se encuentra
+ */
+export async function loadEntryByRoute(
+  sectionSlug: string,
+  locale: UILanguages,
+  id: string
+) {
+  const config = getSectionConfigByRoute(sectionSlug, locale)
+
+  if (!config) return null
+
+  // entries id stored as `${locale}/${cleanId}` in content layer
+  const collectionName = config.collection as any
+  const entries = await getCollection(collectionName) as any[]
+  const entry = entries.find((e: any) => e.id === `${locale}/${id}`)
+
+  if (!entry) return null
+
+  return { config, entry }
 }

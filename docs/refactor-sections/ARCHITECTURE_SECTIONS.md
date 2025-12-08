@@ -1,3 +1,4 @@
+````markdown
 # Arquitectura de Secciones - Sistema Polimórfico
 
 ## Problema Resuelto
@@ -54,7 +55,7 @@ export async function loadSectionByRoute(
   const config = getSectionConfigByRoute(sectionSlug, locale)
   const posts = await getPostsByLocale(config.collection, locale)
   const tags = config.hasTags ? getUniqueTags(posts) : []
-  
+
   return { config, posts, tags }
 }
 ```
@@ -137,7 +138,8 @@ Genera automáticamente:
 **Paso 1**: Agregar en `sections.ts`:
 ```typescript
 export const sectionsConfig = {
-  // ...
+  // ... secciones existentes
+
   newsletter: {
     collection: 'newsletter',
     translationKey: 'nav.newsletter',
@@ -149,49 +151,55 @@ export const sectionsConfig = {
 }
 ```
 
-**Paso 2**: Crear componente `SectionRenderer.astro` (si no existe):
-```astro
-{config.listComponent === 'ListNewsletter' && (
-  <ListNewsletter posts={posts} basePath={`${locale}/${routeSlug}`} />
-)}
+**Paso 2**: Eso es TODO.
+
+Las rutas se generan automáticamente:
+  /es/boletin
+  /en/newsletter
+
+Sin tocar:
+  - [section]/index.astro
+  - sectionLoader.ts
+  - SectionRenderer.astro
+
+Este es el poder del polimorfismo ✨
+
+## Patrones Implementados
+
+```
+┌───────────────────────────────────────────────┐
+│ Configuration Pattern                          │
+│ (Toda la lógica guiada por datos)             │
+└──────────────────┬────────────────────────────┘
+                   │
+    ┌──────────────┼──────────────┐
+    │              │              │
+    ▼              ▼              ▼
+┌─────────┐ ┌──────────┐ ┌──────────────┐
+│Strategy │ │Composite │ │Factory       │
+│Pattern  │ │Pattern   │ │Pattern       │
+├─────────┤ ├──────────┤ ├──────────────┤
+│Polimor- │ │Basado en │ │Crea secciones│
+│fismo    │ │compo-    │ │dinámicamente │
+│según    │ │nentes    │ │desde config  │
+│config   │ │existen-  │ │              │
+│         │ │tes       │ │              │
+└─────────┘ └──────────┘ └──────────────┘
+
+    ▼              ▼              ▼
+    │              │              │
+    └──────────────┼──────────────┘
+                   │
+        ┌──────────┴────────────┐
+        │                       │
+        ▼                       ▼
+┌──────────────┐      ┌──────────────┐
+│ DRY          │      │ Type-Safe    │
+│(No repeat)   │      │(TypeScript)  │
+└──────────────┘      └──────────────┘
 ```
 
-**Paso 3**: ¡Listo! Las rutas se generan automáticamente.
+Este diagrama muestra cómo los patrones de diseño convergen en una arquitectura
+limpia, mantenible y escalable. ✨
 
-### Cambiar Alias de Idioma
-
-```typescript
-// Antes: /es/charla
-// Después: /es/plenarias
-
-talk: {
-  routes: {
-    es: 'plenarias',  // ← Cambio simple
-    en: 'talk'
-  }
-  // ... resto igual
-}
-```
-
-## Inyección de Dependencias en Astro
-
-Aunque Astro no tiene DI nativo como otros frameworks, logramos lo equivalente:
-- **Config injection**: `SectionConfig` se pasa como prop
-- **Lazy loading**: Solo se carga lo necesario
-- **Composición**: Componentes reutilizables
-
-```astro
-<SectionRenderer
-  config={config}      <!-- Inyectamos configuración -->
-  locale={locale}
-  posts={posts}
-  tags={tags}
-/>
-```
-
-## Próximos Pasos Opcionales
-
-1. **Validación de rutas**: Verificar que no haya conflictos
-2. **Sitemap dinámico**: Generar automáticamente
-3. **Tests polimórficos**: Testing basado en configuración
-4. **Editor visual**: UI para gestionar `sections.ts`
+````

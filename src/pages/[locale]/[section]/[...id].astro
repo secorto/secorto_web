@@ -1,0 +1,59 @@
+---
+import { render } from 'astro:content'
+import BaseLayout from '@layouts/BaseLayout.astro'
+import Tags from '@components/Tags.astro'
+import Comments from '@components/Comments.astro'
+import { getEntriesPaths } from '@utils/paths'
+import { sectionsConfig } from '@config/sections'
+import { loadEntryByRoute } from '@utils/sectionLoader'
+import { useTranslations } from '@i18n/utils'
+import type { UILanguages } from '@i18n/ui'
+
+export async function getStaticPaths() {
+  const paths: any[] = []
+  // Para cada sección configurada, obtener sus entradas
+  for (const [_key, config] of Object.entries(sectionsConfig)) {
+    const entries = await getEntriesPaths(config.collection as any)
+    for (const e of entries) {
+      const locale = e.params.locale as UILanguages
+      const route = config.routes[locale]
+      paths.push({ params: { locale, section: route, id: e.params.id } })
+    }
+  }
+
+  return paths
+}
+
+const { locale, section, id } = Astro.params
+const t = useTranslations(locale as UILanguages)
+
+// Cargar la entrada basada en section slug / locale / id
+const loaded = await loadEntryByRoute(section, locale as UILanguages, id)
+
+if (!loaded) {
+  return new Response('Not found', { status: 404 })
+}
+
+const { config, entry } = loaded
+const { Content } = await render(entry)
+const pageTitle = entry.data.title || t(config.translationKey)
+const routeSlug = config.routes[locale as UILanguages]
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  {config.hasTags && entry.data.tags && (
+    <Tags route={`/${locale}/${routeSlug}/tags/`} tags={entry.data.tags} />
+  )}
+
+  {entry.data.date && <p>{String(entry.data.date)}</p>}
+
+  {entry.data.image && (
+    // show image if available; original projects use Image from astro:assets in some templates
+    // Keep simple: show raw image path
+    <img src={entry.data.image} alt="featured image" />
+  )}
+
+  <Content />
+
+  <Comments />
+</BaseLayout>

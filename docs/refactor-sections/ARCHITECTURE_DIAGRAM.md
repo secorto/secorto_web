@@ -1,3 +1,4 @@
+````markdown
 # Diagrama de Arquitectura - Sistema Polimórfico de Secciones
 
 ## Flujo de Solicitud
@@ -50,6 +51,7 @@
     }
 ```
 
+
 ```
                      ▼
 ┌─────────────────────────────────────────────────────────────────┐
@@ -61,18 +63,18 @@
                      ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │ SectionRenderer.astro (Strategy: Cómo renderizar)               │
-│                                                                  │
+                                                                  │
 │ Renderiza dinámicamente según config.listComponent:            │
-│                                                                  │
+                                                                  │
 │  if config.listComponent === 'ListPost'                         │
 │    └─→ <ListPost posts={posts} />                              │
-│                                                                  │
+                                                                  │
 │  if config.listComponent === 'ListWork'                         │
 │    └─→ <ListWork posts={posts} lang={locale} />                │
-│                                                                  │
+                                                                  │
 │  if config.hasTags                                              │
 │    └─→ <Tags tags={tags} />                                    │
-│                                                                  │
+                                                                  │
 └────────────────────┬────────────────────────────────────────────┘
                      │
                      ▼
@@ -149,12 +151,12 @@ src/
 ├── config/
 │   └── sections.ts               ← 63 líneas
 │       {
-│         blog: { collection, routes, listComponent, ... },
-│         talk: { collection, routes, listComponent, ... },
-│         work: { collection, routes, listComponent, ... },
-│         project: { ... },
-│         community: { ... }
-│       }
+        blog: { collection, routes, listComponent, ... },
+        talk: { collection, routes, listComponent, ... },
+        work: { collection, routes, listComponent, ... },
+        project: { ... },
+        community: { ... }
+       }
 │
 ├── utils/
 │   └── sectionLoader.ts          ← 42 líneas
@@ -182,7 +184,7 @@ Total: 1 sección × 1 archivo = 1 archivo
 ```typescript
 export async function getStaticPaths() {
   const paths = []
-  
+
   // Itera sobre sectionsConfig
   for (const [type, config] of Object.entries(sectionsConfig)) {
     for (const locale of ['es', 'en']) {
@@ -192,7 +194,7 @@ export async function getStaticPaths() {
       })
     }
   }
-  
+
   return paths
 }
 
@@ -300,10 +302,10 @@ Para agregar nueva sección "Newsletter":
 ## Patrones Implementados
 
 ```
-┌───────────────────────────────────────────────────────────────┐
-│ Configuration Pattern                                          │
-│ (Toda la lógica guiada por datos)                             │
-└──────────────────┬────────────────────────────────────────────┘
+┌───────────────────────────────────────────────┐
+│ Configuration Pattern                          │
+│ (Toda la lógica guiada por datos)             │
+└──────────────────┬────────────────────────────┘
                    │
     ┌──────────────┼──────────────┐
     │              │              │
@@ -330,7 +332,8 @@ Para agregar nueva sección "Newsletter":
 │ DRY          │      │ Type-Safe    │
 │(No repeat)   │      │(TypeScript)  │
 └──────────────┘      └──────────────┘
-```
 
 Este diagrama muestra cómo los patrones de diseño convergen en una arquitectura
 limpia, mantenible y escalable. ✨
+
+````

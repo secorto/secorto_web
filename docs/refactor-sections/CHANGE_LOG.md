@@ -1,3 +1,4 @@
+````markdown
 # 📝 Registro de Cambios - Qué Ha Sido Modificado/Creado
 
 ## Resumen Rápido
@@ -90,7 +91,7 @@
    **Antes**: 27 líneas (para items individuales)
    ```astro
    import { getEntriesPaths, getTagsPaths } from "@utils/paths";
-   
+
    export async function getStaticPaths() {
      // Genera paths para items individuales
    }
@@ -102,7 +103,7 @@
    import { loadSectionByRoute } from '@utils/sectionLoader'
    import { sectionsConfig } from '@config/sections'
    import SectionRenderer from '@components/SectionRenderer.astro'
-   
+
    export async function getStaticPaths() {
      // Genera paths para TODAS las secciones + items
      for (const [_sectionType, config] of Object.entries(sectionsConfig)) {
@@ -279,3 +280,5 @@ tsc --noEmit
 **Última actualización**: 8 de diciembre de 2025
 **Estado**: ✅ Completo
 **Listo para**: Producción
+
+````

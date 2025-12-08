@@ -1,6 +1,7 @@
+```markdown
 /**
  * EJEMPLO: Cómo escala el sistema
- * 
+ *
  * Este archivo muestra cómo la arquitectura se escala de 3 a 10+ secciones
  * sin aumento significativo de complejidad.
  */
@@ -174,8 +175,8 @@ Gráfico:
       ↑
   350 │      ANTES ╱╱
       │         ╱╱
-  300 │      ╱╱     
-      │    ╱╱    
+  300 │      ╱╱
+      │    ╱╱
   250 │  ╱╱    ┐
       │╱╱      │ Diferencia
   200 ├─────────┤ exponencial
@@ -277,3 +278,5 @@ Esto es arquitectura sostenible. 🚀
 `)
 
 export default {}
+
+```

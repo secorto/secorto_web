@@ -1,6 +1,7 @@
+```markdown
 /**
  * EJEMPLOS DE EXTENSIÓN
- * 
+ *
  * Este archivo muestra cómo agregar nuevas secciones, componentes y funcionalidades
  * sin modificar el código de routing o rendering existente.
  */
@@ -131,7 +132,7 @@ const { config, locale, posts, tags, customRenderer: CustomRenderer } = Astro.pr
 
 export interface SectionConfig {
   // ... propiedades existentes
-  
+
   // Nuevas propiedades
   icon?: string
   color?: string
@@ -148,7 +149,7 @@ export const sectionsConfig: Record<SectionType, SectionConfig> = {
     routes: { es: 'blog', en: 'blog' },
     listComponent: 'ListPost',
     showFeaturedImage: true,
-    
+
     // Metadatos nuevos
     icon: '📝',
     color: '#3498db',
@@ -292,3 +293,5 @@ talk: {
 // ✅ Todos los links, menús, sitemap se actualizan automáticamente
 
 export default {}
+
+```

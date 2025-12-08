@@ -1,3 +1,4 @@
+````markdown
 # Guía de Migración: Router Dinámico
 
 ## Estado Actual
@@ -143,3 +144,5 @@ Si prefieres no eliminar de golpe:
 ```
 
 Pero recuerda: Astro se quejará de rutas duplicadas.
+
+````

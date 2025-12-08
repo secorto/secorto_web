@@ -1,3 +1,4 @@
+````markdown
 # 📑 Índice de Documentación
 
 ## 🎯 Comienza Aquí
@@ -92,7 +93,7 @@
 6. Factory pattern
 7. Generador de menú
 8. Validación de config
-9. Cambios multi-idioma
+9. Cambios multi-idioma simplificados
 
 - **Tiempo**: 20 minutos
 - **Público**: Desarrolladores
@@ -252,3 +253,5 @@ Después de leer esta guía:
 **Proyecto**: secorto_web
 **Branch**: i18n-en
 **Estado**: ✅ Completo
+
+````
