@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro'
+import Tags from '@components/Tags.astro'
 import { getTagsPaths, getPostsByLocale } from '@utils/paths'
 import { sectionsConfig, getSectionConfigByRoute } from '@config/sections'
 import ListPost from '@components/ListPost.astro'
@@ -46,16 +47,18 @@ if (!posts.length) {
 }
 
 const pageTitle = `${t(config.translationKey)} - ${tag}`
-const metaDescription = `${t(config.translationKey)} tagged with ${tag}`
+const metaDescription = `${config.taggedKey ? t(config.taggedKey) : t(config.translationKey)} ${tag}`
 const Component = config.listComponent === 'ListWork' ? ListWork : ListPost
 ---
 
 <head>
+  <meta charset="utf-8" />
   <title>{pageTitle}</title>
   <meta name="description" content={metaDescription} />
 </head>
 
 <BaseLayout pageTitle={pageTitle}>
-  <h1>{pageTitle}</h1>
-  <Component posts={posts} basePath={`/${locale}/${config.routes[locale as UILanguages]}`} lang={locale} />
+  <Tags route={`/${locale}/${section}/tags/`} tags={tags} current={tag} />
+  {config.taggedKey && <p>{t(config.taggedKey)} {tag}</p>}
+  <Component posts={posts} basePath={`${locale}/${config.routes[locale as UILanguages]}`} lang={locale} />
 </BaseLayout>

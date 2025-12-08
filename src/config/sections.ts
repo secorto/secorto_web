@@ -12,6 +12,8 @@ export interface SectionConfig {
   translationKey: TranslationKey
   /** Si la sección tiene tags */
   hasTags: boolean
+  /** Clave de traducción para "tagged with" (ej: 'blog.tagged', 'talk.tagged') */
+  taggedKey?: TranslationKey
   /** Rutas por idioma: { locale -> ruta_url } */
   routes: Record<UILanguages, string>
   /** Componente a usar para listar items */
@@ -25,6 +27,7 @@ export const sectionsConfig: Record<SectionType, SectionConfig> = {
     collection: 'blog',
     translationKey: 'nav.blog',
     hasTags: true,
+    taggedKey: 'blog.tagged',
     routes: {
       es: 'blog',
       en: 'blog'
@@ -36,6 +39,7 @@ export const sectionsConfig: Record<SectionType, SectionConfig> = {
     collection: 'talk',
     translationKey: 'nav.talks',
     hasTags: true,
+    taggedKey: 'talk.tagged',
     routes: {
       es: 'charla',
       en: 'talk'
