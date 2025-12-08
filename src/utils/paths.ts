@@ -38,7 +38,7 @@ export async function getPostsByLocale<C extends CollectionKey>(
     .filter(post => post.id.startsWith(`${locale}/`))
     .map(post => ({
       ...post,
-      cleanId: post.id.replace(/^(en|es)\//, '') // Agrega el id limpio
+      cleanId: post.data.slug || post.id.replace(/^(en|es)\//, '') // Usa slug si existe, sino el cleanId del filename
     }))
     .sort((a, b) => b.cleanId.localeCompare(a.cleanId));
 }
@@ -55,9 +55,10 @@ export function getUniqueTags(posts: any[]) {
 export const getEntriesPaths = async (collectionName: CollectionKey): EntriesStaticPaths<CollectionKey> =>  {
   const entries: CollectionEntry<CollectionKey>[] = await getCollection<CollectionKey>(collectionName);
   return entries.map(entry => {
-    // Extrae el locale y el id limpio
+    // Extrae el locale y el id limpio (o slug si existe)
     const [locale, ...rest] = entry.id.split('/');
-    const cleanId = rest.join('/');
+    const fileCleanId = rest.join('/');
+    const cleanId = (entry.data as any).slug || fileCleanId;
     return {
       params: { locale: locale as UILanguages, id: cleanId },
       props: { entry },

@@ -62,10 +62,16 @@ export async function loadEntryByRoute(
 
   if (!config) return null
 
-  // entries id stored as `${locale}/${cleanId}` in content layer
+  // entries id stored as `${locale}/${fileCleanId}` in content layer
+  // pero puede usarse slug si está definido en frontmatter
   const collectionName = config.collection as any
   const entries = await getCollection(collectionName) as any[]
-  const entry = entries.find((e: any) => e.id === `${locale}/${id}`)
+  // Busca por slug si existe, o por cleanId del filename
+  const entry = entries.find((e: any) => {
+    const fileCleanId = e.id.replace(/^(en|es)\//, '')
+    const entrySlug = e.data.slug || fileCleanId
+    return e.id.startsWith(`${locale}/`) && entrySlug === id
+  })
 
   if (!entry) return null
 

@@ -16,10 +16,29 @@ export async function getStaticPaths() {
   // Para cada sección configurada, obtener sus entradas
   for (const [_key, config] of Object.entries(sectionsConfig)) {
     const entries = await getEntriesPaths(config.collection as any)
+    // Obtener todos los IDs únicos de la colección (en cualquier locale)
+    const allEntriesInCollection = await getCollection(config.collection as any) as any[]
+    const uniqueIds = [...new Set(allEntriesInCollection.map((e: any) => e.id.replace(/^(en|es)\//, '')))]
+
     for (const e of entries) {
       const locale = e.params.locale as UILanguages
       const route = config.routes[locale]
       paths.push({ params: { locale, section: route, id: e.params.id } })
+    }
+
+    // Generar paths para cada locale x id, aunque la entrada no exista en ese locale
+    // Esto permite que se muestre el banner de "no traducido" cuando sea necesario
+    for (const localeKey of languageKeys) {
+      const route = config.routes[localeKey as UILanguages]
+      for (const uniqueId of uniqueIds) {
+        // Solo añadir si no ya existe (para evitar duplicados)
+        const paramExists = paths.some((p: any) => 
+          p.params.locale === localeKey && p.params.section === route && p.params.id === uniqueId
+        )
+        if (!paramExists) {
+          paths.push({ params: { locale: localeKey, section: route, id: uniqueId } })
+        }
+      }
     }
   }
 
@@ -56,14 +75,22 @@ if (!loaded) {
     const collectionName = candidate.collection as any
     const entries = await getCollection(collectionName) as any[]
     // ¿Existe la entrada en el locale solicitado?
-    const entryForCurrent = entries.find((e: any) => e.id === `${locale}/${id}`)
+    const entryForCurrent = entries.find((e: any) => {
+      const fileCleanId = e.id.replace(/^(en|es)\//, '')
+      const entrySlug = e.data.slug || fileCleanId
+      return e.id.startsWith(`${locale}/`) && entrySlug === id
+    })
     if (entryForCurrent) {
       const targetRoute = candidate.routes[locale as UILanguages]
       return new Response(null, { status: 301, headers: { Location: `/${locale}/${targetRoute}/${id}` } })
     }
     // ¿Existe la entrada en el locale original donde se encontró el slug?
     if (originLocale) {
-      const entryForOrigin = entries.find((e: any) => e.id === `${originLocale}/${id}`)
+      const entryForOrigin = entries.find((e: any) => {
+        const fileCleanId = e.id.replace(/^(en|es)\//, '')
+        const entrySlug = e.data.slug || fileCleanId
+        return e.id.startsWith(`${originLocale}/`) && entrySlug === id
+      })
       if (entryForOrigin) {
         // En lugar de redirigir, mostramos la entrada original con un aviso de "no traducido"
         loaded = { config: candidate, entry: entryForOrigin }

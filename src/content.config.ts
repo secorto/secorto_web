@@ -8,6 +8,7 @@ const blogCollection = defineCollection({
     date: z.date(),
     tags: z.array(z.string()),
     image: image().optional(),
+    slug: z.string().optional(),
     canonical: z.string().optional()
   }),
 });
@@ -20,6 +21,7 @@ const talkCollection = defineCollection({
     tags: z.array(z.string()),
     image: image(),
     comunidad: z.string(),
+    slug: z.string().optional(),
     video: z.string().optional(),
     slide: z.string(),
     canonical: z.string().optional()
@@ -32,6 +34,7 @@ const workCollection = defineCollection({
     title: z.string(),
     excerpt: z.string(),
     image: image(),
+    slug: z.string().optional(),
     role: z.string(),
     responsibilities: z.string(),
     startDate: z.date(),
@@ -51,6 +54,7 @@ const projectsCollection = defineCollection({
     title: z.string(),
     excerpt: z.string(),
     image: image(),
+    slug: z.string().optional(),
     role: z.string(),
     responsibilities: z.string(),
     website: z.string().url().optional(),
@@ -68,6 +72,7 @@ const communityCollection = defineCollection({
     title: z.string(),
     excerpt: z.string(),
     image: image(),
+    slug: z.string().optional(),
     role: z.string(),
     responsibilities: z.string(),
     website: z.string().url().optional(),
