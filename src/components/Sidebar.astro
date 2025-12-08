@@ -2,6 +2,7 @@
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import { getLangFromUrl, useTranslations, useTranslatedPath } from '../i18n/utils';
 import { resolveLocalized } from '@i18n/rootMap'
+import { NAV_LINKS } from '@config/navLinks'
 
 import ThemeIcon from './ThemeIcon.astro';
 import LanguagePicker from './LanguagePicker.astro';
@@ -11,23 +12,6 @@ type Props = Record<string, never>;
 const currentLocale = getLangFromUrl(Astro.url);
 const t = useTranslations(currentLocale);
 const translatePath = useTranslatedPath(currentLocale);
-
-type RouteKey = 'about' | 'talk' | 'blog' | 'work' | 'community' | 'project'
-type TranslationKey = 'nav.about' | 'nav.talks' | 'nav.blog' | 'nav.work' | 'nav.community' | 'nav.projects'
-
-interface NavLink {
-  routeKey: RouteKey
-  translationKey: TranslationKey
-}
-
-const navLinks: NavLink[] = [
-  { routeKey: 'about', translationKey: 'nav.about' },
-  { routeKey: 'talk', translationKey: 'nav.talks' },
-  { routeKey: 'blog', translationKey: 'nav.blog' },
-  { routeKey: 'work', translationKey: 'nav.work' },
-  { routeKey: 'community', translationKey: 'nav.community' },
-  { routeKey: 'project', translationKey: 'nav.projects' },
-]
 ---
 <nav class="sidebar sidebar-toggle">
   <div class="sidebar-content">
@@ -40,7 +24,7 @@ const navLinks: NavLink[] = [
       <hr class="sidebar-separator">
     </div>
     <div class="sidebar-links">
-      {navLinks.map(({ routeKey, translationKey }) => (
+      {NAV_LINKS.map(({ routeKey, translationKey }) => (
         <a href={translatePath(`/${resolveLocalized(routeKey, currentLocale)}`)}>
           {t(translationKey)}
         </a>
