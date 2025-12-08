@@ -50,7 +50,13 @@ to = "/es/trabajo/:splat"
 
 [[redirects]]
 from = "/about/*"
-to = "/es/about/:splat"
+to = "/en/about/:splat"
+status = 301
+
+[[redirects]]
+from = "/acerca-de/*"
+to = "/es/acerca-de/:splat"
+status = 301
 
 [[redirects]]
 from = "/en/charla/*"

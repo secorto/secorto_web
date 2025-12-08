@@ -1,6 +1,7 @@
 ---
 import { getRelativeLocaleUrl } from 'astro:i18n';
-import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import { getLangFromUrl, useTranslations, useTranslatedPath } from '../i18n/utils';
+import { resolveLocalized } from '@i18n/rootMap'
 import { sectionsConfig } from '@config/sections'
 
 import ThemeIcon from './ThemeIcon.astro';
@@ -20,13 +21,23 @@ const t = useTranslations(currentLocale);
       <hr class="sidebar-separator">
     </div>
     <div class="sidebar-links">
-        <a href={getRelativeLocaleUrl(currentLocale, 'about')}>{t('nav.about')}</a>
-        <a href={`/${currentLocale}/${sectionsConfig.talk.routes[currentLocale]}`}>{t('nav.talks')}</a>
-        <a href={`/${currentLocale}/${sectionsConfig.blog.routes[currentLocale]}`}>{t('nav.blog')}</a>
-        <a href={`/${currentLocale}/${sectionsConfig.work.routes[currentLocale]}`}>{t('nav.work')}</a>
-        <a href={`/${currentLocale}/${sectionsConfig.community.routes[currentLocale]}`}>{t('nav.community')}</a>
-        <a href={`/${currentLocale}/${sectionsConfig.project.routes[currentLocale]}`}>{t('nav.projects')}</a>
-      </div>
+          {
+            // path translator to respect defaultLang prefix behavior
+          }
+          { (() => {
+              const translatePath = useTranslatedPath(currentLocale)
+              return (
+                <>
+                  <a href={translatePath(`/${resolveLocalized('about', currentLocale)}`)}>{t('nav.about')}</a>
+                  <a href={translatePath(`/${resolveLocalized('talk', currentLocale)}`)}>{t('nav.talks')}</a>
+                  <a href={translatePath(`/${resolveLocalized('blog', currentLocale)}`)}>{t('nav.blog')}</a>
+                  <a href={translatePath(`/${resolveLocalized('work', currentLocale)}`)}>{t('nav.work')}</a>
+                  <a href={translatePath(`/${resolveLocalized('community', currentLocale)}`)}>{t('nav.community')}</a>
+                  <a href={translatePath(`/${resolveLocalized('project', currentLocale)}`)}>{t('nav.projects')}</a>
+                </>
+              )
+            })() }
+        </div>
     <ThemeIcon />
     <LanguagePicker/>
   </div>
