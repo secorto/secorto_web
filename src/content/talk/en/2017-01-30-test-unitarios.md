@@ -10,6 +10,6 @@ comunidad: pybaq
 slide: https://scot3004.github.io/pymock
 ---
 
-Como realizar la creación de pruebas unitarias usando sentinels mock y stubs
+The presentation in Spanish shows how to create unit tests using sentinels, mocks and stubs
 
-[Evento en meetup](https://www.meetup.com/es-ES/pythonbaq/events/237160306/)
+[Meetup event](https://www.meetup.com/es-ES/pythonbaq/events/237160306/)

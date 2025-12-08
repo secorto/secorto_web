@@ -10,6 +10,6 @@ comunidad: JamStack Medellin
 image: "@assets/img/talks/que-es-markdown.png"
 ---
 
-Esta presentación da una introducción acerca de que es Markdown y por qué es importante para el stack JAMstack que consiste en javascript y marcado
+This presentation (in Spanish) provides an introduction to what Markdown is and why it is important to the JAMstack stack, which consists of JavaScript and markup.
 
 [Presentación](https://slides-markdown.secorto.com/)

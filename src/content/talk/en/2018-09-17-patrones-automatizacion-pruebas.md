@@ -11,8 +11,8 @@ image: "@assets/img/talks/patrones-automatizacion.png"
 
 ---
 
-La charla busca mostrar diferentes patrones de desarrollo que se pueden usar en la automatización de pruebas
+The talk (in Spanish) aims to showcase different development patterns that can be used in test automation
 
-[Repositorio](https://github.com/Scot3004/selenium_python)
+[Code repository](https://github.com/Scot3004/selenium_python)
 
-[Evento en meetup](https://www.meetup.com/es-ES/pythonbaq/events/254570423/)
+[Meetup event](https://www.meetup.com/es-ES/pythonbaq/events/254570423/)

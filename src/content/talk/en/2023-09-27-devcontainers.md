@@ -11,8 +11,8 @@ slide: https://onedrive.live.com/embed?resid=38418DB61BB40BD7%2114533&authkey=!A
 image: "@assets/img/talks/devcontainer-localhost.png"
 ---
 
-Esta charla trato sobre devcontainer una herramienta que puede facilitar la creación de contenedores para desarrollar apps
+This talk (in Spanish) was about devcontainer, a tool that can facilitate the creation of containers for developing apps.
 
-[Archivo usado como ejemplo](https://github.com/PyBAQ/website/blob/master/.devcontainer.json)
+[DevContainer file used as example](https://github.com/PyBAQ/website/blob/master/.devcontainer.json)
 
-[Ver la documentación](https://code.visualstudio.com/docs/devcontainers/containers)
+[Docs about dev containers](https://code.visualstudio.com/docs/devcontainers/containers)

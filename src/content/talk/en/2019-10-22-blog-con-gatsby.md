@@ -10,7 +10,7 @@ comunidad: Node Colombia
 image: "@assets/img/talks/blog-gatsby.png"
 ---
 
-Esta presentación muestra el uso de gatsby para la creación de una pagina web estática desde cero, y da multiples ejemplos de sitios hechos con gatsby
+This presentation (in Spanish) demonstrates the use of Gatsby to create a static website from scratch, and provides multiple examples of sites built with Gatsby.
 
 
-[Presentación](https://gatsby-node-decks.secorto.com/)
+[Slides](https://gatsby-node-decks.secorto.com/)
