@@ -13,7 +13,7 @@ describe('Blog', () => {
     cy.get(pythonTag).should('not.have.class', 'active')
     cy.get(pythonTag).click()
     cy.get(pythonTag).should('have.class', 'active')
-    cy.get('header h1').should('have.text', 'python')
+    cy.get('header h1').should('have.text', 'Blog - python')
 
     // Accede al post de POO en Python
     cy.get('[href="/es/blog/2022-08-14-poo-python"]').click()

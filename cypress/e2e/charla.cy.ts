@@ -13,7 +13,7 @@ describe('Charlas', () => {
     cy.get(containersTag).should('not.have.class', 'active')
     cy.get(containersTag).click()
     cy.get(containersTag).should('have.class', 'active')
-    cy.get('header h1').should('have.text', 'containers')
+    cy.get('header h1').should('have.text', 'Charlas - containers')
 
     // Accede a la charla de Devcontainers
     cy.get('[href="/es/charla/2023-09-27-devcontainers"]').click()

@@ -1,11 +1,11 @@
 import { darkMode, lightMode } from "./stubs"
 
 const routes = [
-  "/es/charla/",
-  "/es/blog/",
-  "/es/comunidad/",
-  "/es/trabajo/",
-  "/es/proyecto/",
+  "/es/charla",
+  "/es/blog",
+  "/es/comunidad",
+  "/es/trabajo",
+  "/es/proyecto",
 ]
 
 function testAccessibilityForRoutes() {
