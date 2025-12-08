@@ -14,30 +14,19 @@ import type { UILanguages } from '@i18n/ui'
 export async function getStaticPaths() {
   const paths: any[] = []
   // Para cada sección configurada, obtener sus entradas
-  for (const [_key, config] of Object.entries(sectionsConfig)) {
-    const entries = await getEntriesPaths(config.collection as any)
-    // Obtener todos los IDs únicos de la colección (en cualquier locale)
+  for (const [_sectionKey, config] of Object.entries(sectionsConfig)) {
+    // Obtener todos los entries de la colección
     const allEntriesInCollection = await getCollection(config.collection as any) as any[]
-    const uniqueIds = [...new Set(allEntriesInCollection.map((e: any) => e.id.replace(/^(en|es)\//, '')))]
-
-    for (const e of entries) {
-      const locale = e.params.locale as UILanguages
-      const route = config.routes[locale]
-      paths.push({ params: { locale, section: route, id: e.params.id } })
-    }
-
-    // Generar paths para cada locale x id, aunque la entrada no exista en ese locale
-    // Esto permite que se muestre el banner de "no traducido" cuando sea necesario
+    
+    // Generar paths SOLO para entradas que existen en cada locale
     for (const localeKey of languageKeys) {
-      const route = config.routes[localeKey as UILanguages]
-      for (const uniqueId of uniqueIds) {
-        // Solo añadir si no ya existe (para evitar duplicados)
-        const paramExists = paths.some((p: any) => 
-          p.params.locale === localeKey && p.params.section === route && p.params.id === uniqueId
-        )
-        if (!paramExists) {
-          paths.push({ params: { locale: localeKey, section: route, id: uniqueId } })
-        }
+      const sectionRoute = config.routes[localeKey as UILanguages]
+      const entriesForLocale = allEntriesInCollection.filter((e: any) => e.id.startsWith(`${localeKey}/`))
+      
+      for (const entry of entriesForLocale) {
+        const fileCleanId = entry.id.replace(/^(en|es)\//, '')
+        const entrySlug = (entry.data as any).slug || fileCleanId
+        paths.push({ params: { locale: localeKey, section: sectionRoute, id: entrySlug } })
       }
     }
   }

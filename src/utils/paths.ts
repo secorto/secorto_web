@@ -38,7 +38,7 @@ export async function getPostsByLocale<C extends CollectionKey>(
     .filter(post => post.id.startsWith(`${locale}/`))
     .map(post => ({
       ...post,
-      cleanId: post.data.slug || post.id.replace(/^(en|es)\//, '') // Usa slug si existe, sino el cleanId del filename
+      cleanId: (post.data as any).slug || post.id.replace(/^(en|es)\//, '') // Usa slug si existe, sino el cleanId del filename
     }))
     .sort((a, b) => b.cleanId.localeCompare(a.cleanId));
 }
