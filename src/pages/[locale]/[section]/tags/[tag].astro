@@ -1,0 +1,61 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro'
+import { getTagsPaths, getPostsByLocale } from '@utils/paths'
+import { sectionsConfig, getSectionConfigByRoute } from '@config/sections'
+import ListPost from '@components/ListPost.astro'
+import ListWork from '@components/ListWork.astro'
+import { useTranslations } from '@i18n/utils'
+import type { UILanguages } from '@i18n/ui'
+
+export async function getStaticPaths() {
+  const paths: any[] = []
+  // Para cada sección con tags, generar paths por locale
+  for (const [_key, config] of Object.entries(sectionsConfig)) {
+    if (!config.hasTags) continue
+    // generar por cada locale
+    for (const locale of Object.keys(config.routes)) {
+      const localeKey = locale as UILanguages
+      const tagPaths = await getTagsPaths(config.collection as any, locale)
+      for (const p of tagPaths) {
+        paths.push({ params: { locale: localeKey, section: config.routes[localeKey], tag: p.params.tag }, props: p.props })
+      }
+    }
+  }
+  return paths
+}
+
+const { locale, section, tag } = Astro.params
+const t = useTranslations(locale as UILanguages)
+
+// localizar la configuración de la sección por su slug en este locale
+const config = getSectionConfigByRoute(section, locale as UILanguages)
+if (!config) {
+  return new Response('Not found', { status: 404 })
+}
+
+// obtener posts para este tag
+// preferir props pre-render (Astro.props) si existen
+let posts = (Astro.props && Astro.props.posts) ?? []
+let tags: string[] = (Astro.props && Astro.props.tags) ?? []
+
+if (!posts.length) {
+  // fallback: calcular desde la colección
+  const all = await getPostsByLocale(config.collection as any, locale)
+  posts = all.filter((p: any) => p.data.tags && p.data.tags.includes(tag))
+  tags = [...new Set(all.flatMap((p: any) => p.data.tags || []))]
+}
+
+const pageTitle = `${t(config.translationKey)} - ${tag}`
+const metaDescription = `${t(config.translationKey)} tagged with ${tag}`
+const Component = config.listComponent === 'ListWork' ? ListWork : ListPost
+---
+
+<head>
+  <title>{pageTitle}</title>
+  <meta name="description" content={metaDescription} />
+</head>
+
+<BaseLayout pageTitle={pageTitle}>
+  <h1>{pageTitle}</h1>
+  <Component posts={posts} basePath={`/${locale}/${config.routes[locale as UILanguages]}`} lang={locale} />
+</BaseLayout>
