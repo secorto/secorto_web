@@ -17,12 +17,12 @@ export async function getStaticPaths() {
   for (const [_sectionKey, config] of Object.entries(sectionsConfig)) {
     // Obtener todos los entries de la colección
     const allEntriesInCollection = await getCollection(config.collection as any) as any[]
-    
+
     // Generar paths SOLO para entradas que existen en cada locale
     for (const localeKey of languageKeys) {
       const sectionRoute = config.routes[localeKey as UILanguages]
       const entriesForLocale = allEntriesInCollection.filter((e: any) => e.id.startsWith(`${localeKey}/`))
-      
+
       for (const entry of entriesForLocale) {
         const fileCleanId = entry.id.replace(/^(en|es)\//, '')
         const entrySlug = (entry.data as any).slug || fileCleanId
@@ -112,6 +112,7 @@ const pageTitle = entry.data.title || t(config.translationKey)
 const routeSlug = config.routes[locale as UILanguages]
 ---
 <head>
+  <meta charset="utf-8" />
   <link rel="canonical" href={canonicalUrl} />
   {isUntranslated && <meta name="robots" content="noindex" />}
   {/* hreflang alternates: solo para locales donde exista la entrada */}
