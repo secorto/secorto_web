@@ -1,7 +1,7 @@
 import type { UILanguages } from "@i18n/ui";
 import { getCollection } from "astro:content";
 import type { CollectionEntry, CollectionKey } from "astro:content";
-type CollectionWithTags = 'blog'|'talk'
+export type CollectionWithTags = 'blog'|'talk'
 
 export type EntryWithCleanId<C extends CollectionKey> = CollectionEntry<C> & { cleanId: string };
 

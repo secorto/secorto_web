@@ -1,0 +1,55 @@
+---
+import { languageKeys } from '@i18n/ui'
+import { useTranslations } from '@i18n/utils'
+import BaseLayout from '@layouts/BaseLayout.astro'
+import SectionRenderer from '@components/SectionRenderer.astro'
+import { loadSectionByRoute } from '@utils/sectionLoader'
+import { sectionsConfig } from '@config/sections'
+
+/**
+ * Genera las rutas estáticas para todas las secciones y sus aliases
+ * Por ejemplo: /es/blog, /es/charla, /en/talk, etc.
+ */
+export async function getStaticPaths() {
+  const paths = []
+
+  // Para cada sección configurada
+  for (const [_sectionType, config] of Object.entries(sectionsConfig)) {
+    // Para cada idioma
+    for (const locale of languageKeys) {
+      // Obtenemos la ruta específica del idioma
+      const route = config.routes[locale]
+      paths.push({
+        params: {
+          locale,
+          section: route
+        }
+      })
+    }
+  }
+
+  return paths
+}
+
+const { locale, section } = Astro.params
+const t = useTranslations(locale)
+
+// Cargar la sección dinámicamente basada en la URL
+const sectionData = await loadSectionByRoute(section, locale)
+
+if (!sectionData) {
+  return new Response('Not found', { status: 404 })
+}
+
+const { config, posts, tags } = sectionData
+const pageTitle = t(config.translationKey)
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  <SectionRenderer
+    config={config}
+    locale={locale}
+    posts={posts}
+    tags={tags}
+  />
+</BaseLayout>
