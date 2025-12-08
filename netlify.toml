@@ -51,3 +51,45 @@ to = "/es/trabajo/:splat"
 [[redirects]]
 from = "/about/*"
 to = "/es/about/:splat"
+
+[[redirects]]
+from = "/en/charla/*"
+to = "/en/talk/:splat"
+status = 301
+
+[[redirects]]
+from = "/en/trabajo/*"
+to = "/en/work/:splat"
+status = 301
+
+[[redirects]]
+from = "/en/comunidad/*"
+to = "/en/community/:splat"
+status = 301
+
+[[redirects]]
+# Spanish requests using English slugs -> Spanish canonical
+from = "/es/talk/*"
+to = "/es/charla/:splat"
+status = 301
+
+[[redirects]]
+from = "/es/work/*"
+to = "/es/trabajo/:splat"
+status = 301
+
+[[redirects]]
+from = "/es/community/*"
+to = "/es/comunidad/:splat"
+status = 301
+
+[[redirects]]
+# Also handle common plural variants
+from = "/en/talks/*"
+to = "/en/talk/:splat"
+status = 301
+
+[[redirects]]
+from = "/es/charlas/*"
+to = "/es/charla/:splat"
+status = 301
