@@ -9,6 +9,10 @@ slide: https://docs.google.com/presentation/d/e/2PACX-1vTiTkD7SSdFUSkKqSwsWQD7yZ
 comunidad: pybaq
 image: "@assets/img/talks/patrones-automatizacion.png"
 
+translation_status: 'translated'
+translation_origin:
+  locale: 'es'
+  id: '2018-09-17-patrones-automatizacion-pruebas'
 ---
 
 The talk (in Spanish) aims to showcase different development patterns that can be used in test automation

@@ -5,6 +5,10 @@ tags:
   - python
 excerpt: A Gist that provides an introduction to Python
 date: 2022-07-11
+translation_status: 'translated'
+translation_origin:
+  locale: 'es'
+  id: '2022-07-11-intro-python'
 ---
 
 In this [Gist hosted on GitHub](https://gist.github.com/Scot3004/c5a562df9ca6509820f6320b5e4c6900) we find a notebook on how you can use Python from scratch and it explains the use of Jupyter Notebook, plus a link so you can do your own testing in Colab.

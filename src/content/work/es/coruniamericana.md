@@ -7,6 +7,7 @@ role: Estudiante en practicas
 responsibilities: Mantenimiento de servidores, soporte, desarrollo web
 startDate: 2013-01-01
 endDate: 2013-04-01
+translation_status: 'original'
 ---
 
 Esta fue mi primera experiencia laboral, fue con el programa de apoyo laboral de la universidad donde estudie

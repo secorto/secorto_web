@@ -9,6 +9,7 @@ slide: https://docs.google.com/presentation/d/e/2PACX-1vTiTkD7SSdFUSkKqSwsWQD7yZ
 comunidad: pybaq
 image: "@assets/img/talks/patrones-automatizacion.png"
 
+translation_status: 'original'
 ---
 
 La charla busca mostrar diferentes patrones de desarrollo que se pueden usar en la automatización de pruebas

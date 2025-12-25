@@ -7,6 +7,10 @@ responsibilities: "Desarrollo de aplicaciones web con java"
 website: https://joonik.com
 startDate: 2016-06-01
 endDate: 2018-02-10
+translation_status: 'translated'
+translation_origin:
+  locale: 'es'
+  id: 'joonik'
 ---
 
 At this company, I took my first steps in end-to-end test automation with Selenium. My role was more front-end oriented, and among the things I accomplished were a website with Jekyll, several WordPress sites, and an online store with PrestaShop.

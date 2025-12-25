@@ -7,6 +7,10 @@ role: Estudiante en practicas
 responsibilities: Mantenimiento de servidores, soporte, desarrollo web
 startDate: 2013-01-01
 endDate: 2013-04-01
+translation_status: 'translated'
+translation_origin:
+  locale: 'es'
+  id: 'coruniamericana'
 ---
 
 This was my first work experience, through the university's job placement program.

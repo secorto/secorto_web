@@ -7,6 +7,10 @@ responsibilities: "Java web development"
 website: https://www.infortributos.com
 startDate: 2013-11-01
 endDate: 2016-05-01
+translation_status: 'translated'
+translation_origin:
+  locale: 'es'
+  id: 'infortributos'
 ---
 
 Among the things I accomplished at this company was working with JSF, a Java-based technology that enables UI interactions. It uses XHTML for creating templates, to which some of the language's own components are added. Among the Java libraries I learned during this experience were JasperReports and PrimeFaces as a visual framework. In addition, I had the opportunity to meet highly skilled people in Oracle database management, where I learned to create complex queries and stored procedures.

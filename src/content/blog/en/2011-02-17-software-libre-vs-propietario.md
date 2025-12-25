@@ -4,6 +4,10 @@ tags:
   - opensource
 blogger_orig_url: http://scot3004.blogspot.com/2011/02/software-libre-o-cerrado-libertad-o.html
 date: 2011-02-17
+translation_status: 'translated'
+translation_origin:
+  locale: 'es'
+  id: '2011-02-17-software-libre-vs-propietario'
 ---
 
 Translated in November 2025

@@ -11,6 +11,7 @@ gallery:
   - image: "@assets/img/perficient/psl_buzo.jpg"
     alt: "En la oficina con el buzo de psl"
 startDate: 2018-04-01
+translation_status: 'original'
 ---
 
 Considero esta empresa el lugar donde mi carrera profesional tomo un giro orientandola al testing.

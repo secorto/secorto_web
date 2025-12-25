@@ -1,6 +1,6 @@
 # Translation workflow
 
-> Nota: en este repositorio `translation_status` es un campo obligatorio en el frontmatter de las entradas (colecciones como `blog` y `talk`). El build fallará si falta. Define uno de los valores permitidos: `translated`, `draft`, `partial`, `pending` o `original`.
+> Nota: recomendamos definir `translation_status` en el frontmatter de las entradas (colecciones como `blog` y `talk`) para dejar explícito el estado. Los valores permitidos son: `translated`, `draft`, `partial`, `pending` u `original`. Para evitar roturas en builds existentes, el campo es opcional en el schema; sin embargo, mantenerlo explícito facilita el workflow editorial.
 
 This project uses a pragmatic translation workflow:
 
@@ -112,5 +112,48 @@ El patrón es genérico: cualquier sitio estático que se organice por carpetas 
 - Metadata opcional en frontmatter para estado y origen.
 - Template que respete `translation_status` (banner, noindex, canonical).
 - Un helper ligero para crear borradores automáticamente.
+
+Detección de inconsistencias
+---------------------------
+
+Cuando trabajas con contenido en varias carpetas por idioma es fácil que se produzcan incongruencias (por ejemplo: la versión traducida existe pero no está marcada como `translated`, o ambos archivos están marcados `original` pero uno tiene `translation_origin` apuntando al otro). Aquí tienes cómo detectarlas y tratarlas.
+
+Comprobaciones disponibles
+
+- Archivos sin `translation_status`: usa `scripts/list-missing-translation-status.js` (lista los archivos que no tienen el campo en el frontmatter)
+- Pares traducidos detectables: `scripts/auto-mark-translated.js` intenta marcar automáticamente originales como `original` y traducciones como `translated` (añade `translation_origin` si hace falta)
+- Inconsistencias detalladas: `scripts/check-translation-inconsistencies.js` detecta casos como:
+	- traducción marcada `translated` pero sin `translation_origin`
+	- archivo que declara `translation_origin` pero NO tiene `translation_status: 'translated'`
+	- archivo que tiene `translation_origin` pero ambos archivos están marcados `original`
+
+Uso rápido (desde la raíz del repo):
+
+```bash
+# listar archivos sin translation_status
+node ./scripts/list-missing-translation-status.js
+
+# intentar auto-marcar pares (añade translation_status/translation_origin cuando es claro)
+node ./scripts/auto-mark-translated.js
+
+# revisar inconsistencias más finas
+node ./scripts/check-translation-inconsistencies.js
+```
+
+Ejemplo de salida (posible):
+
+```
+Found 2 inconsistency(ies):
+- { collection: 'blog', id: '2011-02-17-software-libre-vs-propietario.md', type: 'origin_but_not_translated', locale: 'en', origin: { locale: 'es', id: '2011-02-17-software-libre-vs-propietario.md' } }
+- { collection: 'talk', id: '2019-10-22-blog-con-gatsby.md', type: 'translated_missing_origin', locale: 'en' }
+```
+
+Qué hacer según el tipo
+
+- `translated_missing_origin`: abrir la traducción y añadir `translation_origin` apuntando al original
+- `origin_but_not_translated`: la entrada declara `translation_origin` pero no está marcada como `translated` — cambia el `translation_status` a `translated` si corresponde
+- `origin_present_both_original`: revisar manualmente si ambos son versiones independientes o si un archivo debe marcarse `translated`
+
+Si quieres, puedo ejecutar estas comprobaciones ahora y generar un pequeño report en `scripts/translation-inconsistencies-report.json` o aplicar correcciones automáticas en los casos no ambiguos.
 
 Con esto tienes una solución pragmática, de bajo coste y fácil de transferir a otros repos.

@@ -11,6 +11,10 @@ gallery:
   - image: "@assets/img/perficient/psl_buzo.jpg"
     alt: "At the office with the psl swag"
 startDate: 2018-04-01
+translation_status: 'translated'
+translation_origin:
+  locale: 'es'
+  id: 'perficient'
 ---
 
 I consider this company the place where my professional career took a turn toward testing.
