@@ -1,36 +1,36 @@
-# Translation workflow
+# Flujo de traducción
 
-> Nota: recomendamos definir `translation_status` en el frontmatter de las entradas (colecciones como `blog` y `talk`) para dejar explícito el estado. Los valores permitidos son: `translated`, `draft`, `partial`, `pending` u `original`. Para evitar roturas en builds existentes, el campo es opcional en el schema; sin embargo, mantenerlo explícito facilita el workflow editorial.
+> Nota: recomendamos definir `translation_status` en el frontmatter de las entradas (colecciones como `blog` y `talk`) para dejar explícito el estado. Los valores permitidos son: `translated`, `draft`, `partial`, `pending` u `original`. Para evitar roturas en builds existentes, el campo es opcional en el schema; sin embargo, mantenerlo explícito facilita el flujo editorial.
 
-This project uses a pragmatic translation workflow:
+Este proyecto usa un flujo de traducción pragmático:
 
-- Content is stored per-locale under `src/content/<collection>/<locale>/`.
-- If you want to start a translation but keep it as a draft, create the file under the target locale and set `translation_status: 'draft'` in the frontmatter and `translation_origin` pointing to the original.
+- El contenido se organiza por idioma en `src/content/<collection>/<locale>/`.
+- Si quieres comenzar una traducción pero mantenerla como borrador, crea el archivo en la carpeta del idioma destino y añade `translation_status: 'draft'` en el frontmatter y `translation_origin` apuntando al original.
 
-Quick helper (from project root):
+Herramienta rápida (desde la raíz del proyecto):
 
 ```
 node ./scripts/create-translation-draft.js <collection> <localeFrom> <id> <targetLocale>
 ```
 
-Example:
+Ejemplo:
 
 ```
 node ./scripts/create-translation-draft.js talk es 2018-09-17-patrones-automatizacion-pruebas en
 ```
 
-This will copy the original file into `src/content/talk/en/2018-09-17-patrones-automatizacion-pruebas.md` and mark it as a draft translation.
+Esto copiará el archivo original a `src/content/talk/en/2018-09-17-patrones-automatizacion-pruebas.md` y lo marcará como borrador de traducción.
 
-UI behavior
-- Draft translations show a notice banner and are marked `noindex`.
-- Canonical points to the original (if provided in `translation_origin`).
+Comportamiento de la interfaz
+- Las traducciones en estado `draft` muestran un banner y se marcan como `noindex`.
+- La etiqueta `canonical` apunta al original (si `translation_origin` está presente).
 
-If you later finish the translation, update `translation_status: 'translated'` and fill the English content.
+Cuando completes la traducción, actualiza `translation_status: 'translated'` y rellena el contenido en el idioma destino.
 
 Rationale — por qué este enfoque
 ---------------------------------
 
-Este workflow busca equilibrio entre dos necesidades frecuentes en proyectos personales y pequeños blogs:
+Este flujo busca equilibrio entre dos necesidades frecuentes en proyectos personales y pequeños blogs:
 
 - Minimizar fricción: publicar contenido no debe obligarte a traducirlo inmediatamente. Crear y mantener traducciones es costoso en tiempo.
 - Mantener buenas prácticas SEO: evitar que borradores o traducciones incompletas sean indexadas o compitan con el original.
@@ -63,7 +63,7 @@ Cuándo usarlo
 	- Publicas muy raramente (1–2 posts por año) y no te importa una nota manual en el contenido
 	- No te preocupa la indexación temporal de borradores
 
-Workflow práctico (pasos rápidos)
+Flujo práctico (pasos rápidos)
 --------------------------------
 
 1. Para crear un borrador de traducción desde el original:
