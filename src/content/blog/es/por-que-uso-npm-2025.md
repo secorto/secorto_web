@@ -1,9 +1,12 @@
 ---
-title: Por que uso npm
+title: Por qué uso npm (actualizado)
 tags:
   - dev
-excerpt: NPM puede llegara ser un gran aliado al desarrollar en front end, a continuación mis motivos
-date: 2016-06-18
+  - herramientas
+excerpt: NPM puede ser un gran aliado en el desarrollo frontend; en esta actualización explico por qué lo uso y cómo lo comparo con Yarn y pnpm
+date: 2025-12-25
+updated: 2025-12-25
+translation_status: 'original'
 ---
 
 Este es un análisis de por qué mi blog usa NPM y por qué, para este proyecto en concreto, me resulta la opción más práctica.
@@ -39,3 +42,7 @@ Si decides experimentar con pnpm, prueba primero en un branch y revisa que las d
 ## Por qué NPM es suficiente en este blog
 
 Porque puedo ejecutar todo el build y las tareas auxiliares desde `npm run ...`, las dependencias necesarias están publicadas en el registro y no necesito un comportamiento de instalación especial. Mantener la herramienta mínima reduce la complejidad y la barrera de entrada para contribuciones ocasionales.
+
+---
+
+Si quieres, puedo añadir ejemplos de `npm run build`/`npm run dev` en el README o en la entrada misma, o crear una versión traducida en inglés para comenzar la traducción.

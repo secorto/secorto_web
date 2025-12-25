@@ -99,3 +99,8 @@ status = 301
 from = "/es/charlas/*"
 to = "/es/charla/:splat"
 status = 301
+
+[[redirects]]
+from = "/es/blog/2016-06-18-por-que-uso-npm"
+to = "/es/blog/por-que-uso-npm-2025"
+status = 301
