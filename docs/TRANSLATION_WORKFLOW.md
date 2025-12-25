@@ -156,4 +156,65 @@ Qué hacer según el tipo
 
 Si quieres, puedo ejecutar estas comprobaciones ahora y generar un pequeño report en `scripts/translation-inconsistencies-report.json` o aplicar correcciones automáticas en los casos no ambiguos.
 
+Ejemplos de frontmatter por estado
+----------------------------------
+
+Estos ejemplos muestran cómo debes declarar `translation_status` y, cuando aplique,
+`translation_origin`. Coloca estos bloques en la parte superior del archivo Markdown.
+
+- Original (fuente en español):
+
+```yaml
+title: "Mi post"
+date: 2022-07-11
+translation_status: 'original'
+```
+
+- Pending (planeado para traducir — metadata solo):
+
+```yaml
+title: "Mi post"
+date: 2022-07-11
+translation_status: 'pending'
+```
+
+- Draft (traducción creada en carpeta destino, no indexable):
+
+```yaml
+title: "My post (draft)"
+date: 2022-07-11
+translation_status: 'draft'
+translation_origin:
+	locale: 'es'
+	id: 'mi-post'
+```
+
+- Translated (traducción completa publicada):
+
+```yaml
+title: "My post"
+date: 2022-07-11
+translation_status: 'translated'
+translation_origin:
+	locale: 'es'
+	id: 'mi-post'
+```
+
+- Partial (traducción publicada pero incompleta — muestra banner leve):
+
+```yaml
+title: "My post (partial)"
+date: 2022-07-11
+translation_status: 'partial'
+translation_origin:
+	locale: 'es'
+	id: 'mi-post'
+```
+
+Notas importantes:
+
+- `translation_status` siempre describe el archivo donde está escrito (es un atributo por archivo). El archivo que es la traducción debe llevar `translation_status: 'translated'` y `translation_origin` apuntando al original.
+- Puedes dejar el campo ausente en archivos antiguos si no quieres migrarlos ahora; los scripts que incluimos ayudan a detectar y actualizar casos evidentes.
+- Para posts creados primero en inglés aplica la misma convención: el archivo en inglés que es fuente debe ser `original`, y la futura versión en español `translated` con `translation_origin.locale: 'en'`.
+
 Con esto tienes una solución pragmática, de bajo coste y fácil de transferir a otros repos.
