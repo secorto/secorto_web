@@ -9,6 +9,8 @@ const blogCollection = defineCollection({
     tags: z.array(z.string()),
     image: image().optional(),
     slug: z.string().optional(),
+    translation_status: z.enum(['translated','draft','partial','pending','original']),
+    translation_origin: z.object({ locale: z.string(), id: z.string() }).optional(),
     canonical: z.string().optional()
   }),
 });
@@ -24,6 +26,8 @@ const talkCollection = defineCollection({
     slug: z.string().optional(),
     video: z.string().optional(),
     slide: z.string(),
+    translation_status: z.enum(['translated','draft','partial','pending','original']),
+    translation_origin: z.object({ locale: z.string(), id: z.string() }).optional(),
     canonical: z.string().optional()
   }),
 });

@@ -20,6 +20,8 @@ const dateFormat = getFullFormat(Astro.url);
       image={post.data.image}
       url={`/${basePath}/${post.cleanId}`}
       title={post.data.title}
+      translation_status={post.data.translation_status}
+      translation_note={(post.data as any).translation_note}
     >
       {post.cleanId}
       <PostDate>

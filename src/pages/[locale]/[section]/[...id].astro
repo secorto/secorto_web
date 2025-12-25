@@ -43,6 +43,8 @@ let loaded = await loadEntryByRoute(section, locale as UILanguages, id)
 
 let isUntranslated = false
 let originLocale: UILanguages | null = null
+let isTranslationDraft = false
+let translationOrigin: { locale: UILanguages; id: string } | null = null
 
 if (!loaded) {
   // Intentar detectar si `section` es el slug en otro idioma (por ejemplo 'trabajo')
@@ -103,6 +105,23 @@ const canonicalLocale = isUntranslated && originLocale ? originLocale : locale
 const canonicalRoute = config.routes[canonicalLocale as UILanguages]
 const canonicalUrl = `https://secorto.com/${canonicalLocale}/${canonicalRoute}/${cleanId}`
 
+// If the loaded entry itself declares a translation_status (draft/partial/pending)
+if (entry && (entry.data as any).translation_status && (entry.data as any).translation_status !== 'translated') {
+  // treat as translation draft: show the draft notice, set canonical to origin
+  isTranslationDraft = true
+  const origin = (entry.data as any).translation_origin
+  if (origin && origin.locale && origin.id) {
+    translationOrigin = { locale: origin.locale as UILanguages, id: origin.id }
+    // override canonical info
+    const origCfg = config // assume same section mapping; if different, try to find by route later
+    const origRoute = origCfg.routes[translationOrigin.locale as UILanguages]
+    // build canonical to the origin locale and id
+    const origCanonicalUrl = `https://secorto.com/${translationOrigin.locale}/${origRoute}/${translationOrigin.id}`
+    // overwrite canonicalUrl variable used in head
+    // Note: canonicalUrl is const; so we'll use a separate variable below when rendering head
+  }
+}
+
 // determinar en qué locales existe esta entrada para generar hreflang alternates
 const collectionName = config.collection as any
 const allEntries = await getCollection(collectionName) as any[]
@@ -113,8 +132,8 @@ const routeSlug = config.routes[locale as UILanguages]
 ---
 <head>
   <meta charset="utf-8" />
-  <link rel="canonical" href={canonicalUrl} />
-  {isUntranslated && <meta name="robots" content="noindex" />}
+  <link rel="canonical" href={isTranslationDraft && translationOrigin ? `https://secorto.com/${translationOrigin.locale}/${config.routes[translationOrigin.locale as UILanguages]}/${translationOrigin.id}` : canonicalUrl} />
+  {(isUntranslated || isTranslationDraft) && <meta name="robots" content="noindex" />}
   {/* hreflang alternates: solo para locales donde exista la entrada */}
   {availableLocales.map((lk) => (
     <link rel="alternate" hreflang={lk} href={`https://secorto.com/${lk}/${config.routes[lk as UILanguages]}/${cleanId}`} />
@@ -128,6 +147,16 @@ const routeSlug = config.routes[locale as UILanguages]
     <div class="untranslated-notice" role="status">
   <p>{t('post.untranslated_notice')}</p>
       <a href={`/${canonicalLocale}/${canonicalRoute}/${cleanId}`}>{t('post.view_original')}</a>
+    </div>
+  )}
+  {isTranslationDraft && (
+    <div class="untranslated-notice" role="status">
+      <p>{t('post.translation_draft_notice')}</p>
+      {translationOrigin ? (
+        <a href={`/${translationOrigin.locale}/${config.routes[translationOrigin.locale as UILanguages]}/${translationOrigin.id}`}>{t('post.view_original')}</a>
+      ) : (
+        <a href={`/${canonicalLocale}/${canonicalRoute}/${cleanId}`}>{t('post.view_original')}</a>
+      )}
     </div>
   )}
   {config.hasTags && entry.data.tags && (

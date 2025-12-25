@@ -5,6 +5,8 @@ export type TranslationEntry = {
   slug: string;
   title: string;
   date?: Date;
+  translation_status?: string;
+  translation_origin?: { locale: string; id: string } | null;
 };
 
 export type TranslationMap = Record<
@@ -31,6 +33,8 @@ export async function buildTranslationMap(
       slug,
       title: entry.data.title,
       date,
+      translation_status: (entry.data as any).translation_status,
+      translation_origin: (entry.data as any).translation_origin ?? null,
     };
 
     return acc;

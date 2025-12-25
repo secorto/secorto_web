@@ -1,5 +1,7 @@
 # Translation workflow
 
+> Nota: en este repositorio `translation_status` es un campo obligatorio en el frontmatter de las entradas (colecciones como `blog` y `talk`). El build fallará si falta. Define uno de los valores permitidos: `translated`, `draft`, `partial`, `pending` o `original`.
+
 This project uses a pragmatic translation workflow:
 
 - Content is stored per-locale under `src/content/<collection>/<locale>/`.

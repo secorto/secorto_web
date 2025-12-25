@@ -3,6 +3,7 @@ import { translations } from "../i18n/translations";
 import { languages, languageKeys, defaultLang, showDefaultLang } from "../i18n/ui";
 import type { UILanguages } from "../i18n/ui";
 import { resolveCanonical, resolveLocalized } from "../i18n/rootMap";
+import { useTranslations } from "@i18n/utils"
 
 const segments = Astro.url.pathname.split("/").filter(Boolean);
 const lang = segments[0] as UILanguages;
@@ -11,6 +12,8 @@ const slug = segments.slice(2).join("/");
 
 const canonicalSection = resolveCanonical(rawSection, lang);
 const isDetailPage = Boolean(slug);
+
+const t = useTranslations(lang as UILanguages)
 
 const availableLocales = isDetailPage
   ? translations[canonicalSection as keyof typeof translations]?.[slug] || {}
@@ -35,9 +38,46 @@ const isTagPage = slug.startsWith("tags");
     // 📌 Caso 2: páginas de detalle dentro de colecciones
     if (isDetailPage && canonicalSection in translations) {
       const entry = availableLocales[targetLang];
-      if (!entry) {
-        return <span class="disabled">{label} 🔒</span>;
+  if (!entry) {
+        // Tipado ligero para metadata de la entrada
+        interface EntryMeta {
+          noTranslate?: string[]
+        }
+
+        const meta = translations[canonicalSection as keyof typeof translations]?.[slug] as EntryMeta | undefined
+        const willNotBeTranslated =
+          Array.isArray(meta?.noTranslate) && meta!.noTranslate!.includes(targetLang)
+
+        const note = willNotBeTranslated
+          ? "Esta publicación no será traducida"
+          : "La traducción no está disponible todavía"
+
+        return (
+          <span
+            class="disabled"
+            role="link"
+            aria-disabled="true"
+            tabindex="-1"
+            aria-label={`${note}: ${label}`}
+            title={`${note}: ${label}`}
+            data-disabled-reason={willNotBeTranslated ? "no-translate" : "not-yet-translated"}
+          >
+            {label} {willNotBeTranslated ? "🔒" : "⌛"}
+          </span>
+        )
       }
+      // If entry exists but is a draft/partial translation, indicate in the picker
+      const status = (entry as any).translation_status as string | undefined
+      if (status && status !== 'translated') {
+        const note = status === 'draft' ? t('post.translation_draft_notice') : t('post.translation_pending')
+        const marker = status === 'draft' ? '✏️' : '⌛'
+        return (
+          <a href={`${langPrefix}/${localizedSection}/${entry.slug}`} title={`${note}: ${label}`} aria-label={`${note}: ${label}`}>
+            {label} {marker}
+          </a>
+        )
+      }
+
       return (
         <a href={`${langPrefix}/${localizedSection}/${entry.slug}`}>
           {label}

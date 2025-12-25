@@ -1,11 +1,13 @@
 ---
 import { Image } from "astro:assets";
 interface Props {
-	title: string
+    title: string
   url: string
   image?: ImageMetadata
+  translation_status?: string
+  translation_note?: string
 }
-const { title, url, image } = Astro.props
+const { title, url, image, translation_status, translation_note } = Astro.props
 ---
 
 <a class="card" href={url}>
@@ -14,6 +16,11 @@ const { title, url, image } = Astro.props
       <Image src={image} alt="featured image" />
     }
     <h2 class="card-title">{title}</h2>
+    {translation_status && (
+      <div class="card-badge">
+        <abbr title={translation_note ?? (translation_status === 'draft' ? 'Draft translation' : 'Not translated')}>{translation_status === 'draft' ? 'Draft' : 'Not translated'}</abbr>
+      </div>
+    )}
     <div class="card-details">
       <slot/>
     </div>

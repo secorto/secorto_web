@@ -31,6 +31,8 @@ export const ui = {
     'talk.tagged': 'Talks tagged with',
     'post.untranslated_notice': 'This post is not translated into the selected language. You are viewing the original.',
     'post.view_original': 'View original',
+    'post.translation_draft_notice': 'This is a draft translation. The canonical original is available.',
+    'post.translation_pending': 'Translation pending',
   },
   es: {
     'nav.about': 'Sobre mi',
@@ -51,5 +53,7 @@ export const ui = {
     'talk.tagged': 'Charlas etiquetadas con',
     'post.untranslated_notice': 'Esta entrada no está traducida al idioma seleccionado. Estás viendo el original.',
     'post.view_original': 'Ver original',
+    'post.translation_draft_notice': 'Esta es una traducción en borrador. El original canónico está disponible.',
+    'post.translation_pending': 'Traducción pendiente',
   },
 } as const;
