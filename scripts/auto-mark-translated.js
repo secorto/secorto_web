@@ -1,4 +1,20 @@
 #!/usr/bin/env node
+/**
+ * auto-mark-translated.js
+ *
+ * Detect simple translation pairs (same id present in >1 locale) and
+ * automatically add conservative metadata:
+ *  - Ensure the selected original has `translation_status: 'original'` if absent
+ *  - Ensure translations have `translation_status: 'translated'` and a
+ *    `translation_origin` pointing to the original locale/id if absent
+ *
+ * This script is intentionally conservative: it only writes when the fields
+ * are missing and chooses an original locale heuristic (prefer 'es' when
+ * present). It is meant to reduce manual work for clearly-identifiable pairs.
+ *
+ * Usage:
+ *   node ./scripts/auto-mark-translated.js
+ */
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -8,6 +24,11 @@ const __dirname = path.dirname(__filename)
 const root = path.resolve(__dirname, '..')
 const contentDir = path.join(root, 'src', 'content')
 
+/**
+ * Recursively list .md files under a directory.
+ * @param {string} dir
+ * @returns {string[]}
+ */
 function listMdFiles(dir) {
   const entries = fs.readdirSync(dir, { withFileTypes: true })
   let files = []
@@ -19,6 +40,11 @@ function listMdFiles(dir) {
   return files
 }
 
+/**
+ * Read frontmatter slice and remainder of file.
+ * @param {string} content
+ * @returns {{fm: string|null, rest: string}}
+ */
 function readFrontmatter(content) {
   if (!content.startsWith('---')) return { fm: null, rest: content }
   const end = content.indexOf('\n---', 3)
@@ -28,12 +54,24 @@ function readFrontmatter(content) {
   return { fm, rest }
 }
 
+/**
+ * Check for presence of a given field in a frontmatter slice.
+ * @param {string|null} fm
+ * @param {string} field
+ * @returns {boolean}
+ */
 function hasField(fm, field) {
   if (!fm) return false
-  const re = new RegExp(`^${field}\s*:\s*`, 'm')
+  const re = new RegExp(`^${field}\\s*:\\s*`, 'm')
   return re.test(fm)
 }
 
+/**
+ * Insert lines before the closing --- in frontmatter (or create a new block).
+ * @param {string|null} fm
+ * @param {string[]} fieldLines
+ * @returns {string}
+ */
 function insertField(fm, fieldLines) {
   if (!fm) return `---\n${fieldLines.join('\n')}\n---\n\n`
   const insertPos = fm.lastIndexOf('\n---')

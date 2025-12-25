@@ -1,4 +1,19 @@
 #!/usr/bin/env node
+/**
+ * list-missing-translation-status.js
+ *
+ * Small utility to list Markdown files under `src/content/` that are missing
+ * the `translation_status` frontmatter key.
+ *
+ * This file is written as an ES module. It intentionally uses plain Node APIs
+ * and simple frontmatter detection to avoid extra dependencies.
+ *
+ * Usage:
+ *   node ./scripts/list-missing-translation-status.js
+ *
+ * Output:
+ *   Prints a count of files and a newline-separated list of relative paths.
+ */
 import * as fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -8,6 +23,11 @@ const __dirname = path.dirname(__filename)
 const root = path.resolve(__dirname, '..')
 const contentDir = path.join(root, 'src', 'content')
 
+/**
+ * Recursively list .md files under a directory.
+ * @param {string} dir - Absolute directory path
+ * @returns {string[]} Absolute file paths
+ */
 function listMdFiles(dir) {
   const entries = fs.readdirSync(dir, { withFileTypes: true })
   let files = []
@@ -19,6 +39,13 @@ function listMdFiles(dir) {
   return files
 }
 
+/**
+ * Detect whether the provided file content has `translation_status` in the
+ * frontmatter. This is a conservative, dependency-free parser suitable for
+ * quick audits.
+ * @param {string} content - file contents
+ * @returns {boolean}
+ */
 function hasTranslationStatus(content) {
   // crude frontmatter check: look for `translation_status:` in the frontmatter block
   if (!content.startsWith('---')) return false

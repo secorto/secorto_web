@@ -1,4 +1,17 @@
 #!/usr/bin/env node
+/**
+ * set-translation-status.js
+ *
+ * Small helper to set `translation_status` on one or more Markdown files.
+ * It is intentionally dependency-free and uses a conservative frontmatter
+ * manipulation approach so it's safe to run on many files.
+ *
+ * Usage:
+ *   node ./scripts/set-translation-status.js <status> <file1> [file2 ...]
+ *
+ * Example:
+ *   node ./scripts/set-translation-status.js original src/content/blog/es/foo.md
+ */
 import * as fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -14,11 +27,22 @@ if (process.argv.length < 4) {
 const status = process.argv[2]
 const files = process.argv.slice(3)
 
+/**
+ * Ensure the file has a frontmatter block. If absent, create an empty one.
+ * @param {string} content
+ * @returns {string}
+ */
 function ensureFrontmatter(content) {
   if (content.startsWith('---')) return content
   return `---\n---\n\n${content}`
 }
 
+/**
+ * Set or insert the translation_status field in the frontmatter block.
+ * @param {string} content
+ * @param {string} status
+ * @returns {string}
+ */
 function setStatus(content, status) {
   content = ensureFrontmatter(content)
   const endIdx = content.indexOf('\n---', 3)

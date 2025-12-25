@@ -1,4 +1,23 @@
 #!/usr/bin/env node
+/**
+ * check-translation-inconsistencies.js
+ *
+ * Scans `src/content/<collection>/<locale>/*` for small classes of metadata
+ * inconsistencies related to translation_status and translation_origin. The
+ * goal is to help detect and fix common mistakes that would confuse the site
+ * templates or the translation workflow.
+ *
+ * Checks performed (non-exhaustive):
+ *  - `translated_missing_origin`: a file declares `translation_status: translated`
+ *     but lacks a `translation_origin` block
+ *  - `origin_but_not_translated`: a file declares `translation_origin` but is not
+ *     marked `translation_status: translated`
+ *  - `origin_present_both_original`: a file declares `translation_origin` but
+ *     both source and target are marked `original` (suspicious)
+ *
+ * Usage:
+ *   node ./scripts/check-translation-inconsistencies.js
+ */
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -8,6 +27,11 @@ const __dirname = path.dirname(__filename)
 const root = path.resolve(__dirname, '..')
 const contentDir = path.join(root, 'src', 'content')
 
+/**
+ * Recursively list .md files under a directory.
+ * @param {string} dir
+ * @returns {string[]}
+ */
 function listMdFiles(dir) {
   const entries = fs.readdirSync(dir, { withFileTypes: true })
   let files = []
@@ -19,6 +43,11 @@ function listMdFiles(dir) {
   return files
 }
 
+/**
+ * Read frontmatter slice and remainder of file.
+ * @param {string} content
+ * @returns {{fm: string|null, rest: string}}
+ */
 function readFrontmatter(content) {
   if (!content.startsWith('---')) return { fm: null, rest: content }
   const end = content.indexOf('\n---', 3)
@@ -28,6 +57,12 @@ function readFrontmatter(content) {
   return { fm, rest }
 }
 
+/**
+ * Very small YAML-ish frontmatter parser to extract a couple of fields we care about.
+ * It's intentionally permissive and only supports the small shapes used here.
+ * @param {string|null} fm
+ * @returns {Record<string, any>}
+ */
 function parseFmToMap(fm) {
   if (!fm) return {}
   const obj = {}
@@ -35,13 +70,13 @@ function parseFmToMap(fm) {
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
     const m = line.match(/^([A-Za-z0-9_\-]+)\s*:\s*(.*)$/)
-    if (m) obj[m[1]] = m[2].trim().replace(/^['"]|['"]$/g, '')
+    if (m) obj[m[1]] = m[2].trim().replace(/^['\"]|['\"]$/g, '')
     // naive nested handling for translation_origin
     if (line.trim().startsWith('translation_origin:')) {
       const localeLine = lines[i+1] || ''
       const idLine = lines[i+2] || ''
-      const ml = localeLine.match(/locale:\s*['"]?(.*?)['"]?$/)
-      const mid = idLine.match(/id:\s*['"]?(.*?)['"]?$/)
+      const ml = localeLine.match(/locale:\s*['\"]?(.*?)['\"]?$/)
+      const mid = idLine.match(/id:\s*['\"]?(.*?)['\"]?$/)
       if (ml) obj.translation_origin = obj.translation_origin || {}
       if (ml) obj.translation_origin.locale = ml[1]
       if (mid) obj.translation_origin = obj.translation_origin || {}
@@ -88,14 +123,7 @@ for (const [collection, collMap] of map.entries()) {
       }
     }
 
-    // 2) a locale marked both original and translation (e.g., translation marked original)
-    for (const [locale, data] of Object.entries(info)) {
-      if (data.status === 'original') {
-        // if any other locale points origin to this locale, fine; if another locale also 'original' maybe both are independent
-      }
-    }
-
-    // 3) a translation file exists but not marked 'translated' (and has origin pointing elsewhere)
+    // 3) a translation file exists and declares origin but not marked 'translated'
     for (const [locale, data] of Object.entries(info)) {
       if (data.origin && data.origin.locale) {
         // this file claims to be a translation; ensure status === 'translated'
@@ -106,7 +134,6 @@ for (const [collection, collMap] of map.entries()) {
     }
 
     // 4) both files marked 'original' but one has translation_origin pointing to the other -> inconsistency
-    const originals = Object.entries(info).filter(([l,d]) => d.status === 'original')
     for (const [locale, data] of Object.entries(info)) {
       if (data.origin && data.origin.locale) {
         const target = data.origin.locale
