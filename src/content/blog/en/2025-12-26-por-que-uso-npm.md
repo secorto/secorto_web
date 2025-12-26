@@ -4,7 +4,7 @@ tags:
   - dev
   - tools
 excerpt: npm is a solid ally for frontend development; in this update I explain why I use it and how it compares to Yarn and pnpm
-date: 2025-12-25
+date: 2025-12-26
 translation_status: 'translated'
 translation_origin:
   locale: 'es'

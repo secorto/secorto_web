@@ -4,8 +4,8 @@ tags:
   - dev
   - herramientas
 excerpt: NPM puede ser un gran aliado en el desarrollo frontend; en esta actualización explico por qué lo uso y cómo lo comparo con Yarn y pnpm
-date: 2025-12-25
-updated: 2025-12-25
+date: 2025-12-26
+updated: 2025-12-26
 translation_status: 'original'
 ---
 
