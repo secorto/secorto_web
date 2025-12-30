@@ -1,0 +1,52 @@
+---
+import { Image } from 'astro:assets'
+import Tags from '@components/Tags.astro'
+import Gallery from '@components/Gallery.astro'
+import { getFullFormat, useTranslations } from '@i18n/utils'
+import type { UILanguages } from '@i18n/ui'
+
+interface Props {
+  locale: UILanguages
+  routeSlug: string
+  entry: {
+    data: {
+      title: string
+      date?: Date
+      tags?: string[]
+      image?: string | ImageMetadata
+      excerpt?: string
+      gallery?: Array<{ image: ImageMetadata; alt: string }>
+    }
+  }
+  hasTags: boolean
+  Content: any
+}
+
+const { locale, routeSlug, entry, hasTags, Content } = Astro.props
+const t = useTranslations(locale)
+const dateFormat = getFullFormat(Astro.url)
+---
+
+{hasTags && entry.data.tags && (
+  <Tags route={`/${locale}/${routeSlug}/tags/`} tags={entry.data.tags} />
+)}
+
+{entry.data.date && <p>{dateFormat.format(entry.data.date)}</p>}
+
+{entry.data.image && (
+  typeof entry.data.image === 'string' ? (
+    <img src={entry.data.image} alt="featured image" />
+  ) : (
+    <Image src={entry.data.image} alt="featured image" />
+  )
+)}
+
+{entry.data?.excerpt && (
+  <p><em>{entry.data.excerpt}</em></p>
+)}
+
+<Content />
+
+{entry.data.gallery && (
+  <Gallery items={entry.data.gallery}/>
+)}

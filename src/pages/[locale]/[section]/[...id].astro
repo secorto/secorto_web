@@ -1,16 +1,14 @@
 ---
 import { render, getCollection } from 'astro:content'
-import { Image } from 'astro:assets'
 import BaseLayout from '@layouts/BaseLayout.astro'
-import Tags from '@components/Tags.astro'
 import Comments from '@components/Comments.astro'
+import BlogTalkPostView from '@components/BlogTalkPostView.astro'
+import WorkProjectCommunityView from '@components/WorkProjectCommunityView.astro'
 import { sectionsConfig } from '@config/sections'
 import { loadEntryByRoute } from '@utils/sectionLoader'
-import { getFullFormat, useTranslations } from '@i18n/utils'
+import { useTranslations } from '@i18n/utils'
 import { languageKeys, defaultLang } from '@i18n/ui'
 import type { UILanguages } from '@i18n/ui'
-import Gallery from '@components/Gallery.astro'
-const dateFormat = getFullFormat(Astro.url);
 
 // Types for entry data
 interface BaseEntryData {
@@ -19,23 +17,6 @@ interface BaseEntryData {
   translation_origin?: { locale: string; id: string }
   slug?: string
 }
-
-interface BlogTalkEntry extends BaseEntryData {
-  date: Date
-  tags: string[]
-  image?: ImageMetadata
-}
-
-interface WorkProjectCommunityEntry extends BaseEntryData {
-  excerpt: string
-  image: ImageMetadata
-  role?: string
-  responsibilities?: string
-  website?: string
-  gallery?: Array<{ image: ImageMetadata; alt: string }>
-}
-
-type EntryData = BlogTalkEntry | WorkProjectCommunityEntry
 
 export async function getStaticPaths() {
   const paths: Array<{ params: { locale: UILanguages; section: string; id: string } }> = []
@@ -204,48 +185,23 @@ const finalCanonicalUrl = state.isTranslationDraft && state.translationOriginLoc
       )}
     </div>
   )}
-  {state.config.hasTags && state.entry.data.tags && (
-    <Tags route={`/${locale}/${routeSlug}/tags/`} tags={state.entry.data.tags} />
-  )}
 
-  {state.entry.data.date && <p>{dateFormat.format(state.entry.data.date)}</p>}
-
-  {state.entry.data.image && (
-    typeof state.entry.data.image === 'string' ? (
-      <img src={state.entry.data.image} alt="featured image" />
-    ) : (
-      <Image src={state.entry.data.image} alt="featured image" />
-    )
+  {/* Dispatch to appropriate view component based on collection type */}
+  {(state.config.collection === 'blog' || state.config.collection === 'talk') ? (
+    <BlogTalkPostView
+      locale={locale}
+      routeSlug={routeSlug}
+      entry={state.entry}
+      hasTags={state.config.hasTags}
+      Content={Content}
+    />
+  ) : (
+    <WorkProjectCommunityView
+      locale={locale}
+      entry={state.entry}
+      Content={Content}
+    />
   )}
-
-  {(state.entry.data?.role || state.entry.data?.responsibilities) && (
-    <section class="entry-metadata">
-      <dl>
-        {state.entry.data?.role && (
-          <>
-            <dt>{t('post.role')}</dt><dd>{state.entry.data.role}</dd>
-          </>
-        )}
-        {state.entry.data?.responsibilities && (
-          <>
-            <dt>{t('post.responsibilities')}</dt><dd>{state.entry.data.responsibilities}</dd>
-          </>
-        )}
-      </dl>
-    </section>
-  )}
-
-  {(state.entry.data?.excerpt) && (
-    <p><em>{state.entry.data.excerpt}</em></p>
-  )}
-  {(state.entry.data?.website) && (
-    <a href={state.entry.data.website}>{t('post.website')}</a>
-  )}
-
-  <Content />
-  {state.entry.data.gallery &&
-    <Gallery items={state.entry.data.gallery}/>
-  }
 
   <Comments />
 </BaseLayout>

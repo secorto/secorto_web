@@ -1,0 +1,64 @@
+---
+import { Image } from 'astro:assets'
+import Gallery from '@components/Gallery.astro'
+import { useTranslations } from '@i18n/utils'
+import type { UILanguages } from '@i18n/ui'
+
+interface Props {
+  locale: UILanguages
+  entry: {
+    data: {
+      title: string
+      excerpt?: string
+      image?: string | ImageMetadata
+      role?: string
+      responsibilities?: string
+      website?: string
+      gallery?: Array<{ image: ImageMetadata; alt: string }>
+    }
+  }
+  Content: any
+}
+
+const { locale, entry, Content } = Astro.props
+const t = useTranslations(locale)
+---
+
+{entry.data?.image && (
+  typeof entry.data.image === 'string' ? (
+    <img src={entry.data.image} alt="featured image" />
+  ) : (
+    <Image src={entry.data.image} alt="featured image" />
+  )
+)}
+
+{(entry.data?.role || entry.data?.responsibilities) && (
+  <section class="entry-metadata">
+    <dl>
+      {entry.data?.role && (
+        <>
+          <dt>{t('post.role')}</dt><dd>{entry.data.role}</dd>
+        </>
+      )}
+      {entry.data?.responsibilities && (
+        <>
+          <dt>{t('post.responsibilities')}</dt><dd>{entry.data.responsibilities}</dd>
+        </>
+      )}
+    </dl>
+  </section>
+)}
+
+{entry.data?.excerpt && (
+  <p><em>{entry.data.excerpt}</em></p>
+)}
+
+{entry.data?.website && (
+  <a href={entry.data.website}>{t('post.website')}</a>
+)}
+
+<Content />
+
+{entry.data.gallery && (
+  <Gallery items={entry.data.gallery}/>
+)}
