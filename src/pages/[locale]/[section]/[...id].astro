@@ -4,12 +4,12 @@ import { Image } from 'astro:assets'
 import BaseLayout from '@layouts/BaseLayout.astro'
 import Tags from '@components/Tags.astro'
 import Comments from '@components/Comments.astro'
-import { getEntriesPaths } from '@utils/paths'
 import { sectionsConfig } from '@config/sections'
 import { loadEntryByRoute } from '@utils/sectionLoader'
 import { useTranslations } from '@i18n/utils'
 import { languageKeys, defaultLang } from '@i18n/ui'
 import type { UILanguages } from '@i18n/ui'
+import Gallery from '@components/Gallery.astro'
 
 export async function getStaticPaths() {
   const paths: any[] = []
@@ -175,7 +175,33 @@ const routeSlug = config.routes[locale as UILanguages]
     )
   )}
 
+  {entry && (entry.data?.role || entry.data?.responsibilities) && (
+    <section class="entry-metadata">
+      <dl>
+        {entry.data?.role && (
+          <>
+            <dt>{t('post.role')}</dt><dd>{entry.data.role}</dd>
+          </>
+        )}
+        {entry.data?.responsibilities && (
+          <>
+            <dt>{t('post.responsibilities')}</dt><dd>{entry.data.responsibilities}</dd>
+          </>
+        )}
+      </dl>
+    </section>
+  )}
+  {entry && (entry.data?.excerpt) && (
+    <p><em>{entry.data.excerpt}</em></p>
+  )}
+  {entry && (entry.data?.website) && (
+    <a href={entry.data.website}>{t('post.website')}</a>
+  )}
+
   <Content />
+  {entry.data.gallery &&
+    <Gallery items={entry.data.gallery}/>
+  }
 
   <Comments />
 </BaseLayout>
