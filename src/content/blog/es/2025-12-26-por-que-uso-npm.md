@@ -7,6 +7,10 @@ excerpt: NPM puede ser un gran aliado en el desarrollo frontend; en esta actuali
 date: 2025-12-26
 updated: 2025-12-26
 translation_status: 'original'
+change_log:
+  - date: 2025-12-26
+    summary: 'Post actualizado y traducido a ingles'
+    type: 'meta'
 ---
 
 Este es un análisis de por qué mi blog usa NPM y por qué, para este proyecto en concreto, me resulta la opción más práctica.

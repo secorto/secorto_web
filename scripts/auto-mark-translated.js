@@ -112,7 +112,11 @@ for (const [collection, collMap] of map.entries()) {
       const content = fs.readFileSync(originalPath, 'utf8')
       const { fm, rest } = readFrontmatter(content)
       if (!hasField(fm, 'translation_status')) {
-        const newFm = insertField(fm || '---\n---\n', [`translation_status: 'original'`])
+        let newFm = insertField(fm || '---\n---\n', [`translation_status: 'original'`])
+        // add a change_log entry describing this automated action
+        const today = new Date().toISOString().slice(0,10)
+        const entry = [`date: ${today}`, `author: 'script:auto-mark-translated'`, `summary: 'Marked as original (auto mark)'`, `type: 'meta'`]
+        newFm = appendChangeLog(newFm, entry)
         fs.writeFileSync(originalPath, newFm + rest, 'utf8')
         updatedCount++
       }
@@ -129,6 +133,7 @@ for (const [collection, collMap] of map.entries()) {
         const needStatus = !hasField(fm, 'translation_status')
         const needOrigin = !hasField(fm, 'translation_origin')
         if (needStatus || needOrigin) {
+          let newFm = fm || '---\n---\n'
           const lines = []
           if (needStatus) lines.push(`translation_status: 'translated'`)
           if (needOrigin) {
@@ -138,7 +143,11 @@ for (const [collection, collMap] of map.entries()) {
             const idForOrigin = id.replace(/\\/g, '/')
             lines.push(`  id: '${idForOrigin.replace(/\.md$/, '')}'`)
           }
-          const newFm = insertField(fm || '---\n---\n', lines)
+          newFm = insertField(newFm, lines)
+          // add change_log entry describing the automated action
+          const today = new Date().toISOString().slice(0,10)
+          const entry = [`date: ${today}`, `author: 'script:auto-mark-translated'`, `summary: 'Marked as translated and set translation_origin (auto mark)'`, `type: 'meta',`, `locale: '${locale}'`]
+          newFm = appendChangeLog(newFm, entry)
           fs.writeFileSync(p, newFm + rest, 'utf8')
           updatedCount++
         }
@@ -149,5 +158,16 @@ for (const [collection, collMap] of map.entries()) {
   }
 }
 
-console.log(`Updated ${updatedCount} files (added translation_status/translation_origin to translated pairs)`)
+console.log(`Updated ${updatedCount} files (added translation_status/translation_origin to translated pairs). Script: auto-mark-translated.js`)
 process.exit(0)
+
+/** Helpers for change_log insertion **/
+function appendChangeLog(fm, entryLines) {
+  if (!fm) return insertField(null, ['change_log:', '  - ' + entryLines[0], ...entryLines.slice(1).map(l => '    ' + l)])
+  if (/^change_log\s*:/m.test(fm)) {
+    const indented = entryLines.map(l => '  ' + l)
+    return insertField(fm, indented)
+  }
+  const block = ['change_log:', '  - ' + entryLines[0], ...entryLines.slice(1).map(l => '    ' + l)]
+  return insertField(fm, block)
+}

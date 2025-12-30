@@ -100,7 +100,25 @@ updated: 2025-12-25
 - Detectar inconsistencias: `node ./scripts/check-translation-inconsistencies.js`
 - Listar archivos sin status: `node ./scripts/list-missing-translation-status.js`
 
-## Nota para colaboradores y para automatización (Copilot / scripts)
+## change_log y scripts
+
+- Hemos optado por `change_log` como forma canónica de registrar hitos en el frontmatter. Es un array opcional con entradas estructuradas (`date`, `author`, `summary`, `type`, `locale`, `details`).
+- Los scripts que actualizan metadata (por ejemplo `auto-mark-translated.js` y `set-translation-status.js`) ahora **añaden una entrada** al `change_log` en vez de modificar solo `updated`. Además, imprimen en consola qué script realizó la modificación y la razón. Esto evita desincronizaciones entre `updated` y el historial.
+- Para migraciones desde `updated` existe `node ./scripts/migrate-updated-to-changelog.js`, que convierte `updated` (y `change_summary` si existe) en la primera entrada de `change_log` y preserva `updated` como atajo (fecha del último cambio) para compatibilidad.
+
+### Formato de ejemplo de `change_log`
+
+```yaml
+change_log:
+   - date: 2025-12-26
+      author: 'Sergio'
+      summary: 'Reworked examples and clarified pnpm vs yarn'
+      type: 'rewrite'
+
+updated: 2025-12-26
+```
+
+### Nota para colaboradores y para automatización (Copilot / scripts)
 
 - Si usas IA o scripts para generar posts, asegúrate de que la salida incluya frontmatter con al menos `title`, `date`, `tags`, `excerpt` y `translation_status`.
 - No crear posts nuevos sin prefijo de fecha en el filename; si una herramienta lo hace, ajusta el nombre antes de commitear.

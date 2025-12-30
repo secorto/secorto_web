@@ -52,7 +52,11 @@ function setStatus(content, status) {
 
   if (/translation_status\s*:\s*/.test(fm)) {
     // replace existing
-    const newFm = fm.replace(/translation_status\s*:\s*.*(?:\n|$)/, `translation_status: '${status}'\n`)
+    let newFm = fm.replace(/translation_status\s*:\s*.*(?:\n|$)/, `translation_status: '${status}'\n`)
+    // append change_log entry about this action
+    const today = new Date().toISOString().slice(0,10)
+    const entry = [`date: ${today}`, `author: 'script:set-translation-status'`, `summary: 'translation_status set to ${status} (manual script)'`, `type: 'meta'`]
+    newFm = appendChangeLog(newFm, entry)
     return newFm + rest
   }
 
@@ -61,11 +65,29 @@ function setStatus(content, status) {
     const insertPos = fm.lastIndexOf('\n---')
     const before = fm.slice(0, insertPos)
     const after = fm.slice(insertPos)
-    return before + `\ntranslation_status: '${status}'` + after + rest
+    let newFm = before + `\ntranslation_status: '${status}'` + after + rest
+    const today = new Date().toISOString().slice(0,10)
+    const entry = [`date: ${today}`, `author: 'script:set-translation-status'`, `summary: 'translation_status set to ${status} (manual script)'`, `type: 'meta'`]
+    newFm = appendChangeLog(newFm, entry)
+    return newFm
   }
 
   // fallback: append at start
-  return fm + `\ntranslation_status: '${status}'\n` + rest
+  let newFm = fm + `\ntranslation_status: '${status}'\n` + rest
+  const today = new Date().toISOString().slice(0,10)
+  const entry = [`date: ${today}`, `author: 'script:set-translation-status'`, `summary: 'translation_status set to ${status} (manual script)'`, `type: 'meta'`]
+  newFm = appendChangeLog(newFm, entry)
+  return newFm
+}
+
+function appendChangeLog(fm, entryLines) {
+  if (!fm) return insertField(null, ['change_log:', '  - ' + entryLines[0], ...entryLines.slice(1).map(l => '    ' + l)])
+  if (/^change_log\s*:/m.test(fm)) {
+    const indented = entryLines.map(l => '  ' + l)
+    return insertField(fm, indented)
+  }
+  const block = ['change_log:', '  - ' + entryLines[0], ...entryLines.slice(1).map(l => '    ' + l)]
+  return insertField(fm, block)
 }
 
 for (const f of files) {

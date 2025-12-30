@@ -11,6 +11,14 @@ const blogCollection = defineCollection({
     slug: z.string().optional(),
     translation_status: z.enum(['translated','draft','partial','pending','original']).optional(),
     translation_origin: z.object({ locale: z.string(), id: z.string() }).optional(),
+    change_log: z.array(z.object({
+      date: z.date().optional(),
+      author: z.string().optional(),
+      summary: z.string(),
+      details: z.string().optional(),
+      type: z.enum(['typo','minor','rewrite','translation','meta']).optional(),
+      locale: z.string().optional()
+    })).optional(),
     canonical: z.string().optional()
   }),
 });
@@ -28,6 +36,14 @@ const talkCollection = defineCollection({
     slide: z.string(),
     translation_status: z.enum(['translated','draft','partial','pending','original']).optional(),
     translation_origin: z.object({ locale: z.string(), id: z.string() }).optional(),
+    change_log: z.array(z.object({
+      date: z.string().optional(),
+      author: z.string().optional(),
+      summary: z.string(),
+      details: z.string().optional(),
+      type: z.enum(['typo','minor','rewrite','translation','meta']).optional(),
+      locale: z.string().optional()
+    })).optional(),
     canonical: z.string().optional()
   }),
 });
