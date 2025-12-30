@@ -9,20 +9,41 @@ import { useTranslations } from '@i18n/utils'
 import type { UILanguages } from '@i18n/ui'
 
 export async function getStaticPaths() {
-  const paths: any[] = []
-  // Para cada sección con tags, generar paths por locale
+  const paths: any[] = [];
+
   for (const [_key, config] of Object.entries(sectionsConfig)) {
-    if (!config.hasTags) continue
-    // generar por cada locale
-    for (const locale of Object.keys(config.routes)) {
-      const localeKey = locale as UILanguages
-      const tagPaths = await getTagsPaths(config.collection as any, locale)
+    if (!config.hasTags) continue;
+
+    const locales = Object.keys(config.routes);
+
+    // 1. Obtener todos los tags de todos los locales
+    const allTags = new Set<string>();
+
+    for (const locale of locales) {
+      const tagPaths = await getTagsPaths(config.collection as any, locale);
       for (const p of tagPaths) {
-        paths.push({ params: { locale: localeKey, section: config.routes[localeKey], tag: p.params.tag }, props: p.props })
+        allTags.add(p.params.tag);
+      }
+    }
+
+    // 2. Generar rutas para cada locale usando el set global
+    for (const locale of locales) {
+      const localeKey = locale as UILanguages;
+
+      for (const tag of allTags) {
+        paths.push({
+          params: {
+            locale: localeKey,
+            section: config.routes[localeKey],
+            tag,
+          },
+          props: { tag },
+        });
       }
     }
   }
-  return paths
+
+  return paths;
 }
 
 const { locale, section, tag } = Astro.params
@@ -60,5 +81,15 @@ const Component = config.listComponent === 'ListWork' ? ListWork : ListPost
 <BaseLayout pageTitle={pageTitle}>
   <Tags route={`/${locale}/${section}/tags/`} tags={tags} current={tag} />
   {config.taggedKey && <p>{t(config.taggedKey)} {tag}</p>}
-  <Component posts={posts} basePath={`${locale}/${config.routes[locale as UILanguages]}`} lang={locale} />
+
+  {posts.length === 0 ? (
+  <div class="warning">
+    <p>{t('tags.untranslated_notice')}</p>
+  </div>
+) : (
+  <div>
+    <Component posts={posts} basePath={`${locale}/${config.routes[locale as UILanguages]}`} lang={locale} />
+  </div>
+)}
+
 </BaseLayout>

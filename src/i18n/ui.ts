@@ -33,6 +33,7 @@ export const ui = {
     'post.role': 'Role',
     'post.responsibilities': 'Responsibilities',
     'post.website': 'Website',
+    'tags.untranslated_notice': 'This tag has no posts available in this language.',
   },
   es: {
     'nav.about': 'Sobre mi',
@@ -55,5 +56,6 @@ export const ui = {
     'post.role': 'Rol',
     'post.responsibilities': 'Responsabilidades',
     'post.website': 'Sitio web',
+    'tags.untranslated_notice': 'Este tag no tiene posts disponibles en este idioma.',
   },
 } as const;
