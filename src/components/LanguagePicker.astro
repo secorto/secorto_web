@@ -68,7 +68,7 @@ const isTagPage = slug.startsWith("tags");
       }
       // If entry exists but is a draft/partial translation, indicate in the picker
       const status = (entry as any).translation_status as string | undefined
-      if (status && status !== 'translated') {
+      if (status && (status !== 'translated' && status !== 'original')) {
         const note = status === 'draft' ? t('post.translation_draft_notice') : t('post.translation_pending')
         const marker = status === 'draft' ? '✏️' : '⌛'
         return (
