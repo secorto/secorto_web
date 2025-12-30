@@ -6,201 +6,245 @@ import Tags from '@components/Tags.astro'
 import Comments from '@components/Comments.astro'
 import { sectionsConfig } from '@config/sections'
 import { loadEntryByRoute } from '@utils/sectionLoader'
-import { useTranslations } from '@i18n/utils'
+import { getFullFormat, useTranslations } from '@i18n/utils'
 import { languageKeys, defaultLang } from '@i18n/ui'
 import type { UILanguages } from '@i18n/ui'
 import Gallery from '@components/Gallery.astro'
+const dateFormat = getFullFormat(Astro.url);
+
+// Types for entry data
+interface BaseEntryData {
+  title: string
+  translation_status?: 'original' | 'translated' | 'draft' | 'partial' | 'pending'
+  translation_origin?: { locale: string; id: string }
+  slug?: string
+}
+
+interface BlogTalkEntry extends BaseEntryData {
+  date: Date
+  tags: string[]
+  image?: ImageMetadata
+}
+
+interface WorkProjectCommunityEntry extends BaseEntryData {
+  excerpt: string
+  image: ImageMetadata
+  role?: string
+  responsibilities?: string
+  website?: string
+  gallery?: Array<{ image: ImageMetadata; alt: string }>
+}
+
+type EntryData = BlogTalkEntry | WorkProjectCommunityEntry
 
 export async function getStaticPaths() {
-  const paths: any[] = []
-  // Para cada sección configurada, obtener sus entradas
-  for (const [_sectionKey, config] of Object.entries(sectionsConfig)) {
-    // Obtener todos los entries de la colección
-    const allEntriesInCollection = await getCollection(config.collection as any) as any[]
+  const paths: Array<{ params: { locale: UILanguages; section: string; id: string } }> = []
 
-    // Generar paths SOLO para entradas que existen en cada locale
+  for (const [_sectionKey, config] of Object.entries(sectionsConfig)) {
+    const allEntries = await getCollection(config.collection)
+
     for (const localeKey of languageKeys) {
       const sectionRoute = config.routes[localeKey as UILanguages]
-      const entriesForLocale = allEntriesInCollection.filter((e: any) => e.id.startsWith(`${localeKey}/`))
+      const entriesForLocale = allEntries.filter((e) => e.id.startsWith(`${localeKey}/`))
 
       for (const entry of entriesForLocale) {
         const fileCleanId = entry.id.replace(/^(en|es)\//, '')
-        const entrySlug = (entry.data as any).slug || fileCleanId
-        paths.push({ params: { locale: localeKey, section: sectionRoute, id: entrySlug } })
+        const entrySlug = (entry.data as BaseEntryData).slug || fileCleanId
+        paths.push({ params: { locale: localeKey as UILanguages, section: sectionRoute, id: entrySlug } })
       }
     }
   }
 
-  // Devolver el array de paths que Astro espera (sin fallback)
   return paths
 }
 
-const { locale, section, id } = Astro.params
-const t = useTranslations(locale as UILanguages)
+// Parse route parameters
+const { locale, section, id } = Astro.params as { locale: UILanguages; section: string; id: string }
+const t = useTranslations(locale)
 
-// Cargar la entrada basada en section slug / locale / id
-let loaded = await loadEntryByRoute(section, locale as UILanguages, id)
+// Load entry by route
+let loaded = await loadEntryByRoute(section, locale, id)
 
-let isUntranslated = false
-let originLocale: UILanguages | null = null
-let isTranslationDraft = false
-let translationOrigin: { locale: UILanguages; id: string } | null = null
+// State for translation/untranslated notices
+interface PageState {
+  entry: any
+  config: typeof sectionsConfig[keyof typeof sectionsConfig]
+  isUntranslated: boolean
+  isTranslationDraft: boolean
+  translationOriginLocale: UILanguages | null
+  cleanId: string
+  canonicalUrl: string
+}
+
+let state: PageState
 
 if (!loaded) {
-  // Intentar detectar si `section` es el slug en otro idioma (por ejemplo 'trabajo')
-  // y redirigir al slug correcto para el locale actual o al locale original que contiene la entrada.
-  let candidate: any = null
-  let originLocale: UILanguages | null = null
+  // Try to detect if section slug belongs to another locale and find the entry
+  let fallbackConfig: typeof sectionsConfig[keyof typeof sectionsConfig] | null = null
+  let fallbackLocale: UILanguages | null = null
+
   for (const [_key, cfg] of Object.entries(sectionsConfig)) {
     for (const lk of languageKeys) {
       if (cfg.routes[lk as UILanguages] === section) {
-        candidate = cfg
-        originLocale = lk as UILanguages
+        fallbackConfig = cfg
+        fallbackLocale = lk as UILanguages
         break
       }
     }
-    if (candidate) break
+    if (fallbackConfig) break
   }
 
-  if (candidate) {
-    const collectionName = candidate.collection as any
-    const entries = await getCollection(collectionName) as any[]
-    // ¿Existe la entrada en el locale solicitado?
-    const entryForCurrent = entries.find((e: any) => {
-      const fileCleanId = e.id.replace(/^(en|es)\//, '')
-      const entrySlug = e.data.slug || fileCleanId
-      return e.id.startsWith(`${locale}/`) && entrySlug === id
+  if (fallbackConfig && fallbackLocale) {
+    const entries = await getCollection(fallbackConfig.collection)
+
+    // Check if entry exists in requested locale
+    const entryInCurrentLocale = entries.find((e) => {
+      const cleanId = e.id.replace(/^(en|es)\//, '')
+      const slug = (e.data as BaseEntryData).slug || cleanId
+      return e.id.startsWith(`${locale}/`) && slug === id
     })
-    if (entryForCurrent) {
-      const targetRoute = candidate.routes[locale as UILanguages]
+
+    if (entryInCurrentLocale) {
+      const targetRoute = fallbackConfig.routes[locale]
       return new Response(null, { status: 301, headers: { Location: `/${locale}/${targetRoute}/${id}` } })
     }
-    // ¿Existe la entrada en el locale original donde se encontró el slug?
-    if (originLocale) {
-      const entryForOrigin = entries.find((e: any) => {
-        const fileCleanId = e.id.replace(/^(en|es)\//, '')
-        const entrySlug = e.data.slug || fileCleanId
-        return e.id.startsWith(`${originLocale}/`) && entrySlug === id
-      })
-      if (entryForOrigin) {
-        // En lugar de redirigir, mostramos la entrada original con un aviso de "no traducido"
-        loaded = { config: candidate, entry: entryForOrigin }
-        isUntranslated = true
-        // Mantener originLocale para canonical
-        originLocale = originLocale
-      }
-    }
-  }
 
-  if (!loaded) {
+    // Check if entry exists in fallback locale (show with untranslated notice)
+    const entryInFallbackLocale = entries.find((e) => {
+      const cleanId = e.id.replace(/^(en|es)\//, '')
+      const slug = (e.data as BaseEntryData).slug || cleanId
+      return e.id.startsWith(`${fallbackLocale}/`) && slug === id
+    })
+
+    if (entryInFallbackLocale) {
+      const cleanId = entryInFallbackLocale.id.replace(/^(en|es)\//, '')
+      state = {
+        entry: entryInFallbackLocale,
+        config: fallbackConfig,
+        isUntranslated: true,
+        isTranslationDraft: false,
+        translationOriginLocale: fallbackLocale,
+        cleanId,
+        canonicalUrl: `https://secorto.com/${fallbackLocale}/${fallbackConfig.routes[fallbackLocale]}/${cleanId}`
+      }
+    } else {
+      return new Response('Not found', { status: 404 })
+    }
+  } else {
     return new Response('Not found', { status: 404 })
   }
-}
+} else {
+  // Entry loaded successfully
+  const cleanId = loaded.entry.id.replace(/^(en|es)\//, '')
+  const entryData = loaded.entry.data as BaseEntryData
+  const translationStatus = entryData.translation_status
 
-const { config, entry } = loaded
-// calcular cleanId desde entry.id
-const cleanId = entry.id.replace(/^(en|es)\//, '')
-// si mostramos contenido original desde otro locale, usar esa URL como canonical
-const canonicalLocale = isUntranslated && originLocale ? originLocale : locale
-const canonicalRoute = config.routes[canonicalLocale as UILanguages]
-const canonicalUrl = `https://secorto.com/${canonicalLocale}/${canonicalRoute}/${cleanId}`
+  // Check if this is a draft/partial/pending translation
+  const isTranslationDraft = Boolean(translationStatus && translationStatus !== 'translated' && translationStatus !== 'original')
+  let translationOriginLocale: UILanguages | null = null
+  let translationOriginId = cleanId
 
-// If the loaded entry itself declares a translation_status (draft/partial/pending)
-if (entry && (entry.data as any).translation_status && (entry.data as any).translation_status !== 'translated') {
-  // treat as translation draft: show the draft notice, set canonical to origin
-  isTranslationDraft = true
-  const origin = (entry.data as any).translation_origin
-  if (origin && origin.locale && origin.id) {
-    translationOrigin = { locale: origin.locale as UILanguages, id: origin.id }
-    // override canonical info
-    const origCfg = config // assume same section mapping; if different, try to find by route later
-    const origRoute = origCfg.routes[translationOrigin.locale as UILanguages]
-    // build canonical to the origin locale and id
-    const origCanonicalUrl = `https://secorto.com/${translationOrigin.locale}/${origRoute}/${translationOrigin.id}`
-    // overwrite canonicalUrl variable used in head
-    // Note: canonicalUrl is const; so we'll use a separate variable below when rendering head
+  if (isTranslationDraft && entryData.translation_origin) {
+    translationOriginLocale = entryData.translation_origin.locale as UILanguages
+    translationOriginId = entryData.translation_origin.id
+  }
+
+  const canonicalUrl = isTranslationDraft && translationOriginLocale
+    ? `https://secorto.com/${translationOriginLocale}/${loaded.config.routes[translationOriginLocale as UILanguages]}/${translationOriginId}`
+    : `https://secorto.com/${locale}/${loaded.config.routes[locale]}/${cleanId}`
+
+  state = {
+    entry: loaded.entry,
+    config: loaded.config,
+    isUntranslated: false,
+    isTranslationDraft,
+    translationOriginLocale,
+    cleanId,
+    canonicalUrl
   }
 }
 
-// determinar en qué locales existe esta entrada para generar hreflang alternates
-const collectionName = config.collection as any
-const allEntries = await getCollection(collectionName) as any[]
-const availableLocales = languageKeys.filter((lk) => allEntries.some((e: any) => e.id === `${lk}/${cleanId}`))
-const { Content } = await render(entry)
-const pageTitle = entry.data.title || t(config.translationKey)
-const routeSlug = config.routes[locale as UILanguages]
+// Get available locales for hreflang alternates
+const allEntries = await getCollection(state.config.collection)
+const availableLocales = languageKeys.filter((lk) => allEntries.some((e) => e.id === `${lk}/${state.cleanId}`))
+
+const { Content } = await render(state.entry)
+const pageTitle = state.entry.data.title || t(state.config.translationKey)
+const routeSlug = state.config.routes[locale]
+
+// Build final canonical URL if draft has origin
+const finalCanonicalUrl = state.isTranslationDraft && state.translationOriginLocale && state.entry.data.translation_origin
+  ? `https://secorto.com/${state.translationOriginLocale}/${state.config.routes[state.translationOriginLocale]}/${state.entry.data.translation_origin.id}`
+  : state.canonicalUrl
 ---
 <head>
   <meta charset="utf-8" />
-  <link rel="canonical" href={isTranslationDraft && translationOrigin ? `https://secorto.com/${translationOrigin.locale}/${config.routes[translationOrigin.locale as UILanguages]}/${translationOrigin.id}` : canonicalUrl} />
-  {(isUntranslated || isTranslationDraft) && <meta name="robots" content="noindex" />}
-  {/* hreflang alternates: solo para locales donde exista la entrada */}
+  <link rel="canonical" href={finalCanonicalUrl} />
+  {(state.isUntranslated || state.isTranslationDraft) && <meta name="robots" content="noindex" />}
   {availableLocales.map((lk) => (
-    <link rel="alternate" hreflang={lk} href={`https://secorto.com/${lk}/${config.routes[lk as UILanguages]}/${cleanId}`} />
+    <link rel="alternate" hreflang={lk} href={`https://secorto.com/${lk}/${state.config.routes[lk as UILanguages]}/${state.cleanId}`} />
   ))}
-  {/* x-default apuntando al idioma por defecto */}
-  <link rel="alternate" hreflang="x-default" href={`https://secorto.com/${defaultLang}/${config.routes[defaultLang as UILanguages]}/${cleanId}`} />
+  <link rel="alternate" hreflang="x-default" href={`https://secorto.com/${defaultLang}/${state.config.routes[defaultLang as UILanguages]}/${state.cleanId}`} />
 </head>
 
 <BaseLayout pageTitle={pageTitle}>
-  {isUntranslated && (
+  {state.isUntranslated && (
     <div class="untranslated-notice" role="status">
-  <p>{t('post.untranslated_notice')}</p>
-      <a href={`/${canonicalLocale}/${canonicalRoute}/${cleanId}`}>{t('post.view_original')}</a>
+      <p>{t('post.untranslated_notice')}</p>
+      <a href={`/${state.translationOriginLocale}/${state.config.routes[state.translationOriginLocale as UILanguages]}/${state.cleanId}`}>{t('post.view_original')}</a>
     </div>
   )}
-  {isTranslationDraft && (
+  {state.isTranslationDraft && (
     <div class="untranslated-notice" role="status">
       <p>{t('post.translation_draft_notice')}</p>
-      {translationOrigin ? (
-        <a href={`/${translationOrigin.locale}/${config.routes[translationOrigin.locale as UILanguages]}/${translationOrigin.id}`}>{t('post.view_original')}</a>
+      {state.translationOriginLocale ? (
+        <a href={`/${state.translationOriginLocale}/${state.config.routes[state.translationOriginLocale as UILanguages]}/${state.entry.data.translation_origin?.id || state.cleanId}`}>{t('post.view_original')}</a>
       ) : (
-        <a href={`/${canonicalLocale}/${canonicalRoute}/${cleanId}`}>{t('post.view_original')}</a>
+        <a href={`/${locale}/${state.config.routes[locale]}/${state.cleanId}`}>{t('post.view_original')}</a>
       )}
     </div>
   )}
-  {config.hasTags && entry.data.tags && (
-    <Tags route={`/${locale}/${routeSlug}/tags/`} tags={entry.data.tags} />
+  {state.config.hasTags && state.entry.data.tags && (
+    <Tags route={`/${locale}/${routeSlug}/tags/`} tags={state.entry.data.tags} />
   )}
 
-  {entry.data.date && <p>{String(entry.data.date)}</p>}
+  {state.entry.data.date && <p>{dateFormat.format(state.entry.data.date)}</p>}
 
-  {entry.data.image && (
-    // If the image frontmatter is an object (ImageMetadata), use the Astro Image component.
-    // Otherwise assume it's a string URL and render a normal <img>.
-    typeof entry.data.image === 'string' ? (
-      <img src={entry.data.image} alt="featured image" />
+  {state.entry.data.image && (
+    typeof state.entry.data.image === 'string' ? (
+      <img src={state.entry.data.image} alt="featured image" />
     ) : (
-      <Image src={entry.data.image} alt="featured image" />
+      <Image src={state.entry.data.image} alt="featured image" />
     )
   )}
 
-  {entry && (entry.data?.role || entry.data?.responsibilities) && (
+  {(state.entry.data?.role || state.entry.data?.responsibilities) && (
     <section class="entry-metadata">
       <dl>
-        {entry.data?.role && (
+        {state.entry.data?.role && (
           <>
-            <dt>{t('post.role')}</dt><dd>{entry.data.role}</dd>
+            <dt>{t('post.role')}</dt><dd>{state.entry.data.role}</dd>
           </>
         )}
-        {entry.data?.responsibilities && (
+        {state.entry.data?.responsibilities && (
           <>
-            <dt>{t('post.responsibilities')}</dt><dd>{entry.data.responsibilities}</dd>
+            <dt>{t('post.responsibilities')}</dt><dd>{state.entry.data.responsibilities}</dd>
           </>
         )}
       </dl>
     </section>
   )}
-  {entry && (entry.data?.excerpt) && (
-    <p><em>{entry.data.excerpt}</em></p>
+
+  {(state.entry.data?.excerpt) && (
+    <p><em>{state.entry.data.excerpt}</em></p>
   )}
-  {entry && (entry.data?.website) && (
-    <a href={entry.data.website}>{t('post.website')}</a>
+  {(state.entry.data?.website) && (
+    <a href={state.entry.data.website}>{t('post.website')}</a>
   )}
 
   <Content />
-  {entry.data.gallery &&
-    <Gallery items={entry.data.gallery}/>
+  {state.entry.data.gallery &&
+    <Gallery items={state.entry.data.gallery}/>
   }
 
   <Comments />
