@@ -76,6 +76,7 @@ const availableLocales = languageKeys.filter((lk) =>
 
 const { Content } = await render(entry)
 const pageTitle = entry.data.title || t(config.translationKey)
+const pageDescription = (entry.data as any).excerpt || (entry.data as any).description || undefined
 const routeSlug = config.routes[context.locale]
 ---
 
@@ -89,7 +90,7 @@ const routeSlug = config.routes[context.locale]
   <link rel="alternate" hreflang="x-default" href={`https://secorto.com/${defaultLang}/${config.routes[defaultLang]}/${cleanId}`} />
 </head>
 
-<BaseLayout pageTitle={pageTitle}>
+<BaseLayout pageTitle={pageTitle} description={pageDescription}>
   {isUntranslated && translationOriginLocale && (
     <div class="untranslated-notice" role="status">
       <p>{t('post.untranslated_notice')}</p>

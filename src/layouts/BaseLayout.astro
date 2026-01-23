@@ -5,11 +5,12 @@ import SiteLayout from './SiteLayout.astro';
 
 interface Props {
   pageTitle: string
+  description?: string
 }
 
-const {pageTitle} = Astro.props
+const { pageTitle, description } = Astro.props
 ---
-<SiteLayout pageTitle={pageTitle} >
+<SiteLayout pageTitle={pageTitle} description={description}>
   <Header title={pageTitle} />
   <main class="main-content">
     <slot />
