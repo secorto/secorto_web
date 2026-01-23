@@ -16,7 +16,7 @@ gallery:
     image: "@assets/img/pybaq/pycon-pybaq-2019.jpg"
   - alt: Iniciando PyCon 2019
     image: "@assets/img/pybaq/pycon-entrada.jpg"
-translation_status: 'pending'
+translation_status: 'original'
 ---
 
 La comunidad de python Barranquilla ha sido una excelente oportunidad de crecimiento personal, he aprendido un montón gracias a ellos y la evidencia más clara es que mi trabajo actual es sobre automatización de pruebas en python, sin duda pertenecer a una comunidad de desarrolladores te da la oportunidad de interactuar con distintas personas, lo que hace que tu experiencia personal se enriquezca; pero no es sólo una oportunidad de aprendizaje es un intercambio continuo de saberes entre quienes la conforman. Por otro lado, contribuir a proyectos open source es una oportunidad de aprendizaje, y más que eso es poder aplicar tus habilidades en proyectos que contribuyan a resolver los problemas de las personas.
