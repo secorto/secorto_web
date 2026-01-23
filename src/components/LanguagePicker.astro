@@ -2,7 +2,7 @@
 import { languages, languageKeys } from "../i18n/ui";
 import type { UILanguages } from "../i18n/ui";
 import { resolveCanonical } from "../i18n/rootMap";
-import { buildTranslationLink, type TranslationLink } from "../i18n/languagePickerUtils";
+import { buildHomeLink, buildTagLink, buildDetailLink, buildCollectionLink, type TranslationLink } from "../i18n/languagePickerUtils";
 import { translations } from "../i18n/translations";
 
 // === PARSING DE URL ===
@@ -24,17 +24,18 @@ const availableLocales = isDetailPage
   ? translations[canonicalSection as keyof typeof translations]?.[slug] || {}
   : {};
 
-// === CONTEXTO DE PÁGINA ===
-const pageContext = {
-  type: isHomePage ? 'home' as const : isTagPage ? 'tags' as const : isDetailPage ? 'detail' as const : 'collection-index' as const,
-  canonicalSection,
-  slug
+// === BUILDER DE LINKS SEGÚN TIPO DE PÁGINA ===
+function buildLink(targetLang: UILanguages): TranslationLink {
+  if (isHomePage) return buildHomeLink(targetLang)
+  if (isTagPage) return buildTagLink(targetLang, canonicalSection, slug)
+  if (isDetailPage) return buildDetailLink(targetLang, canonicalSection, slug, availableLocales)
+  return buildCollectionLink(targetLang, canonicalSection)
 }
 ---
 
 <div class="language-picker">
   {languageKeys.map((targetLang) => {
-    const link = buildTranslationLink(targetLang, pageContext, availableLocales);
+    const link = buildLink(targetLang);
     const text = `${link.label}${link.marker ? ` ${link.marker}` : ''}`;
 
     if (!link.isAvailable) {

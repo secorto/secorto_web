@@ -17,14 +17,10 @@ export interface TranslationLink {
   marker?: string
 }
 
-type PageType = 'home' | 'tags' | 'detail' | 'collection-index'
-
-interface PageContext {
-  type: PageType
-  canonicalSection: string
-  slug: string
-}
-
+/**
+ * Configuración de razones por las que un idioma no tiene traducción disponible.
+ * Define el marcador visual (emoji) y mensaje para cada caso.
+ */
 export const DISABLED_REASON_CONFIG: Record<'not-available' | 'no-translate', {
   marker: string
   title: string
@@ -49,7 +45,12 @@ function getDisabledReasonForLang(targetLang: UILanguages, slug: string, canonic
   return willNotBeTranslated ? 'no-translate' : 'not-available'
 }
 
-function buildHomePageLink(targetLang: UILanguages): TranslationLink {
+/**
+ * Construye un link de language picker para la página de inicio.
+ * @param targetLang - Idioma destino para el link
+ * @returns Link disponible apuntando a la raíz del sitio en ese idioma
+ */
+export function buildHomeLink(targetLang: UILanguages): TranslationLink {
   return {
     href: `${buildLangPrefix(targetLang)}/`,
     label: languages[targetLang],
@@ -57,7 +58,14 @@ function buildHomePageLink(targetLang: UILanguages): TranslationLink {
   }
 }
 
-function buildTagPageLink(targetLang: UILanguages, canonicalSection: string, slug: string): TranslationLink {
+/**
+ * Construye un link de language picker para páginas de tags.
+ * @param targetLang - Idioma destino para el link
+ * @param canonicalSection - Sección canónica (ej: 'blog', 'talk')
+ * @param slug - Slug de la página de tags incluyendo el prefijo (ej: 'tags/typescript')
+ * @returns Link disponible a la página de tags en ese idioma
+ */
+export function buildTagLink(targetLang: UILanguages, canonicalSection: string, slug: string): TranslationLink {
   const localizedSection = resolveLocalized(canonicalSection, targetLang)
   return {
     href: `${buildLangPrefix(targetLang)}/${localizedSection}/${slug}`,
@@ -66,7 +74,16 @@ function buildTagPageLink(targetLang: UILanguages, canonicalSection: string, slu
   }
 }
 
-function buildDetailPageLink(targetLang: UILanguages, canonicalSection: string, slug: string, availableLocales: Record<string, any>): TranslationLink {
+/**
+ * Construye un link de language picker para páginas de detalle (posts, charlas, proyectos, etc).
+ * Verifica si hay traducción disponible para el idioma destino.
+ * @param targetLang - Idioma destino para el link
+ * @param canonicalSection - Sección canónica (ej: 'blog', 'talk')
+ * @param slug - Slug del contenido (ej: '2025-01-22-titulo-post')
+ * @param availableLocales - Mapa de traducciones disponibles por idioma para este contenido
+ * @returns Link con disponibilidad según traducciones, incluye razón si no está disponible
+ */
+export function buildDetailLink(targetLang: UILanguages, canonicalSection: string, slug: string, availableLocales: Record<string, any>): TranslationLink {
   const entry = availableLocales[targetLang]
   const localizedSection = resolveLocalized(canonicalSection, targetLang)
 
@@ -92,24 +109,17 @@ function buildDetailPageLink(targetLang: UILanguages, canonicalSection: string, 
   }
 }
 
-function buildCollectionIndexLink(targetLang: UILanguages, canonicalSection: string): TranslationLink {
+/**
+ * Construye un link de language picker para índices de colecciones o páginas estáticas.
+ * @param targetLang - Idioma destino para el link
+ * @param canonicalSection - Sección canónica (ej: 'blog', 'about')
+ * @returns Link disponible al índice de esa sección en ese idioma
+ */
+export function buildCollectionLink(targetLang: UILanguages, canonicalSection: string): TranslationLink {
   const localizedSection = resolveLocalized(canonicalSection, targetLang)
   return {
     href: `${buildLangPrefix(targetLang)}/${localizedSection}`,
     label: languages[targetLang],
     isAvailable: true
-  }
-}
-
-export function buildTranslationLink(targetLang: UILanguages, pageContext: PageContext, availableLocales: Record<string, any>): TranslationLink {
-  switch (pageContext.type) {
-    case 'home':
-      return buildHomePageLink(targetLang)
-    case 'tags':
-      return buildTagPageLink(targetLang, pageContext.canonicalSection, pageContext.slug)
-    case 'detail':
-      return buildDetailPageLink(targetLang, pageContext.canonicalSection, pageContext.slug, availableLocales)
-    case 'collection-index':
-      return buildCollectionIndexLink(targetLang, pageContext.canonicalSection)
   }
 }
