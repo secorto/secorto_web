@@ -13,6 +13,7 @@ export type UILanguages = keyof typeof languages;
 
 export const ui = {
   en: {
+    'site.description': 'Personal blog of Sergio Orozco - Developer, Speaker, Open Source Enthusiast',
     'nav.about': 'About',
     'nav.blog': 'Blog',
     'nav.work': 'Work',
@@ -36,6 +37,7 @@ export const ui = {
     'tags.untranslated_notice': 'This tag has no posts available in this language.',
   },
   es: {
+    'site.description': 'Blog personal de Sergio Orozco - Desarrollador, Conferencista, Entusiasta del Open Source',
     'nav.about': 'Sobre mi',
     'nav.blog': 'Blog',
     'nav.work': 'Trabajo',
