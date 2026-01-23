@@ -24,13 +24,33 @@
  *   5. Actualiza el archivo con el nuevo excerpt
  */
 
-const fs = require('fs')
-const path = require('path')
-const { globSync } = require('glob')
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+
+/**
+ * Busca archivos markdown recursivamente en un directorio
+ */
+function findMarkdownFiles(dir) {
+  const files = []
+  const entries = fs.readdirSync(dir, { withFileTypes: true })
+
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name)
+    if (entry.isDirectory()) {
+      files.push(...findMarkdownFiles(fullPath))
+    } else if (entry.isFile() && entry.name.endsWith('.md')) {
+      files.push(fullPath)
+    }
+  }
+
+  return files
+}
 
 /**
  * Genera un excerpt del contenido markdown
- * Replicando la lógica de src/utils/excerptBuilder.ts
  */
 function generateExcerpt(content, maxLength = 160) {
   // Eliminar frontmatter YAML
@@ -100,7 +120,11 @@ function updateFrontmatter(content, newFrontmatter) {
     // Si el valor contiene caracteres especiales o espacios, envolver en comillas
     const needsQuotes =
       typeof value === 'string' &&
-      (value.includes(':') || value.includes('"') || value.includes('\n'))
+      (value.includes(':') ||
+       value.includes('"') ||
+       value.includes('\n') ||
+       value.includes('@') ||  // Rutas con @assets
+       value.includes('/'))    // Cualquier ruta
     const quotedValue = needsQuotes ? `"${value.replace(/"/g, '\\"')}"` : value
     return `${key}: ${quotedValue}`
   })
@@ -161,7 +185,7 @@ function processPost(filePath, options) {
   }
 }
 
-// Main
+// Main execution
 const args = process.argv.slice(2)
 const options = {
   regenerate: args.includes('--regenerate'),
@@ -186,22 +210,8 @@ if (options.post) {
     `\n📚 Procesando TODOS los posts${options.regenerate ? ' (regenerando)' : ''}...\n`
   )
   // Buscar todos los posts en las colecciones
-  const collections = ['blog', 'talk', 'community', 'projects', 'work']
-  const locales = ['es', 'en']
-
-  for (const collection of collections) {
-    for (const locale of locales) {
-      const pattern = path.join(
-        process.cwd(),
-        'src/content',
-        collection,
-        locale,
-        '*.md'
-      )
-      const matches = globSync(pattern)
-      files.push(...matches)
-    }
-  }
+  const collectionsDir = path.join(process.cwd(), 'src/content')
+  files = findMarkdownFiles(collectionsDir)
 }
 
 if (files.length === 0) {

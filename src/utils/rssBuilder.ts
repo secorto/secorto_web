@@ -1,7 +1,6 @@
 import type { UILanguages } from '@i18n/ui'
 import { sectionsConfig } from '@config/sections'
 import { getPostsByLocale } from './paths'
-import { getPostExcerpt } from './excerptBuilder'
 
 interface RSSItem {
   title: string
@@ -34,7 +33,7 @@ export async function buildRSSItems(collection: string, locale: UILanguages): Pr
 
     return {
       title: data.title,
-      description: getPostExcerpt(data),
+      description: data.excerpt || data.description || '',
       link: `/${locale}/${sectionRoute}/${cleanId}`,
       pubDate: new Date(data.date || 0)
     }

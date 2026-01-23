@@ -10,7 +10,6 @@ import { useTranslations } from '@i18n/utils'
 import { languageKeys, defaultLang } from '@i18n/ui'
 import type { UILanguages } from '@i18n/ui'
 import { buildDetailPageContext } from '@utils/sectionContext'
-import { getPostExcerpt } from '@utils/excerptBuilder'
 
 interface BaseEntryData {
   title: string
@@ -77,7 +76,7 @@ const availableLocales = languageKeys.filter((lk) =>
 
 const { Content } = await render(entry)
 const pageTitle = entry.data.title || t(config.translationKey)
-const pageDescription = getPostExcerpt(entry.data)
+const pageDescription = entry.data.excerpt || entry.data.description || ''
 const routeSlug = config.routes[context.locale]
 ---
 
