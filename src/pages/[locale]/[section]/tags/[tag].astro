@@ -13,17 +13,10 @@ export async function getStaticPaths() {
 }
 
 const { locale, section, tag } = Astro.params as { locale: UILanguages; section: string; tag: string }
-const propsTag = Astro.props?.tag
 const t = useTranslations(locale)
 
 // Construir contexto de página (valida sección y carga posts)
-const context = await buildTagsPageContext(
-  section,
-  locale,
-  tag,
-  propsTag,
-  Astro.props ? { posts: Astro.props.posts ?? [], tags: Astro.props.tags ?? [] } : undefined
-)
+const context = await buildTagsPageContext(section, locale, tag)
 
 const { config, posts, tags } = context
 const Component = config.listComponent === 'ListWork' ? ListWork : ListPost

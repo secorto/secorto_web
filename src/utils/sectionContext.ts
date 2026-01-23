@@ -39,21 +39,17 @@ export function buildSectionContext(section: string, locale: UILanguages): Secti
 
 /**
  * Construye el contexto de una página de tags.
- * Carga o calcula posts y tags según si están disponibles en props.
+ * Carga posts desde la colección y filtra por tag.
  * @param section - Slug de la sección
  * @param locale - Idioma actual
  * @param tag - Tag actual
- * @param propsTag - Tag desde props (pre-renderizado)
- * @param propsData - Posts y tags desde props (pre-renderizado)
  * @returns Contexto con posts filtrados por tag
  * @throws Response 404 si la sección no existe
  */
 export async function buildTagsPageContext(
   section: string,
   locale: UILanguages,
-  tag: string,
-  propsTag?: string,
-  propsData?: { posts: any[]; tags: string[] }
+  tag: string
 ): Promise<TagsPageContext> {
   const config = getSectionConfigByRoute(section, locale)
 
@@ -61,16 +57,12 @@ export async function buildTagsPageContext(
     throw new Response('Not found', { status: 404 })
   }
 
-  // Usar datos pre-renderizados si existen, si no cargar bajo demanda
-  let posts = propsData?.posts ?? []
-  let tags = propsData?.tags ?? []
-
-  if (!posts.length) {
-    // Fallback: calcular desde la colección
-    const allPosts = await getPostsByLocale(config.collection, locale)
-    posts = allPosts.filter((post: any) => post.data.tags?.includes(tag))
-    tags = [...new Set(allPosts.flatMap((post: any) => post.data.tags ?? []))]
-  }
+  // Cargar todos los posts de la colección para este locale
+  const allPosts = await getPostsByLocale(config.collection, locale)
+  
+  // Filtrar por tag y extraer tags únicos
+  const posts = allPosts.filter((post: any) => post.data.tags?.includes(tag))
+  const tags = [...new Set(allPosts.flatMap((post: any) => post.data.tags ?? []))]
 
   return {
     config,
