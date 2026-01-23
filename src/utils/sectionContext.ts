@@ -1,6 +1,8 @@
-import { getSectionConfigByRoute, type SectionConfig } from '@config/sections'
+import { getSectionConfigByRoute, sectionsConfig, type SectionConfig } from '@config/sections'
 import { getTagsPaths, getPostsByLocale } from './paths'
 import type { UILanguages } from '@i18n/ui'
+import { getCollection } from 'astro:content'
+import { languageKeys } from '@i18n/ui'
 
 export interface SectionContext {
   config: SectionConfig
@@ -15,6 +17,15 @@ export interface TagsPageContext {
   tag: string
   posts: any[]
   tags: string[]
+}
+
+export interface DetailPageContext {
+  entry: any
+  config: SectionConfig
+  locale: UILanguages
+  cleanId: string
+  isUntranslated: boolean
+  translationOriginLocale: UILanguages | null
 }
 
 /**
@@ -59,7 +70,7 @@ export async function buildTagsPageContext(
 
   // Cargar todos los posts de la colección para este locale
   const allPosts = await getPostsByLocale(config.collection, locale)
-  
+
   // Filtrar por tag y extraer tags únicos
   const posts = allPosts.filter((post: any) => post.data.tags?.includes(tag))
   const tags = [...new Set(allPosts.flatMap((post: any) => post.data.tags ?? []))]
@@ -72,4 +83,98 @@ export async function buildTagsPageContext(
     posts,
     tags
   }
+}
+
+/**
+ * Extrae el ID limpio de una entrada (sin prefijo de locale).
+ * Soporta múltiples locales de forma genérica.
+ * @param entryId - ID de entrada de Astro (ej: 'es/archivo' o 'en/file')
+ * @returns ID limpio sin prefijo de locale
+ */
+function extractCleanId(entryId: string): string {
+  return languageKeys.reduce((id, lang) => id.replace(new RegExp(`^${lang}/`), ''), entryId)
+}
+
+/**
+ * Obtiene la configuración de sección a partir de un slug de ruta.
+ * Busca en todas las secciones qué configuración corresponde a este slug.
+ * @param section - Slug de la sección (ej: 'blog', 'talk')
+ * @returns Configuración o null si no existe
+ */
+function getSectionConfigByRouteSlug(
+  section: string
+): { config: SectionConfig; locale: UILanguages } | null {
+  for (const [_, cfg] of Object.entries(sectionsConfig)) {
+    for (const locale of languageKeys) {
+      if (cfg.routes[locale as UILanguages] === section) {
+        return { config: cfg, locale: locale as UILanguages }
+      }
+    }
+  }
+
+  return null
+}
+
+/**
+ * Construye el contexto de una página de detalle (post/charla/proyecto/etc).
+ * Intenta cargar la entrada en el locale actual, con fallback a otros locales.
+ * @param section - Slug de la sección (ej: 'blog')
+ * @param locale - Idioma solicitado
+ * @param id - ID/slug del contenido
+ * @param loadEntryByRoute - Función para cargar entrada
+ * @returns Contexto con entrada o null si no existe
+ */
+export async function buildDetailPageContext(
+  section: string,
+  locale: UILanguages,
+  id: string,
+  loadEntryByRoute: (section: string, locale: UILanguages, id: string) => Promise<any>
+): Promise<DetailPageContext | null> {
+  // Intentar cargar en el locale solicitado
+  let loaded = await loadEntryByRoute(section, locale, id)
+
+  if (loaded) {
+    return {
+      entry: loaded.entry,
+      config: loaded.config,
+      locale,
+      cleanId: extractCleanId(loaded.entry.id),
+      isUntranslated: false,
+      translationOriginLocale: null
+    }
+  }
+
+  // Fallback: buscar la entrada en otros locales
+  const sectionInfo = getSectionConfigByRouteSlug(section)
+
+  if (!sectionInfo) {
+    return null
+  }
+
+  const { config, locale: fallbackLocale } = sectionInfo
+  const allEntries = await getCollection(config.collection)
+
+  // Buscar entrada en otro locale
+  for (const searchLocale of languageKeys) {
+    if (searchLocale === locale) continue // Ya lo intentamos
+
+    const entry = allEntries.find((e) => {
+      const cleanId = extractCleanId(e.id)
+      const slug = e.data.slug || cleanId
+      return e.id.startsWith(`${searchLocale}/`) && slug === id
+    })
+
+    if (entry) {
+      return {
+        entry,
+        config,
+        locale: searchLocale as UILanguages,
+        cleanId: extractCleanId(entry.id),
+        isUntranslated: true,
+        translationOriginLocale: searchLocale as UILanguages
+      }
+    }
+  }
+
+  return null
 }

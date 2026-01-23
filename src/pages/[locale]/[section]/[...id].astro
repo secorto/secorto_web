@@ -9,8 +9,8 @@ import { loadEntryByRoute } from '@utils/sectionLoader'
 import { useTranslations } from '@i18n/utils'
 import { languageKeys, defaultLang } from '@i18n/ui'
 import type { UILanguages } from '@i18n/ui'
+import { buildDetailPageContext } from '@utils/sectionContext'
 
-// Types for entry data
 interface BaseEntryData {
   title: string
   translation_status?: 'original' | 'translated' | 'draft' | 'partial' | 'pending'
@@ -29,7 +29,7 @@ export async function getStaticPaths() {
       const entriesForLocale = allEntries.filter((e) => e.id.startsWith(`${localeKey}/`))
 
       for (const entry of entriesForLocale) {
-        const fileCleanId = entry.id.replace(/^(en|es)\//, '')
+        const fileCleanId = languageKeys.reduce((id, lang) => id.replace(new RegExp(`^${lang}/`), ''), entry.id)
         const entrySlug = (entry.data as BaseEntryData).slug || fileCleanId
         paths.push({ params: { locale: localeKey as UILanguages, section: sectionRoute, id: entrySlug } })
       }
@@ -39,166 +39,86 @@ export async function getStaticPaths() {
   return paths
 }
 
-// Parse route parameters
 const { locale, section, id } = Astro.params as { locale: UILanguages; section: string; id: string }
 const t = useTranslations(locale)
 
-// Load entry by route
-let loaded = await loadEntryByRoute(section, locale, id)
+// Construir contexto de página (intenta cargar, con fallback a otros locales)
+const context = await buildDetailPageContext(section, locale, id, loadEntryByRoute)
 
-// State for translation/untranslated notices
-interface PageState {
-  entry: any
-  config: typeof sectionsConfig[keyof typeof sectionsConfig]
-  isUntranslated: boolean
-  isTranslationDraft: boolean
-  translationOriginLocale: UILanguages | null
-  cleanId: string
-  canonicalUrl: string
+if (!context) {
+  return new Response('Not found', { status: 404 })
 }
 
-let state: PageState
+const { entry, config, cleanId, isUntranslated, translationOriginLocale } = context
+const entryData = entry.data as BaseEntryData
+const translationStatus = entryData.translation_status
+const isTranslationDraft = Boolean(translationStatus && translationStatus !== 'translated' && translationStatus !== 'original')
 
-if (!loaded) {
-  // Try to detect if section slug belongs to another locale and find the entry
-  let fallbackConfig: typeof sectionsConfig[keyof typeof sectionsConfig] | null = null
-  let fallbackLocale: UILanguages | null = null
+// Obtener URL canónica
+const canonicalLocale = isTranslationDraft && entryData.translation_origin
+  ? (entryData.translation_origin.locale as UILanguages)
+  : translationOriginLocale || context.locale
 
-  for (const [_key, cfg] of Object.entries(sectionsConfig)) {
-    for (const lk of languageKeys) {
-      if (cfg.routes[lk as UILanguages] === section) {
-        fallbackConfig = cfg
-        fallbackLocale = lk as UILanguages
-        break
-      }
-    }
-    if (fallbackConfig) break
-  }
+const canonicalId = isTranslationDraft && entryData.translation_origin
+  ? entryData.translation_origin.id
+  : cleanId
 
-  if (fallbackConfig && fallbackLocale) {
-    const entries = await getCollection(fallbackConfig.collection)
+const canonicalUrl = `https://secorto.com/${canonicalLocale}/${config.routes[canonicalLocale]}/${canonicalId}`
 
-    // Check if entry exists in requested locale
-    const entryInCurrentLocale = entries.find((e) => {
-      const cleanId = e.id.replace(/^(en|es)\//, '')
-      const slug = (e.data as BaseEntryData).slug || cleanId
-      return e.id.startsWith(`${locale}/`) && slug === id
-    })
+// Obtener locales disponibles para hreflang
+const allEntries = await getCollection(config.collection)
+const availableLocales = languageKeys.filter((lk) =>
+  allEntries.some((e) => {
+    const eCleanId = languageKeys.reduce((id, lang) => id.replace(new RegExp(`^${lang}/`), ''), e.id)
+    return e.id.startsWith(`${lk}/`) && eCleanId === cleanId
+  })
+)
 
-    if (entryInCurrentLocale) {
-      const targetRoute = fallbackConfig.routes[locale]
-      return new Response(null, { status: 301, headers: { Location: `/${locale}/${targetRoute}/${id}` } })
-    }
-
-    // Check if entry exists in fallback locale (show with untranslated notice)
-    const entryInFallbackLocale = entries.find((e) => {
-      const cleanId = e.id.replace(/^(en|es)\//, '')
-      const slug = (e.data as BaseEntryData).slug || cleanId
-      return e.id.startsWith(`${fallbackLocale}/`) && slug === id
-    })
-
-    if (entryInFallbackLocale) {
-      const cleanId = entryInFallbackLocale.id.replace(/^(en|es)\//, '')
-      state = {
-        entry: entryInFallbackLocale,
-        config: fallbackConfig,
-        isUntranslated: true,
-        isTranslationDraft: false,
-        translationOriginLocale: fallbackLocale,
-        cleanId,
-        canonicalUrl: `https://secorto.com/${fallbackLocale}/${fallbackConfig.routes[fallbackLocale]}/${cleanId}`
-      }
-    } else {
-      return new Response('Not found', { status: 404 })
-    }
-  } else {
-    return new Response('Not found', { status: 404 })
-  }
-} else {
-  // Entry loaded successfully
-  const cleanId = loaded.entry.id.replace(/^(en|es)\//, '')
-  const entryData = loaded.entry.data as BaseEntryData
-  const translationStatus = entryData.translation_status
-
-  // Check if this is a draft/partial/pending translation
-  const isTranslationDraft = Boolean(translationStatus && translationStatus !== 'translated' && translationStatus !== 'original')
-  let translationOriginLocale: UILanguages | null = null
-  let translationOriginId = cleanId
-
-  if (isTranslationDraft && entryData.translation_origin) {
-    translationOriginLocale = entryData.translation_origin.locale as UILanguages
-    translationOriginId = entryData.translation_origin.id
-  }
-
-  const canonicalUrl = isTranslationDraft && translationOriginLocale
-    ? `https://secorto.com/${translationOriginLocale}/${loaded.config.routes[translationOriginLocale as UILanguages]}/${translationOriginId}`
-    : `https://secorto.com/${locale}/${loaded.config.routes[locale]}/${cleanId}`
-
-  state = {
-    entry: loaded.entry,
-    config: loaded.config,
-    isUntranslated: false,
-    isTranslationDraft,
-    translationOriginLocale,
-    cleanId,
-    canonicalUrl
-  }
-}
-
-// Get available locales for hreflang alternates
-const allEntries = await getCollection(state.config.collection)
-const availableLocales = languageKeys.filter((lk) => allEntries.some((e) => e.id === `${lk}/${state.cleanId}`))
-
-const { Content } = await render(state.entry)
-const pageTitle = state.entry.data.title || t(state.config.translationKey)
-const routeSlug = state.config.routes[locale]
-
-// Build final canonical URL if draft has origin
-const finalCanonicalUrl = state.isTranslationDraft && state.translationOriginLocale && state.entry.data.translation_origin
-  ? `https://secorto.com/${state.translationOriginLocale}/${state.config.routes[state.translationOriginLocale]}/${state.entry.data.translation_origin.id}`
-  : state.canonicalUrl
+const { Content } = await render(entry)
+const pageTitle = entry.data.title || t(config.translationKey)
+const routeSlug = config.routes[context.locale]
 ---
+
 <head>
   <meta charset="utf-8" />
-  <link rel="canonical" href={finalCanonicalUrl} />
-  {(state.isUntranslated || state.isTranslationDraft) && <meta name="robots" content="noindex" />}
+  <link rel="canonical" href={canonicalUrl} />
+  {(isUntranslated || isTranslationDraft) && <meta name="robots" content="noindex" />}
   {availableLocales.map((lk) => (
-    <link rel="alternate" hreflang={lk} href={`https://secorto.com/${lk}/${state.config.routes[lk as UILanguages]}/${state.cleanId}`} />
+    <link rel="alternate" hreflang={lk} href={`https://secorto.com/${lk}/${config.routes[lk]}/${cleanId}`} />
   ))}
-  <link rel="alternate" hreflang="x-default" href={`https://secorto.com/${defaultLang}/${state.config.routes[defaultLang as UILanguages]}/${state.cleanId}`} />
+  <link rel="alternate" hreflang="x-default" href={`https://secorto.com/${defaultLang}/${config.routes[defaultLang]}/${cleanId}`} />
 </head>
 
 <BaseLayout pageTitle={pageTitle}>
-  {state.isUntranslated && (
+  {isUntranslated && translationOriginLocale && (
     <div class="untranslated-notice" role="status">
       <p>{t('post.untranslated_notice')}</p>
-      <a href={`/${state.translationOriginLocale}/${state.config.routes[state.translationOriginLocale as UILanguages]}/${state.cleanId}`}>{t('post.view_original')}</a>
+      <a href={`/${translationOriginLocale}/${config.routes[translationOriginLocale]}/${cleanId}`}>{t('post.view_original')}</a>
     </div>
   )}
-  {state.isTranslationDraft && (
+  {isTranslationDraft && (
     <div class="untranslated-notice" role="status">
       <p>{t('post.translation_draft_notice')}</p>
-      {state.translationOriginLocale ? (
-        <a href={`/${state.translationOriginLocale}/${state.config.routes[state.translationOriginLocale as UILanguages]}/${state.entry.data.translation_origin?.id || state.cleanId}`}>{t('post.view_original')}</a>
+      {translationOriginLocale && entryData.translation_origin ? (
+        <a href={`/${translationOriginLocale}/${config.routes[translationOriginLocale]}/${entryData.translation_origin.id}`}>{t('post.view_original')}</a>
       ) : (
-        <a href={`/${locale}/${state.config.routes[locale]}/${state.cleanId}`}>{t('post.view_original')}</a>
+        <a href={`/${context.locale}/${config.routes[context.locale]}/${cleanId}`}>{t('post.view_original')}</a>
       )}
     </div>
   )}
 
-  {/* Dispatch to appropriate view component based on collection type */}
-  {(state.config.collection === 'blog' || state.config.collection === 'talk') ? (
+  {(config.collection === 'blog' || config.collection === 'talk') ? (
     <BlogTalkPostView
-      locale={locale}
+      locale={context.locale}
       routeSlug={routeSlug}
-      entry={state.entry}
-      hasTags={state.config.hasTags}
+      entry={entry}
+      hasTags={config.hasTags}
       Content={Content}
     />
   ) : (
     <WorkProjectCommunityView
-      locale={locale}
-      entry={state.entry}
+      locale={context.locale}
+      entry={entry}
       Content={Content}
     />
   )}

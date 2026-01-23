@@ -59,7 +59,7 @@ export async function buildTagPaths(): Promise<TagPath[]> {
     const allTags = new Set<string>()
 
     for (const locale of locales) {
-      const tagPaths = await getTagsPaths(config.collection, locale)
+      const tagPaths = await getTagsPaths(config.collection as never, locale)
       for (const tagPath of tagPaths) {
         allTags.add(tagPath.params.tag)
       }
