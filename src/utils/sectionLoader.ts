@@ -1,8 +1,17 @@
 import type { UILanguages } from '@i18n/ui'
-import { getPostsByLocale, getUniqueTags, getEntriesPaths } from '@utils/paths'
+import { getPostsByLocale, getUniqueTags } from '@utils/paths'
 import { getSectionConfigByRoute, sectionsConfig } from '@config/sections'
 import type { SectionType } from '@config/sections'
 import { getCollection } from 'astro:content'
+import { languageKeys } from '@i18n/ui'
+
+/**
+ * Extrae el ID limpio de una entrada (sin prefijo de locale).
+ * Soporta múltiples locales dinámicamente.
+ */
+function extractCleanId(entryId: string): string {
+  return languageKeys.reduce((id, lang) => id.replace(new RegExp(`^${lang}/`), ''), entryId)
+}
 
 /**
  * Carga dinámicamente los posts y configuración de una sección
@@ -62,14 +71,13 @@ export async function loadEntryByRoute(
 
   if (!config) return null
 
-  // entries id stored as `${locale}/${fileCleanId}` in content layer
-  // pero puede usarse slug si está definido en frontmatter
   const collectionName = config.collection as any
   const entries = await getCollection(collectionName) as any[]
+
   // Busca por slug si existe, o por cleanId del filename
   const entry = entries.find((e: any) => {
-    const fileCleanId = e.id.replace(/^(en|es)\//, '')
-    const entrySlug = e.data.slug || fileCleanId
+    const cleanId = extractCleanId(e.id)
+    const entrySlug = e.data.slug || cleanId
     return e.id.startsWith(`${locale}/`) && entrySlug === id
   })
 

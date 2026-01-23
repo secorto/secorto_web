@@ -1,6 +1,6 @@
 import { languageKeys, type UILanguages } from '@i18n/ui'
 import { sectionsConfig, type SectionConfig } from '@config/sections'
-import { getTagsPaths, getPostsByLocale } from './paths'
+import { getPostsByLocale, getUniqueTags } from './paths'
 
 export interface SectionPath {
   params: {
@@ -45,6 +45,7 @@ export async function buildSectionIndexPaths(): Promise<SectionPath[]> {
 /**
  * Construye todas las rutas estáticas para páginas de tags.
  * Solo genera rutas para secciones que tienen tags habilitados.
+ * Recolecta tags únicos de todos los locales y genera rutas para cada combinación.
  * @returns Array de paths para getStaticPaths
  */
 export async function buildTagPaths(): Promise<TagPath[]> {
@@ -59,9 +60,10 @@ export async function buildTagPaths(): Promise<TagPath[]> {
     const allTags = new Set<string>()
 
     for (const locale of locales) {
-      const tagPaths = await getTagsPaths(config.collection as never, locale)
-      for (const tagPath of tagPaths) {
-        allTags.add(tagPath.params.tag)
+      const posts = await getPostsByLocale(config.collection as never, locale)
+      const tags = getUniqueTags(posts)
+      for (const tag of tags) {
+        allTags.add(tag)
       }
     }
 

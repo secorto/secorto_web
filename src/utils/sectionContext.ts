@@ -1,5 +1,5 @@
 import { getSectionConfigByRoute, sectionsConfig, type SectionConfig } from '@config/sections'
-import { getTagsPaths, getPostsByLocale } from './paths'
+import { getPostsByLocale } from './paths'
 import type { UILanguages } from '@i18n/ui'
 import { getCollection } from 'astro:content'
 import { languageKeys } from '@i18n/ui'
