@@ -1,9 +1,10 @@
 ---
 title: Windows o Linux
-tags: 
-blogger_orig_url: "http://scot3004.blogspot.com/2010/10/windows-o-linux.html"
+tags:
+  - linux
+blogger_orig_url: http://scot3004.blogspot.com/2010/10/windows-o-linux.html
 date: 2010-10-19
-excerpt: Algunos afirman que Windows es mejor, otros que Linux. La realidad es la siguiente, las personas se ajustan a lo que tienen cerca a lo que fueron educadas, la…
+excerpt: Algunos afirman que Windows es mejor, otros que Linux. Mira lo que pienso respecto a cada sistema operativo.
 ---
 
 Algunos afirman que Windows es mejor, otros que Linux.

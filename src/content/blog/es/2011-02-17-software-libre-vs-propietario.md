@@ -1,10 +1,11 @@
 ---
 title: Software, Libre o Cerrado, libertad o restricción
-tags: 
-blogger_orig_url: "http://scot3004.blogspot.com/2011/02/software-libre-o-cerrado-libertad-o.html"
+tags:
+  - opensource
+blogger_orig_url: http://scot3004.blogspot.com/2011/02/software-libre-o-cerrado-libertad-o.html
 date: 2011-02-17
-translation_status: original
-excerpt: Si bien es sabido que en los sistemas cerrados no hay muchas opciones de modificación, el software es como viene, y modificarlos podría violar los términos que…
+translation_status: 'original'
+excerpt: Analisis sobre software libre vs propietario
 ---
 
 Si bien es sabido que en los sistemas cerrados no hay muchas opciones de modificación, el software es como viene, y modificarlos podría violar los términos que los desarrolladores de estos establecen.

@@ -1,9 +1,11 @@
 ---
 title: Aprendiendo a hacer paginas web
-tags: 
-blogger_orig_url: "http://scot3004.blogspot.com/2011/07/aprendiendo-hacer-paginas-web.html"
+tags:
+  - html
+  - dev
+blogger_orig_url: http://scot3004.blogspot.com/2011/07/aprendiendo-hacer-paginas-web.html
 date: 2011-07-11
-excerpt: Como todo lo que se nos presenta en frente necesitamos aprender, el crear una pagina web no hace la excepción, si te interesa, como en todo debes saber donde…
+excerpt: Un post acerca de las herramientas que use cuando estaba iniciándome en el mundo del desarrollo web
 ---
 
 Como todo lo que se nos presenta en frente necesitamos aprender, el crear una pagina web no hace la excepción, si te interesa, como en todo debes saber donde encontrar la información pertinente.

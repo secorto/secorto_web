@@ -1,9 +1,10 @@
 ---
 title: Typeracer
-tags: 
-blogger_orig_url: "http://scot3004.blogspot.com/2011/07/typeracer.html"
+tags:
+  - juegos
+blogger_orig_url: http://scot3004.blogspot.com/2011/07/typeracer.html
 date: 2011-07-19
-excerpt: Bueno hoy algo de publicidad, buscando en internet algún juego aplicable a la educación encontre esta entretenida idea, un juego de mecanografía, de…
+excerpt: Un viejo blog post sobre un juego que use para mecanografiar rápido
 ---
 
 Bueno hoy algo de publicidad, buscando en internet algún juego aplicable a la educación encontre esta entretenida idea, un juego de mecanografía, de aceleración, o arrancon donde la velocidad que lleve nuestro vehículo, sera la velocidad con la cual tecleamos, lo interesante del juego es poder jugar con otras personas o practicar, en este me enfrente a un amigo que invite, que admito teclea mucho mas rápido, de echo es una de las razones por las que casi no publico en mi blog, acá no se muestra pero me patean las tildes, especialmente por que cambian dependiendo de la distribución de teclado que se use, pero en fin un recomendado, adelante unas capturas del mismo, creanme cuando les digo, por una tilde pueden perder valiosos segundos
