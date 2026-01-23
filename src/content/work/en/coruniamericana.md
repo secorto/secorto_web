@@ -3,8 +3,8 @@ title: Corporación Universitaria Americana
 excerpt: "Unlock Your Gateway to Exceptional Product Development "
 image: "@assets/img/work/coruniamericana.jpg"
 website: https://americana.edu.co/barranquilla
-role: Estudiante en practicas
-responsibilities: Mantenimiento de servidores, soporte, desarrollo web
+role: Student
+responsibilities: Server maintenance, support, web development
 startDate: 2013-01-01
 endDate: 2013-04-01
 translation_status: 'translated'

@@ -3,7 +3,7 @@ title: Joonik
 excerpt: "Unlock Your Gateway to Exceptional Product Development "
 image: "@assets/img/work/joonik.jpg"
 role: "Front-end developer"
-responsibilities: "Desarrollo de aplicaciones web con java"
+responsibilities: "Develop websites integrating wordpress, prestashop or jekyll"
 website: https://joonik.com
 startDate: 2016-06-01
 endDate: 2018-02-10
