@@ -1,14 +1,13 @@
 ---
 title: Test unitarios
 category: dev
-tags:
-  - python
-  - testing
+tags: 
 date: 2017-01-30
 image: "@assets/img/talks/test+mocks.png"
 comunidad: pybaq
-slide: https://scot3004.github.io/pymock
-translation_status: 'original'
+slide: "https://scot3004.github.io/pymock"
+translation_status: original
+excerpt: Como realizar la creación de pruebas unitarias usando sentinels mock y stubs Evento en meetup
 ---
 
 Como realizar la creación de pruebas unitarias usando sentinels mock y stubs

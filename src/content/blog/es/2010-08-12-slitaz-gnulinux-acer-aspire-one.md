@@ -1,9 +1,9 @@
 ---
 title: Slitaz en acer aspire one
-tags:
-  - linux
-blogger_orig_url: http://scot3004.blogspot.com/2010/08/slitaz-gnulinux-acer-aspire-one.html
+tags: 
+blogger_orig_url: "http://scot3004.blogspot.com/2010/08/slitaz-gnulinux-acer-aspire-one.html"
 date: 2010-08-12
+excerpt: Descripción Esta minidistro en su version 3.0 por defecto viene con xOrg, SliTaz incluye un gestor de ventanas ligero, el servidor web LightTPD, navegadores en…
 ---
 
 # Descripción

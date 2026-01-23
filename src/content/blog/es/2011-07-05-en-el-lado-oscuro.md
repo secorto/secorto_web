@@ -1,9 +1,9 @@
 ---
 title: En el lado oscuro
-tags:
-  - random
-blogger_orig_url: http://scot3004.blogspot.com/2011/07/en-el-lado-oscuro.html
+tags: 
+blogger_orig_url: "http://scot3004.blogspot.com/2011/07/en-el-lado-oscuro.html"
 date: 2011-07-05
+excerpt: Vacaciones, uno dice este man se fue a pasear, pero no es asi, mi personalidad, que emana curiosidad a donde va delata que en estos dias el código no descansa,…
 ---
 
 Vacaciones, uno dice este man se fue a pasear,

@@ -1,9 +1,9 @@
 ---
 title: Un día de suerte dudosa
-tags:
-  - random
-blogger_orig_url: http://scot3004.blogspot.com/2011/09/un-dia-de-suerte-dudosa.html
+tags: 
+blogger_orig_url: "http://scot3004.blogspot.com/2011/09/un-dia-de-suerte-dudosa.html"
 date: 2011-09-03
+excerpt: Un dia donde la madrugada fue tranquila un estado de animo cambiante según la hora situaciones algo estresantes buses que pasan al frente mientras camino,…
 ---
 
 Un dia donde la madrugada fue tranquila

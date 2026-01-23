@@ -1,9 +1,9 @@
 ---
 title: Screenshoots de mi Chakra
-tags:
-  - linux
-blogger_orig_url: http://scot3004.blogspot.com/2011/03/screenshoots-de-mi-chakra-bueno-en.html
+tags: 
+blogger_orig_url: "http://scot3004.blogspot.com/2011/03/screenshoots-de-mi-chakra-bueno-en.html"
 date: 2011-03-03
+excerpt: "Screenshots de mi Linux Un toque personal de lo que se puede hacer con GNU/Linux un tiempo en hacer el escritorio mas agradable es un tiempo de aprendizaje…"
 ---
 
 Screenshots de mi Linux
