@@ -1,75 +1,35 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro'
 import Tags from '@components/Tags.astro'
-import { getTagsPaths, getPostsByLocale } from '@utils/paths'
-import { sectionsConfig, getSectionConfigByRoute } from '@config/sections'
 import ListPost from '@components/ListPost.astro'
 import ListWork from '@components/ListWork.astro'
 import { useTranslations } from '@i18n/utils'
 import type { UILanguages } from '@i18n/ui'
+import { buildTagPaths } from '@utils/staticPathsBuilder'
+import { buildTagsPageContext } from '@utils/sectionContext'
 
 export async function getStaticPaths() {
-  const paths: any[] = [];
-
-  for (const [_key, config] of Object.entries(sectionsConfig)) {
-    if (!config.hasTags) continue;
-
-    const locales = Object.keys(config.routes);
-
-    // 1. Obtener todos los tags de todos los locales
-    const allTags = new Set<string>();
-
-    for (const locale of locales) {
-      const tagPaths = await getTagsPaths(config.collection as any, locale);
-      for (const p of tagPaths) {
-        allTags.add(p.params.tag);
-      }
-    }
-
-    // 2. Generar rutas para cada locale usando el set global
-    for (const locale of locales) {
-      const localeKey = locale as UILanguages;
-
-      for (const tag of allTags) {
-        paths.push({
-          params: {
-            locale: localeKey,
-            section: config.routes[localeKey],
-            tag,
-          },
-          props: { tag },
-        });
-      }
-    }
-  }
-
-  return paths;
+  return await buildTagPaths()
 }
 
-const { locale, section, tag } = Astro.params
-const t = useTranslations(locale as UILanguages)
+const { locale, section, tag } = Astro.params as { locale: UILanguages; section: string; tag: string }
+const propsTag = Astro.props?.tag
+const t = useTranslations(locale)
 
-// localizar la configuración de la sección por su slug en este locale
-const config = getSectionConfigByRoute(section, locale as UILanguages)
-if (!config) {
-  return new Response('Not found', { status: 404 })
-}
+// Construir contexto de página (valida sección y carga posts)
+const context = await buildTagsPageContext(
+  section,
+  locale,
+  tag,
+  propsTag,
+  Astro.props ? { posts: Astro.props.posts ?? [], tags: Astro.props.tags ?? [] } : undefined
+)
 
-// obtener posts para este tag
-// preferir props pre-render (Astro.props) si existen
-let posts = (Astro.props && Astro.props.posts) ?? []
-let tags: string[] = (Astro.props && Astro.props.tags) ?? []
-
-if (!posts.length) {
-  // fallback: calcular desde la colección
-  const all = await getPostsByLocale(config.collection as any, locale)
-  posts = all.filter((p: any) => p.data.tags && p.data.tags.includes(tag))
-  tags = [...new Set(all.flatMap((p: any) => p.data.tags || []))]
-}
+const { config, posts, tags } = context
+const Component = config.listComponent === 'ListWork' ? ListWork : ListPost
 
 const pageTitle = `${t(config.translationKey)} - ${tag}`
 const metaDescription = `${config.taggedKey ? t(config.taggedKey) : t(config.translationKey)} ${tag}`
-const Component = config.listComponent === 'ListWork' ? ListWork : ListPost
 ---
 
 <head>
@@ -83,13 +43,12 @@ const Component = config.listComponent === 'ListWork' ? ListWork : ListPost
   {config.taggedKey && <p>{t(config.taggedKey)} {tag}</p>}
 
   {posts.length === 0 ? (
-  <div class="warning">
-    <p>{t('tags.untranslated_notice')}</p>
-  </div>
-) : (
-  <div>
-    <Component posts={posts} basePath={`${locale}/${config.routes[locale as UILanguages]}`} lang={locale} />
-  </div>
-)}
-
+    <div class="warning">
+      <p>{t('tags.untranslated_notice')}</p>
+    </div>
+  ) : (
+    <div>
+      <Component posts={posts} basePath={`${locale}/${config.routes[locale]}`} lang={locale} />
+    </div>
+  )}
 </BaseLayout>
