@@ -1,24 +1,13 @@
 import type { UILanguages } from '@i18n/ui'
 import { sectionsConfig } from '@config/sections'
 import { getPostsByLocale } from './paths'
+import { getPostExcerpt } from './excerptBuilder'
 
 interface RSSItem {
   title: string
   description: string
   link: string
   pubDate: Date
-}
-
-interface PostData {
-  title: string
-  excerpt?: string
-  description?: string
-  date?: string | number
-}
-
-interface Post {
-  data: PostData
-  cleanId: string
 }
 
 /**
@@ -30,8 +19,8 @@ interface Post {
 export async function buildRSSItems(collection: string, locale: UILanguages): Promise<RSSItem[]> {
   const posts = await getPostsByLocale(collection as never, locale)
 
-  return posts.map((post: Post) => {
-    const data = post.data
+  return posts.map((post: any) => {
+    const data = post.data as any
     const cleanId = post.cleanId
 
     // Buscar la sección que contiene esta colección
@@ -45,7 +34,7 @@ export async function buildRSSItems(collection: string, locale: UILanguages): Pr
 
     return {
       title: data.title,
-      description: data.excerpt || data.description || '',
+      description: getPostExcerpt(data),
       link: `/${locale}/${sectionRoute}/${cleanId}`,
       pubDate: new Date(data.date || 0)
     }
