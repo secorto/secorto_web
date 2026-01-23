@@ -10,8 +10,9 @@ const lang = segments[0] as UILanguages;
 const rawSection = segments[1];
 const slug = segments.slice(2).join("/");
 
-const canonicalSection = resolveCanonical(rawSection, lang);
-const isDetailPage = Boolean(slug);
+const isHomePage = !rawSection;
+const canonicalSection = isHomePage ? "" : resolveCanonical(rawSection, lang);
+const isDetailPage = Boolean(slug) && !isHomePage;
 
 const t = useTranslations(lang as UILanguages)
 
@@ -27,8 +28,13 @@ const isTagPage = slug.startsWith("tags");
     const label = languages[targetLang];
     const langPrefix =
       targetLang === defaultLang && !showDefaultLang ? "" : `/${targetLang}`;
-    const localizedSection = resolveLocalized(canonicalSection, targetLang);
 
+    // 📌 Caso especial: página de inicio
+    if (isHomePage) {
+      return <a href={`${langPrefix}/`}>{label}</a>;
+    }
+
+    const localizedSection = resolveLocalized(canonicalSection, targetLang);
 
     // 📌 Caso 1: página de tags (sin traducción de "tag")
     if (isTagPage) {
