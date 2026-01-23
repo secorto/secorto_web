@@ -24,7 +24,6 @@ export const ui = {
     'work.today': 'today',
     'featured_image': 'Featured image',
     'blog.tagged': 'Blog tagged with',
-    'talk.video': 'Video of talk',
     'talk.slides': 'Slides of talk',
     'talk.tagged': 'Talks tagged with',
     'post.untranslated_notice': 'This post is not translated into the selected language. You are viewing the original.',
@@ -34,6 +33,7 @@ export const ui = {
     'post.role': 'Role',
     'post.responsibilities': 'Responsibilities',
     'post.website': 'Website',
+    'post.video': 'Post video',
     'tags.untranslated_notice': 'This tag has no posts available in this language.',
   },
   es: {
@@ -48,7 +48,6 @@ export const ui = {
     'work.today': 'actualidad',
     'featured_image': 'Imagen destacada',
     'blog.tagged': 'Entradas etiquetadas con',
-    'talk.video': 'Video de la charla',
     'talk.slides': 'Presentación de la charla',
     'talk.tagged': 'Charlas etiquetadas con',
     'post.untranslated_notice': 'Esta entrada no está traducida al idioma seleccionado. Estás viendo el original.',
@@ -58,6 +57,7 @@ export const ui = {
     'post.role': 'Rol',
     'post.responsibilities': 'Responsabilidades',
     'post.website': 'Sitio web',
+    'post.video': 'Video del post',
     'tags.untranslated_notice': 'Este tag no tiene posts disponibles en este idioma.',
   },
 } as const;

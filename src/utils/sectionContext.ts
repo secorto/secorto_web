@@ -151,7 +151,7 @@ export async function buildDetailPageContext(
     return null
   }
 
-  const { config, locale: fallbackLocale } = sectionInfo
+  const { config } = sectionInfo
   const allEntries = await getCollection(config.collection)
 
   // Buscar entrada en otro locale

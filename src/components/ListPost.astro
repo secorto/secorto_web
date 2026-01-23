@@ -23,7 +23,7 @@ const dateFormat = getFullFormat(Astro.url);
       translation_status={post.data.translation_status}
       translation_note={(post.data as any).translation_note}
     >
-      {post.cleanId}
+      {post.data.excerpt}
       <PostDate>
         {dateFormat.format(post.data.date)}
       </PostDate>

@@ -21,15 +21,3 @@ export const NAV_LINKS: Array<{
   { routeKey: 'community', translationKey: 'nav.community' },
   { routeKey: 'project', translationKey: 'nav.projects' },
 ]
-
-// Validación en tiempo de construcción: asegurar que cada routeKey existe en rootMap
-// y que cada translationKey existe en ui.en
-type ValidateRoutes = {
-  [K in RouteKey]: K extends RouteKey ? true : false
-}
-type ValidateTranslations = {
-  [K in TranslationKey]: K extends TranslationKey ? true : false
-}
-
-const _validateRoutes: ValidateRoutes = {} as ValidateRoutes
-const _validateTranslations: ValidateTranslations = {} as ValidateTranslations

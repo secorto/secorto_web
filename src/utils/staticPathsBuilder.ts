@@ -1,5 +1,5 @@
 import { languageKeys, type UILanguages } from '@i18n/ui'
-import { sectionsConfig, type SectionConfig } from '@config/sections'
+import { sectionsConfig } from '@config/sections'
 import { getPostsByLocale, getUniqueTags } from './paths'
 
 export interface SectionPath {

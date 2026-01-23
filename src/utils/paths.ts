@@ -1,11 +1,10 @@
-import type { UILanguages } from "@i18n/ui";
 import { getCollection } from "astro:content";
 import type { CollectionEntry, CollectionKey } from "astro:content";
 import { languageKeys } from "@i18n/ui";
 
 export type CollectionWithTags = 'blog'|'talk'
 
-export type EntryWithCleanId<C extends CollectionKey> = CollectionEntry<C> & { cleanId: string };
+export type EntryWithCleanId<C extends CollectionKey> = CollectionEntry<C> & { cleanId: string, excerpt?: string };
 
 /**
  * Extrae el ID limpio de una entrada (sin prefijo de locale).
