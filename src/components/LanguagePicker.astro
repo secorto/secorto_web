@@ -5,93 +5,164 @@ import type { UILanguages } from "../i18n/ui";
 import { resolveCanonical, resolveLocalized } from "../i18n/rootMap";
 import { useTranslations } from "@i18n/utils"
 
+// === PARSING DE URL ===
 const segments = Astro.url.pathname.split("/").filter(Boolean);
-const lang = segments[0] as UILanguages;
+const currentLang = segments[0] as UILanguages;
 const rawSection = segments[1];
 const slug = segments.slice(2).join("/");
 
+// === DETECCIÓN DE TIPO DE PÁGINA ===
 const isHomePage = !rawSection;
-const canonicalSection = isHomePage ? "" : resolveCanonical(rawSection, lang);
+const isTagPage = slug.startsWith("tags");
 const isDetailPage = Boolean(slug) && !isHomePage;
+const isCollectionIndexPage = !isDetailPage && !isHomePage;
 
-const t = useTranslations(lang as UILanguages)
+// === RESOLUCIÓN DE SECCIÓN CANÓNICA ===
+const canonicalSection = isHomePage ? "" : resolveCanonical(rawSection, currentLang);
 
+// === DATOS DISPONIBLES ===
+const t = useTranslations(currentLang as UILanguages);
 const availableLocales = isDetailPage
   ? translations[canonicalSection as keyof typeof translations]?.[slug] || {}
   : {};
 
-const isTagPage = slug.startsWith("tags");
+// === TIPOS AUXILIARES ===
+interface EntryMeta {
+  noTranslate?: string[]
+}
+
+interface TranslationLink {
+  href: string
+  label: string
+  title?: string
+  aria?: string
+  isAvailable: boolean
+  disabledReason?: 'not-available' | 'no-translate'
+  marker?: string
+}
+
+// === FUNCIONES DE GENERACIÓN DE URLs Y LINKS ===
+
+/** Construye el prefijo de idioma (/es, /en, o vacío si es default sin prefijo) */
+function buildLangPrefix(targetLang: UILanguages): string {
+  return targetLang === defaultLang && !showDefaultLang ? "" : `/${targetLang}`;
+}
+
+/** Construye un link para la página de inicio */
+function buildHomePageLink(targetLang: UILanguages): TranslationLink {
+  return {
+    href: `${buildLangPrefix(targetLang)}/`,
+    label: languages[targetLang],
+    isAvailable: true
+  };
+}
+
+/** Construye un link para página de tags */
+function buildTagPageLink(targetLang: UILanguages): TranslationLink {
+  const localizedSection = resolveLocalized(canonicalSection, targetLang);
+  return {
+    href: `${buildLangPrefix(targetLang)}/${localizedSection}/${slug}`,
+    label: languages[targetLang],
+    isAvailable: true
+  };
+}
+
+/** Determina por qué una traducción no está disponible */
+function getDisabledReasonForLang(targetLang: UILanguages): 'not-available' | 'no-translate' {
+  const meta = translations[canonicalSection as keyof typeof translations]?.[slug] as EntryMeta | undefined;
+  const willNotBeTranslated = Array.isArray(meta?.noTranslate) && meta!.noTranslate!.includes(targetLang);
+  return willNotBeTranslated ? 'no-translate' : 'not-available';
+}
+
+const DISABLED_REASON_CONFIG: Record<'not-available' | 'no-translate', {
+  marker: string
+  title: string
+}> = {
+  'not-available': {
+    marker: '⌛',
+    title: 'La traducción no está disponible todavía'
+  },
+  'no-translate': {
+    marker: '🔒',
+    title: 'Esta publicación no será traducida'
+  }
+}
+
+/** Construye un link para página de detalle (post/charla/proyecto/etc) */
+function buildDetailPageLink(targetLang: UILanguages): TranslationLink {
+  const entry = availableLocales[targetLang];
+  const localizedSection = resolveLocalized(canonicalSection, targetLang);
+  
+  if (!entry) {
+    const disabledReason = getDisabledReasonForLang(targetLang);
+    const config = DISABLED_REASON_CONFIG[disabledReason];
+    
+    return {
+      href: '',
+      label: languages[targetLang],
+      isAvailable: false,
+      disabledReason,
+      marker: config.marker,
+      title: config.title,
+      aria: `${config.title}: ${languages[targetLang]}`
+    };
+  }
+  
+  return {
+    href: `${buildLangPrefix(targetLang)}/${localizedSection}/${entry.slug}`,
+    label: languages[targetLang],
+    isAvailable: true
+  };
+}
+
+/** Construye un link para índice de colección o página estática */
+function buildCollectionIndexLink(targetLang: UILanguages): TranslationLink {
+  const localizedSection = resolveLocalized(canonicalSection, targetLang);
+  return {
+    href: `${buildLangPrefix(targetLang)}/${localizedSection}`,
+    label: languages[targetLang],
+    isAvailable: true
+  };
+}
+
+/** Determina qué tipo de link generar y lo construye */
+function buildLinkForLang(targetLang: UILanguages): TranslationLink {
+  if (isHomePage) return buildHomePageLink(targetLang);
+  if (isTagPage) return buildTagPageLink(targetLang);
+  if (isDetailPage) return buildDetailPageLink(targetLang);
+  return buildCollectionIndexLink(targetLang);
+}
 ---
 
 <div class="language-picker">
   {languageKeys.map((targetLang) => {
-    const label = languages[targetLang];
-    const langPrefix =
-      targetLang === defaultLang && !showDefaultLang ? "" : `/${targetLang}`;
-
-    // 📌 Caso especial: página de inicio
-    if (isHomePage) {
-      return <a href={`${langPrefix}/`}>{label}</a>;
-    }
-
-    const localizedSection = resolveLocalized(canonicalSection, targetLang);
-
-    // 📌 Caso 1: página de tags (sin traducción de "tag")
-    if (isTagPage) {
-      return <a href={`${langPrefix}/${localizedSection}/${slug}`}>{label}</a>;
-    }
-
-    // 📌 Caso 2: páginas de detalle dentro de colecciones
-    if (isDetailPage && canonicalSection in translations) {
-      const entry = availableLocales[targetLang];
-  if (!entry) {
-        // Tipado ligero para metadata de la entrada
-        interface EntryMeta {
-          noTranslate?: string[]
-        }
-
-        const meta = translations[canonicalSection as keyof typeof translations]?.[slug] as EntryMeta | undefined
-        const willNotBeTranslated =
-          Array.isArray(meta?.noTranslate) && meta!.noTranslate!.includes(targetLang)
-
-        const note = willNotBeTranslated
-          ? "Esta publicación no será traducida"
-          : "La traducción no está disponible todavía"
-
-        return (
-          <span
-            class="disabled"
-            role="link"
-            aria-disabled="true"
-            tabindex="-1"
-            aria-label={`${note}: ${label}`}
-            title={`${note}: ${label}`}
-            data-disabled-reason={willNotBeTranslated ? "no-translate" : "not-yet-translated"}
-          >
-            {label} {willNotBeTranslated ? "🔒" : "⌛"}
-          </span>
-        )
-      }
-      // If entry exists but is a draft/partial translation, indicate in the picker
-      const status = (entry as any).translation_status as string | undefined
-      if (status && (status !== 'translated' && status !== 'original')) {
-        const note = status === 'draft' ? t('post.translation_draft_notice') : t('post.translation_pending')
-        const marker = status === 'draft' ? '✏️' : '⌛'
-        return (
-          <a href={`${langPrefix}/${localizedSection}/${entry.slug}`} title={`${note}: ${label}`} aria-label={`${note}: ${label}`}>
-            {label} {marker}
-          </a>
-        )
-      }
-
+    const link = buildLinkForLang(targetLang);
+    const text = `${link.label}${link.marker ? ` ${link.marker}` : ''}`;
+    
+    if (!link.isAvailable) {
       return (
-        <a href={`${langPrefix}/${localizedSection}/${entry.slug}`}>
-          {label}
-        </a>
+        <span
+          class="disabled"
+          role="link"
+          aria-disabled="true"
+          tabindex="-1"
+          aria-label={link.aria}
+          title={link.title}
+          data-disabled-reason={link.disabledReason}
+        >
+          {text}
+        </span>
       );
     }
-
-    // 📌 Caso 3: índice de colección (ej. /es/blog) o páginas estáticas (ej. /es/about)
-    return <a href={`${langPrefix}/${localizedSection}`}>{label}</a>;
+    
+    return (
+      <a
+        href={link.href}
+        title={link.title}
+        aria-label={link.aria}
+      >
+        {text}
+      </a>
+    );
   })}
 </div>
