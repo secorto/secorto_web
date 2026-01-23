@@ -1,56 +1,47 @@
 import { getCollection } from "astro:content";
 import type { CollectionEntry, CollectionKey } from "astro:content";
-type CollectionWithTags = 'blog'|'talk'
+import { languageKeys } from "@i18n/ui";
 
-export type EntriesPath<C extends CollectionKey> =  {
-  params: {
-    id: string
-  },
-  props: {
-    entry: CollectionEntry<C>
-  }
-}
+export type CollectionWithTags = 'blog'|'talk'
 
-export type TagsPath<C extends CollectionWithTags> =  {
-  params: {
-    tag: string
-  },
-  props: {
-    posts: CollectionEntry<C>[],
-    tags: string[]
-  }
-}
-
-export type EntriesStaticPaths<C extends CollectionKey> = Promise<EntriesPath<C>[]>
-export type TagsStaticPaths<C extends CollectionWithTags> = Promise<TagsPath<C>[]>
-
+export type EntryWithCleanId<C extends CollectionKey> = CollectionEntry<C> & { cleanId: string, excerpt?: string };
 
 /**
- * Generates the static paths of any entry page
- * @param collectionName should be any CollectionKey defined on astro.config.mjs
- * @returns A promise with the Entries paths
+ * Extrae el ID limpio de una entrada (sin prefijo de locale).
+ * Soporta múltiples locales dinámicamente.
+ * @param entryId - ID de entrada (ej: 'es/archivo' o 'en/file')
+ * @returns ID limpio sin prefijo de locale
  */
-export const getEntriesPaths = async (collectionName: CollectionKey): EntriesStaticPaths<CollectionKey> =>  {
-  const entries: CollectionEntry<CollectionKey>[] = await getCollection<CollectionKey>(collectionName);
-  return entries.map(entry => ({
-    params: { id: entry.id }, props: { entry },
-  }));
+function extractCleanId(entryId: string): string {
+  return languageKeys.reduce((id, lang) => id.replace(new RegExp(`^${lang}/`), ''), entryId)
 }
 
 /**
- * Generates the static paths of a tags page
- * @param collectionName should be a collection that has tags for example 'blog' or 'talk'
- * @returns A promise with the Tags paths
+ * Obtiene todos los posts de una colección para un locale específico.
+ * Enriquece cada post con su cleanId (slug o nombre de archivo limpio).
+ * @param collection - Nombre de la colección
+ * @param locale - Idioma/locale
+ * @returns Array de posts ordenados por cleanId descendente
  */
-export async function getTagsPaths(collectionName: CollectionWithTags): TagsStaticPaths<CollectionWithTags> {
-  const allPosts = (await getCollection<CollectionWithTags>(collectionName)).sort((a, b)=> b.id.localeCompare(a.id));
-  const uniqueTags = [...new Set(allPosts.map((post) => post.data.tags).flat())].sort((a, b)=> a.localeCompare(b));
+export async function getPostsByLocale<C extends CollectionKey>(
+  collection: C,
+  locale: string
+): Promise<EntryWithCleanId<C>[]> {
+  const posts = await getCollection(collection);
+  return posts
+    .filter(post => post.id.startsWith(`${locale}/`))
+    .map(post => ({
+      ...post,
+      cleanId: (post.data as any).slug || extractCleanId(post.id)
+    }))
+    .sort((a, b) => b.cleanId.localeCompare(a.cleanId));
+}
 
-  return uniqueTags.map((tag) => {
-    const filteredPosts = allPosts.filter((post) => post.data.tags.includes(tag));
-    return {
-      params: { tag },
-      props: { posts: filteredPosts, tags: uniqueTags },
-    };
-  });
+/**
+ * Extrae todos los tags únicos de un array de posts.
+ * @param posts - Array de posts con data.tags
+ * @returns Array de tags únicos ordenados alfabéticamente
+ */
+export function getUniqueTags(posts: any[]) {
+  return [...new Set(posts.flatMap((post) => post.data.tags ?? []))].sort((a, b) => a.localeCompare(b));
 }

@@ -2,20 +2,44 @@
 import '../styles/global.css';
 import Hamburger from '../components/Hamburger.astro';
 import Sidebar from '../components/Sidebar.astro';
+import { useTranslations } from '@i18n/utils';
+import type { UILanguages } from '@i18n/ui';
 
 interface Props {
   pageTitle: string
+  description?: string
 }
-const {pageTitle} = Astro.props
+
+const { pageTitle, description } = Astro.props;
+const locale = Astro.currentLocale as UILanguages;
+const t = useTranslations(locale);
+const siteDescription = description || t('site.description');
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
-<html lang="es">
+<html lang={locale}>
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} >
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- SEO Meta Tags -->
     <title>{pageTitle} | SeCOrTo</title>
+    <meta name="description" content={siteDescription} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={siteDescription} />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={pageTitle} />
+    <meta property="twitter:description" content={siteDescription} />
   </head>
   <body>
     <Hamburger />

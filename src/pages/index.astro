@@ -1,21 +1,22 @@
 ---
-import SiteLayout from "@layouts/SiteLayout.astro";
-import intro from '@assets/img/intro.inline.svg?raw'
-import Footer from '../components/Footer.astro';
-const pageTitle = "Página de inicio";
 ---
-
-<SiteLayout pageTitle={pageTitle}>
-  <Fragment set:html={intro} />
-  <main class="main-content">
-    <div>
-      <h1>Soy Sergio Carlos Orozco Torres</h1>
-      <p>👨🏼‍🎓 <a href="about">Especialista en seguridad informática</a> con amplios conocimientos en <a href="trabajo">desarrollo de software</a></p>
-      <p>🗣️ He dado <a href="charla">charlas</a> en diferentes <a href="comunidad">comunidades</a> por toda Colombia</p>
-      <p>📝 Además de haber escrito <a href="blog">articulos</a> sobre diversos temas</p>
-      <p>🛠️ Participo en <a href="proyecto">proyectos</a> de código libre</p>
-    </div>
-    <slot />
-  </main>
-  <Footer />
-</SiteLayout>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Selecciona tu idioma</title>
+    <style>
+      body { display: none; }
+    </style>
+    <script>
+      (function () {
+        const lang = (navigator.language || '').toLowerCase().startsWith('es') ? 'es' : 'en'
+        window.location.replace('/' + lang + '/')
+      })()
+    </script>
+  </head>
+  <body>
+    <noscript>
+      <meta http-equiv="refresh" content="0;url=/en/" />
+    </noscript>
+  </body>
+</html>

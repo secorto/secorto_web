@@ -18,6 +18,7 @@
   --colors-sidebar-background: #004f53;
   --colors-sidebar-text: #fff;
   --colors-sidebar-hover: #B8FFFF;
+  --colors-sidebar-disabled: #D9BAE8;
 }
 
 .dark {
@@ -151,21 +152,24 @@ Sidebar
   width: 128px;
 }
 
-.sidebar a {
+.sidebar a, .sidebar .disabled {
   font-size: 1.2rem;
   font-weight: 500;
   background: var(--colors-sidebar-background);
-  color: var(--colors-sidebar-text);
   font-family: "Ubuntu", sans-serif;
   text-decoration: none;
-  display: flex;
-  -webkit-box-align: center;
-  align-items: center;
-  -webkit-box-pack: center;
-  justify-content: center;
   padding-top: 0.3em;
   padding-bottom: 0.3em;
   overflow-wrap: break-word;
+}
+
+.sidebar a {
+  color: var(--colors-sidebar-text);
+}
+
+.sidebar .disabled {
+  color: var(--colors-sidebar-disabled);
+  cursor: not-allowed;
 }
 
 .sidebar a:hover {
@@ -198,6 +202,21 @@ Sidebar
 
 .sidebar.sidebar-open {
   transform: translateX(0px);
+}
+
+.sidebar-links a, .sidebar-home-link {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+}
+
+.language-picker {
+  display: flex;
+  justify-content: space-around;
+  min-height: 1.5rem;
+  align-items: center;
 }
 
 .hamburger {

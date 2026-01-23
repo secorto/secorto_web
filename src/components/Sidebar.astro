@@ -1,11 +1,22 @@
 ---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { getLangFromUrl, useTranslations, useTranslatedPath } from '../i18n/utils';
+import { resolveLocalized } from '@i18n/rootMap'
+import { NAV_LINKS } from '@config/navLinks'
+
 import ThemeIcon from './ThemeIcon.astro';
+import LanguagePicker from './LanguagePicker.astro';
+
 type Props = Record<string, never>;
+
+const currentLocale = getLangFromUrl(Astro.url);
+const t = useTranslations(currentLocale);
+const translatePath = useTranslatedPath(currentLocale);
 ---
 <nav class="sidebar sidebar-toggle">
   <div class="sidebar-content">
     <div>
-      <a aria-current="page" class="sidebar-home-link" href="/">
+      <a aria-current="page" class="sidebar-home-link" href={getRelativeLocaleUrl(currentLocale, '/')}>
         <svg width="128px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" class="sidebar-logo"><g stroke-linecap="round" stroke-linejoin="round" transform="matrix(2.5992 0 0 2.6021 2.21 -2612.5)"><path stroke="#009aa9" stroke-opacity="0.945" stroke-width="0.029" d="M22.549 1027.2h.082z"></path><ellipse cx="23.983" cy="1028.4" fill="#eee" stroke="#222" stroke-width="1.737" rx="23.114" ry="23.112"></ellipse><path stroke="#000" stroke-width="1.5" d="M38.549 1012.3c-3.642-.873-8.025-2.035-11.815-2.19v-3.066c5.12.414 10.803 3.76 11.815 5.256z"></path><path stroke="#222" stroke-width="0.31" d="M2.056 1025.7c.411-7.09 5.913-19.414 22.074-19.598l.135 5.042-1.633.04c-5.773.827-11.159 3.45-11.22 9.222.103 2.929 2.299 4.404 4.396 5.777-4.388-.228-9.802.026-13.72 0zm24.113 18.968c11.435-1.042 17.27-9.616 8.038-16.383 4.375-.01 7.622-.048 11.997-.054.84 13.29-10.061 22.795-19.923 23.26z"></path><path stroke="#000" stroke-width="1.5" d="m23.742 1044.8.067 5.797c-6.459-.21-14.178-5.153-17.122-9.267 1.837 2.53 13.91 3.29 17.055 3.47z"></path></g><path fill="#999" fill-rule="evenodd" stroke="#69bfc8" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.502" d="M8.847 60.481h114.32m-55.244 59.511V4.482"></path><ellipse cx="64.227" cy="63.833" fill="none" stroke="#009aa9" stroke-linecap="round" stroke-linejoin="round" stroke-width="5.721" opacity="0.99" rx="60.078" ry="60.141"></ellipse><path fill="none" stroke="#009aa9" stroke-linecap="round" stroke-linejoin="round" stroke-width="6.502" d="M12.808 93.614s78.093 25.717 86.601-8.86c5.983-24.314-32.906-24.406-32.906-24.406S18.548 57.069 37.579 31.54c19.216-18.928 49.484-9.47 73.241-5.04"></path></svg>
         <p class="sidebar-title">Sergio Carlos Orozco Torres</p>
         <p class="sidebar-subtitle">Software developer</p>
@@ -13,13 +24,13 @@ type Props = Record<string, never>;
       <hr class="sidebar-separator">
     </div>
     <div class="sidebar-links">
-      <a href="/about/">Sobre mi</a>
-      <a href="/charla/">Charlas</a>
-      <a href="/blog/">Blog</a>
-      <a href="/trabajo/">Trabajo</a>
-      <a href="/comunidad/">Comunidad</a>
-      <a href="/proyecto/">Proyectos</a>
+      {NAV_LINKS.map(({ routeKey, translationKey }) => (
+        <a href={translatePath(`/${resolveLocalized(routeKey, currentLocale)}`)}>
+          {t(translationKey)}
+        </a>
+      ))}
     </div>
     <ThemeIcon />
+    <LanguagePicker/>
   </div>
 </nav>

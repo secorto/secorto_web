@@ -1,11 +1,14 @@
 ---
 import { Image } from "astro:assets";
 interface Props {
-	title: string
+    title: string
   url: string
   image?: ImageMetadata
+  translation_status?: string
+  translation_note?: string
+  excerpt?: string
 }
-const { title, url, image } = Astro.props
+const { title, url, image, excerpt = '' } = Astro.props
 ---
 
 <a class="card" href={url}>
@@ -14,6 +17,7 @@ const { title, url, image } = Astro.props
       <Image src={image} alt="featured image" />
     }
     <h2 class="card-title">{title}</h2>
+    {excerpt && <p class="card-excerpt">{excerpt}</p>}
     <div class="card-details">
       <slot/>
     </div>
@@ -44,6 +48,12 @@ const { title, url, image } = Astro.props
   }
   .card-title {
     margin: 0;
+  }
+  .card-excerpt {
+    margin: 0.5rem 0 0 0;
+    color: var(--colors-text);
+    font-size: 0.95rem;
+    line-height: 1.4;
   }
   .card-details {
     color: var(--colors-text);

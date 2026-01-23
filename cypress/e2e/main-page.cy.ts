@@ -1,6 +1,6 @@
 describe('Página de inicio', () => {
   beforeEach(() => {
-    cy.visit('/')
+    cy.visit('/es')
   })
 
   it('Verifica elementos principales y menú móvil', () => {

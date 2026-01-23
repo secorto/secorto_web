@@ -13,3 +13,94 @@ publish = "dist"
 package = "netlify-plugin-cypress"
   [plugins.inputs]
   record = true
+
+[[redirects]]
+from = "/es/*"
+to = "/es/404.html"
+status = 404
+
+[[redirects]]
+from = "/en/*"
+to = "/en/404.html"
+status = 404
+
+[[redirects]]
+from = "/"
+to = "/es"
+
+[[redirects]]
+from = "/blog/*"
+to = "/es/blog/:splat"
+
+[[redirects]]
+from = "/charla/*"
+to = "/es/charla/:splat"
+
+[[redirects]]
+from = "/comunidad/*"
+to = "/es/comunidad/:splat"
+
+[[redirects]]
+from = "/proyecto/*"
+to = "/es/proyecto/:splat"
+
+[[redirects]]
+from = "/trabajo/*"
+to = "/es/trabajo/:splat"
+
+[[redirects]]
+from = "/about/*"
+to = "/en/about/:splat"
+status = 301
+
+[[redirects]]
+from = "/acerca-de/*"
+to = "/es/acerca-de/:splat"
+status = 301
+
+[[redirects]]
+from = "/en/charla/*"
+to = "/en/talk/:splat"
+status = 301
+
+[[redirects]]
+from = "/en/trabajo/*"
+to = "/en/work/:splat"
+status = 301
+
+[[redirects]]
+from = "/en/comunidad/*"
+to = "/en/community/:splat"
+status = 301
+
+[[redirects]]
+# Spanish requests using English slugs -> Spanish canonical
+from = "/es/talk/*"
+to = "/es/charla/:splat"
+status = 301
+
+[[redirects]]
+from = "/es/work/*"
+to = "/es/trabajo/:splat"
+status = 301
+
+[[redirects]]
+from = "/es/community/*"
+to = "/es/comunidad/:splat"
+status = 301
+
+[[redirects]]
+# Also handle common plural variants
+from = "/en/talks/*"
+to = "/en/talk/:splat"
+status = 301
+
+[[redirects]]
+from = "/es/charlas/*"
+to = "/es/charla/:splat"
+status = 301
+
+[[redirects]]
+from = "/es/blog/2016-06-18-por-que-uso-npm"
+to = "/es/blog/2025-12-25-por-que-uso-npm"
+status = 301

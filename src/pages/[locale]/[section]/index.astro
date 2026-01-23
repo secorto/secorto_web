@@ -1,0 +1,38 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro'
+import SectionRenderer from '@components/SectionRenderer.astro'
+import { loadSectionByRoute } from '@utils/sectionLoader'
+import { useTranslations } from '@i18n/utils'
+import type { UILanguages } from '@i18n/ui'
+import { buildSectionIndexPaths } from '@utils/staticPathsBuilder'
+import { buildSectionContext } from '@utils/sectionContext'
+
+export async function getStaticPaths() {
+  return await buildSectionIndexPaths()
+}
+
+const { locale, section } = Astro.params as { locale: UILanguages; section: string }
+const t = useTranslations(locale)
+
+// Validar que la sección existe y obtener configuración
+const { config } = buildSectionContext(section, locale)
+
+// Cargar posts y datos de la sección
+const sectionData = await loadSectionByRoute(section, locale)
+
+if (!sectionData) {
+  return new Response('Not found', { status: 404 })
+}
+
+const { posts, tags } = sectionData
+const pageTitle = t(config.translationKey)
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  <SectionRenderer
+    config={config}
+    locale={locale}
+    posts={posts}
+    tags={tags}
+  />
+</BaseLayout>

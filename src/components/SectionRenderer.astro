@@ -1,0 +1,29 @@
+---
+import type { SectionConfig } from '@config/sections'
+import type { UILanguages } from '@i18n/ui'
+import Tags from '@components/Tags.astro'
+import ListPost from '@components/ListPost.astro'
+import ListWork from '@components/ListWork.astro'
+
+interface Props {
+  config: SectionConfig
+  locale: UILanguages
+  posts: any[]
+  tags?: string[]
+}
+
+const { config, locale, posts, tags = [] } = Astro.props
+const routeSlug = config.routes[locale]
+---
+
+{config.hasTags && tags.length > 0 && (
+  <Tags route={`/${locale}/${routeSlug}/tags/`} tags={tags} />
+)}
+
+{config.listComponent === 'ListPost' && (
+  <ListPost posts={posts} basePath={`${locale}/${routeSlug}`} />
+)}
+
+{config.listComponent === 'ListWork' && (
+  <ListWork posts={posts} basePath={`${locale}/${routeSlug}`} lang={locale} />
+)}

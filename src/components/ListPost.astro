@@ -1,25 +1,29 @@
 ---
 import PostItem from '@components/PostItem.astro';
-import PostList from './PostList.astro';
-import { dateFormat } from 'src/scripts/dateFormat';
-import PostDate from './PostDate.astro';
-import type { CollectionEntry } from 'astro:content';
+import PostList from '@components/PostList.astro';
+import PostDate from '@components/PostDate.astro';
+import { getFullFormat } from '@i18n/utils';
+import type { EntryWithCleanId } from '@utils/paths';
 
 export interface Props {
   basePath: string,
-	posts: CollectionEntry<'talk'|'blog'>[];
+	posts: EntryWithCleanId<'talk'|'blog'>[];
 }
 
 const { posts, basePath } = Astro.props;
+const dateFormat = getFullFormat(Astro.url);
 ---
 
 <PostList>
   {posts.map((post) =>
     <PostItem
       image={post.data.image}
-      url={`/${basePath}/${post.id}`}
+      url={`/${basePath}/${post.cleanId}`}
       title={post.data.title}
+      translation_status={post.data.translation_status}
+      translation_note={(post.data as any).translation_note}
     >
+      {post.data.excerpt}
       <PostDate>
         {dateFormat.format(post.data.date)}
       </PostDate>

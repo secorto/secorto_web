@@ -1,0 +1,67 @@
+---
+import { languageKeys } from "../i18n/ui";
+import type { UILanguages } from "../i18n/ui";
+import { resolveCanonical } from "../i18n/rootMap";
+import { buildHomeLink, buildTagLink, buildDetailLink, buildCollectionLink, type TranslationLink } from "../i18n/languagePickerUtils";
+import { translations } from "../i18n/translations";
+
+// === PARSING DE URL ===
+const segments = Astro.url.pathname.split("/").filter(Boolean);
+const currentLang = segments[0] as UILanguages;
+const rawSection = segments[1];
+const slug = segments.slice(2).join("/");
+
+// === DETECCIÓN DE TIPO DE PÁGINA ===
+const isHomePage = !rawSection;
+const isTagPage = slug.startsWith("tags");
+const isDetailPage = Boolean(slug) && !isHomePage;
+
+// === RESOLUCIÓN DE SECCIÓN CANÓNICA ===
+const canonicalSection = isHomePage ? "" : resolveCanonical(rawSection, currentLang);
+
+// === DATOS DISPONIBLES ===
+const availableLocales = isDetailPage
+  ? translations[canonicalSection as keyof typeof translations]?.[slug] || {}
+  : {};
+
+// === BUILDER DE LINKS SEGÚN TIPO DE PÁGINA ===
+function buildLink(targetLang: UILanguages): TranslationLink {
+  if (isHomePage) return buildHomeLink(targetLang)
+  if (isTagPage) return buildTagLink(targetLang, canonicalSection, slug)
+  if (isDetailPage) return buildDetailLink(targetLang, canonicalSection, slug, availableLocales)
+  return buildCollectionLink(targetLang, canonicalSection)
+}
+---
+
+<div class="language-picker">
+  {languageKeys.map((targetLang) => {
+    const link = buildLink(targetLang);
+    const text = `${link.label}${link.marker ? ` ${link.marker}` : ''}`;
+
+    if (!link.isAvailable) {
+      return (
+        <span
+          class="disabled"
+          role="link"
+          aria-disabled="true"
+          tabindex="-1"
+          aria-label={link.aria}
+          title={link.title}
+          data-disabled-reason={link.disabledReason}
+        >
+          {text}
+        </span>
+      );
+    }
+
+    return (
+      <a
+        href={link.href}
+        title={link.title}
+        aria-label={link.aria}
+      >
+        {text}
+      </a>
+    );
+  })}
+</div>
