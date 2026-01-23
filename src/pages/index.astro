@@ -4,12 +4,17 @@
   <head>
     <meta charset="UTF-8" />
     <title>Selecciona tu idioma</title>
+    <style>
+      body { display: none; }
+    </style>
+    <script>
+      (function () {
+        const lang = (navigator.language || '').toLowerCase().startsWith('es') ? 'es' : 'en'
+        window.location.replace('/' + lang + '/')
+      })()
+    </script>
   </head>
   <body>
-    <p>Detectando tu idioma preferido…</p>
-    <script>
-      import "../scripts/language-redirect.js";
-    </script>
     <noscript>
       <meta http-equiv="refresh" content="0;url=/en/" />
     </noscript>
