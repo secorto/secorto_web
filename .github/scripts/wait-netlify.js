@@ -43,8 +43,14 @@ const site = process.env.NETLIFY_SITE_ID
 const branch = process.env.PR_BRANCH
 const envFile = process.env.GITHUB_ENV
 
-if (!token || !site || !branch) {
-  console.error('Missing required env vars: NETLIFY_AUTH_TOKEN, NETLIFY_SITE_ID or PR_BRANCH')
+const missing = []
+if (!token) missing.push('NETLIFY_AUTH_TOKEN')
+if (!site) missing.push('NETLIFY_SITE_ID')
+if (!branch) missing.push('PR_BRANCH')
+if (missing.length) {
+  console.error('Missing required env var(s):', missing.join(', '))
+  console.error('Set them in your workflow (see .github/workflows/playwright.yml) or export locally before running:')
+  console.error('  NETLIFY_AUTH_TOKEN=... NETLIFY_SITE_ID=... PR_BRANCH=... node .github/scripts/wait-netlify.js')
   process.exit(1)
 }
 
