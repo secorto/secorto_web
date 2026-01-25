@@ -19,6 +19,7 @@ const postFixtures = [
 for (const f of postFixtures) {
   test.describe(`Blog post (${f.locale})`, () => {
     test.beforeEach(async ({ page }) => {
+      await page.setViewportSize({ width: 480, height: 800 })
       const blog = new BlogPage(page)
       await blog.gotoList(f.listPath)
       await blog.openPost(f.postHref, f.locale)
@@ -30,12 +31,10 @@ for (const f of postFixtures) {
       await expect(blog.headerTitle()).toHaveText(f.postTitle)
     })
 
-    test('no horizontal scroll on mobile', async ({ page }) => {
+    test('no horizontal scroll on mobile', async ({ page }, testInfo) => {
       const blog = new BlogPage(page)
-      await page.setViewportSize({ width: 600, height: 800 })
-      await page.evaluate(() => window.scrollTo(document.body.scrollWidth, 0))
-      const scrollX = await page.evaluate(() => window.scrollX)
-      expect(scrollX).toBe(0)
+      const { assertNoHorizontalOverflow } = await import('../../tests/utils/layout')
+      await assertNoHorizontalOverflow(page, testInfo, f.locale)
     })
   })
 }
