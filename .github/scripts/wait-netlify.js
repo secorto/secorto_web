@@ -25,7 +25,7 @@
  *      NETLIFY_AUTH_TOKEN=xxx NETLIFY_SITE_ID=yyy PR_BRANCH=feature/abc node .github/scripts/wait-netlify.js --debug --attempts=5
  */
 
-const fs = require('fs')
+import fs from 'fs'
 
 function parseArg(name, fallback) {
   const match = process.argv.find(a => a.startsWith(`${name}=`))
@@ -51,9 +51,8 @@ if (!token || !site || !branch) {
 async function ensureFetch() {
   if (typeof fetch === 'function') return fetch
   try {
-    // Try to load node-fetch if running on older Node
-    const nf = require('node-fetch')
-    return nf
+    const mod = await import('node-fetch')
+    return mod.default || mod
   } catch (e) {
     console.error('Global fetch not available and node-fetch not installed. Require Node 18+ or add node-fetch as dependency.')
     process.exit(1)

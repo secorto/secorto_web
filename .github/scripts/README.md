@@ -45,3 +45,7 @@ Maintenance
 
 - If Node in the runner lacks `fetch`, the script will ask for `node-fetch` or Node 18+
 - Keep the script small and review changes when modifying polling behaviour
+
+Note on `NETLIFY_PREVIEW_URL` vs `BASE_URL`
+
+- We prefer `NETLIFY_PREVIEW_URL` for PR runs because it's the exact preview deploy URL produced by Netlify. Keep `BASE_URL` as a manual override for staging/production/local testing. The workflow and `playwright.config.ts` already use the precedence: `NETLIFY_PREVIEW_URL || BASE_URL || http://localhost:4321`.
