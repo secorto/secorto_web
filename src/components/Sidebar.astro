@@ -23,9 +23,9 @@ const translatePath = useTranslatedPath(currentLocale);
       </a>
       <hr class="sidebar-separator">
     </div>
-    <div class="sidebar-links">
+    <div class="sidebar-links" data-testid="sidebar-links">
       {NAV_LINKS.map(({ routeKey, translationKey }) => (
-        <a href={translatePath(`/${resolveLocalized(routeKey, currentLocale)}`)}>
+        <a href={translatePath(`/${resolveLocalized(routeKey, currentLocale)}`)} data-testid={`sidebar-${routeKey}`}>
           {t(translationKey)}
         </a>
       ))}
