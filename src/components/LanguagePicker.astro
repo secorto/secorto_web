@@ -48,6 +48,7 @@ function buildLink(targetLang: UILanguages): TranslationLink {
           aria-label={link.aria}
           title={link.title}
           data-disabled-reason={link.disabledReason}
+          data-testid={`lang-${targetLang}`}
         >
           {text}
         </span>
@@ -59,6 +60,7 @@ function buildLink(targetLang: UILanguages): TranslationLink {
         href={link.href}
         title={link.title}
         aria-label={link.aria}
+        data-testid={`lang-${targetLang}`}
       >
         {text}
       </a>
