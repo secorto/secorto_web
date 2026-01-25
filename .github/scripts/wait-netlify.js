@@ -33,7 +33,7 @@ function parseArg(name, fallback) {
   return match.split('=')[1]
 }
 
-const DEBUG = process.argv.includes('--debug')
+const DEBUG = process.argv.includes('--debug') || String(process.env.DEBUG || '').toLowerCase() === '1' || String(process.env.DEBUG || '').toLowerCase() === 'true'
 const PRINT_ONLY = process.argv.includes('--print-only')
 const maxAttempts = parseInt(parseArg('--attempts', '30'), 10)
 const delayMs = parseInt(parseArg('--delay', '10000'), 10)
@@ -43,29 +43,31 @@ const site = process.env.NETLIFY_SITE_ID
 const branch = process.env.PR_BRANCH
 const envFile = process.env.GITHUB_ENV
 const expectedSha = process.env.GITHUB_SHA || process.env.PR_COMMIT_SHA || null
-// If we're running in a GitHub Actions run for a PR, GITHUB_SHA may be the merge commit.
-// Try to read the event payload to get the PR head SHA (more accurate for Netlify previews).
-let resolvedExpectedSha = expectedSha
-if (!resolvedExpectedSha && process.env.GITHUB_EVENT_PATH) {
-  try {
-    const ev = JSON.parse(fs.readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'))
-    const prHeadSha = ev && ev.pull_request && ev.pull_request.head && ev.pull_request.head.sha
-    if (prHeadSha) {
-      resolvedExpectedSha = prHeadSha
-      if (DEBUG) console.error('Resolved expected SHA from GITHUB_EVENT_PATH (pull_request.head.sha):', resolvedExpectedSha)
+const cliExpected = parseArg('--expected-sha', null)
+
+// Resolve expected SHA and its source with a single helper (priority: CLI, env PR_HEAD_SHA, env GITHUB_SHA, event payload)
+function resolveExpectedSha() {
+  if (cliExpected) return { sha: cliExpected, source: 'cli(--expected-sha)' }
+  if (process.env.PR_HEAD_SHA) return { sha: process.env.PR_HEAD_SHA, source: 'env(PR_HEAD_SHA)' }
+  if (expectedSha) return { sha: expectedSha, source: 'env(GITHUB_SHA|PR_COMMIT_SHA)' }
+  if (process.env.GITHUB_EVENT_PATH) {
+    try {
+      const ev = JSON.parse(fs.readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'))
+      const prHeadSha = ev?.pull_request?.head?.sha
+      if (prHeadSha) return { sha: prHeadSha, source: 'GITHUB_EVENT_PATH.pull_request.head.sha' }
+    } catch (e) {
+      if (DEBUG) console.error('Could not read/parse GITHUB_EVENT_PATH:', e && e.message ? e.message : e)
     }
-  } catch (e) {
-    if (DEBUG) console.error('Could not read/parse GITHUB_EVENT_PATH to resolve PR head sha:', e && e.message ? e.message : e)
   }
+  return { sha: null, source: null }
 }
 
-const missing = []
-if (!token) missing.push('NETLIFY_AUTH_TOKEN')
-if (!site) missing.push('NETLIFY_SITE_ID')
-if (!branch) missing.push('PR_BRANCH')
+// Validate required env vars
+const required = [{ k: 'NETLIFY_AUTH_TOKEN', v: token }, { k: 'NETLIFY_SITE_ID', v: site }, { k: 'PR_BRANCH', v: branch }]
+const missing = required.filter(r => !r.v).map(r => r.k)
 if (missing.length) {
   console.error('Missing required env var(s):', missing.join(', '))
-  console.error('Set them in your workflow (see .github/workflows/playwright.yml) or export locally before running:')
+  console.error('Set them in your workflow or export locally before running:')
   console.error('  NETLIFY_AUTH_TOKEN=... NETLIFY_SITE_ID=... PR_BRANCH=... node .github/scripts/wait-netlify.js')
   process.exit(1)
 }
@@ -115,17 +117,25 @@ async function listDeploys(_fetch, siteId, token) {
 }
 
 /**
- * Extract a probable commit SHA from common deploy fields
+ * Extract a probable commit SHA from common deploy fields and report which field contained it
+ * @returns {{sha: string|null, field: string|null}}
  */
 function extractShaFromDeploy(deploy) {
-  if (!deploy) return null
-  const candidates = [deploy.commit_ref, deploy.commit_url, deploy.commit_message, deploy.sha, deploy.commit_sha, deploy.title]
-  for (const c of candidates) {
-    if (!c) continue
-    const m = String(c).match(/[0-9a-f]{7,40}/i)
-    if (m) return m[0]
+  if (!deploy) return { sha: null, field: null }
+  const fields = [
+    ['commit_ref', deploy.commit_ref],
+    ['commit_url', deploy.commit_url],
+    ['commit_message', deploy.commit_message],
+    ['sha', deploy.sha],
+    ['commit_sha', deploy.commit_sha],
+    ['title', deploy.title]
+  ]
+  for (const [field, value] of fields) {
+    if (!value) continue
+    const m = String(value).match(/[0-9a-f]{7,40}/i)
+    if (m) return { sha: String(m[0]).trim().toLowerCase(), field }
   }
-  return null
+  return { sha: null, field: null }
 }
 
 function previewDeploysForBranch(deploys, branchName) {
@@ -135,28 +145,53 @@ function previewDeploysForBranch(deploys, branchName) {
     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
 }
 
-function isProdUrl(url, prodUrl) {
-  if (!url || !prodUrl) return false
-  return url.replace(/\/$/, '') === prodUrl.replace(/\/$/, '')
-}
+// Note: production URL check removed — we already filter by deploy context ('deploy-preview')
 
-function deployMatchesCriteria(deploy, expectedSha, prodUrl) {
+function deployMatchesCriteria(deploy, expectedSha) {
   if (!deploy) return false
   const url = deploy.ssl_url || deploy.url || null
   const state = deploy.state
   if (state !== 'ready') return false
-  if (isProdUrl(url, prodUrl)) return false
   if (!expectedSha) return true
-  const deploySha = extractShaFromDeploy(deploy)
+  const { sha: deploySha } = extractShaFromDeploy(deploy)
   if (!deploySha) return false
-  return deploySha.slice(0, 7) === expectedSha.slice(0, 7)
+  const expected = String(expectedSha).trim().toLowerCase()
+  // If expected SHA looks like a full 40-char SHA, compare full; otherwise compare prefix
+  if (expected.length >= 40) return deploySha === expected
+  const n = Math.min(7, expected.length)
+  return deploySha.slice(0, n) === expected.slice(0, n)
+}
+
+/**
+ * Find the first deploy that matches expected SHA and not production.
+ * Logs per-candidate comparison when DEBUG.
+ */
+function findMatchingDeploy(candidates, expectedSha) {
+  if (!Array.isArray(candidates) || candidates.length === 0) return null
+  const expected = expectedSha ? String(expectedSha).trim().toLowerCase() : null
+  for (const d of candidates) {
+    const url = d.ssl_url || d.url || null
+    if (d.state !== 'ready') {
+      if (DEBUG) console.error(`skip ${d.id}: state=${d.state}`)
+      continue
+    }
+    // note: do not discard by URL; we already filtered by deploy context
+    const { sha: deploySha, field } = extractShaFromDeploy(d)
+    if (DEBUG) console.error(`compare ${d.id}: deploySha=${deploySha} (from ${field}), expected=${expected}`)
+    if (!expected) return d
+    if (!deploySha) continue
+    if (expected.length >= 40) {
+      if (deploySha === expected) return d
+    } else {
+      const n = Math.min(7, expected.length)
+      if (deploySha.slice(0, n) === expected.slice(0, n)) return d
+    }
+  }
+  return null
 }
 
 function writePreviewUrl(url) {
-  if (PRINT_ONLY) {
-    console.log(url)
-    return
-  }
+  if (PRINT_ONLY) return void console.log(url)
   if (envFile) {
     fs.appendFileSync(envFile, `NETLIFY_PREVIEW_URL=${url}\n`)
     if (DEBUG) console.error(`Wrote NETLIFY_PREVIEW_URL to ${envFile}`)
@@ -167,8 +202,10 @@ function writePreviewUrl(url) {
 
 ;(async () => {
   const _fetch = await ensureFetch()
-  const prodUrl = await fetchSiteInfo(_fetch, site, token)
-  if (DEBUG) console.error('Production site url:', prodUrl)
+
+  const { sha: resolvedSha, source: resolvedSource } = resolveExpectedSha()
+  if (resolvedSha) console.error(`Using expected SHA (${resolvedSource}): ${resolvedSha}`)
+  else if (DEBUG) console.error('No expected SHA provided; will accept the first ready preview that is not production')
 
   let lastSeen = []
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
@@ -178,12 +215,21 @@ function writePreviewUrl(url) {
       if (DEBUG) console.error('Received deploys count:', Array.isArray(all) ? all.length : 'unknown')
 
       const candidates = previewDeploysForBranch(all, branch)
-      lastSeen = candidates.map(d => ({ id: d && d.id, sha: extractShaFromDeploy(d), state: d && d.state }))
+      lastSeen = candidates.map(d => {
+        const { sha, field } = extractShaFromDeploy(d)
+        return { id: d && d.id, sha, field, state: d && d.state }
+      })
       if (DEBUG) console.error('Preview candidates (top 5):', JSON.stringify(lastSeen.slice(0, 5), null, 2))
 
-      const matching = candidates.find(d => deployMatchesCriteria(d, resolvedExpectedSha, prodUrl))
+      const matching = findMatchingDeploy(candidates, resolvedSha)
       if (matching) {
-        const url = matching.ssl_url || matching.url
+        // Log the full deploy object only when DEBUG; always print a concise FOUND MATCH summary
+        if (DEBUG) console.error('FOUND MATCH deploy object:', JSON.stringify(matching, null, 2))
+        // Prefer Netlify preview links if present (links.permalink or links.alias), fallback to ssl_url/url
+        const url = (matching.links && (matching.links.permalink || matching.links.alias)) || matching.ssl_url || matching.url
+        const chosenField = matching.links && (matching.links.permalink ? 'links.permalink' : matching.links.alias ? 'links.alias' : null) || (matching.ssl_url ? 'ssl_url' : 'url')
+        const { sha: matchedSha, field: matchedField } = extractShaFromDeploy(matching)
+        console.error(`FOUND MATCH: deploy id=${matching.id} sha=${matchedSha} field=${matchedField} chosenUrlField=${chosenField} url=${url}`)
         writePreviewUrl(url)
         process.exit(0)
       }
@@ -196,7 +242,10 @@ function writePreviewUrl(url) {
   }
 
   console.error('Timed out waiting for Netlify preview deploy')
-  if (resolvedExpectedSha) console.error(`Expected commit SHA: ${resolvedExpectedSha.slice(0, 7)}`)
-  if (lastSeen && lastSeen.length) console.error('Last seen deploys (id/sha/state):', JSON.stringify(lastSeen.slice(0, 5), null, 2))
+  if (resolvedSha) {
+    console.error(`Expected commit SHA: ${resolvedSha.slice(0, 7)}`)
+    console.error('NO MATCH FOUND for expected SHA')
+  }
+  if (DEBUG && lastSeen && lastSeen.length) console.error('Last seen deploys (id/sha/state):', JSON.stringify(lastSeen.slice(0, 5), null, 2))
   process.exit(1)
 })()
