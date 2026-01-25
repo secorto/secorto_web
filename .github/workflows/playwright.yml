@@ -18,33 +18,17 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Wait for Netlify preview deploy (PR only)
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
       env:
-      NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-      NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-      PR_BRANCH: ${{ github.head_ref }}
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        PR_BRANCH: ${{ github.head_ref }}
       run: |
-      sudo apt-get update -y
-      sudo apt-get install -y jq
-      echo "Waiting for Netlify deploy for branch $PR_BRANCH"
-      for i in $(seq 1 30); do
-        resp=$(curl -s -H "Authorization: Bearer $NETLIFY_AUTH_TOKEN" "https://api.netlify.com/api/v1/sites/$NETLIFY_SITE_ID/deploys?per_page=20")
-        url=$(echo "$resp" | jq -r --arg BRANCH "$PR_BRANCH" '.[] | select(.context=="deploy-preview" and .branch==$BRANCH) | .ssl_url' | head -n1)
-        state=$(echo "$resp" | jq -r --arg BRANCH "$PR_BRANCH" '.[] | select(.context=="deploy-preview" and .branch==$BRANCH) | .state' | head -n1)
-        if [ -n "$url" ] && [ "$url" != "null" ] && [ "$state" = "ready" ]; then
-        echo "Found ready deploy: $url"
-        echo "NETLIFY_PREVIEW_URL=$url" >> $GITHUB_ENV
-        exit 0
-        fi
-        echo "Not ready yet (state=$state), retrying ($i/30)"
-        sleep 10
-      done
-      echo "Timed out waiting for Netlify preview deploy" >&2
-      exit 1
+        node .github/scripts/wait-netlify.js
 
     - name: Run Playwright tests (use Netlify preview if available)
       env:
-      NETLIFY_PREVIEW_URL: ${{ env.NETLIFY_PREVIEW_URL }}
+        NETLIFY_PREVIEW_URL: ${{ env.NETLIFY_PREVIEW_URL }}
       run: npx playwright test
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
