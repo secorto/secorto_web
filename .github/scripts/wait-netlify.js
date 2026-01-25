@@ -43,6 +43,21 @@ const site = process.env.NETLIFY_SITE_ID
 const branch = process.env.PR_BRANCH
 const envFile = process.env.GITHUB_ENV
 const expectedSha = process.env.GITHUB_SHA || process.env.PR_COMMIT_SHA || null
+// If we're running in a GitHub Actions run for a PR, GITHUB_SHA may be the merge commit.
+// Try to read the event payload to get the PR head SHA (more accurate for Netlify previews).
+let resolvedExpectedSha = expectedSha
+if (!resolvedExpectedSha && process.env.GITHUB_EVENT_PATH) {
+  try {
+    const ev = JSON.parse(fs.readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'))
+    const prHeadSha = ev && ev.pull_request && ev.pull_request.head && ev.pull_request.head.sha
+    if (prHeadSha) {
+      resolvedExpectedSha = prHeadSha
+      if (DEBUG) console.error('Resolved expected SHA from GITHUB_EVENT_PATH (pull_request.head.sha):', resolvedExpectedSha)
+    }
+  } catch (e) {
+    if (DEBUG) console.error('Could not read/parse GITHUB_EVENT_PATH to resolve PR head sha:', e && e.message ? e.message : e)
+  }
+}
 
 const missing = []
 if (!token) missing.push('NETLIFY_AUTH_TOKEN')
@@ -166,7 +181,7 @@ function writePreviewUrl(url) {
       lastSeen = candidates.map(d => ({ id: d && d.id, sha: extractShaFromDeploy(d), state: d && d.state }))
       if (DEBUG) console.error('Preview candidates (top 5):', JSON.stringify(lastSeen.slice(0, 5), null, 2))
 
-      const matching = candidates.find(d => deployMatchesCriteria(d, expectedSha, prodUrl))
+      const matching = candidates.find(d => deployMatchesCriteria(d, resolvedExpectedSha, prodUrl))
       if (matching) {
         const url = matching.ssl_url || matching.url
         writePreviewUrl(url)
@@ -181,7 +196,7 @@ function writePreviewUrl(url) {
   }
 
   console.error('Timed out waiting for Netlify preview deploy')
-  if (expectedSha) console.error(`Expected commit SHA: ${expectedSha.slice(0, 7)}`)
+  if (resolvedExpectedSha) console.error(`Expected commit SHA: ${resolvedExpectedSha.slice(0, 7)}`)
   if (lastSeen && lastSeen.length) console.error('Last seen deploys (id/sha/state):', JSON.stringify(lastSeen.slice(0, 5), null, 2))
   process.exit(1)
 })()
