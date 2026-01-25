@@ -23,6 +23,7 @@ jobs:
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
         NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
         PR_BRANCH: ${{ github.head_ref || github.ref_name }}
+        PR_HEAD_COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
       run: |
         node .github/scripts/wait-netlify.js
 

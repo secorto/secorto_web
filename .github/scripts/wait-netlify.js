@@ -42,14 +42,14 @@ const token = process.env.NETLIFY_AUTH_TOKEN
 const site = process.env.NETLIFY_SITE_ID
 const branch = process.env.PR_BRANCH
 const envFile = process.env.GITHUB_ENV
-const expectedSha = process.env.GITHUB_SHA || process.env.PR_COMMIT_SHA || null
 const cliExpected = parseArg('--expected-sha', null)
+// Preferred env var name for the PR head commit
+const prHeadCommitShaEnv = process.env.PR_HEAD_COMMIT_SHA || null
 
 // Resolve expected SHA and its source with a single helper (priority: CLI, env PR_HEAD_SHA, env GITHUB_SHA, event payload)
 function resolveExpectedSha() {
   if (cliExpected) return { sha: cliExpected, source: 'cli(--expected-sha)' }
-  if (process.env.PR_HEAD_SHA) return { sha: process.env.PR_HEAD_SHA, source: 'env(PR_HEAD_SHA)' }
-  if (expectedSha) return { sha: expectedSha, source: 'env(GITHUB_SHA|PR_COMMIT_SHA)' }
+  if (prHeadCommitShaEnv) return { sha: prHeadCommitShaEnv, source: 'env(PR_HEAD_COMMIT_SHA)' }
   if (process.env.GITHUB_EVENT_PATH) {
     try {
       const ev = JSON.parse(fs.readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'))
