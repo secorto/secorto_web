@@ -1,5 +1,6 @@
 import type { Page, Locator } from '@playwright/test'
 import { sectionsConfig, type SectionType } from '@config/sections'
+import type { UILanguages } from '@i18n/ui'
 
 export class ContentListPage {
   readonly page: Page
@@ -7,8 +8,9 @@ export class ContentListPage {
     this.page = page
   }
 
-  async goto(locale: 'es' | 'en', collection: string) {
-    await this.page.goto(`/${locale}/${collection}`)
+  async goto(locale: UILanguages, collection: SectionType) {
+    const route = sectionsConfig[collection].routes[locale]
+    await this.page.goto(`/${locale}/${route}`)
   }
 
   headerTitle(): Locator {
@@ -19,8 +21,8 @@ export class ContentListPage {
     return this.page.getByTestId(`tag-link-${tag}`)
   }
 
-  async openItem(locale: 'es' | 'en', section: SectionType, itemPath: string) {
-    const route = sectionsConfig[section].routes[locale]
+  async openItem(locale: UILanguages, collection: SectionType, itemPath: string) {
+    const route = sectionsConfig[collection].routes[locale]
     const href = `/${locale}/${route}/${itemPath}`
     const pattern = `${locale}/${route}/`
     await Promise.all([
