@@ -25,4 +25,12 @@ export class SidebarPage {
   getSidebarTitle(): Locator {
     return this.page.getByTestId('sidebar-title')
   }
+
+  getThemeToggle(): Locator {
+    return this.page.getByTestId('theme-toggle')
+  }
+
+  async toggleTheme() {
+    await this.getThemeToggle().click()
+  }
 }
