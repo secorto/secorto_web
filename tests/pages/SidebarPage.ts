@@ -17,4 +17,12 @@ export class SidebarPage {
   async clickSidebarLink(routeKey: string) {
     await this.sidebarLink(routeKey).click()
   }
+
+  getHamburger(): Locator {
+    return this.page.getByTestId('hamburger')
+  }
+
+  getSidebarTitle(): Locator {
+    return this.page.getByTestId('sidebar-title')
+  }
 }
