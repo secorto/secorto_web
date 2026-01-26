@@ -8,26 +8,26 @@ test.describe('Color switch', () => {
     await page.goto('/')
   })
 
-  test('Permite alternar entre modo claro y oscuro', async ({ page }) => {
+  test('toggles between light and dark mode', async ({ page }) => {
     const sidebar = new SidebarPage(page)
     const html = page.locator('html')
 
-    // Estado inicial
+    // Initial state
     await expect(html).not.toHaveClass(/dark/)
 
-    // capturar transform del círculo del SVG antes y después del toggle
+    // capture the SVG circle transform before and after the toggle
     const themeCircle = page.locator('[data-testid="theme-toggle"] svg circle')
     const initialIsDark = await page.evaluate(() => document.documentElement.classList.contains('dark'))
     const initialTransform = await themeCircle.evaluate((el: Element) => getComputedStyle(el as Element).transform)
 
-    // toggle -> debe añadirse la clase dark
+    // toggle -> the "dark" class should be added or removed
     await sidebar.getThemeToggle().click()
     await expect(html).toHaveClass(initialIsDark ? /light/ : /dark/)
 
     const afterTransform = await themeCircle.evaluate((el: Element) => getComputedStyle(el as Element).transform)
     expect(afterTransform).not.toBe(initialTransform)
 
-    // toggle de nuevo -> volver a estado inicial
+    // toggle again -> return to initial state
     await sidebar.getThemeToggle().click()
     await expect(html).not.toHaveClass(/dark/)
   })
