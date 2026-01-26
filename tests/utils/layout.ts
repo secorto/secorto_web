@@ -1,4 +1,4 @@
-import { Page, expect, type TestInfo } from '@playwright/test'
+import { expect, type Page, type TestInfo } from '@playwright/test'
 
 /**
  * Comprueba que no exista desbordamiento horizontal en la página.
@@ -40,7 +40,7 @@ export async function assertNoHorizontalOverflow(page: Page, testInfo?: TestInfo
     }
   }
 
-  expect(overflow.maxW).toBeLessThanOrEqual(overflow.iw, `Horizontal overflow detected; offenders=${JSON.stringify(overflow.offenders)}`)
+  expect(overflow.maxW).toBeLessThanOrEqual(overflow.iw)
 }
 
 export default assertNoHorizontalOverflow

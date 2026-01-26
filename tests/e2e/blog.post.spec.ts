@@ -32,7 +32,6 @@ for (const f of postFixtures) {
     })
 
     test('no horizontal scroll on mobile', async ({ page }, testInfo) => {
-      const blog = new BlogPage(page)
       const { assertNoHorizontalOverflow } = await import('../../tests/utils/layout')
       await assertNoHorizontalOverflow(page, testInfo, f.locale)
     })
