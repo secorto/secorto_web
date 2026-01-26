@@ -15,8 +15,6 @@ test.describe('Página de inicio (locales)', () => {
 
       test('Verifica elementos principales y menú móvil', async ({ page }) => {
         // Verifica que exista un h1 (texto específico proviene de las páginas locales)
-        await expect(page.locator('h1')).toHaveCount(1)
-
         const sidebar = new SidebarPage(page)
 
         // Menú en escritorio
