@@ -23,8 +23,6 @@ test('Persistencia de tema en localStorage', async ({ page }) => {
     await sidebar.getThemeToggle().click()
   } else if (before !== theme) {
     // restaurar valor previo
-    if ((await page.evaluate(() => localStorage.getItem('theme'))) !== before) {
-      await sidebar.getThemeToggle().click()
-    }
+    await sidebar.getThemeToggle().click()
   }
 })
