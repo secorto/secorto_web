@@ -35,6 +35,9 @@ export const ui = {
     'post.website': 'Website',
     'post.video': 'Post video',
     'tags.untranslated_notice': 'This tag has no posts available in this language.',
+    'footer.avatar_alt': 'Featured image',
+    'footer.role': 'Software developer',
+    'footer.follow': 'Follow me: '
   },
   es: {
     'site.description': 'Blog personal de Sergio Orozco - Desarrollador, Conferencista, Entusiasta del Open Source',
@@ -59,5 +62,8 @@ export const ui = {
     'post.website': 'Sitio web',
     'post.video': 'Video del post',
     'tags.untranslated_notice': 'Este tag no tiene posts disponibles en este idioma.',
+    'footer.avatar_alt': 'Foto destacada',
+    'footer.role': 'Desarrollador de software',
+    'footer.follow': 'Sígueme en: '
   },
 } as const;
