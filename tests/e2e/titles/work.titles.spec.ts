@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { ContentListPage } from '../../pages/ContentListPage'
+import { ContentListPage } from '@tests/pages/ContentListPage'
 import { ui, type UILanguages } from '@i18n/ui'
 import { sectionsConfig, type SectionType } from '@config/sections'
 

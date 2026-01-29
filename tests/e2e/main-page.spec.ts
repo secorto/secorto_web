@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
 
-import { ui, languageKeys } from '../../src/i18n/ui'
-import { SidebarPage } from '../pages/SidebarPage'
+import { ui, languageKeys } from '@i18n/ui'
+import { SidebarPage } from '@tests/pages/SidebarPage'
 
 test.describe('Página de inicio (locales)', () => {
   // Usar las claves tipadas de `ui` para evitar errores de tipo

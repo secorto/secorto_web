@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { SidebarPage } from '../pages/SidebarPage'
+import { SidebarPage } from '@tests/pages/SidebarPage'
 
 test.use({ colorScheme: 'light' })
 

@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 import { AxeBuilder } from '@axe-core/playwright'
-import { ContentListPage } from '../../pages/ContentListPage'
+import { ContentListPage } from '@tests/pages/ContentListPage'
 import { ui } from '@i18n/ui'
 
 const locales = ['es', 'en'] as const

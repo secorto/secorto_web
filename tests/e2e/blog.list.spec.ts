@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { BlogPage } from '../../tests/pages/BlogPage'
+import { BlogPage } from '@tests/pages/BlogPage'
 
 const listFixtures = [
   { locale: 'es', path: '/es/blog', pythonTag: 'python' },
