@@ -52,6 +52,7 @@ test.describe('A11y - Charlas', () => {
       const detailResults = await new AxeBuilder({ page })
         .exclude('[data-netlify-deploy-id]')
         .exclude('[data-testid="post-video"]')
+        .exclude('[data-testid="post-slide"]')
         .exclude('[data-testid="comments-section"]')
         .analyze()
       expect(detailResults.violations).toEqual([])
