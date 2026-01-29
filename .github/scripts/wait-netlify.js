@@ -180,7 +180,6 @@ function findMatchingDeploy(candidates, expectedSha) {
   if (!Array.isArray(candidates) || candidates.length === 0) return null
   const expected = expectedSha ? String(expectedSha).trim().toLowerCase() : null
   for (const d of candidates) {
-    const url = d.ssl_url || d.url || null
     if (d.state !== 'ready') {
       if (DEBUG) console.error(`skip ${d.id}: state=${d.state}`)
       continue
