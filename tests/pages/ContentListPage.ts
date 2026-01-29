@@ -22,12 +22,17 @@ export class ContentListPage {
   }
 
   async openItem(locale: UILanguages, collection: SectionType, itemPath: string) {
-    const route = sectionsConfig[collection].routes[locale]
-    const href = `/${locale}/${route}/${itemPath}`
-    const pattern = `${locale}/${route}/`
+    const { pattern, href } = this.getItemPath(locale, collection, itemPath)
     await Promise.all([
       this.page.waitForURL(new RegExp(pattern)),
       this.page.locator(`[href="${href}"]`).click()
     ])
+  }
+
+  getItemPath(locale: UILanguages, collection: SectionType, itemPath: string) {
+    const route = sectionsConfig[collection].routes[locale]
+    const href = `/${locale}/${route}/${itemPath}`
+    const pattern = `${locale}/${route}/`
+    return { pattern, href }
   }
 }
