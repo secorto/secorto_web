@@ -45,10 +45,10 @@ jobs:
       env:
         NETLIFY_PREVIEW_URL: ${{ env.NETLIFY_PREVIEW_URL }}
         BASE_URL: ${{ github.event.inputs.base_url }}
+        FOLDER: ${{ github.event.inputs.folder }}
+        TAG: ${{ github.event.inputs.tag }}
       run: |
         echo "Using BASE_URL: $BASE_URL"
-        FOLDER="${{ github.event.inputs.folder }}"
-        TAG="${{ github.event.inputs.tag }}"
         if [ -n "$FOLDER" ] && [ -n "$TAG" ]; then
           npx playwright test tests/$FOLDER --grep $TAG
         elif [ -n "$FOLDER" ]; then
