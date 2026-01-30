@@ -44,7 +44,7 @@ jobs:
     - name: Run Playwright tests (use Netlify preview if available)
       env:
         NETLIFY_PREVIEW_URL: ${{ env.NETLIFY_PREVIEW_URL }}
-        BASE_URL: ${{ github.event.inputs.base_url }}
+        BASE_URL: ${{ github.event.inputs.base_url || 'https://secorto.com' }}
         FOLDER: ${{ github.event.inputs.folder }}
         TAG: ${{ github.event.inputs.tag }}
       run: |
