@@ -31,8 +31,8 @@ jobs:
       run: npm ci
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
-    - name: Wait for Netlify preview deploy (PR only)
-      if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    - name: Wait for Netlify preview deploy (PR or main/master push)
+      if: github.event_name == 'pull_request' || startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/heads/master')
       env:
         NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
         NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
@@ -44,7 +44,7 @@ jobs:
     - name: Run Playwright tests (use Netlify preview if available)
       env:
         NETLIFY_PREVIEW_URL: ${{ env.NETLIFY_PREVIEW_URL }}
-        BASE_URL: ${{ github.event.inputs.base_url || 'https://secorto.com' }}
+        BASE_URL: ${{ github.event.inputs.base_url }}
         FOLDER: ${{ github.event.inputs.folder }}
         TAG: ${{ github.event.inputs.tag }}
       run: |

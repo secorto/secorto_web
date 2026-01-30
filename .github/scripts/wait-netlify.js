@@ -41,6 +41,9 @@ const delayMs = parseInt(parseArg('--delay', '10000'), 10)
 const token = process.env.NETLIFY_AUTH_TOKEN
 const site = process.env.NETLIFY_SITE_ID
 const branch = process.env.PR_BRANCH
+// Allow overriding which Netlify deploy context to wait for (deploy-preview, production, branch-deploy, etc.)
+// Default: 'deploy-preview' for PR branches; for main/master auto-switch to 'production'
+const explicitContext = process.env.DEPLOY_CONTEXT || null
 const envFile = process.env.GITHUB_ENV
 const cliExpected = parseArg('--expected-sha', null)
 // Preferred env var name for the PR head commit
@@ -62,13 +65,12 @@ function resolveExpectedSha() {
   return { sha: null, source: null }
 }
 
-// Validate required env vars
-const required = [{ k: 'NETLIFY_AUTH_TOKEN', v: token }, { k: 'NETLIFY_SITE_ID', v: site }, { k: 'PR_BRANCH', v: branch }]
+const required = [{ k: 'NETLIFY_AUTH_TOKEN', v: token }, { k: 'NETLIFY_SITE_ID', v: site }]
 const missing = required.filter(r => !r.v).map(r => r.k)
 if (missing.length) {
   console.error('Missing required env var(s):', missing.join(', '))
   console.error('Set them in your workflow or export locally before running:')
-  console.error('  NETLIFY_AUTH_TOKEN=... NETLIFY_SITE_ID=... PR_BRANCH=... node .github/scripts/wait-netlify.js')
+  console.error('  NETLIFY_AUTH_TOKEN=... NETLIFY_SITE_ID=... node .github/scripts/wait-netlify.js')
   process.exit(1)
 }
 
@@ -120,10 +122,10 @@ function extractShaFromDeploy(deploy) {
   return { sha: null, field: null }
 }
 
-function previewDeploysForBranch(deploys, branchName) {
+function filterDeploysByContext(deploys, context, branchName) {
   if (!Array.isArray(deploys)) return []
   return deploys
-    .filter(d => d && d.context === 'deploy-preview' && d.branch === branchName)
+    .filter(d => d && d.context === context && (context !== 'deploy-preview' || d.branch === branchName))
     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
 }
 
@@ -233,8 +235,11 @@ function writePreviewUrl(url) {
       const all = await listDeploys(_fetch, site, token)
       if (DEBUG) console.error('Received deploys count:', Array.isArray(all) ? all.length : 'unknown')
 
-      // Filter to deploy-preview entries for the PR branch and collect short debug info
-      const candidates = previewDeploysForBranch(all, branch)
+      // Determine deploy context (explicit override or production for main/master else deploy-preview)
+      const isMain = branch === 'main' || branch === 'master'
+      const deployContext = explicitContext || (isMain ? 'production' : 'deploy-preview')
+      if (DEBUG) console.error(`Searching deploys with context='${deployContext}' for branch='${branch}'`)
+      const candidates = filterDeploysByContext(all, deployContext, branch)
       lastSeen = summarizeCandidates(candidates)
       if (DEBUG) console.error('Preview candidates (top 5):', JSON.stringify(lastSeen.slice(0, 5), null, 2))
 
