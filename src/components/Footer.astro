@@ -1,19 +1,23 @@
 ---
 import { Image } from 'astro:assets';
 import Avatar from "@assets/img/avatar-64.jpg";
+import { useTranslations } from '@i18n/utils';
+import type { UILanguages } from '@i18n/ui';
 type Props = Record<string, never>;
+const locale = Astro.currentLocale as UILanguages;
+const t = useTranslations(locale);
 ---
 <footer class="footer">
   <div class="footer-container">
     <div class="footer-profile">
-      <Image src={Avatar} alt="Foto destacada" width="64" height="64" class="footer-avatar" />
+      <Image src={Avatar} alt={t('footer.avatar_alt')} width="64" height="64" class="footer-avatar" data-testid="footer-avatar" />
       <div class="footer-profile-text">
         <p class="css-ekvia8">
           <a href="https://www.secorto.com/" class="footer-name">Sergio Carlos Orozco Torres</a>
         </p>
-        <p class="footer-role">Software developer</p>
+        <p class="footer-role" data-testid="footer-role">{t('footer.role')}</p>
         <div class="css-6fm9if">
-          <span>Sígueme en: </span>
+          <span data-testid="footer-follow">{t('footer.follow')}</span>
           <a href="https://twitter.com/scot3004" target="_blank" rel="noopener noreferrer" class="css-yze98l">Twitter</a>,
           <a href="https://github.com/scot3004" target="_blank" rel="noopener noreferrer" class="css-yze98l">GitHub</a>,
           <a href="https://linkedin.com/in/scot3004" target="_blank" rel="noopener noreferrer" class="css-yze98l">LinkedIn</a>
