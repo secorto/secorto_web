@@ -4,6 +4,20 @@ on:
     branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      folder:
+        description: "Folder to run (optional)"
+        required: false
+        default: ""
+      tag:
+        description: "Tag to run (optional)"
+        required: false
+        default: ""
+      base_url:
+        description: "Base URL to run tests against (optional). NETLIFY_PREVIEW_URL takes priority if present"
+        required: false
+        default: "https://secorto.com"
 jobs:
   test:
     timeout-minutes: 60
@@ -30,7 +44,20 @@ jobs:
     - name: Run Playwright tests (use Netlify preview if available)
       env:
         NETLIFY_PREVIEW_URL: ${{ env.NETLIFY_PREVIEW_URL }}
-      run: npx playwright test
+        BASE_URL: ${{ github.event.inputs.base_url }}
+      run: |
+        echo "Using BASE_URL: $BASE_URL"
+        FOLDER="${{ github.event.inputs.folder }}"
+        TAG="${{ github.event.inputs.tag }}"
+        if [ -n "$FOLDER" ] && [ -n "$TAG" ]; then
+          npx playwright test tests/$FOLDER --grep $TAG
+        elif [ -n "$FOLDER" ]; then
+          npx playwright test tests/$FOLDER
+        elif [ -n "$TAG" ]; then
+          npx playwright test --grep $TAG
+        else
+          npx playwright test
+        fi
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
