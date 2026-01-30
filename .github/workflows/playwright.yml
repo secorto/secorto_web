@@ -48,7 +48,6 @@ jobs:
         FOLDER: ${{ github.event.inputs.folder }}
         TAG: ${{ github.event.inputs.tag }}
       run: |
-        echo "Using BASE_URL: $BASE_URL"
         if [ -n "$FOLDER" ] && [ -n "$TAG" ]; then
           npx playwright test tests/$FOLDER --grep $TAG
         elif [ -n "$FOLDER" ]; then

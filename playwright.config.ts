@@ -12,6 +12,9 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 dotenv.config({ path: path.resolve(__dirname, '.env') })
 
+const baseUrl = process.env.NETLIFY_PREVIEW_URL || process.env.BASE_URL || 'http://localhost:4321'
+console.log(`Using baseUrl: ${baseUrl}`)
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -30,7 +33,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
-    baseURL: process.env.NETLIFY_PREVIEW_URL || process.env.BASE_URL || 'http://localhost:4321',
+    baseURL: baseUrl,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
