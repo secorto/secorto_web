@@ -49,11 +49,11 @@ jobs:
         TAG: ${{ github.event.inputs.tag }}
       run: |
         if [ -n "$FOLDER" ] && [ -n "$TAG" ]; then
-          npx playwright test tests/$FOLDER --grep $TAG
+          npx playwright test "tests/$FOLDER" --grep "$TAG"
         elif [ -n "$FOLDER" ]; then
-          npx playwright test tests/$FOLDER
+          npx playwright test "tests/$FOLDER"
         elif [ -n "$TAG" ]; then
-          npx playwright test --grep $TAG
+          npx playwright test --grep "$TAG"
         else
           npx playwright test
         fi
