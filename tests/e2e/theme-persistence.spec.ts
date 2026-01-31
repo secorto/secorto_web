@@ -9,7 +9,7 @@ test('Persistencia de tema en localStorage', async ({ page }) => {
   const before = await page.evaluate(() => localStorage.getItem('theme'))
 
   // Toggle y comprobar localStorage
-  await sidebar.getThemeToggle().click()
+  await sidebar.themeToggle().click()
   const theme = await page.evaluate(() => localStorage.getItem('theme'))
   expect(theme).toBeTruthy()
 
@@ -20,9 +20,9 @@ test('Persistencia de tema en localStorage', async ({ page }) => {
   // Restaurar estado original si existía
   if (before === null) {
     // volver al valor por defecto
-    await sidebar.getThemeToggle().click()
+    await sidebar.themeToggle().click()
   } else if (before !== theme) {
     // restaurar valor previo
-    await sidebar.getThemeToggle().click()
+    await sidebar.themeToggle().click()
   }
 })

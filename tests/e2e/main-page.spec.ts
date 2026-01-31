@@ -18,7 +18,7 @@ test.describe('Página de inicio (locales)', () => {
         const sidebar = new SidebarPage(page)
 
         // Menú en escritorio
-        await expect(sidebar.getHamburger()).not.toBeVisible()
+        await expect(sidebar.hamburger()).not.toBeVisible()
 
         // comprueba texto del enlace de navegación 'about' usando strings tipadas de ui
         const aboutLink = page.getByTestId('sidebar-about')
@@ -26,9 +26,9 @@ test.describe('Página de inicio (locales)', () => {
 
         // Cambia a vista móvil y verifica menú lateral
         await page.setViewportSize({ width: 375, height: 667 })
-        await expect(sidebar.getHamburger()).toBeVisible()
-        await sidebar.getHamburger().click()
-        await expect(sidebar.getSidebarTitle()).toHaveText('Sergio Carlos Orozco Torres')
+        await expect(sidebar.hamburger()).toBeVisible()
+        await sidebar.hamburger().click()
+        await expect(sidebar.sidebarTitle()).toHaveText('Sergio Carlos Orozco Torres')
       })
     })
   }

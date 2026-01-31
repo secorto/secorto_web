@@ -6,31 +6,15 @@ export class SidebarPage {
     this.page = page
   }
 
-  sidebarLink(routeKey: string): Locator {
-    return this.page.getByTestId(`sidebar-${routeKey}`)
-  }
-
-  async gotoLocale(locale: 'es' | 'en') {
-    await this.page.goto(`/${locale}`)
-  }
-
-  async clickSidebarLink(routeKey: string) {
-    await this.sidebarLink(routeKey).click()
-  }
-
-  getHamburger(): Locator {
+  hamburger(): Locator {
     return this.page.getByTestId('hamburger')
   }
 
-  getSidebarTitle(): Locator {
+  sidebarTitle(): Locator {
     return this.page.getByTestId('sidebar-title')
   }
 
-  getThemeToggle(): Locator {
+  themeToggle(): Locator {
     return this.page.getByTestId('theme-toggle')
-  }
-
-  async toggleTheme() {
-    await this.getThemeToggle().click()
   }
 }
