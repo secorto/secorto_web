@@ -1,16 +1,18 @@
 import { test, expect } from '@playwright/test'
 import { BlogPage } from '@tests/pages/BlogPage'
+import { getURLForSection } from '@config/sections'
+import { type UILanguages } from '@i18n/ui'
 
 const listFixtures = [
-  { locale: 'es', path: '/es/blog', pythonTag: 'python' },
-  { locale: 'en', path: '/en/blog', pythonTag: 'python' }
+  { locale: 'es', pythonTag: 'python' },
+  { locale: 'en', pythonTag: 'python' }
 ]
 
 for (const f of listFixtures) {
   test.describe(`Blog list (${f.locale})`, () => {
     test.beforeEach(async ({ page }) => {
       const blog = new BlogPage(page)
-      await blog.gotoList(f.path)
+      await page.goto(getURLForSection('blog', f.locale as UILanguages))
     })
 
     test('shows page title and header', async ({ page }) => {

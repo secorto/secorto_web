@@ -1,21 +1,19 @@
 import { test, expect } from '@playwright/test'
 import { checkA11y } from '@tests/actions/A11yActions'
-import { getSectionRoute } from '@config/sections'
+import { getURLForSection } from '@config/sections'
 
 const locales = ['es', 'en'] as const
 
 test.describe('A11y - Charlas', () => {
   locales.forEach((locale) => {
     test(`charla list a11y (${locale})`, async ({ page }) => {
-      const route = getSectionRoute('talk', locale)
-      await page.goto(`/${route}`)
+      await page.goto(getURLForSection('talk', locale))
       const listingResults = await checkA11y(page)
       expect(listingResults.violations).toEqual([])
     })
 
     test(`charla tag a11y (${locale})`, async ({ page }) => {
-      const talksRoute = getSectionRoute('talk', locale)
-      const talksTagRoute = `${talksRoute}/tags/containers`
+      const talksTagRoute = `${getURLForSection('talk', locale)}/tags/containers`
       await page.goto(talksTagRoute)
 
       const tagResults = await checkA11y(page)
@@ -24,7 +22,7 @@ test.describe('A11y - Charlas', () => {
 
     test(`charla detail a11y (${locale})`, async ({ page }) => {
       const postSlug = '2023-09-27-devcontainers'
-      const talksRoute = getSectionRoute('talk', locale)
+      const talksRoute = getURLForSection('talk', locale)
       const talksPostRoute = `${talksRoute}/${postSlug}`
       await page.goto(talksPostRoute)
       const detailResults = await checkA11y(page, [
