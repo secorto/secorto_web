@@ -7,7 +7,7 @@ interface Props {
 const { tags, route, current } = Astro.props;
 ---
 
-<div class="tags">
+<div class="tags" data-testid="tags">
   {tags.map((tag) => (
     <a href={`${route}${tag}`} class={current === tag ? "tag active" : "tag"} data-testid={`tag-link-${tag}`}><p>{tag}</p></a>
   ))}

@@ -1,6 +1,9 @@
 ---
+import type { UILanguages } from "@i18n/ui";
+
+const locale = Astro.currentLocale as UILanguages;
 ---
-<div class="comments" data-testid="comments-section"></div>
+<div class="comments" data-testid="comments-section" data-lang={locale}></div>
 <script>
   function initGiscus() {
     // Get the div that will contain the comments.
@@ -17,7 +20,7 @@
     script.setAttribute("data-strict", "0");
     script.setAttribute("data-reactions-enabled", "1");
     script.setAttribute("data-emit-metadata", "0");
-    script.setAttribute("data-lang", "es");
+    script.setAttribute("data-lang", commentsDiv.getAttribute('data-lang') || 'es');
     script.setAttribute("crossorigin", "anonymous");
     const theme: string = (() => {
       if (
