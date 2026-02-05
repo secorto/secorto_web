@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test'
 import { ContentListPage } from '@tests/pages/ContentListPage'
+import { goto } from '@tests/actions/ContentListActions'
 import { ui, type UILanguages } from '@i18n/ui'
 import { sectionsConfig, type SectionType } from '@config/sections'
 
@@ -10,7 +11,7 @@ test.describe('Work list title', () => {
   locales.forEach((locale) => {
     test(`work list title is correct (${locale})`, async ({ page }) => {
       const list = new ContentListPage(page)
-      await list.goto(locale as UILanguages, section)
+      await goto(page, locale as UILanguages, section)
 
       const title = list.headerTitle()
       await expect(title).toBeVisible()

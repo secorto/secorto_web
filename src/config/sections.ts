@@ -104,3 +104,24 @@ export function getAllRoutesForSection(sectionType: SectionType): string[] {
   const config = sectionsConfig[sectionType]
   return Object.values(config.routes)
 }
+
+/**
+ * Obtiene la ruta (slug) para una sección en un idioma concreto
+ */
+export function getSectionRoute(section: SectionType, locale: UILanguages): string {
+  return sectionsConfig[section].routes[locale]
+}
+
+/**
+ * Get the url of a section in a specific locale
+ * @param section section to get the url for
+ * @param locale locale to get the url for
+ * @returns route string for the section in the locale
+ */
+export function getURLForSection(
+  section: SectionType,
+  locale: UILanguages
+): string {
+  const route = getSectionRoute(section, locale)
+  return `/${locale}/${route}`
+}

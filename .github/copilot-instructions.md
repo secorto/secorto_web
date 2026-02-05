@@ -32,6 +32,38 @@
 - Place Cypress support files in `cypress/support/`
 - Use `cy.injectAxe()` and `cy.checkA11y()` in tests to ensure accessibility
 
+## Playwright Specific
+
+- Place end-to-end tests in `tests/e2e/` and helpers in `tests/e2e/helpers/`
+- Use TypeScript for Playwright tests and helpers
+- Mock third‑party scripts/resources (e.g. giscus) with `page.route()` to keep tests fast and deterministic
+- Always register routes/mocks before the navigation or action that triggers the request to avoid race conditions
+- Prefer asserting server-rendered attributes and widget visibility (`data-*`, `iframe.giscus-frame`) instead of inspecting cross-origin iframe internals
+- Keep timeouts reasonable (e.g., 30s for slow widgets) and avoid flaky DOM polling in tests
+- Use `npx playwright test` with `-g` or path filters for targeted runs
+
+## Page Object Model (POM) Pattern — Tests/pages
+
+- Store page objects in `tests/pages/` as classes (e.g., `ContentListPage`)
+- Page object conventions:
+  - Constructor signature: `constructor(page: Page)`
+  - Provide locator getters (nouns) and action methods (verbs)
+  - Do not include assertions inside page objects — keep assertions in tests
+  - Avoid heavy waits inside page objects; expose stable locators and let tests decide explicit waits when needed
+  - Export types for complex interactions where helpful
+- Helpers and mocks:
+  - Centralize reusable mocks in `tests/e2e/helpers/` (e.g., `mockGiscus.ts`)
+  - Keep mock implementations small and deterministic (inject a simple iframe or stubbed script)
+- Examples:
+  - See `tests/pages/ContentListPage.ts` for a POM example
+  - Put shared test utilities in `tests/utils/` or `tests/e2e/helpers/`
+
+## Testing Guidance (practical tradeoffs)
+
+- For i18n changes: prefer unit tests + small server‑side snapshots; add an e2e (mocked) smoke test only for critical UX flows
+- Avoid asserting third‑party widget internal text in CI; instead validate the props/attributes passed and that the widget mounted
+- Prefer deterministic tests: mock network, isolate external dependencies, and keep e2e suite as a small smoke surface
+
 ## General
 - Keep dependencies up to date
 - Write clear, concise commit messages

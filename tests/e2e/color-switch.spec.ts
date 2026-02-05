@@ -21,14 +21,14 @@ test.describe('Color switch', () => {
     const initialTransform = await themeCircle.evaluate((el: Element) => getComputedStyle(el as Element).transform)
 
     // toggle -> the "dark" class should be added or removed
-    await sidebar.getThemeToggle().click()
+    await sidebar.themeToggle().click()
     await expect(html).toHaveClass(initialIsDark ? /light/ : /dark/)
 
     const afterTransform = await themeCircle.evaluate((el: Element) => getComputedStyle(el as Element).transform)
     expect(afterTransform).not.toBe(initialTransform)
 
     // toggle again -> return to initial state
-    await sidebar.getThemeToggle().click()
+    await sidebar.themeToggle().click()
     await expect(html).not.toHaveClass(/dark/)
   })
 })
