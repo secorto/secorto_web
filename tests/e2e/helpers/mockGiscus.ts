@@ -1,6 +1,18 @@
 import type { Page } from '@playwright/test'
+import { whenMocked } from '@tests/e2e/helpers/whenMocked'
 
-export async function mockGiscus(page: Page) {
+/**
+ * mockGiscus
+ *
+ * Mock sencillo para `https://giscus.app/client.js` que inyecta un
+ * `iframe.giscus-frame` localizado. En tests solo hay que llamar:
+ *
+ *   await mockGiscus(page)
+ *
+ * El decorador `whenMocked` evitará registrar la ruta si
+ * `REAL_THIRD_PARTY` está a 'true'.
+ */
+export const mockGiscus = whenMocked(async (page: Page) => {
   await page.route('https://giscus.app/client.js', route => {
     return route.fulfill({
       status: 200,
@@ -19,4 +31,4 @@ export async function mockGiscus(page: Page) {
       })();`
     })
   })
-}
+})
