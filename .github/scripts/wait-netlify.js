@@ -43,7 +43,8 @@ function resolveExpectedSha() {
     try {
       const ev = JSON.parse(fs.readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'))
       return ev?.pull_request?.head?.sha || null
-    } catch (_) {
+    } catch (err) {
+      console.error('resolveExpectedSha: failed to parse GITHUB_EVENT_PATH:', err && err.message ? err.message : err)
       return null
     }
   }
