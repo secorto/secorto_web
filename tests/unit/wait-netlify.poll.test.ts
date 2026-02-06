@@ -23,7 +23,7 @@ describe('pollForPreview', () => {
     expect(writeUrlFn).toHaveBeenCalledWith('https://p.netlify.app')
   })
 
-  it('accepts first ready when no expected sha provided', async () => {
+  it('accepts first ready when commit_ref matches expected sha', async () => {
     const notReady = { id: 'n', state: 'building', context: 'deploy-preview', branch: 'feat' }
     const ready = { id: 'r', state: 'ready', commit_ref: 'abcd1234', links: { alias: 'https://a.netlify.app' }, context: 'deploy-preview', branch: 'feat' }
     const listDeploysFn = vi.fn().mockResolvedValue([notReady, ready])
@@ -34,7 +34,7 @@ describe('pollForPreview', () => {
       site: 's',
       token: 't',
       branch: 'feat',
-      expectedSha: null,
+      expectedSha: 'abcd1234',
       attempts: 1,
       delayMs: 0,
       writeUrlFn
@@ -60,7 +60,7 @@ describe('pollForPreview', () => {
       site: 's',
       token: 't',
       branch: 'feat',
-      expectedSha: null,
+      expectedSha: 'bbb2222',
       attempts: 3,
       delayMs: 0,
       writeUrlFn
@@ -81,12 +81,57 @@ describe('pollForPreview', () => {
       site: 's',
       token: 't',
       branch: 'feat',
-      expectedSha: null,
+      expectedSha: 'nomatch',
       attempts: 2,
       delayMs: 0,
       writeUrlFn
     })
 
+    expect(res.code).toBe(1)
+    expect(res.url).toBeNull()
+    expect(writeUrlFn).not.toHaveBeenCalled()
+  })
+
+  it('accepts a deploy with abbreviated SHA when expected is full SHA', async () => {
+    const shortSha = 'abcd123'
+    const fullExpected = 'abcd12300000000000000000000000000000000' // starts with shortSha
+    const deploy = { id: 'd1', state: 'ready', commit_ref: shortSha, links: { permalink: 'https://p.netlify.app' }, context: 'deploy-preview', branch: 'feat' }
+    const listDeploysFn = vi.fn().mockResolvedValue([deploy])
+    const writeUrlFn = vi.fn()
+
+    const res = await pollForPreview({
+      listDeploysFn,
+      site: 's',
+      token: 't',
+      branch: 'feat',
+      expectedSha: fullExpected,
+      attempts: 1,
+      delayMs: 0,
+      writeUrlFn
+    })
+
+    expect(res.code).toBe(0)
+    expect(res.url).toBe('https://p.netlify.app')
+    expect(writeUrlFn).toHaveBeenCalled()
+  })
+
+  it('accepts a ready deploy even when it has no SHA and no expected provided', async () => {
+    const deploy = { id: 'r1', state: 'ready', links: { alias: 'https://alias.netlify.app' }, context: 'deploy-preview', branch: 'feat' }
+    const listDeploysFn = vi.fn().mockResolvedValue([deploy])
+    const writeUrlFn = vi.fn()
+
+    const res = await pollForPreview({
+      listDeploysFn,
+      site: 's',
+      token: 't',
+      branch: 'feat',
+      expectedSha: 'nomatch2',
+      attempts: 1,
+      delayMs: 0,
+      writeUrlFn
+    })
+
+    // Now configured to ignore deploys without SHA: should not match
     expect(res.code).toBe(1)
     expect(res.url).toBeNull()
     expect(writeUrlFn).not.toHaveBeenCalled()

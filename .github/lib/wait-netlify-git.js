@@ -1,8 +1,6 @@
 // Git-related helpers for extracting SHAs from Netlify deploy objects
 
 function extractShaFromDeploy(deploy) {
-  if (!deploy) return { sha: null, field: null }
-
   const candidateFields = [
     ['commit_ref', deploy.commit_ref],
     ['commit_url', deploy.commit_url],
@@ -21,7 +19,7 @@ function extractShaFromDeploy(deploy) {
 
   const [fieldName, fieldValue] = found
   const match = String(fieldValue).match(/[0-9a-f]{7,40}/i)
-  const sha = match ? String(match[0]).trim().toLowerCase() : null
+  const sha = String(match[0]).trim().toLowerCase()
   return { sha, field: fieldName }
 }
 

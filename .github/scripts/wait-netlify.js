@@ -102,6 +102,7 @@ export async function pollForPreview({
   delayMs = 10000,
   writeUrlFn = () => {}
 }) {
+  if (expectedSha == null) throw new Error('pollForPreview: expectedSha is required')
   let lastSeen = []
   for (let attempt = 1; attempt <= attempts; attempt++) {
     try {
