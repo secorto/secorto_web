@@ -91,4 +91,26 @@ describe('pollForPreview', () => {
     expect(res.url).toBeNull()
     expect(writeUrlFn).not.toHaveBeenCalled()
   })
+
+  it('returns code 1 when expected commit never appears', async () => {
+    const listDeploysFn = vi.fn().mockResolvedValue([
+      { id: 'a', state: 'ready', commit_ref: 'deadbeef', links: {}, context: 'deploy-preview', branch: 'feat' }
+    ])
+    const writeUrlFn = vi.fn()
+
+    const res = await pollForPreview({
+      listDeploysFn,
+      site: 's',
+      token: 't',
+      branch: 'feat',
+      expectedSha: 'ffffffff', // SHA that will never match
+      attempts: 3,
+      delayMs: 0,
+      writeUrlFn
+    })
+
+    expect(res.code).toBe(1)
+    expect(res.url).toBeNull()
+    expect(writeUrlFn).not.toHaveBeenCalled()
+  })
 })
