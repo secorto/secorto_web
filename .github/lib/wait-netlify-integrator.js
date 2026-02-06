@@ -50,6 +50,7 @@ function choosePreviewUrl(matching) {
   if (links.alias) return { url: links.alias, chosenField: 'links.alias' }
   if (matching.ssl_url) return { url: matching.ssl_url, chosenField: 'ssl_url' }
   if (matching.url) return { url: matching.url, chosenField: 'url' }
+  return { url: null, chosenField: null }
 }
 
 export { previewDeploysForBranch, findMatchingDeploy, choosePreviewUrl, summarizeCandidates }

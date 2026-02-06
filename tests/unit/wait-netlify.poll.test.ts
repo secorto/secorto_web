@@ -115,6 +115,28 @@ describe('pollForPreview', () => {
     expect(writeUrlFn).toHaveBeenCalled()
   })
 
+  it('matches exact full SHA when both deploy and expected are full SHAs', async () => {
+    const fullSha = 'abcd1234abcd1234abcd1234abcd1234abcd1234' // 40 chars
+    const deploy = { id: 'd-full', state: 'ready', commit_ref: fullSha, links: { permalink: 'https://p-full.netlify.app' }, context: 'deploy-preview', branch: 'feat' }
+    const listDeploysFn = vi.fn().mockResolvedValue([deploy])
+    const writeUrlFn = vi.fn()
+
+    const res = await pollForPreview({
+      listDeploysFn,
+      site: 's',
+      token: 't',
+      branch: 'feat',
+      expectedSha: fullSha,
+      attempts: 1,
+      delayMs: 0,
+      writeUrlFn
+    })
+
+    expect(res.code).toBe(0)
+    expect(res.url).toBe('https://p-full.netlify.app')
+    expect(writeUrlFn).toHaveBeenCalled()
+  })
+
   it('accepts a ready deploy even when it has no SHA and no expected provided', async () => {
     const deploy = { id: 'r1', state: 'ready', links: { alias: 'https://alias.netlify.app' }, context: 'deploy-preview', branch: 'feat' }
     const listDeploysFn = vi.fn().mockResolvedValue([deploy])
