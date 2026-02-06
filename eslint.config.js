@@ -10,7 +10,7 @@ const sharedSettings = {
 
 const sharedRules = {
   'import/no-unresolved': 'error',
-  'import/no-extraneous-dependencies': ['error', { devDependencies: ['cypress/**', 'tests/**', '**/*.spec.*', 'playwright.config.ts'] }]
+  'import/no-extraneous-dependencies': ['error', { devDependencies: ['cypress/**', 'tests/**', '**/*.spec.*', 'playwright.config.ts', 'vitest.config.ts'] }]
 }
 
 export default [
