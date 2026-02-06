@@ -1,7 +1,7 @@
-import eslintPluginAstro from 'eslint-plugin-astro';
-import jsxA11y from 'eslint-plugin-jsx-a11y';
-import importPlugin from 'eslint-plugin-import';
-import tsParser from '@typescript-eslint/parser';
+import eslintPluginAstro from 'eslint-plugin-astro'
+import jsxA11y from 'eslint-plugin-jsx-a11y'
+import importPlugin from 'eslint-plugin-import'
+import tsParser from '@typescript-eslint/parser'
 
 const sharedSettings = {
   'import/resolver': { typescript: {} },
