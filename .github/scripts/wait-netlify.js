@@ -64,7 +64,6 @@ export async function main() {
   ensureFetch()
 
   const expectedSha = resolveExpectedSha()
-  let lastSeen = []
   const result = await pollForPreview({
     listDeploysFn: listDeploys,
     site,
