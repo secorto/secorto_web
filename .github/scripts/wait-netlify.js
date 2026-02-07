@@ -19,6 +19,7 @@ function resolveEnvBranch() {
 }
 
 const branch = resolveEnvBranch()
+const envFile = process.env.GITHUB_ENV
 
 function ensureEnv() {
   const missing = []
@@ -44,6 +45,7 @@ function resolveExpectedSha() {
 const wait = ms => new Promise(r => setTimeout(r, ms))
 
 function writePreviewUrl(url) {
+  if (envFile) return fs.appendFileSync(envFile, `NETLIFY_PREVIEW_URL=${url}\n`)
   console.log(`NETLIFY_PREVIEW_URL=${url}`)
 }
 
