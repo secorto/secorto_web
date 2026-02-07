@@ -49,3 +49,10 @@ Maintenance
 Note on `NETLIFY_PREVIEW_URL` vs `BASE_URL`
 
 - We prefer `NETLIFY_PREVIEW_URL` for PR runs because it's the exact preview deploy URL produced by Netlify. Keep `BASE_URL` as a manual override for staging/production/local testing. The workflow and `playwright.config.ts` already use the precedence: `NETLIFY_PREVIEW_URL || BASE_URL || http://localhost:4321`.
+
+Note on PR vs main/master runs
+
+- The script detects the branch from `PR_BRANCH` (recommended for PR workflows) or from `GITHUB_REF_NAME`/`GITHUB_REF` for non-PR runs.
+- For branches other than `main`/`master` the script searches `deploy-preview` deploys matching the branch.
+- When running on `main` or `master`, the script accepts `production` deploys (Netlify may omit `branch` on production deploy objects). This enables the workflow to resolve a usable `NETLIFY_PREVIEW_URL` when testing the default branch without special-casing or skipping validations.
+- To override behavior, pass `--context=production` or set `NETLIFY_DEPLOY_CONTEXT` in the environment.

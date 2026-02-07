@@ -19,6 +19,26 @@ describe('wait-netlify helpers (TS)', () => {
     expect(res[0].id).toBe(2)
   })
 
+  it('accepts production deploy with no branch when running on main', () => {
+    const prodNoBranch = { id: 10, context: 'production', created_at: '2020-02-01' }
+    const res = previewDeploysForBranch([prodNoBranch], 'main')
+    expect(res.length).toBe(1)
+    expect(res[0].id).toBe(10)
+  })
+
+  it('accepts production deploy with matching branch when running on master', () => {
+    const prodWithBranch = { id: 11, context: 'production', branch: 'master', created_at: '2020-02-02' }
+    const res = previewDeploysForBranch([prodWithBranch], 'master')
+    expect(res.length).toBe(1)
+    expect(res[0].id).toBe(11)
+  })
+
+  it('does not treat production deploys as previews for non-main branches', () => {
+    const prod = { id: 12, context: 'production', created_at: '2020-02-03' }
+    const res = previewDeploysForBranch([prod], 'feat')
+    expect(res.length).toBe(0)
+  })
+
   it('findMatchingDeploy returns first ready when no expected sha', () => {
     const notReady = { id: 'n', state: 'building', commit_ref: 'b' }
     const ready = { id: 'r', state: 'ready', commit_ref: 'a', sha: 'aaaa1111' }

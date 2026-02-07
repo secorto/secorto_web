@@ -11,8 +11,19 @@ function summarizeCandidates(candidates) {
 }
 
 function previewDeploysForBranch(deploys, branchName) {
+  if (!Array.isArray(deploys)) return []
   return deploys
-    .filter(d => d && d.context === 'deploy-preview' && d.branch === branchName)
+    .filter(d => {
+      if (!d) return false
+      // normal PR previews: match deploy-preview + branch
+      if (d.context === 'deploy-preview' && d.branch === branchName) return true
+      // allow running on main/master: accept production deploys (branch may be absent)
+      if ((branchName === 'main' || branchName === 'master') && d.context === 'production') {
+        if (!d.branch) return true
+        return d.branch === branchName
+      }
+      return false
+    })
     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
 }
 

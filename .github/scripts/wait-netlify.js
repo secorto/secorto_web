@@ -15,7 +15,16 @@ const delayMs = parseInt(parseArg('--delay', '10000'), 10)
 
 const token = process.env.NETLIFY_AUTH_TOKEN
 const site = process.env.NETLIFY_SITE_ID
-const branch = process.env.PR_BRANCH
+
+function resolveEnvBranch() {
+  if (process.env.PR_BRANCH) return process.env.PR_BRANCH
+  if (process.env.GITHUB_REF_NAME) return process.env.GITHUB_REF_NAME
+  const ref = process.env.GITHUB_REF
+  if (ref && ref.startsWith('refs/heads/')) return ref.replace('refs/heads/', '')
+  return null
+}
+
+const branch = resolveEnvBranch()
 const envFile = process.env.GITHUB_ENV
 const cliExpected = parseArg('--expected-sha', null)
 
@@ -23,7 +32,7 @@ function ensureEnv() {
   const missing = []
   if (!token) missing.push('NETLIFY_AUTH_TOKEN')
   if (!site) missing.push('NETLIFY_SITE_ID')
-  if (!branch) missing.push('PR_BRANCH')
+  if (!branch) missing.push('branch (PR_BRANCH or GITHUB_REF_NAME)')
   if (missing.length) {
     console.error('Missing env:', missing.join(', '))
     process.exit(1)
@@ -125,3 +134,6 @@ export async function pollForPreview({
   }
   return { code: 1, url: null, lastSeen }
 }
+
+// export helper for tests
+export { resolveEnvBranch, ensureEnv, writePreviewUrl }
