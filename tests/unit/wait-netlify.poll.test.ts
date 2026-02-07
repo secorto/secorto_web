@@ -72,6 +72,54 @@ describe('pollForPreview', () => {
     expect(writeUrlFn).toHaveBeenCalled()
   })
 
+  it('recovers from a transient network error and finds deploy', async () => {
+    let calls = 0
+    const listDeploysFn = vi.fn().mockImplementation(() => {
+      calls++
+      if (calls === 1) return Promise.reject(new Error('network error'))
+        const deploy = { id: 'r', state: 'ready', sha: 'dead1111', links: { permalink: 'https://p-net.netlify.app' }, context: 'deploy-preview', branch: 'feat' }
+      return Promise.resolve([deploy])
+    })
+    const writeUrlFn = vi.fn()
+
+    const res = await pollForPreview({
+      listDeploysFn,
+      site: 's',
+      token: 't',
+      branch: 'feat',
+      expectedSha: 'dead1111',
+      attempts: 3,
+      delayMs: 0,
+      writeUrlFn
+    })
+
+    expect(res.code).toBe(0)
+    expect(res.url).toBe('https://p-net.netlify.app')
+    expect(listDeploysFn.mock.calls.length).toBeGreaterThanOrEqual(2)
+    expect(writeUrlFn).toHaveBeenCalled()
+  })
+
+  it('returns code 1 when listDeploys consistently errors', async () => {
+    const listDeploysFn = vi.fn().mockRejectedValue(new Error('network down'))
+    const writeUrlFn = vi.fn()
+
+    const res = await pollForPreview({
+      listDeploysFn,
+      site: 's',
+      token: 't',
+      branch: 'feat',
+      expectedSha: 'doesnotmatter',
+      attempts: 2,
+      delayMs: 0,
+      writeUrlFn
+    })
+
+    expect(res.code).toBe(1)
+    expect(res.url).toBeNull()
+    expect(writeUrlFn).not.toHaveBeenCalled()
+    expect(listDeploysFn.mock.calls.length).toBeGreaterThanOrEqual(2)
+  })
+
   it('returns code 1 when no match after attempts', async () => {
     const listDeploysFn = vi.fn().mockResolvedValue([])
     const writeUrlFn = vi.fn()
