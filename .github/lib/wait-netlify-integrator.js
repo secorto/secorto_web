@@ -13,7 +13,6 @@ function summarizeCandidates(candidates) {
 function previewDeploysForBranch(deploys, branchName) {
   return deploys
     .filter(d => {
-      if (!d) return false
       // normal PR previews: match deploy-preview + branch
       if (d.context === 'deploy-preview' && d.branch === branchName) return true
       // allow running on main/master: accept production deploys (branch may be absent)

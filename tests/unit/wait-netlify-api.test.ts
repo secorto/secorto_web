@@ -19,7 +19,7 @@ describe('wait-netlify-api.listDeploys', () => {
   })
 
   it('returns parsed JSON on ok response', async () => {
-    const payload = [{ id: 'd1' }]
+    const payload = [{ id: 'd1', context: 'deploy-preview', created_at: '2020-01-01' }]
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve(payload) }))
     const res = await listDeploys('site', 'token')
     expect(res).toEqual(payload)
@@ -28,5 +28,12 @@ describe('wait-netlify-api.listDeploys', () => {
   it('throws when JSON is not an array', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve({ foo: 'bar' }) }))
     await expect(listDeploys('site', 'token')).rejects.toThrow(/expected array/)
+  })
+
+  it('throws when array contains invalid deploy objects', async () => {
+    // element 0 is valid, element 1 is null, element 2 missing context
+    const payload = [ { id: 'a', context: 'deploy-preview', created_at: '2020-01-01' }, null, { id: 'c' } ]
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve(payload) }))
+    await expect(listDeploys('site', 'token')).rejects.toThrow(/invalid deploy at index 1|invalid deploy at index 2/)
   })
 })
