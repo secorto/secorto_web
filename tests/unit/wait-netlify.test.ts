@@ -40,7 +40,7 @@ describe('wait-netlify helpers (TS)', () => {
     expect(res.length).toBe(0)
   })
 
-  it('findMatchingDeploy returns first ready when no expected sha', () => {
+  it('findMatchingDeploy returns null when no expected sha', () => {
     const notReady = { id: 'n', state: 'building', commit_ref: 'b' }
     const ready = { id: 'r', state: 'ready', commit_ref: 'a', sha: 'aaaa1111' }
     // Policy: require expected SHA to match; when none provided, result is null

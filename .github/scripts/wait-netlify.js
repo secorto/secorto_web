@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 import fs from 'fs'
-import { fileURLToPath } from 'url'
 import { listDeploys } from '../lib/wait-netlify-api.js'
 import { previewDeploysForBranch, findMatchingDeploy, choosePreviewUrl, summarizeCandidates } from '../lib/wait-netlify-integrator.js'
 
@@ -127,15 +126,24 @@ export async function main() {
   return result.code
 }
 
-// If executed directly, run `main()` and exit with its returned code.
-// `runAndExit` accepts an optional `mainFn` so tests can pass a stubbed
-// implementation without needing a mutable exported binding.
+/**
+ * Execute a `main` function and exit the process with its returned code.
+ *
+ * The optional `mainFn` should return an exit code (number) or a
+ * Promise that resolves to a number. When invoked, `runAndExit` will
+ * await the returned value, call `process.exit` with the numeric code
+ * (or `0` when the returned value is falsy/non-number), and will
+ * catch and log any thrown error before exiting with code `1`.
+ *
+ * @param {(() => Promise<number>|number)=} mainFn - Optional main function to run
+ * @returns {Promise<void>} Resolves after attempting to exit the process
+ */
 async function runAndExit(mainFn = main) {
   try {
     const code = await mainFn()
     process.exit(Number(code) || 0)
   } catch (err) {
-      printError('fatal:', err)
+    printError('fatal:', err)
     process.exit(1)
   }
 }
