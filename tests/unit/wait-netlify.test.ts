@@ -71,7 +71,7 @@ describe('wait-netlify helpers (TS)', () => {
     expect(choosePreviewUrl(m2).url).toBe('https://alias.netlify.app')
     expect(choosePreviewUrl(m3).url).toBe('https://ssl.netlify.app')
     expect(choosePreviewUrl(m4).url).toBe('https://url.netlify.app')
-    expect(choosePreviewUrl(m5).url).toBeNull()
+    expect(() => choosePreviewUrl(m5)).toThrow('no preview url available')
   })
 
   it('defensive: when match returns null, returns field value as field', () => {

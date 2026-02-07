@@ -165,10 +165,8 @@ export async function pollForPreview({
       const matching = findMatchingDeploy(candidates, expectedSha)
       if (matching) {
         const { url } = choosePreviewUrl(matching)
-        if (url) {
-          await writeUrlFn(url)
-          return { code: 0, url, lastSeen }
-        }
+        await writeUrlFn(url)
+        return { code: 0, url, lastSeen }
       }
     } catch (err) {
       // bubble error info in lastSeen/console for easier debugging in tests
