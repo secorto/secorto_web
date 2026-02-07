@@ -13,7 +13,7 @@ const site = process.env.NETLIFY_SITE_ID
 // JSDoc typedefs for runtime helpers
 /**
  * @typedef {Object} PollForPreviewOptions
- * @property {(site:string, token:string) => Promise<any[]>} listDeploysFn
+ * @property {(site:string, token:string) => Promise<unknown[]>} listDeploysFn
  * @property {string} site
  * @property {string} token
  * @property {string} branch
