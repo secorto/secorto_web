@@ -11,7 +11,6 @@ function summarizeCandidates(candidates) {
 }
 
 function previewDeploysForBranch(deploys, branchName) {
-  if (!Array.isArray(deploys)) return []
   return deploys
     .filter(d => {
       if (!d) return false

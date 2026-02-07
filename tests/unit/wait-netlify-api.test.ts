@@ -24,4 +24,9 @@ describe('wait-netlify-api.listDeploys', () => {
     const res = await listDeploys('site', 'token')
     expect(res).toEqual(payload)
   })
+
+  it('throws when JSON is not an array', async () => {
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, json: () => Promise.resolve({ foo: 'bar' }) }))
+    await expect(listDeploys('site', 'token')).rejects.toThrow(/expected array/)
+  })
 })

@@ -5,7 +5,9 @@ async function listDeploys(siteId, token) {
     headers: { Authorization: 'Bearer ' + token }
   })
   if (!res.ok) throw new Error(`Netlify API status ${res.status}`)
-  return res.json()
+  const data = await res.json()
+  if (!Array.isArray(data)) throw new Error('listDeploys: expected array from Netlify API')
+  return data
 }
 
 export { listDeploys }
