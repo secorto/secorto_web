@@ -2,14 +2,14 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { listDeploys } from '../../.github/lib/wait-netlify-api.js'
 
 describe('wait-netlify-api.listDeploys', () => {
-  let originalFetch: any
+  let originalFetch: typeof globalThis.fetch | undefined
 
   beforeEach(() => {
-    originalFetch = (global as any).fetch
+    originalFetch = globalThis.fetch
   })
 
   afterEach(() => {
-    (global as any).fetch = originalFetch
+    globalThis.fetch = originalFetch
     vi.restoreAllMocks()
   })
 
