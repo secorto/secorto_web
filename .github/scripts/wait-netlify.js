@@ -145,4 +145,4 @@ export async function pollForPreview({
 }
 
 // export helper for tests
-export { resolveEnvBranch, ensureEnv, writePreviewUrl }
+export { resolveEnvBranch, ensureEnv, writePreviewUrl, resolveExpectedSha }
