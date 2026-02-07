@@ -12,7 +12,7 @@
  */
 
 /**
-/**
+
  * Fetch raw deploy list from Netlify API
  * @param {string} siteId
  * @param {string} token
@@ -41,7 +41,7 @@ function validateDeploys(data) {
     if (d.created_at && isNaN(Date.parse(String(d.created_at)))) throw new Error(`validateDeploys: invalid deploy at index ${i} (invalid created_at)`)
     if (!d.id) throw new Error(`validateDeploys: invalid deploy at index ${i} (missing id)`)
   }
-  return data
+  return /** @type {Deploy[]} */ (data)
 }
 
 /**

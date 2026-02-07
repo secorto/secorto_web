@@ -70,4 +70,4 @@ npx npm-check-updates -u
 
 - **Runner script:** El pipeline invoca `node .github/scripts/wait-netlify-runner.js`, que llama internamente a `runAndExit()` del script `wait-netlify.js` sólo cuando se ejecuta directamente. Esto evita problemas con exports mutables y mejora testabilidad.
 - **COMMIT_ID:** El workflow inyecta `COMMIT_ID` con el SHA del PR (o del push). `wait-netlify` usa `COMMIT_ID` para encontrar el deploy que coincide con el commit y exporta `NETLIFY_PREVIEW_URL` al entorno de GitHub Actions.
-- **Requisitos:** El runner requiere Node >= 18 para el soporte global de `fetch` o que esté disponible en el entorno.
+- **Requisitos:** El runner requiere Node >= 20 (según `engines.node` en `package.json`) para el soporte global de `fetch` o que esté disponible en el entorno.

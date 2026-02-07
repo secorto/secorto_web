@@ -77,7 +77,7 @@ describe('pollForPreview', () => {
     const listDeploysFn = vi.fn().mockImplementation(() => {
       calls++
       if (calls === 1) return Promise.reject(new Error('network error'))
-        const deploy = { id: 'r', state: 'ready', sha: 'dead1111', links: { permalink: 'https://p-net.netlify.app' }, context: 'deploy-preview', branch: 'feat' }
+      const deploy = { id: 'r', state: 'ready', sha: 'dead1111', links: { permalink: 'https://p-net.netlify.app' }, context: 'deploy-preview', branch: 'feat' }
       return Promise.resolve([deploy])
     })
     const writeUrlFn = vi.fn()

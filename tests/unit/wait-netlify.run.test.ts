@@ -2,7 +2,8 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
 describe('runAndExit helper', () => {
   const OLD_ENV = { ...process.env }
-  let runAndExit: any
+  type RunAndExit = typeof import('../../.github/scripts/wait-netlify.js')['runAndExit']
+  let runAndExit: RunAndExit
   beforeEach(async () => {
     vi.resetModules()
     const mod = await import('../../.github/scripts/wait-netlify.js')
