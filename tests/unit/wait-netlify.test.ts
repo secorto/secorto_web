@@ -72,4 +72,19 @@ describe('wait-netlify helpers (TS)', () => {
     expect(choosePreviewUrl(m4).url).toBe('https://url.netlify.app')
     expect(choosePreviewUrl(m5).url).toBeNull()
   })
+
+  it('defensive: when match returns null, returns field value as field', () => {
+    const fieldValue = 'deadbeef'
+    const originalMatch = String.prototype.match
+    try {
+      // force String.prototype.match to return null to exercise defensive branch
+      ;(String.prototype as any).match = function () { return null }
+      const d = { commit_ref: fieldValue }
+      const r = extractShaFromDeploy(d)
+      expect(r.sha).toBeNull()
+      expect(r.field).toBe(fieldValue)
+    } finally {
+      String.prototype.match = originalMatch
+    }
+  })
 })

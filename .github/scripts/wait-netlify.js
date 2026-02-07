@@ -60,7 +60,7 @@ export async function main() {
     process.exit(1)
   }
 
-  const expectedSha = resolveExpectedSha(branch)
+  const expectedSha = resolveExpectedSha()
 
   const result = await pollForPreview({
     listDeploysFn: listDeploys,

@@ -1,5 +1,25 @@
+// @ts-check
+/**
+ * @typedef {Object} Deploy
+ * @property {string} [commit_ref]
+ * @property {string} [commit_url]
+ * @property {string} [commit_message]
+ * @property {string} [sha]
+ * @property {string} [commit_sha]
+ * @property {string} [title]
+ */
+
+/**
+ * @typedef {{sha: string|null, field: string|null|undefined}} ExtractResult
+ */
+
 // Git-related helpers for extracting SHAs from Netlify deploy objects
 
+/**
+ * Extract a SHA-like token from common deploy fields
+ * @param {Deploy} deploy
+ * @returns {ExtractResult}
+ */
 function extractShaFromDeploy(deploy) {
   const candidateFields = [
     ['commit_ref', deploy.commit_ref],
@@ -19,6 +39,7 @@ function extractShaFromDeploy(deploy) {
 
   const [fieldName, fieldValue] = found
   const match = String(fieldValue).match(/[0-9a-f]{7,40}/i)
+  if (!match) return { sha: null, field: fieldValue }
   const sha = String(match[0]).trim().toLowerCase()
   return { sha, field: fieldName }
 }
