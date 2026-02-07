@@ -14,6 +14,11 @@ const sharedRules = {
 }
 
 export default [
+  // Ignore generated artifacts like coverage/dist/public
+  {
+    ignores: ['coverage/**', 'dist/**', 'public/**']
+  },
+
   // Recomendado para .astro (deja que el plugin procese .astro)
   ...eslintPluginAstro.configs.recommended,
 
