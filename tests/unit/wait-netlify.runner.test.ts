@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { fileURLToPath } from 'url'
 
 const RUNNER_PATH = fileURLToPath(new URL('../../.github/scripts/wait-netlify-runner.js', import.meta.url))
-const WAIT_NETLIFY = '../../.github/scripts/wait-netlify.js'
 
 // Ensure the mock factory used by `vi.mock` (which is hoisted) can reference
 // a stable spy implementation. Declaring at module top prevents TDZ.

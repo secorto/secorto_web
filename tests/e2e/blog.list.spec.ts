@@ -11,7 +11,6 @@ const listFixtures = [
 for (const f of listFixtures) {
   test.describe(`Blog list (${f.locale})`, () => {
     test.beforeEach(async ({ page }) => {
-      const blog = new BlogPage(page)
       await page.goto(getURLForSection('blog', f.locale as UILanguages))
     })
 

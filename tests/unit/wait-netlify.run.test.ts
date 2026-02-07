@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
 describe('runAndExit helper', () => {
   const OLD_ENV = { ...process.env }
-  let runAndExit: (mainFn?: () => Promise<number> | number) => Promise<void>
+  let runAndExit: any
   beforeEach(async () => {
     vi.resetModules()
     const mod = await import('../../.github/scripts/wait-netlify.js')

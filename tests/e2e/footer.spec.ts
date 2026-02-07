@@ -15,7 +15,7 @@ test.describe('Footer translations', () => {
       // image alt
       const img = page.locator('[data-testid="footer-avatar"]')
       await expect(img).toBeVisible()
-      await expect(await img.getAttribute('alt')).toBe(expectedAlt)
+      expect(await img.getAttribute('alt')).toBe(expectedAlt)
 
       // role text
       const role = page.getByTestId('footer-role')

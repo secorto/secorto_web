@@ -9,7 +9,13 @@ describe('wait-netlify-api.listDeploys', () => {
   })
 
   afterEach(() => {
-    globalThis.fetch = originalFetch
+    if (originalFetch === undefined) {
+      // restore absence of fetch
+      // @ts-ignore
+      delete (globalThis as any).fetch
+    } else {
+      ;(globalThis as any).fetch = originalFetch
+    }
     vi.restoreAllMocks()
   })
 
