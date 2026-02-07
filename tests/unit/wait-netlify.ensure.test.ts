@@ -31,6 +31,22 @@ describe('wait-netlify helpers (env & write)', () => {
     expect(() => mod.ensureEnv()).toThrow(/Missing env:/)
   })
 
+  it('ensureEnv throws when NETLIFY_AUTH_TOKEN missing', async () => {
+    delete process.env.NETLIFY_AUTH_TOKEN
+    process.env.NETLIFY_SITE_ID = 's'
+    process.env.PR_BRANCH = 'feat'
+    const mod = await import('../../.github/scripts/wait-netlify.js')
+    expect(() => mod.ensureEnv()).toThrow(/Missing env:/)
+  })
+
+  it('ensureEnv throws when NETLIFY_SITE_ID missing', async () => {
+    process.env.NETLIFY_AUTH_TOKEN = 't'
+    delete process.env.NETLIFY_SITE_ID
+    process.env.PR_BRANCH = 'feat'
+    const mod = await import('../../.github/scripts/wait-netlify.js')
+    expect(() => mod.ensureEnv()).toThrow(/Missing env:/)
+  })
+
   it('writePreviewUrl prints when --print-only present', async () => {
     process.argv.push('--print-only')
     const mod = await import('../../.github/scripts/wait-netlify.js')
