@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
-const MOD_PATH = '../../.github/scripts/wait-netlify.js'
+const MOD_PATH = '@github/scripts/wait-netlify.js'
 const TMP_EVENT = path.join(process.cwd(), 'tests', 'unit', 'tmp-github-event.json')
 
 function resetEnvAndArgv() {

@@ -1,0 +1,66 @@
+import { describe, it, expect, vi } from 'vitest'
+
+// mock the path alias used by the utils module so Node resolution during tests works
+vi.mock('@i18n/dateFormat', () => ({
+  full: { dateStyle: 'full', timeZone: 'UTC' } as const,
+  monthYear: { month: 'long', year: 'numeric', timeZone: 'UTC' } as const,
+}))
+
+const { defaultLang, ui } = await import('../../../src/i18n/ui')
+const {
+  getLangFromUrl,
+  useTranslations,
+  useTranslatedPath,
+  getFullFormat,
+  getMonthYearFormat,
+} = await import('../../../src/i18n/utils')
+
+describe('i18n utils', () => {
+  it('getLangFromUrl returns language when present and valid', () => {
+    expect(getLangFromUrl(new URL('https://example.test/en/page'))).toBe('en')
+  })
+
+  it('getLangFromUrl falls back to default language when missing or invalid', () => {
+    expect(getLangFromUrl(new URL('https://example.test/'))).toBe(defaultLang)
+    expect(getLangFromUrl(new URL('https://example.test/xx/page'))).toBe(defaultLang)
+  })
+
+  it('useTranslations returns translations and undefined for unknown keys', () => {
+    const tEs = useTranslations('es')
+    expect(tEs('nav.about')).toBe(ui.es['nav.about'])
+
+    const tEn = useTranslations('en')
+    expect(tEn('nav.blog')).toBe(ui.en['nav.blog'])
+
+    // unknown key should return undefined (runtime)
+    expect(tEn('non.existent' as any)).toBeUndefined()
+  })
+
+  it('useTranslatedPath prefixes paths with language', () => {
+    const translateEs = useTranslatedPath('es')
+    expect(translateEs('/about')).toBe('/es/about')
+
+    const translateEn = useTranslatedPath('en')
+    expect(translateEn('/post')).toBe('/en/post')
+  })
+
+  it('date formatters produce locale-specific month names', () => {
+    const d = new Date('2015-02-07T00:00:00Z')
+
+    const enFull = getFullFormat(new URL('https://example.test/en/')).format(d)
+    expect(enFull).toContain('2015')
+    expect(enFull).toContain('February')
+
+    const esFull = getFullFormat(new URL('https://example.test/es/')).format(d)
+    expect(esFull.toLowerCase()).toContain('febrero')
+    expect(esFull).toContain('2015')
+
+    const enMonth = getMonthYearFormat(new URL('https://example.test/en/')).format(d)
+    expect(enMonth).toContain('2015')
+    expect(enMonth).toContain('February')
+
+    const esMonth = getMonthYearFormat(new URL('https://example.test/es/')).format(d)
+    expect(esMonth.toLowerCase()).toContain('febrero')
+    expect(esMonth).toContain('2015')
+  })
+})

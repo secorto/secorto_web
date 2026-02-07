@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { validateDeploys } from '../../.github/lib/wait-netlify-api.js'
+import { validateDeploys } from '@github/lib/wait-netlify-api.js'
 
 describe('validateDeploys', () => {
   it('accepts valid array of deploys', () => {

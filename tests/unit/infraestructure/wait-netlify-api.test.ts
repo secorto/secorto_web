@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { listDeploys } from '../../.github/lib/wait-netlify-api.js'
+import { listDeploys } from '@github/lib/wait-netlify-api.js'
 
 describe('wait-netlify-api.listDeploys', () => {
   let originalFetch: typeof globalThis.fetch | undefined

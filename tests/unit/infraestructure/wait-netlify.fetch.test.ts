@@ -9,7 +9,7 @@ describe('wait-netlify fetch guard', () => {
 
   it('ensureFetch throws when global fetch is missing', async () => {
     // ensureFetch is exported from the script; call directly rather than exercising main
-    const mod = await import('../../.github/scripts/wait-netlify.js')
+    const mod = await import('@github/scripts/wait-netlify.js')
 
     // delete global.fetch
     // @ts-ignore
