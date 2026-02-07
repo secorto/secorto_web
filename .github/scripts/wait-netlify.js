@@ -98,13 +98,8 @@ function writePreviewUrl(url) {
  * @returns {Promise<number>} exit code (0 success, 1 timeout)
  */
 export async function main() {
-  try {
-    ensureEnv()
-    ensureFetch()
-  } catch (err) {
-    console.error(err)
-    process.exit(1)
-  }
+  ensureEnv()
+  ensureFetch()
 
   const expectedSha = resolveExpectedSha()
 
@@ -122,12 +117,17 @@ export async function main() {
   return result.code
 }
 
-// If executed directly, run main and set exit code. If imported, users can call `main()`.
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  main().then(code => process.exit(code || 0)).catch(err => {
+// If executed directly, run `main()` and exit with its returned code.
+// `runAndExit` accepts an optional `mainFn` so tests can pass a stubbed
+// implementation without needing a mutable exported binding.
+async function runAndExit(mainFn = main) {
+  try {
+    const code = await mainFn()
+    process.exit(Number(code) || 0)
+  } catch (err) {
     console.error('fatal:', err && err.message ? err.message : err)
     process.exit(1)
-  })
+  }
 }
 
 /**
@@ -170,4 +170,4 @@ export async function pollForPreview({
 }
 
 // export helper for tests
-export { resolveEnvBranch, ensureEnv, writePreviewUrl, resolveExpectedSha }
+export { resolveEnvBranch, ensureEnv, ensureFetch, writePreviewUrl, resolveExpectedSha, runAndExit }

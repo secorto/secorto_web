@@ -39,7 +39,8 @@ jobs:
         PR_BRANCH: ${{ github.head_ref || github.ref_name }}
         COMMIT_ID: ${{ github.event.pull_request.head.sha || github.sha }}
       run: |
-        node .github/scripts/wait-netlify.js
+        # use the tiny runner which conditionally invokes the module when executed
+        node .github/scripts/wait-netlify-runner.js
 
     - name: Run Playwright tests (use Netlify preview if available)
       env:

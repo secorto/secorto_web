@@ -65,3 +65,9 @@ npx npm-check-updates -u
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/secorto/secorto_web)
 [![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/devbox/github/secorto/secorto_web)
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/secorto/secorto_web?devcontainer_path=.devcontainer/.devcontainer/devcontainer.json)
+
+**Integración Continua (Playwright + Netlify)**
+
+- **Runner script:** El pipeline invoca `node .github/scripts/wait-netlify-runner.js`, que llama internamente a `runAndExit()` del script `wait-netlify.js` sólo cuando se ejecuta directamente. Esto evita problemas con exports mutables y mejora testabilidad.
+- **COMMIT_ID:** El workflow inyecta `COMMIT_ID` con el SHA del PR (o del push). `wait-netlify` usa `COMMIT_ID` para encontrar el deploy que coincide con el commit y exporta `NETLIFY_PREVIEW_URL` al entorno de GitHub Actions.
+- **Requisitos:** El runner requiere Node >= 18 para el soporte global de `fetch` o que esté disponible en el entorno.
