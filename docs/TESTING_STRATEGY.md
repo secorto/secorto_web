@@ -65,8 +65,8 @@ Este documento explica el objetivo de las pruebas unitarias y E2E en este reposi
   ```ts
   // tests/e2e/a11y.spec.ts
   import { test } from '@playwright/test'
-  import { ContentPage } from './pages/ContentPage'
-  import { checkA11y } from '../actions/A11yActions'
+  import { ContentPage } from '@tests/e2e/pages/ContentPage'
+  import { checkA11y } from '@tests/actions/A11yActions'
 
   test('page is accessible', async ({ page }) => {
     const content = new ContentPage(page)
@@ -134,10 +134,10 @@ Ejemplo de Action (ilustrativo). Nota: si la página es estática y la interacci
 ```ts
 // tests/actions/loginAction.ts (ilustrativo)
 import { Page } from '@playwright/test'
-import type { LoginPage } from '../pages/LoginPage'
+import type { LoginPage } from '@tests/e2e/pages/LoginPage'
 
 export async function loginAction(loginPage: LoginPage, user: string, pass: string) {
-  test.step('Login', () => {
+  return test.step('Login', () => {
     await login.username().fill(user)
     await login.password().fill(pass)
     await login.submit().click()
