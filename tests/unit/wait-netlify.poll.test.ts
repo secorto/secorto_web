@@ -185,7 +185,7 @@ describe('pollForPreview', () => {
     expect(writeUrlFn).toHaveBeenCalled()
   })
 
-  it('accepts a ready deploy even when it has no SHA and no expected provided', async () => {
+  it('does not accept ready deploy without SHA when expected SHA is provided', async () => {
     const deploy = { id: 'r1', state: 'ready', links: { alias: 'https://alias.netlify.app' }, context: 'deploy-preview', branch: 'feat' }
     const listDeploysFn = vi.fn().mockResolvedValue([deploy])
     const writeUrlFn = vi.fn()
