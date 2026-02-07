@@ -46,28 +46,9 @@ function ensureFetch() {
 function resolveExpectedSha() {
   if (cliExpected) return cliExpected
   if (process.env.PR_HEAD_COMMIT_SHA) return process.env.PR_HEAD_COMMIT_SHA
-  if (process.env.GITHUB_EVENT_PATH) {
-    try {
-      const ev = JSON.parse(fs.readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'))
-      return ev?.pull_request?.head?.sha || null
-    } catch (err) {
-      console.error('resolveExpectedSha: failed to parse GITHUB_EVENT_PATH:', err && err.message ? err.message : err)
-      return null
-    }
-  }
   return null
 }
 
-// Compute the effective expected SHA for a branch: prefer explicit sources
-// (CLI / PR env / event) and only fall back to `GITHUB_SHA` for the
-// repository default branch
-export function computeExpectedSha(branchName) {
-  const resolved = resolveExpectedSha()
-  if (resolved) return resolved
-  const defaultBranch = process.env.GIT_DEFAULT_BRANCH || process.env.NETLIFY_DEFAULT_BRANCH || null
-  const isDefault = branchName && (branchName === defaultBranch || branchName === 'main' || branchName === 'master')
-  return isDefault ? process.env.GITHUB_SHA || null : null
-}
 
 const wait = ms => new Promise(r => setTimeout(r, ms))
 
@@ -80,25 +61,14 @@ function writePreviewUrl(url) {
 export async function main() {
   try {
     ensureEnv()
-  } catch (err) {
-    console.error(err && err.message ? err.message : err)
-    process.exit(1)
-  }
-
-  try {
     ensureFetch()
   } catch (err) {
-    console.error(err && err.message ? err.message : err)
+    console.error(err)
     process.exit(1)
   }
 
-    // resolve expected SHA (prefer explicit sources). allow fallback to GITHUB_SHA
-    // only for commits on the default branch
-    const expectedSha = computeExpectedSha(branch)
-    if (!expectedSha) {
-      console.error('No expected SHA found: provide --expected-sha, PR_HEAD_COMMIT_SHA, or ensure GITHUB_EVENT_PATH contains pull_request.head.sha')
-      process.exit(1)
-    }
+  const expectedSha = resolveExpectedSha(branch)
+
   const result = await pollForPreview({
     listDeploysFn: listDeploys,
     site,
@@ -162,4 +132,4 @@ export async function pollForPreview({
 }
 
 // export helper for tests
-export { resolveEnvBranch, ensureEnv, writePreviewUrl, resolveExpectedSha, computeExpectedSha }
+export { resolveEnvBranch, ensureEnv, writePreviewUrl, resolveExpectedSha }

@@ -38,17 +38,6 @@ describe('resolveExpectedSha', () => {
     process.env = oldEnv
   })
 
-  it('parses GITHUB_EVENT_PATH and returns pull_request.head.sha', async () => {
-    vi.resetModules()
-    const payload = { pull_request: { head: { sha: 'event-sha-3' } } }
-    fs.writeFileSync(TMP_EVENT, JSON.stringify(payload), 'utf8')
-    const oldEnv = { ...process.env }
-    process.env.GITHUB_EVENT_PATH = TMP_EVENT
-    const mod = await import(MOD_PATH)
-    expect(mod.resolveExpectedSha()).toBe('event-sha-3')
-    process.env = oldEnv
-  })
-
   it('returns null when GITHUB_EVENT_PATH lacks pull_request', async () => {
     vi.resetModules()
     const payload = { some: 'data' }
@@ -57,19 +46,6 @@ describe('resolveExpectedSha', () => {
     process.env.GITHUB_EVENT_PATH = TMP_EVENT
     const mod = await import(MOD_PATH)
     expect(mod.resolveExpectedSha()).toBe(null)
-    process.env = oldEnv
-  })
-
-  it('returns null and logs on invalid JSON in GITHUB_EVENT_PATH', async () => {
-    vi.resetModules()
-    fs.writeFileSync(TMP_EVENT, 'not-json', 'utf8')
-    const oldEnv = { ...process.env }
-    process.env.GITHUB_EVENT_PATH = TMP_EVENT
-    const spy = vi.spyOn(console, 'error').mockImplementation(() => {})
-    const mod = await import(MOD_PATH)
-    expect(mod.resolveExpectedSha()).toBe(null)
-    expect(spy).toHaveBeenCalled()
-    spy.mockRestore()
     process.env = oldEnv
   })
 })
