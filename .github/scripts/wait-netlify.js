@@ -45,8 +45,8 @@ function resolveExpectedSha() {
 const wait = ms => new Promise(r => setTimeout(r, ms))
 
 function writePreviewUrl(url) {
-  if (envFile) return fs.appendFileSync(envFile, `NETLIFY_PREVIEW_URL=${url}\n`)
   console.log(`NETLIFY_PREVIEW_URL=${url}`)
+  return fs.appendFileSync(envFile, `NETLIFY_PREVIEW_URL=${url}\n`)
 }
 
 export async function main() {
@@ -96,9 +96,8 @@ export async function pollForPreview({
   expectedSha = null,
   attempts = 30,
   delayMs = 10000,
-  writeUrlFn = () => {}
+  writeUrlFn
 }) {
-  if (expectedSha == null) throw new Error('pollForPreview: expectedSha is required')
   let lastSeen = []
   for (let attempt = 1; attempt <= attempts; attempt++) {
     try {
