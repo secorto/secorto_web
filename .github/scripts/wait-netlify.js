@@ -84,6 +84,16 @@ function resolveExpectedSha() {
 const wait = ms => new Promise(r => setTimeout(r, ms))
 
 /**
+ * Print an error with a base label and the error value.
+ * Mirrors previous inline pattern used across the file.
+ * @param {string} base
+ * @param {any} err
+ */
+function printError(base, err) {
+  console.error(base, err && err.message ? err.message : err)
+}
+
+/**
  * Write the chosen preview URL into the GitHub Actions env file.
  * @param {string} url
  * @returns {void}
@@ -125,7 +135,7 @@ async function runAndExit(mainFn = main) {
     const code = await mainFn()
     process.exit(Number(code) || 0)
   } catch (err) {
-    console.error('fatal:', err && err.message ? err.message : err)
+      printError('fatal:', err)
     process.exit(1)
   }
 }
@@ -162,7 +172,7 @@ export async function pollForPreview({
       }
     } catch (err) {
       // bubble error info in lastSeen/console for easier debugging in tests
-      console.error('error while polling:', err && err.message ? err.message : err)
+        printError('error while polling:', err)
     }
     if (attempt < attempts) await wait(delayMs)
   }
@@ -170,4 +180,4 @@ export async function pollForPreview({
 }
 
 // export helper for tests
-export { resolveEnvBranch, ensureEnv, ensureFetch, writePreviewUrl, resolveExpectedSha, runAndExit }
+export { resolveEnvBranch, ensureEnv, ensureFetch, printError, writePreviewUrl, resolveExpectedSha, runAndExit }
