@@ -40,8 +40,7 @@ function ensureEnv() {
 
 function ensureFetch() {
   if (typeof fetch === 'function') return
-  console.error(`Global fetch not available (requires Node 18+) - current ${process.version}`)
-  process.exit(1)
+  throw new Error('Global fetch not available (requires Node 18+)')
 }
 
 function resolveExpectedSha() {
@@ -74,7 +73,13 @@ export async function main() {
     console.error(err && err.message ? err.message : err)
     process.exit(1)
   }
-  ensureFetch()
+
+  try {
+    ensureFetch()
+  } catch (err) {
+    console.error(err && err.message ? err.message : err)
+    process.exit(1)
+  }
 
   const expectedSha = resolveExpectedSha()
   const result = await pollForPreview({
