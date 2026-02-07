@@ -58,6 +58,17 @@ function resolveExpectedSha() {
   return null
 }
 
+// Compute the effective expected SHA for a branch: prefer explicit sources
+// (CLI / PR env / event) and only fall back to `GITHUB_SHA` for the
+// repository default branch
+export function computeExpectedSha(branchName) {
+  const resolved = resolveExpectedSha()
+  if (resolved) return resolved
+  const defaultBranch = process.env.GIT_DEFAULT_BRANCH || process.env.NETLIFY_DEFAULT_BRANCH || null
+  const isDefault = branchName && (branchName === defaultBranch || branchName === 'main' || branchName === 'master')
+  return isDefault ? process.env.GITHUB_SHA || null : null
+}
+
 const wait = ms => new Promise(r => setTimeout(r, ms))
 
 function writePreviewUrl(url) {
@@ -81,11 +92,13 @@ export async function main() {
     process.exit(1)
   }
 
-  const expectedSha = resolveExpectedSha()
-  if (expectedSha == null) {
-    console.error('No expected SHA found: provide --expected-sha, PR_HEAD_COMMIT_SHA, or ensure GITHUB_EVENT_PATH contains pull_request.head.sha')
-    process.exit(1)
-  }
+    // resolve expected SHA (prefer explicit sources). allow fallback to GITHUB_SHA
+    // only for commits on the default branch
+    const expectedSha = computeExpectedSha(branch)
+    if (!expectedSha) {
+      console.error('No expected SHA found: provide --expected-sha, PR_HEAD_COMMIT_SHA, or ensure GITHUB_EVENT_PATH contains pull_request.head.sha')
+      process.exit(1)
+    }
   const result = await pollForPreview({
     listDeploysFn: listDeploys,
     site,
@@ -149,4 +162,4 @@ export async function pollForPreview({
 }
 
 // export helper for tests
-export { resolveEnvBranch, ensureEnv, writePreviewUrl, resolveExpectedSha }
+export { resolveEnvBranch, ensureEnv, writePreviewUrl, resolveExpectedSha, computeExpectedSha }
