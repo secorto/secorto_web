@@ -49,6 +49,17 @@ describe('resolveExpectedSha', () => {
     process.env = oldEnv
   })
 
+  it('returns null when GITHUB_EVENT_PATH lacks pull_request', async () => {
+    vi.resetModules()
+    const payload = { some: 'data' }
+    fs.writeFileSync(TMP_EVENT, JSON.stringify(payload), 'utf8')
+    const oldEnv = { ...process.env }
+    process.env.GITHUB_EVENT_PATH = TMP_EVENT
+    const mod = await import(MOD_PATH)
+    expect(mod.resolveExpectedSha()).toBe(null)
+    process.env = oldEnv
+  })
+
   it('returns null and logs on invalid JSON in GITHUB_EVENT_PATH', async () => {
     vi.resetModules()
     fs.writeFileSync(TMP_EVENT, 'not-json', 'utf8')

@@ -82,6 +82,10 @@ export async function main() {
   }
 
   const expectedSha = resolveExpectedSha()
+  if (expectedSha == null) {
+    console.error('No expected SHA found: provide --expected-sha, PR_HEAD_COMMIT_SHA, or ensure GITHUB_EVENT_PATH contains pull_request.head.sha')
+    process.exit(1)
+  }
   const result = await pollForPreview({
     listDeploysFn: listDeploys,
     site,
