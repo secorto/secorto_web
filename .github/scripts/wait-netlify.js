@@ -4,14 +4,8 @@ import { fileURLToPath } from 'url'
 import { listDeploys } from '../lib/wait-netlify-api.js'
 import { previewDeploysForBranch, findMatchingDeploy, choosePreviewUrl, summarizeCandidates } from '../lib/wait-netlify-integrator.js'
 
-function parseArg(name, fallback) {
-  const match = process.argv.find(a => a.startsWith(`${name}=`))
-  return match ? match.split('=')[1] : fallback
-}
-
-const PRINT_ONLY = process.argv.includes('--print-only')
-const maxAttempts = parseInt(parseArg('--attempts', '30'), 10)
-const delayMs = parseInt(parseArg('--delay', '10000'), 10)
+const maxAttempts = 30
+const delayMs = 10000
 
 const token = process.env.NETLIFY_AUTH_TOKEN
 const site = process.env.NETLIFY_SITE_ID
@@ -25,8 +19,6 @@ function resolveEnvBranch() {
 }
 
 const branch = resolveEnvBranch()
-const envFile = process.env.GITHUB_ENV
-const cliExpected = parseArg('--expected-sha', null)
 
 function ensureEnv() {
   const missing = []
@@ -44,7 +36,6 @@ function ensureFetch() {
 }
 
 function resolveExpectedSha() {
-  if (cliExpected) return cliExpected
   if (process.env.PR_HEAD_COMMIT_SHA) return process.env.PR_HEAD_COMMIT_SHA
   return null
 }
@@ -53,8 +44,6 @@ function resolveExpectedSha() {
 const wait = ms => new Promise(r => setTimeout(r, ms))
 
 function writePreviewUrl(url) {
-  if (PRINT_ONLY) return void console.log(url)
-  if (envFile) return fs.appendFileSync(envFile, `NETLIFY_PREVIEW_URL=${url}\n`)
   console.log(`NETLIFY_PREVIEW_URL=${url}`)
 }
 

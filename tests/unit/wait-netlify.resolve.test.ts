@@ -20,15 +20,6 @@ afterEach(() => {
 })
 
 describe('resolveExpectedSha', () => {
-  it('prefers CLI --expected-sha argument', async () => {
-    vi.resetModules()
-    const oldArgv = process.argv.slice()
-    process.argv = [...oldArgv, '--expected-sha=cli-sha-1']
-    const mod = await import(MOD_PATH)
-    expect(mod.resolveExpectedSha()).toBe('cli-sha-1')
-    process.argv = oldArgv
-  })
-
   it('uses PR_HEAD_COMMIT_SHA when present', async () => {
     vi.resetModules()
     const oldEnv = { ...process.env }

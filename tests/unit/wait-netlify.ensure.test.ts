@@ -46,28 +46,4 @@ describe('wait-netlify helpers (env & write)', () => {
     const mod = await import('../../.github/scripts/wait-netlify.js')
     expect(() => mod.ensureEnv()).toThrow(/Missing env:/)
   })
-
-  it('writePreviewUrl prints when --print-only present', async () => {
-    process.argv.push('--print-only')
-    const mod = await import('../../.github/scripts/wait-netlify.js')
-    const log = vi.spyOn(console, 'log').mockImplementation(() => {})
-    mod.writePreviewUrl('https://test.example')
-    expect(log).toHaveBeenCalledWith('https://test.example')
-  })
-
-  it('writePreviewUrl appends to GITHUB_ENV file when present', async () => {
-    const tmp = path.join(os.tmpdir(), `gh_env_test_${Date.now()}`)
-    process.env.GITHUB_ENV = tmp
-    // ensure not in print-only mode
-    process.argv = [...OLD_ARGV]
-    const mod = await import('../../.github/scripts/wait-netlify.js')
-    try {
-      if (fs.existsSync(tmp)) fs.unlinkSync(tmp)
-      mod.writePreviewUrl('https://file.example')
-      const content = fs.readFileSync(tmp, 'utf8')
-      expect(content).toContain('NETLIFY_PREVIEW_URL=https://file.example')
-    } finally {
-      if (fs.existsSync(tmp)) fs.unlinkSync(tmp)
-    }
-  })
 })
