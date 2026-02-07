@@ -26,6 +26,8 @@ function ensureEnv() {
   if (!token) missing.push('NETLIFY_AUTH_TOKEN')
   if (!site) missing.push('NETLIFY_SITE_ID')
   if (!branch) missing.push('branch (PR_BRANCH or GITHUB_REF_NAME)')
+  if (!envFile) missing.push('GITHUB_ENV')
+
   if (missing.length) {
     throw new Error('Missing env: ' + missing.join(', '))
   }
