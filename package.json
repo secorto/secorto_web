@@ -12,6 +12,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "test": "cypress run",
+    "test:e2e": "npx playwright test",
     "test:unit": "vitest",
     "test:unit:watch": "vitest --watch",
     "test:unit:ui": "vitest --ui",

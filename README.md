@@ -71,3 +71,21 @@ npx npm-check-updates -u
 - **Runner script:** El pipeline invoca `node .github/scripts/wait-netlify-runner.js`, que llama internamente a `runAndExit()` del script `wait-netlify.js` sólo cuando se ejecuta directamente. Esto evita problemas con exports mutables y mejora testabilidad.
 - **COMMIT_ID:** El workflow inyecta `COMMIT_ID` con el SHA del PR (o del push). `wait-netlify` usa `COMMIT_ID` para encontrar el deploy que coincide con el commit y exporta `NETLIFY_PREVIEW_URL` al entorno de GitHub Actions.
 - **Requisitos:** El runner requiere Node >= 20 (según `engines.node` en `package.json`) para el soporte global de `fetch` o que esté disponible en el entorno.
+
+## Tests
+
+[![Tests workflow](https://github.com/secorto/secorto_web/actions/workflows/tests.yml/badge.svg)](https://github.com/secorto/secorto_web/actions/workflows/tests.yml)
+
+Ejecutar localmente:
+
+| Command | Acción |
+| :------ | :----- |
+| `npm run test` | Ejecuta las pruebas E2E (Playwright/Cypress según configuración) |
+| `npm run test:unit` | Ejecuta las pruebas unitarias con Vitest y genera cobertura |
+
+En CI el workflow `Tests` corre dos jobs en paralelo:
+
+- `unit-tests`: ejecuta `vitest --run --coverage` y sube el artifact `vitest-coverage/` (contiene `lcov.info`)
+- `e2e-tests`: ejecuta las pruebas E2E con Playwright y sube el reporte `playwright-report/`
+
+Así las unit y las E2E corren en paralelo y la cobertura la genera únicamente el job `unit-tests`.
