@@ -10,6 +10,7 @@ import { extractShaFromDeploy } from './wait-netlify-git.js'
  * @property {string} [ssl_url]
  * @property {string} [url]
  * @property {Object} [links]
+ * @property {string} [context]
  */
 
 const FULL_SHA_LENGTH = 40
