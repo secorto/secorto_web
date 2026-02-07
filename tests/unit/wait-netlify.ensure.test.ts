@@ -18,6 +18,7 @@ describe('wait-netlify helpers (env & write)', () => {
     process.env.NETLIFY_AUTH_TOKEN = 't'
     process.env.NETLIFY_SITE_ID = 's'
     process.env.PR_BRANCH = 'feat'
+    process.env.GITHUB_ENV = '/tmp/some_env_file'
     const mod = await import('../../.github/scripts/wait-netlify.js')
     expect(() => mod.ensureEnv()).not.toThrow()
   })
@@ -43,6 +44,15 @@ describe('wait-netlify helpers (env & write)', () => {
     process.env.NETLIFY_AUTH_TOKEN = 't'
     delete process.env.NETLIFY_SITE_ID
     process.env.PR_BRANCH = 'feat'
+    const mod = await import('../../.github/scripts/wait-netlify.js')
+    expect(() => mod.ensureEnv()).toThrow(/Missing env:/)
+  })
+
+  it('ensureEnv throws when GITHUB_ENV missing', async () => {
+    process.env.NETLIFY_AUTH_TOKEN = 't'
+    process.env.NETLIFY_SITE_ID = 's'
+    process.env.PR_BRANCH = 'feat'
+    delete process.env.GITHUB_ENV
     const mod = await import('../../.github/scripts/wait-netlify.js')
     expect(() => mod.ensureEnv()).toThrow(/Missing env:/)
   })
