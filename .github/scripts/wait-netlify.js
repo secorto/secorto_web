@@ -34,8 +34,7 @@ function ensureEnv() {
   if (!site) missing.push('NETLIFY_SITE_ID')
   if (!branch) missing.push('branch (PR_BRANCH or GITHUB_REF_NAME)')
   if (missing.length) {
-    console.error('Missing env:', missing.join(', '))
-    process.exit(1)
+    throw new Error('Missing env: ' + missing.join(', '))
   }
 }
 
@@ -69,7 +68,12 @@ function writePreviewUrl(url) {
 }
 
 export async function main() {
-  ensureEnv()
+  try {
+    ensureEnv()
+  } catch (err) {
+    console.error(err && err.message ? err.message : err)
+    process.exit(1)
+  }
   ensureFetch()
 
   const expectedSha = resolveExpectedSha()
