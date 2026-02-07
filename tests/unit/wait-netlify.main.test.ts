@@ -19,7 +19,7 @@ describe('wait-netlify main integration', () => {
     process.env.NETLIFY_AUTH_TOKEN = 'tok'
     process.env.NETLIFY_SITE_ID = 'site'
     process.env.GITHUB_ENV = path.join(os.tmpdir(), `gh_env_main_${Date.now()}`)
-    process.env.PR_HEAD_COMMIT_SHA = 'abcd1234'
+    process.env.COMMIT_ID = 'abcd1234'
     process.env.PR_BRANCH = 'feat'
 
     // mock listDeploys to return a ready deploy matching the expected sha

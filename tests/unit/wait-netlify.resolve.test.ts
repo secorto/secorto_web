@@ -7,7 +7,7 @@ const TMP_EVENT = path.join(process.cwd(), 'tests', 'unit', 'tmp-github-event.js
 
 function resetEnvAndArgv() {
   // Clean env vars that resolveExpectedSha checks
-  delete process.env.PR_HEAD_COMMIT_SHA
+  delete process.env.COMMIT_ID
   delete process.env.GITHUB_EVENT_PATH
 }
 
@@ -20,12 +20,12 @@ afterEach(() => {
 })
 
 describe('resolveExpectedSha', () => {
-  it('uses PR_HEAD_COMMIT_SHA when present', async () => {
+  it('uses COMMIT_ID when present', async () => {
     vi.resetModules()
     const oldEnv = { ...process.env }
-    process.env.PR_HEAD_COMMIT_SHA = 'env-sha-2'
+    process.env.COMMIT_ID = 'deadbeef'
     const mod = await import(MOD_PATH)
-    expect(mod.resolveExpectedSha()).toBe('env-sha-2')
+    expect(mod.resolveExpectedSha()).toBe('deadbeef')
     process.env = oldEnv
   })
 
