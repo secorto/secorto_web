@@ -38,8 +38,16 @@ function ensureFetch() {
   throw new Error('Global fetch not available (requires Node 18+)')
 }
 
+/**
+ * Resolve the expected commit SHA to match against Netlify deploys.
+ * The workflow should provide `COMMIT_ID` (PR head sha or push sha).
+ * Accepted format: hex-like string, between 7 and 40 hex characters (prefix or full sha).
+ * Returns the normalized (trimmed, lowercase) value or `null` if not present/invalid.
+ * @returns {string|null}
+ */
 function resolveExpectedSha() {
-  if (process.env.PR_HEAD_COMMIT_SHA) return process.env.PR_HEAD_COMMIT_SHA
+  const v = process.env.COMMIT_ID
+  if (v && /^[0-9a-f]{7,40}$/i.test(v)) return String(v).trim().toLowerCase()
   return null
 }
 

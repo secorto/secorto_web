@@ -1,6 +1,7 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { extractShaFromDeploy } from '../../.github/lib/wait-netlify-git.js'
 import { previewDeploysForBranch, findMatchingDeploy, choosePreviewUrl, summarizeCandidates } from '../../.github/lib/wait-netlify-integrator.js'
+import { resolveExpectedSha } from '../../.github/scripts/wait-netlify.js'
 
 describe('wait-netlify helpers (TS)', () => {
   it('extracts sha from common fields', () => {
@@ -86,5 +87,34 @@ describe('wait-netlify helpers (TS)', () => {
     } finally {
       String.prototype.match = originalMatch
     }
+  })
+
+  describe('resolveExpectedSha', () => {
+    beforeEach(() => {
+      delete process.env.COMMIT_ID
+    })
+
+    it('returns normalized lowercase full sha when COMMIT_ID is full hex', () => {
+      process.env.COMMIT_ID = 'DEADBEEF0123456789abcdef0123456789abcdef'
+      const r = resolveExpectedSha()
+      expect(r).toBe('deadbeef0123456789abcdef0123456789abcdef')
+    })
+
+    it('accepts short 7-char hex prefix and normalizes', () => {
+      process.env.COMMIT_ID = 'AbC1234'
+      const r = resolveExpectedSha()
+      expect(r).toBe('abc1234')
+    })
+
+    it('rejects non-hex values and returns null', () => {
+      process.env.COMMIT_ID = 'not-a-sha!!!'
+      const r = resolveExpectedSha()
+      expect(r).toBeNull()
+    })
+
+    it('returns null when COMMIT_ID is absent', () => {
+      const r = resolveExpectedSha()
+      expect(r).toBeNull()
+    })
   })
 })

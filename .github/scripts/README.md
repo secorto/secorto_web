@@ -14,8 +14,12 @@ Required environment variables (in CI)
 
 - `NETLIFY_AUTH_TOKEN` — Netlify token (least privilege)
 - `NETLIFY_SITE_ID` — Netlify site id
-- `PR_BRANCH` — the PR branch name (e.g. `github.head_ref`)
 - `GITHUB_ENV` — path to the GitHub Actions environment file (provided by the runner)
+- `PR_BRANCH` or `GITHUB_REF_NAME` — branch name used for deploy matching
+
+Optional but important for PR runs:
+
+- `COMMIT_ID` — commit SHA for the PR head or the push. The workflow should set this (use `github.event.pull_request.head.sha` for PRs or `github.sha` for pushes). The script uses this to match Netlify deploys to the exact commit; without it the script will not consider a deploy as matching and will eventually time out.
 
 Usage (in workflow)
 
@@ -23,17 +27,12 @@ Usage (in workflow)
 
   node .github/scripts/wait-netlify.js
 
-Options (CLI)
+Local debugging
 
-- `--attempts=<n>` — number of polling attempts (default 30)
-- `--delay=<ms>` — delay between attempts in ms (default 10000)
-- `--debug` — enable verbose logging
-- `--print-only` — print the URL to stdout instead of writing `GITHUB_ENV` (useful for local debugging)
-
-Local debugging example
+Export the required env vars and run locally. For PR-like behavior export `PR_BRANCH` and `COMMIT_ID`:
 
 ```bash
-NETLIFY_AUTH_TOKEN=xxx NETLIFY_SITE_ID=yyy PR_BRANCH=feature/abc node .github/scripts/wait-netlify.js --debug --attempts=5
+NETLIFY_AUTH_TOKEN=xxx NETLIFY_SITE_ID=yyy PR_BRANCH=feature/abc COMMIT_ID=abcd1234 GITHUB_ENV=/tmp/env node .github/scripts/wait-netlify.js
 ```
 
 Security notes
