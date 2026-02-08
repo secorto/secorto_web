@@ -1,7 +1,6 @@
 import type { UILanguages } from '@i18n/ui'
-import { getPostsByLocale, getUniqueTags } from '@utils/paths'
-import { getSectionConfigByRoute, sectionsConfig } from '@config/sections'
-import type { SectionType } from '@config/sections'
+import { getPostsByLocale, getUniqueTags, type CollectionWithTags } from '@utils/paths'
+import { getSectionConfigByRoute } from '@config/sections'
 import { getCollection } from 'astro:content'
 import { languageKeys } from '@i18n/ui'
 
@@ -11,27 +10,6 @@ import { languageKeys } from '@i18n/ui'
  */
 function extractCleanId(entryId: string): string {
   return languageKeys.reduce((id, lang) => id.replace(new RegExp(`^${lang}/`), ''), entryId)
-}
-
-/**
- * Carga dinámicamente los posts y configuración de una sección
- * Centraliza la lógica de carga para evitar duplicación
- */
-export async function loadSection(section: SectionType, locale: UILanguages) {
-  const config = sectionsConfig[section]
-
-  if (!config) {
-    throw new Error(`Section config not found for ${section}`)
-  }
-
-  const posts = await getPostsByLocale(config.collection, locale)
-  const tags = config.hasTags ? getUniqueTags(posts) : []
-
-  return {
-    config,
-    posts,
-    tags
-  }
 }
 
 /**
@@ -48,8 +26,15 @@ export async function loadSectionByRoute(
     return null
   }
 
-  const posts = await getPostsByLocale(config.collection, locale)
-  const tags = config.hasTags ? getUniqueTags(posts) : []
+  let posts
+  let tags: string[] = []
+
+  if (config.hasTags) {
+    posts = await getPostsByLocale(config.collection as CollectionWithTags, locale)
+    tags = getUniqueTags(posts)
+  } else {
+    posts = await getPostsByLocale(config.collection, locale)
+  }
 
   return {
     config,
