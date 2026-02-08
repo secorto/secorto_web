@@ -2,8 +2,8 @@ import { describe, it, expect, vi } from 'vitest'
 
 // mock the path alias used by the utils module so Node resolution during tests works
 vi.mock('@i18n/dateFormat', () => ({
-  full: { dateStyle: 'full', timeZone: 'UTC' } as const,
-  monthYear: { month: 'long', year: 'numeric', timeZone: 'UTC' } as const,
+  full: { dateStyle: 'full', timeZone: 'UTC' },
+  monthYear: { month: 'long', year: 'numeric', timeZone: 'UTC' },
 }))
 
 // Mutable UI mock so tests can toggle `showDefaultLang` without hoisting issues

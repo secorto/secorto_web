@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import type { DetailPageContext, TagsPageContext } from '@utils/sectionContext'
+import type { DetailPageContext } from '@utils/sectionContext'
 
 describe('sectionContext helpers', () => {
   it('buildSectionContext returns config when found', async () => {
@@ -29,7 +29,7 @@ describe('sectionContext helpers', () => {
     }))
 
     const { buildTagsPageContext } = await import('@utils/sectionContext')
-    const ctx = (await buildTagsPageContext('blog', 'es', 'b')) as TagsPageContext
+    const ctx = (await buildTagsPageContext('blog', 'es', 'b'))
     expect(ctx.posts.length).toBe(2)
     expect(ctx.tags.sort()).toEqual(['a', 'b', 'c'].sort())
   })
@@ -45,7 +45,7 @@ describe('sectionContext helpers', () => {
     vi.doMock('astro:content', () => ({ getCollection: vi.fn(async () => entries) }))
 
     const { buildDetailPageContext } = await import('@utils/sectionContext')
-    const ctx = (await buildDetailPageContext('blog', 'es', 'one', loadEntry)) as DetailPageContext | null
+    const ctx = (await buildDetailPageContext('blog', 'es', 'one', loadEntry))
     expect(ctx).not.toBeNull()
     expect((ctx as DetailPageContext).isUntranslated).toBe(true)
     expect((ctx as DetailPageContext).locale).toBe('en')
