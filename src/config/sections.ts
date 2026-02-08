@@ -84,14 +84,13 @@ export const sectionsConfig: Record<SectionType, SectionConfig> = {
 
 /**
  * Helper interno que busca una `SectionConfig` que cumpla un predicado.
- * Devuelve `null` si no encuentra ninguna coincidencia.
  * @param predicate - función que recibe una `SectionConfig` y retorna boolean
  */
-function findSectionConfig(predicate: (c: SectionConfig) => boolean): SectionConfig | null {
+function findSectionConfig(predicate: (c: SectionConfig) => boolean): SectionConfig {
   for (const config of Object.values(sectionsConfig)) {
     if (predicate(config)) return config
   }
-  return null
+  throw new Error('Section config not found')
 }
 
 /**
@@ -100,7 +99,7 @@ function findSectionConfig(predicate: (c: SectionConfig) => boolean): SectionCon
 export function getSectionConfigByRoute(
   routeParam: string,
   locale: UILanguages
-): SectionConfig | null {
+): SectionConfig {
   return findSectionConfig((config) => config.routes[locale] === routeParam)
 }
 
@@ -109,7 +108,7 @@ export function getSectionConfigByRoute(
  */
 export function getSectionConfigByCollection(
   collection: CollectionKey
-): SectionConfig | null {
+): SectionConfig {
   return findSectionConfig((config) => config.collection === collection)
 }
 

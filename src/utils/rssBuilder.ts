@@ -29,10 +29,7 @@ interface RSSSourcePost {
 export async function buildRSSItems(collection: CollectionKey, locale: UILanguages): Promise<RSSItem[]> {
   const posts = await getPostsByLocale(collection, locale) as RSSSourcePost[]
 
-  const sectionConfig = getSectionConfigByCollection(collection)
-  const sectionRoute = sectionConfig?.routes[locale] || ''
-
-  return posts.map((post: RSSSourcePost) => mapPostToRSSItem(post, sectionRoute, locale))
+  return posts.map((post: RSSSourcePost) => mapPostToRSSItem(post, collection, locale))
 }
 
 /**
@@ -42,14 +39,15 @@ export async function buildRSSItems(collection: CollectionKey, locale: UILanguag
  * Mapea un post fuente a un `RSSItem`
  * @internal exportado para pruebas
  */
-export function mapPostToRSSItem(post: RSSSourcePost, sectionRoute: string, locale: UILanguages): RSSItem {
+export function mapPostToRSSItem(post: RSSSourcePost, collection: CollectionKey, locale: UILanguages): RSSItem {
   const data = post.data
   const cleanId = post.cleanId
+  const section = getSectionConfigByCollection(collection)
 
   return {
     title: data.title,
     description: data.excerpt || data.description || '',
-    link: `/${locale}/${sectionRoute}/${cleanId}`,
+    link: `/${locale}/${section.routes[locale]}/${cleanId}`,
     pubDate: new Date(data.date || 0)
   }
 }
