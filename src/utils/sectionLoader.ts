@@ -2,15 +2,7 @@ import type { UILanguages } from '@i18n/ui'
 import { getPostsByLocale, getUniqueTags, type CollectionWithTags, type EntryWithCleanId } from '@utils/paths'
 import { getSectionConfigByRoute } from '@config/sections'
 import { getCollection } from 'astro:content'
-import { languageKeys } from '@i18n/ui'
-
-/**
- * Extrae el ID limpio de una entrada (sin prefijo de locale).
- * Soporta múltiples locales dinámicamente.
- */
-function extractCleanId(entryId: string): string {
-  return languageKeys.reduce((id, lang) => id.replace(new RegExp(`^${lang}/`), ''), entryId)
-}
+import { extractCleanId } from '@utils/ids'
 
 /**
  * Carga una sección basada en el parámetro de ruta (URL)
