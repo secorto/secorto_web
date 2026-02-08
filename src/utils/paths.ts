@@ -1,20 +1,10 @@
 import { getCollection } from "astro:content";
 import type { CollectionEntry, CollectionKey } from "astro:content";
-import { languageKeys } from "@i18n/ui";
+import { extractCleanId } from './ids'
 
 export type CollectionWithTags = 'blog'|'talk'
 
 export type EntryWithCleanId<C extends CollectionKey> = CollectionEntry<C> & { cleanId: string, excerpt?: string };
-
-/**
- * Extrae el ID limpio de una entrada (sin prefijo de locale).
- * Soporta múltiples locales dinámicamente.
- * @param entryId - ID de entrada (ej: 'es/archivo' o 'en/file')
- * @returns ID limpio sin prefijo de locale
- */
-function extractCleanId(entryId: string): string {
-  return languageKeys.reduce((id, lang) => id.replace(new RegExp(`^${lang}/`), ''), entryId)
-}
 
 /**
  * Obtiene todos los posts de una colección para un locale específico.

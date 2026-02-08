@@ -7,6 +7,7 @@ import { useTranslations } from '@i18n/utils'
 import type { UILanguages } from '@i18n/ui'
 import { buildTagPaths } from '@utils/staticPathsBuilder'
 import { buildTagsPageContext } from '@utils/sectionContext'
+import type { EntryWithCleanId } from '@utils/paths'
 
 export async function getStaticPaths() {
   return await buildTagPaths()
@@ -19,8 +20,6 @@ const t = useTranslations(locale)
 const context = await buildTagsPageContext(section, locale, tag)
 
 const { config, posts, tags } = context
-const Component = config.listComponent === 'ListWork' ? ListWork : ListPost
-
 const pageTitle = `${t(config.translationKey)} - ${tag}`
 const metaDescription = `${config.taggedKey ? t(config.taggedKey) : t(config.translationKey)} ${tag}`
 ---
@@ -41,7 +40,11 @@ const metaDescription = `${config.taggedKey ? t(config.taggedKey) : t(config.tra
     </div>
   ) : (
     <div>
-      <Component posts={posts} basePath={`${locale}/${config.routes[locale]}`} lang={locale} />
+      {config.collection === 'work' ? (
+        <ListWork posts={posts as EntryWithCleanId<'work'>[]} basePath={`${locale}/${config.routes[locale]}`} lang={locale} />
+      ) : (
+        <ListPost posts={posts as EntryWithCleanId<'talk' | 'blog'>[]} basePath={`${locale}/${config.routes[locale]}`} />
+      )}
     </div>
   )}
 </BaseLayout>

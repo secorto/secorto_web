@@ -1,8 +1,9 @@
 import { getSectionConfigByRoute, sectionsConfig, type SectionConfig } from '@config/sections'
 import { getPostsByLocale } from './paths'
 import type { UILanguages } from '@i18n/ui'
-import { getCollection } from 'astro:content'
+import { getCollection, type CollectionEntry, type CollectionKey } from 'astro:content'
 import { languageKeys } from '@i18n/ui'
+import { extractCleanId } from './ids'
 
 export interface SectionContext {
   config: SectionConfig
@@ -15,12 +16,12 @@ export interface TagsPageContext {
   locale: UILanguages
   section: string
   tag: string
-  posts: any[]
+  posts: ({ id: string; data: { tags?: string[] } } | { id: string; data: Record<string, unknown> })[]
   tags: string[]
 }
 
 export interface DetailPageContext {
-  entry: any
+  entry: CollectionEntry<CollectionKey> | { id: string; data: Record<string, unknown> }
   config: SectionConfig
   locale: UILanguages
   cleanId: string
@@ -72,8 +73,8 @@ export async function buildTagsPageContext(
   const allPosts = await getPostsByLocale(config.collection, locale)
 
   // Filtrar por tag y extraer tags únicos
-  const posts = allPosts.filter((post: any) => post.data.tags?.includes(tag))
-  const tags = [...new Set(allPosts.flatMap((post: any) => post.data.tags ?? []))]
+  const posts = allPosts.filter((post) => (post.data as { tags?: string[] }).tags?.includes(tag))
+  const tags = [...new Set(allPosts.flatMap((post) => (post.data as { tags?: string[] }).tags ?? []))]
 
   return {
     config,
@@ -83,16 +84,6 @@ export async function buildTagsPageContext(
     posts,
     tags
   }
-}
-
-/**
- * Extrae el ID limpio de una entrada (sin prefijo de locale).
- * Soporta múltiples locales de forma genérica.
- * @param entryId - ID de entrada de Astro (ej: 'es/archivo' o 'en/file')
- * @returns ID limpio sin prefijo de locale
- */
-function extractCleanId(entryId: string): string {
-  return languageKeys.reduce((id, lang) => id.replace(new RegExp(`^${lang}/`), ''), entryId)
 }
 
 /**
@@ -128,10 +119,14 @@ export async function buildDetailPageContext(
   section: string,
   locale: UILanguages,
   id: string,
-  loadEntryByRoute: (section: string, locale: UILanguages, id: string) => Promise<any>
+  loadEntryByRoute: (
+    section: string,
+    locale: UILanguages,
+    id: string
+  ) => Promise<{ entry: CollectionEntry<CollectionKey> | { id: string; data: Record<string, unknown> }; config: SectionConfig } | null>
 ): Promise<DetailPageContext | null> {
   // Intentar cargar en el locale solicitado
-  let loaded = await loadEntryByRoute(section, locale, id)
+  const loaded = await loadEntryByRoute(section, locale, id)
 
   if (loaded) {
     return {
@@ -154,13 +149,12 @@ export async function buildDetailPageContext(
   const { config } = sectionInfo
   const allEntries = await getCollection(config.collection)
 
-  // Buscar entrada en otro locale
   for (const searchLocale of languageKeys) {
-    if (searchLocale === locale) continue // Ya lo intentamos
+    if (searchLocale === locale) continue
 
     const entry = allEntries.find((e) => {
       const cleanId = extractCleanId(e.id)
-      const slug = e.data.slug || cleanId
+      const slug = (e.data as { slug?: string }).slug || cleanId
       return e.id.startsWith(`${searchLocale}/`) && slug === id
     })
 
