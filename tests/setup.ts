@@ -9,6 +9,7 @@ beforeEach(() => {
 // Ensure any mocks/spies/stubs are restored after each test to avoid leaking state
 afterEach(() => {
   vi.restoreAllMocks()
+  vi.unstubAllGlobals()
 })
 
 // Provide a default virtual mock for `astro:content` so tests that import

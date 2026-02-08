@@ -133,14 +133,14 @@ Ejemplo de Action (ilustrativo). Nota: si la página es estática y la interacci
 
 ```ts
 // tests/actions/loginAction.ts (ilustrativo)
-import { Page } from '@playwright/test'
+import { test } from '@playwright/test'
 import type { LoginPage } from '@tests/e2e/pages/LoginPage'
 
 export async function loginAction(loginPage: LoginPage, user: string, pass: string) {
-  return test.step('Login', () => {
-    await login.username().fill(user)
-    await login.password().fill(pass)
-    await login.submit().click()
+  return test.step('Login', async () => {
+    await loginPage.username().fill(user)
+    await loginPage.password().fill(pass)
+    await loginPage.submit().click()
   })
 }
 ```
