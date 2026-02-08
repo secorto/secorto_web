@@ -18,12 +18,12 @@
    - 63 líneas
    - Configuración centralizada de todas las secciones
    - Type-safe con TypeScript
-   - Exporta: `sectionsConfig`, `getSectionConfigByRoute()`, `getAllRoutesForSection()`
+   - Exporta: `sectionsConfig`, `getSectionConfigByRoute()`
 
 2. **`src/utils/sectionLoader.ts`** ⭐ NUEVO
    - 42 líneas
    - Estrategia de carga de datos
-   - Exporta: `loadSection()`, `loadSectionByRoute()`
+   - Exporta: `loadSectionByRoute()`
 
 3. **`src/components/SectionRenderer.astro`** ⭐ NUEVO
    - 28 líneas

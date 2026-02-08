@@ -1,8 +1,10 @@
 import { getSectionConfigByRoute, sectionsConfig, type SectionConfig } from '@config/sections'
-import { getPostsByLocale } from './paths'
+import { getPostsByLocale, getUniqueTags } from '@utils/paths'
+import type { EntryWithCleanId, CollectionWithTags } from '@utils/paths'
 import type { UILanguages } from '@i18n/ui'
-import { getCollection } from 'astro:content'
+import { getCollection, type CollectionEntry } from 'astro:content'
 import { languageKeys } from '@i18n/ui'
+import { extractCleanId } from "@utils/ids"
 
 export interface SectionContext {
   config: SectionConfig
@@ -15,12 +17,12 @@ export interface TagsPageContext {
   locale: UILanguages
   section: string
   tag: string
-  posts: any[]
+  posts: EntryWithCleanId<CollectionWithTags>[]
   tags: string[]
 }
 
 export interface DetailPageContext {
-  entry: any
+  entry: CollectionEntry<keyof import('astro:content').DataEntryMap> | { id: string; data: Record<string, unknown> }
   config: SectionConfig
   locale: UILanguages
   cleanId: string
@@ -31,15 +33,10 @@ export interface DetailPageContext {
 /**
  * Construye el contexto de una página de sección (índice).
  * Valida que la sección exista en la configuración.
- * @throws Response 404 si la sección no existe
  * @returns Contexto con configuración validada
  */
 export function buildSectionContext(section: string, locale: UILanguages): SectionContext {
   const config = getSectionConfigByRoute(section, locale)
-
-  if (!config) {
-    throw new Response('Not found', { status: 404 })
-  }
 
   return {
     config,
@@ -55,7 +52,6 @@ export function buildSectionContext(section: string, locale: UILanguages): Secti
  * @param locale - Idioma actual
  * @param tag - Tag actual
  * @returns Contexto con posts filtrados por tag
- * @throws Response 404 si la sección no existe
  */
 export async function buildTagsPageContext(
   section: string,
@@ -64,16 +60,12 @@ export async function buildTagsPageContext(
 ): Promise<TagsPageContext> {
   const config = getSectionConfigByRoute(section, locale)
 
-  if (!config) {
-    throw new Response('Not found', { status: 404 })
-  }
-
   // Cargar todos los posts de la colección para este locale
-  const allPosts = await getPostsByLocale(config.collection, locale)
+  const allPosts = (await getPostsByLocale(config.collection as CollectionWithTags, locale))
 
   // Filtrar por tag y extraer tags únicos
-  const posts = allPosts.filter((post: any) => post.data.tags?.includes(tag))
-  const tags = [...new Set(allPosts.flatMap((post: any) => post.data.tags ?? []))]
+  const posts = allPosts.filter((post) => post.data.tags?.includes(tag))
+  const tags = getUniqueTags(allPosts)
 
   return {
     config,
@@ -83,16 +75,6 @@ export async function buildTagsPageContext(
     posts,
     tags
   }
-}
-
-/**
- * Extrae el ID limpio de una entrada (sin prefijo de locale).
- * Soporta múltiples locales de forma genérica.
- * @param entryId - ID de entrada de Astro (ej: 'es/archivo' o 'en/file')
- * @returns ID limpio sin prefijo de locale
- */
-function extractCleanId(entryId: string): string {
-  return languageKeys.reduce((id, lang) => id.replace(new RegExp(`^${lang}/`), ''), entryId)
 }
 
 /**
@@ -128,10 +110,14 @@ export async function buildDetailPageContext(
   section: string,
   locale: UILanguages,
   id: string,
-  loadEntryByRoute: (section: string, locale: UILanguages, id: string) => Promise<any>
+  loadEntryByRoute: (
+    section: string,
+    locale: UILanguages,
+    id: string
+  ) => Promise<{ entry: CollectionEntry<keyof import('astro:content').DataEntryMap>; config: SectionConfig } | null>
 ): Promise<DetailPageContext | null> {
   // Intentar cargar en el locale solicitado
-  let loaded = await loadEntryByRoute(section, locale, id)
+  const loaded = await loadEntryByRoute(section, locale, id)
 
   if (loaded) {
     return {
@@ -154,13 +140,12 @@ export async function buildDetailPageContext(
   const { config } = sectionInfo
   const allEntries = await getCollection(config.collection)
 
-  // Buscar entrada en otro locale
   for (const searchLocale of languageKeys) {
-    if (searchLocale === locale) continue // Ya lo intentamos
+    if (searchLocale === locale) continue
 
     const entry = allEntries.find((e) => {
       const cleanId = extractCleanId(e.id)
-      const slug = e.data.slug || cleanId
+      const slug = (e.data as { slug?: string }).slug || cleanId
       return e.id.startsWith(`${searchLocale}/`) && slug === id
     })
 

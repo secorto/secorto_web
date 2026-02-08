@@ -20,10 +20,6 @@ const { config } = buildSectionContext(section, locale)
 // Cargar posts y datos de la sección
 const sectionData = await loadSectionByRoute(section, locale)
 
-if (!sectionData) {
-  return new Response('Not found', { status: 404 })
-}
-
 const { posts, tags } = sectionData
 const pageTitle = t(config.translationKey)
 ---
