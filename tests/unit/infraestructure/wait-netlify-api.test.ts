@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { listDeploys } from '@github/lib/wait-netlify-api.js'
 
 describe('wait-netlify-api.listDeploys', () => {
