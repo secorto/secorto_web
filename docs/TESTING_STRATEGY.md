@@ -32,7 +32,7 @@ Este documento explica el objetivo de las pruebas unitarias y E2E en este reposi
 ## Organización del código de pruebas
 
 - Unit tests: `tests/unit/**` (usar TypeScript)
--- E2E tests: `tests/e2e/**` o `tests/playwright/**` (usar POM para locators en `tests/e2e/pages/` y separar las acciones en `tests/actions/`)
+- E2E tests: `tests/e2e/**` o `tests/playwright/**` (usar POM para locators en `tests/pages/` y separar las acciones en `tests/actions/`)
 - Mocks y utilidades de pruebas compartidas: `tests/utils/` o `tests/e2e/helpers/`
 
 ## Patrones y buenas prácticas
