@@ -12,7 +12,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "test": "cypress run",
-    "test:e2e": "npx playwright test",
+    "test:e2e": "bash -lc \"[ -f .env ] && set -o allexport && . .env && set +o allexport; npx playwright test\"",
     "test:unit": "vitest",
     "test:unit:watch": "vitest --watch",
     "test:unit:ui": "vitest --ui",
@@ -24,7 +24,6 @@
     "@astrojs/sitemap": "^3.7.0",
     "astro": "^5.17.1",
     "astro-expressive-code": "0.41.6",
-    "dotenv": "^17.2.4",
     "photoswipe": "^5.4.4",
     "typescript": "^5.9.3"
   },
