@@ -60,7 +60,7 @@ export async function loadEntryByRoute(
   const entries = await getCollection(collectionName)
 
   // Busca por slug si existe, o por cleanId del filename
-  const entry = entries.find((e: any) => {
+  const entry = entries.find((e: {id: string, data: {slug?: string}}) => {
     const cleanId = extractCleanId(e.id)
     const entrySlug = e.data.slug || cleanId
     return e.id.startsWith(`${locale}/`) && entrySlug === id
