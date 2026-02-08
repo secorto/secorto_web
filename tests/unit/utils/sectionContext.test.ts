@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import type { DetailPageContext, TagsPageContext } from '@utils/sectionContext'
+import type { DetailPageContext } from '@utils/sectionContext'
 import type { SectionConfig } from '@config/sections'
 
 describe('sectionContext helpers', () => {
@@ -31,7 +31,7 @@ describe('sectionContext helpers', () => {
     vi.doMock('@utils/paths', () => ({ getPostsByLocale: vi.fn(async (_collection: string, localeArg: string) => mockPosts.filter((p: { id: string }) => p.id.startsWith(`${localeArg}/`))) }))
 
     const { buildTagsPageContext } = await import('@utils/sectionContext')
-    const ctx = (await buildTagsPageContext('blog', 'es', 'b')) as TagsPageContext
+    const ctx = (await buildTagsPageContext('blog', 'es', 'b'))
     expect(ctx.posts.length).toBe(2)
     expect(ctx.tags.sort()).toEqual(['a', 'b', 'c'].sort())
   })
@@ -41,7 +41,7 @@ describe('sectionContext helpers', () => {
     const fakeLoaded: { entry: { id: string; data: Record<string, unknown> }; config: SectionConfig } = { entry: { id: 'es/one', data: {} }, config: { collection: 'blog' } as SectionConfig }
     const loadEntry = vi.fn(async (_section: string, _locale: string, _id: string) => fakeLoaded)
     const { buildDetailPageContext } = await import('@utils/sectionContext')
-    const ctx = (await buildDetailPageContext('blog', 'es', 'one', loadEntry)) as DetailPageContext | null
+    const ctx = (await buildDetailPageContext('blog', 'es', 'one', loadEntry))
     expect(ctx).not.toBeNull()
     expect((ctx as DetailPageContext).isUntranslated).toBe(false)
     expect((ctx as DetailPageContext).entry.id).toBe('es/one')
@@ -58,7 +58,7 @@ describe('sectionContext helpers', () => {
     vi.doMock('astro:content', () => ({ getCollection: vi.fn(async () => entries) }))
 
     const { buildDetailPageContext } = await import('@utils/sectionContext')
-    const ctx = (await buildDetailPageContext('blog', 'es', 'one', loadEntry)) as DetailPageContext | null
+    const ctx = (await buildDetailPageContext('blog', 'es', 'one', loadEntry))
     expect(ctx).not.toBeNull()
     expect((ctx as DetailPageContext).isUntranslated).toBe(true)
     expect((ctx as DetailPageContext).locale).toBe('en')
