@@ -13,13 +13,6 @@ describe('sectionContext helpers', () => {
     expect(ctx.section).toBe('blog')
   })
 
-  it('buildSectionContext throws 404 when not found', async () => {
-    vi.resetModules()
-    vi.doMock('@config/sections', () => ({ getSectionConfigByRoute: (_route: string, _locale: string) => null }))
-    const { buildSectionContext } = await import('@utils/sectionContext')
-    expect(() => buildSectionContext('nope', 'es')).toThrow()
-  })
-
   it('buildTagsPageContext filters posts and aggregates tags', async () => {
     vi.resetModules()
     vi.doMock('@config/sections', () => ({ getSectionConfigByRoute: (_route: string, _locale: string) => ({ collection: 'blog', routes: { es: 'blog', en: 'blog' } }) }))

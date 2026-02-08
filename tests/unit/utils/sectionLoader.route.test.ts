@@ -47,14 +47,6 @@ describe('loadSectionByRoute & loadEntryByRoute', () => {
     expect(getUniqueMock).not.toHaveBeenCalled()
   })
 
-  it('returns null when config not found', async () => {
-    vi.resetModules()
-    vi.doMock('@config/sections', () => ({ getSectionConfigByRoute: (_route: string, _locale: string) => null }))
-    const { loadSectionByRoute } = await import('@utils/sectionLoader')
-    const res = await loadSectionByRoute('unknown', 'es')
-    expect(res).toBeNull()
-  })
-
   it('loadEntryByRoute finds entry by slug and by cleanId', async () => {
     vi.resetModules()
 
@@ -78,14 +70,6 @@ describe('loadSectionByRoute & loadEntryByRoute', () => {
     const byClean = await loadEntryByRoute('blog', 'es', '2025-01-01-title')
     expect(byClean).not.toBeNull()
     expect(byClean!.entry.id).toBe('es/2025-01-01-title')
-  })
-
-  it('loadEntryByRoute returns null when config not found', async () => {
-    vi.resetModules()
-    vi.doMock('@config/sections', () => ({ getSectionConfigByRoute: (_r: string, _l: string) => null }))
-    const { loadEntryByRoute } = await import('@utils/sectionLoader')
-    const res = await loadEntryByRoute('blog', 'es', 'whatever')
-    expect(res).toBeNull()
   })
 
   it('loadEntryByRoute returns null when no matching entry', async () => {

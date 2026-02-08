@@ -13,15 +13,8 @@ export async function loadSectionByRoute(
   locale: UILanguages
 ) {
   const config = getSectionConfigByRoute(sectionSlug, locale)
-
-  if (!config) {
-    return null
-  }
-
   const posts = await getPostsByLocale(config.collection, locale)
-
   const tags: string[] = config.hasTags ? getUniqueTags(posts as EntryWithCleanId<CollectionWithTags>[]) : []
-
   return {
     config,
     posts,
@@ -39,9 +32,6 @@ export async function loadEntryByRoute(
   id: string
 ) {
   const config = getSectionConfigByRoute(sectionSlug, locale)
-
-  if (!config) return null
-
   const collectionName = config.collection
   const entries = await getCollection(collectionName)
 

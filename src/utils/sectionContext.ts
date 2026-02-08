@@ -39,10 +39,6 @@ export interface DetailPageContext {
 export function buildSectionContext(section: string, locale: UILanguages): SectionContext {
   const config = getSectionConfigByRoute(section, locale)
 
-  if (!config) {
-    throw new Response('Not found', { status: 404 })
-  }
-
   return {
     config,
     locale,
@@ -65,10 +61,6 @@ export async function buildTagsPageContext(
   tag: string
 ): Promise<TagsPageContext> {
   const config = getSectionConfigByRoute(section, locale)
-
-  if (!config) {
-    throw new Response('Not found', { status: 404 })
-  }
 
   // Cargar todos los posts de la colección para este locale
   const allPosts = (await getPostsByLocale(config.collection as CollectionWithTags, locale))
