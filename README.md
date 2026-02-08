@@ -117,3 +117,13 @@ npm run test:e2e:env
 ```
 
 Nota: `test:e2e:env` usa `npx env-cmd` para cargar `.env`; `test:e2e` es minimalista y ejecuta Playwright directamente.
+
+## E2E en Devcontainer
+
+Si prefieres ejecutar las pruebas dentro del devcontainer, abre una terminal del contenedor y ejecuta una sola vez:
+
+```bash
+npx playwright install --with-deps
+```
+
+Esto instala los navegadores y las dependencias del sistema necesarias para que Playwright ejecute tests dentro del contenedor. Después de esto puedes usar `npm run test:e2e` desde la terminal del devcontainer sin pasos adicionales.
