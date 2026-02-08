@@ -2,18 +2,15 @@
 import BaseLayout from '@layouts/BaseLayout.astro'
 import Tags from '@components/Tags.astro'
 import ListPost from '@components/ListPost.astro'
-import ListWork from '@components/ListWork.astro'
 import { useTranslations } from '@i18n/utils'
-import type { UILanguages } from '@i18n/ui'
 import { buildTagPaths } from '@utils/staticPathsBuilder'
 import { buildTagsPageContext } from '@utils/sectionContext'
-import type { EntryWithCleanId } from '@utils/paths'
 
 export async function getStaticPaths() {
   return await buildTagPaths()
 }
 
-const { locale, section, tag } = Astro.params as { locale: UILanguages; section: string; tag: string }
+const { locale, section, tag } = Astro.params
 const t = useTranslations(locale)
 
 // Construir contexto de página (valida sección y carga posts)
@@ -40,11 +37,7 @@ const metaDescription = `${config.taggedKey ? t(config.taggedKey) : t(config.tra
     </div>
   ) : (
     <div>
-      {config.collection === 'work' ? (
-        <ListWork posts={posts as EntryWithCleanId<'work'>[]} basePath={`${locale}/${config.routes[locale]}`} lang={locale} />
-      ) : (
-        <ListPost posts={posts as EntryWithCleanId<'talk' | 'blog'>[]} basePath={`${locale}/${config.routes[locale]}`} />
-      )}
+      <ListPost posts={posts} basePath={`${locale}/${config.routes[locale]}`} />
     </div>
   )}
 </BaseLayout>

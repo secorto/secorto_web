@@ -1,5 +1,5 @@
 import type { UILanguages } from '@i18n/ui'
-import { getPostsByLocale, getUniqueTags, type CollectionWithTags } from '@utils/paths'
+import { getPostsByLocale, getUniqueTags, type CollectionWithTags, type EntryWithCleanId } from '@utils/paths'
 import { getSectionConfigByRoute } from '@config/sections'
 import { getCollection } from 'astro:content'
 import { languageKeys } from '@i18n/ui'
@@ -26,15 +26,9 @@ export async function loadSectionByRoute(
     return null
   }
 
-  let posts
-  let tags: string[] = []
+  const posts = await getPostsByLocale(config.collection, locale)
 
-  if (config.hasTags) {
-    posts = await getPostsByLocale(config.collection as CollectionWithTags, locale)
-    tags = getUniqueTags(posts)
-  } else {
-    posts = await getPostsByLocale(config.collection, locale)
-  }
+  const tags: string[] = config.hasTags ? getUniqueTags(posts as EntryWithCleanId<CollectionWithTags>[]) : []
 
   return {
     config,

@@ -1,7 +1,8 @@
 import { getSectionConfigByRoute, sectionsConfig, type SectionConfig } from '@config/sections'
 import { getPostsByLocale } from './paths'
+import type { EntryWithCleanId, CollectionWithTags } from './paths'
 import type { UILanguages } from '@i18n/ui'
-import { getCollection, type CollectionEntry, type CollectionKey } from 'astro:content'
+import { getCollection, type CollectionEntry } from 'astro:content'
 import { languageKeys } from '@i18n/ui'
 import { extractCleanId } from './ids'
 
@@ -16,12 +17,12 @@ export interface TagsPageContext {
   locale: UILanguages
   section: string
   tag: string
-  posts: ({ id: string; data: { tags?: string[] } } | { id: string; data: Record<string, unknown> })[]
+  posts: EntryWithCleanId<CollectionWithTags>[]
   tags: string[]
 }
 
 export interface DetailPageContext {
-  entry: CollectionEntry<CollectionKey> | { id: string; data: Record<string, unknown> }
+  entry: CollectionEntry<keyof import('astro:content').DataEntryMap> | { id: string; data: Record<string, unknown> }
   config: SectionConfig
   locale: UILanguages
   cleanId: string
@@ -70,11 +71,11 @@ export async function buildTagsPageContext(
   }
 
   // Cargar todos los posts de la colección para este locale
-  const allPosts = await getPostsByLocale(config.collection, locale)
+  const allPosts = (await getPostsByLocale(config.collection as CollectionWithTags, locale))
 
   // Filtrar por tag y extraer tags únicos
-  const posts = allPosts.filter((post) => (post.data as { tags?: string[] }).tags?.includes(tag))
-  const tags = [...new Set(allPosts.flatMap((post) => (post.data as { tags?: string[] }).tags ?? []))]
+  const posts = allPosts.filter((post) => post.data.tags?.includes(tag))
+  const tags = [...new Set(allPosts.flatMap((post) => post.data.tags ?? []))]
 
   return {
     config,
@@ -123,7 +124,7 @@ export async function buildDetailPageContext(
     section: string,
     locale: UILanguages,
     id: string
-  ) => Promise<{ entry: CollectionEntry<CollectionKey> | { id: string; data: Record<string, unknown> }; config: SectionConfig } | null>
+  ) => Promise<{ entry: CollectionEntry<keyof import('astro:content').DataEntryMap> | { id: string; data: Record<string, unknown> }; config: SectionConfig } | null>
 ): Promise<DetailPageContext | null> {
   // Intentar cargar en el locale solicitado
   const loaded = await loadEntryByRoute(section, locale, id)

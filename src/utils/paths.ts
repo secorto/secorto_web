@@ -1,10 +1,10 @@
-import { getCollection } from "astro:content";
-import type { CollectionEntry, CollectionKey } from "astro:content";
+import { getCollection } from "astro:content"
+import type { CollectionEntry, CollectionKey } from "astro:content"
 import { extractCleanId } from './ids'
 
 export type CollectionWithTags = 'blog'|'talk'
 
-export type EntryWithCleanId<C extends CollectionKey> = CollectionEntry<C> & { cleanId: string, excerpt?: string };
+export type EntryWithCleanId<C extends CollectionKey> = CollectionEntry<C> & { cleanId: string, excerpt?: string }
 
 /**
  * Obtiene todos los posts de una colección para un locale específico.
