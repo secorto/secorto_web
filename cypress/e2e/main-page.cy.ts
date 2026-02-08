@@ -19,4 +19,4 @@ describe('Página de inicio', () => {
     cy.get('[data-testid="hamburger"]').click()
     cy.get('[data-testid="sidebar-title"]').should('not.be.visible')
   })
-  })
+})

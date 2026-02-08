@@ -26,7 +26,7 @@ const dateFormat = getMonthYearFormat(Astro.url);
     >
       <PostDate>
         {`${dateFormat.format(post.data.startDate)} - ${post.data.endDate ? dateFormat.format(post.data.endDate) : t('work.today')}`}
-       </PostDate>
+      </PostDate>
       <p>{post.data.role}</p>
       <p>{post.data.responsibilities}</p>
     </PostItem>

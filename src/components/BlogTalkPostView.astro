@@ -45,7 +45,7 @@ const dateFormat = getFullFormat(Astro.url)
       title={`${t('post.video')} ${entry.data.title}`}
       data-testid="post-video"
     />
-  }
+}
 
 {entry.data.image && !entry.data.video && (
   typeof entry.data.image === 'string' ? (
@@ -74,7 +74,7 @@ const dateFormat = getFullFormat(Astro.url)
       title={`Presentación de la charla ${entry.data.title}`}
       data-testid="post-slide"
     />
-  }
+}
 
 {entry.data.gallery && (
   <Gallery items={entry.data.gallery}/>

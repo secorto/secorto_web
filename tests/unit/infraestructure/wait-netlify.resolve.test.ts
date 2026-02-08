@@ -16,7 +16,9 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-  try { fs.unlinkSync(TMP_EVENT) } catch (e) {}
+  try { fs.unlinkSync(TMP_EVENT) } catch (e) {
+    console.log(e)
+  }
 })
 
 describe('resolveExpectedSha', () => {
