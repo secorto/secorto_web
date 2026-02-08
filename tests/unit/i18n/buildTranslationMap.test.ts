@@ -1,8 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-
-vi.mock('astro:content', () => ({
-  getCollection: vi.fn(async () => entries)
-}))
+import { buildTranslationMap } from '@i18n/buildTranslationMap'
 
 const entries = [
   {
@@ -17,7 +14,9 @@ const entries = [
   }
 ]
 
-import { buildTranslationMap } from '../../../src/i18n/buildTranslationMap'
+vi.mock('astro:content', () => ({
+  getCollection: vi.fn(async () => entries)
+}))
 
 describe('buildTranslationMap', () => {
   it('builds map with translation_status and origin when present', async () => {

@@ -1,17 +1,21 @@
 import { defineConfig } from 'vitest/config'
 import { resolve } from 'path'
+import { fileURLToPath } from 'url'
+
+// ESM-safe project root derived from this config file's URL
+const PROJECT_ROOT = fileURLToPath(new URL('.', import.meta.url))
 
 export default defineConfig({
   resolve: {
     alias: {
-      '@assets': resolve(__dirname, 'src/assets'),
-      '@components': resolve(__dirname, 'src/components'),
-      '@config': resolve(__dirname, 'src/config'),
-      '@i18n': resolve(__dirname, 'src/i18n'),
-      '@layouts': resolve(__dirname, 'src/layouts'),
-      '@utils': resolve(__dirname, 'src/utils'),
-      '@tests': resolve(__dirname, 'tests'),
-      '@github': resolve(__dirname, '.github'),
+      '@assets': resolve(PROJECT_ROOT, 'src/assets'),
+      '@components': resolve(PROJECT_ROOT, 'src/components'),
+      '@config': resolve(PROJECT_ROOT, 'src/config'),
+      '@i18n': resolve(PROJECT_ROOT, 'src/i18n'),
+      '@layouts': resolve(PROJECT_ROOT, 'src/layouts'),
+      '@utils': resolve(PROJECT_ROOT, 'src/utils'),
+      '@tests': resolve(PROJECT_ROOT, 'tests'),
+      '@github': resolve(PROJECT_ROOT, '.github'),
     }
   },
   test: {
