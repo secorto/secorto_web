@@ -6,14 +6,27 @@ vi.mock('@i18n/dateFormat', () => ({
   monthYear: { month: 'long', year: 'numeric', timeZone: 'UTC' } as const,
 }))
 
-const { defaultLang, ui } = await import('../../../src/i18n/ui')
+// Mutable UI mock so tests can toggle `showDefaultLang` without hoisting issues
+const uiMock = {
+  defaultLang: 'es',
+  showDefaultLang: true,
+  languages: { en: 'English', es: 'Spanish' },
+  ui: {
+    en: { 'nav.about': 'About', 'nav.blog': 'Blog' },
+    es: { 'nav.about': 'Sobre mi', 'nav.blog': 'Blog' },
+  },
+}
+
+vi.mock('@i18n/ui', () => uiMock)
+
+const { defaultLang, ui } = await import('@i18n/ui')
 const {
   getLangFromUrl,
   useTranslations,
   useTranslatedPath,
   getFullFormat,
   getMonthYearFormat,
-} = await import('../../../src/i18n/utils')
+} = await import('@i18n/utils')
 
 describe('i18n utils', () => {
   it('getLangFromUrl returns language when present and valid', () => {
@@ -44,6 +57,18 @@ describe('i18n utils', () => {
 
     const translateEn = useTranslatedPath('en')
     expect(translateEn('/post')).toBe('/en/post')
+  })
+
+  it('useTranslatedPath omits prefix when showDefaultLang=false', async () => {
+    vi.resetModules()
+    uiMock.showDefaultLang = false
+    const { useTranslatedPath: useTranslatedPathFalse } = await import('@i18n/utils')
+
+    const translateEs = useTranslatedPathFalse('es')
+    expect(translateEs('/about')).toBe('/about')
+
+    // restore default for other tests
+    uiMock.showDefaultLang = true
   })
 
   it('date formatters produce locale-specific month names', () => {

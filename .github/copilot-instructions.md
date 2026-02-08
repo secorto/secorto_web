@@ -89,6 +89,7 @@
 	- `node ./scripts/check-translation-inconsistencies.js`
 
 - Copilot: when generating or refactoring content with assistance, ensure the output includes complete frontmatter and that the suggested filename respects the date prefix. Do not accept suggestions for posts without a date-prefixed filename.
+ - Copilot: when generating or refactoring content with assistance, ensure the output includes complete frontmatter and that the suggested filename respects the date prefix. Do not accept suggestions for posts without a date-prefixed filename. Additionally, Copilot must not introduce the TypeScript `any` type in generated code; always prefer explicit types or interfaces.
 
 - Default site language: Spanish (`es`). When the language is not explicitly specified, prefer Spanish for authoring content and suggested slugs. Contributors should still provide translations and set `translation_status` appropriately.
 
