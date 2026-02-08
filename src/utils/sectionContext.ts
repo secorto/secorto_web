@@ -52,7 +52,6 @@ export function buildSectionContext(section: string, locale: UILanguages): Secti
  * @param locale - Idioma actual
  * @param tag - Tag actual
  * @returns Contexto con posts filtrados por tag
- * @throws Response 404 si la sección no existe
  */
 export async function buildTagsPageContext(
   section: string,
