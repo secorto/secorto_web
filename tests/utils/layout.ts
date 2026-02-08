@@ -33,7 +33,7 @@ export async function assertNoHorizontalOverflow(page: Page, testInfo?: TestInfo
       try {
         // Attach the screenshot to the Playwright report if possible
         // `attach` expects Buffer or path depending on runner; try both gracefully
-        await testInfo.attach('horizontal-overflow-screenshot', { path: file, contentType: 'image/png' } as any)
+        await testInfo.attach('horizontal-overflow-screenshot', { path: file, contentType: 'image/png' })
       } catch {
         // ignore attachment errors; screenshot is still on disk for debugging
       }

@@ -56,8 +56,8 @@ export async function loadEntryByRoute(
 
   if (!config) return null
 
-  const collectionName = config.collection as any
-  const entries = await getCollection(collectionName) as any[]
+  const collectionName = config.collection
+  const entries = await getCollection(collectionName)
 
   // Busca por slug si existe, o por cleanId del filename
   const entry = entries.find((e: any) => {

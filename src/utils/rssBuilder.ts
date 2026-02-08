@@ -19,7 +19,7 @@ export async function buildRSSItems(collection: string, locale: UILanguages): Pr
   const posts = await getPostsByLocale(collection as never, locale)
 
   return posts.map((post: any) => {
-    const data = post.data as any
+    const data = post.data
     const cleanId = post.cleanId
 
     // Buscar la sección que contiene esta colección

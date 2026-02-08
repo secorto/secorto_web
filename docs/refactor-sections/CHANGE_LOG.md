@@ -23,7 +23,7 @@
 2. **`src/utils/sectionLoader.ts`** ⭐ NUEVO
    - 42 líneas
    - Estrategia de carga de datos
-   - Exporta: `loadSection()`, `loadSectionByRoute()`
+   - Exporta: `loadSectionByRoute()`
 
 3. **`src/components/SectionRenderer.astro`** ⭐ NUEVO
    - 28 líneas
