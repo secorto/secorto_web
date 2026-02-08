@@ -32,7 +32,7 @@ export async function getPostsByLocale<C extends CollectionKey>(
     .filter(post => post.id.startsWith(`${locale}/`))
     .map(post => ({
       ...post,
-      cleanId: (post.data as any).slug || extractCleanId(post.id)
+      cleanId: post.data.slug || extractCleanId(post.id)
     }))
     .sort((a, b) => b.cleanId.localeCompare(a.cleanId));
 }
@@ -42,6 +42,6 @@ export async function getPostsByLocale<C extends CollectionKey>(
  * @param posts - Array de posts con data.tags
  * @returns Array de tags únicos ordenados alfabéticamente
  */
-export function getUniqueTags(posts: any[]) {
+export function getUniqueTags(posts: EntryWithCleanId<'blog' | 'talk'>[]) {
   return [...new Set(posts.flatMap((post) => post.data.tags ?? []))].sort((a, b) => a.localeCompare(b));
 }
