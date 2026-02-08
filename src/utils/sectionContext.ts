@@ -1,6 +1,6 @@
 import { getSectionConfigByRoute, sectionsConfig, type SectionConfig } from '@config/sections'
-import { getPostsByLocale } from './paths'
-import type { EntryWithCleanId, CollectionWithTags } from './paths'
+import { getPostsByLocale, getUniqueTags } from '@utils/paths'
+import type { EntryWithCleanId, CollectionWithTags } from '@utils/paths'
 import type { UILanguages } from '@i18n/ui'
 import { getCollection, type CollectionEntry } from 'astro:content'
 import { languageKeys } from '@i18n/ui'
@@ -66,7 +66,7 @@ export async function buildTagsPageContext(
 
   // Filtrar por tag y extraer tags únicos
   const posts = allPosts.filter((post) => post.data.tags?.includes(tag))
-  const tags = [...new Set(allPosts.flatMap((post) => post.data.tags ?? []))]
+  const tags = getUniqueTags(allPosts)
 
   return {
     config,
