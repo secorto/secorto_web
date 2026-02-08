@@ -16,8 +16,9 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-  try { fs.unlinkSync(TMP_EVENT) } catch (e) {
-    console.log(e)
+  // only unlink if the temp file was created by the test
+  if (fs.existsSync(TMP_EVENT)) {
+    fs.unlinkSync(TMP_EVENT)
   }
 })
 
