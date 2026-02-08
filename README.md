@@ -89,3 +89,31 @@ En CI el workflow `Tests` corre dos jobs en paralelo:
 - `e2e-tests`: ejecuta las pruebas E2E con Playwright y sube el reporte `playwright-report/`
 
 Así las unit y las E2E corren en paralelo y la cobertura la genera únicamente el job `unit-tests`.
+
+Cómo ejecutar E2E localmente con variables de entorno
+
+- `npm run test:e2e` — Ejecuta Playwright directamente (`npx playwright test`). Este comando no carga `.env` automáticamente; si necesitas pasar `NETLIFY_PREVIEW_URL` u otras variables, expórtalas en la misma línea o en tu entorno.
+- `npm run test:e2e:env` — Ejecuta Playwright con `env-cmd` vía `npx` y la opción `-f .env`. Esta opción carga `.env` automáticamente y evita tener que exportar variables manualmente.
+
+Ejemplos rápidos:
+
+ - Exportar en shells POSIX y ejecutar (no requiere `env-cmd`):
+
+```bash
+NETLIFY_PREVIEW_URL=https://preview.example.com npm run test:e2e
+```
+
+ - En PowerShell:
+
+```powershell
+$Env:NETLIFY_PREVIEW_URL = 'https://preview.example.com'
+npm run test:e2e
+```
+
+ - Usar el script que carga `.env` con `env-cmd` (no requiere instalación global):
+
+```bash
+npm run test:e2e:env
+```
+
+Nota: `test:e2e:env` usa `npx env-cmd` para cargar `.env`; `test:e2e` es minimalista y ejecuta Playwright directamente.
