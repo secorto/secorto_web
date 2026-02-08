@@ -35,10 +35,6 @@ export async function buildRSSItems(collection: CollectionKey, locale: UILanguag
 /**
  * Mapea un post fuente a un `RSSItem`
  */
-/**
- * Mapea un post fuente a un `RSSItem`
- * @internal exportado para pruebas
- */
 export function mapPostToRSSItem(post: RSSSourcePost, collection: CollectionKey, locale: UILanguages): RSSItem {
   const data = post.data
   const cleanId = post.cleanId

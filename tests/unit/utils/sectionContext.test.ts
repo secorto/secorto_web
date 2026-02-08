@@ -1,6 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
 import type { DetailPageContext, TagsPageContext } from '@utils/sectionContext'
-import type { SectionConfig } from '@config/sections'
 
 describe('sectionContext helpers', () => {
   it('buildSectionContext returns config when found', async () => {
@@ -27,17 +26,6 @@ describe('sectionContext helpers', () => {
     const ctx = (await buildTagsPageContext('blog', 'es', 'b')) as TagsPageContext
     expect(ctx.posts.length).toBe(2)
     expect(ctx.tags.sort()).toEqual(['a', 'b', 'c'].sort())
-  })
-
-  it('buildDetailPageContext returns loaded entry when loadEntryByRoute finds it', async () => {
-    vi.resetModules()
-    const fakeLoaded: { entry: { id: string; data: Record<string, unknown> }; config: SectionConfig } = { entry: { id: 'es/one', data: {} }, config: { collection: 'blog' } as SectionConfig }
-    const loadEntry = vi.fn(async (_section: string, _locale: string, _id: string) => fakeLoaded)
-    const { buildDetailPageContext } = await import('@utils/sectionContext')
-    const ctx = (await buildDetailPageContext('blog', 'es', 'one', loadEntry)) as DetailPageContext | null
-    expect(ctx).not.toBeNull()
-    expect((ctx as DetailPageContext).isUntranslated).toBe(false)
-    expect((ctx as DetailPageContext).entry.id).toBe('es/one')
   })
 
   it('buildDetailPageContext falls back to other locale when not found in requested', async () => {

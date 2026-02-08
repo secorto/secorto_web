@@ -4,7 +4,7 @@ import type { EntryWithCleanId, CollectionWithTags } from './paths'
 import type { UILanguages } from '@i18n/ui'
 import { getCollection, type CollectionEntry } from 'astro:content'
 import { languageKeys } from '@i18n/ui'
-import { extractCleanId } from './ids'
+import { extractCleanId } from "@utils/ids"
 
 export interface SectionContext {
   config: SectionConfig
@@ -33,7 +33,6 @@ export interface DetailPageContext {
 /**
  * Construye el contexto de una página de sección (índice).
  * Valida que la sección exista en la configuración.
- * @throws Response 404 si la sección no existe
  * @returns Contexto con configuración validada
  */
 export function buildSectionContext(section: string, locale: UILanguages): SectionContext {
@@ -116,7 +115,7 @@ export async function buildDetailPageContext(
     section: string,
     locale: UILanguages,
     id: string
-  ) => Promise<{ entry: CollectionEntry<keyof import('astro:content').DataEntryMap> | { id: string; data: Record<string, unknown> }; config: SectionConfig } | null>
+  ) => Promise<{ entry: CollectionEntry<keyof import('astro:content').DataEntryMap>; config: SectionConfig } | null>
 ): Promise<DetailPageContext | null> {
   // Intentar cargar en el locale solicitado
   const loaded = await loadEntryByRoute(section, locale, id)

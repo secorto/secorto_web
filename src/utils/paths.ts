@@ -1,6 +1,6 @@
 import { getCollection } from "astro:content"
 import type { CollectionEntry, CollectionKey } from "astro:content"
-import { extractCleanId } from './ids'
+import { extractCleanId } from "@utils/ids"
 
 export type CollectionWithTags = 'blog'|'talk'
 
@@ -24,7 +24,7 @@ export async function getPostsByLocale<C extends CollectionKey>(
       ...post,
       cleanId: post.data.slug || extractCleanId(post.id)
     }))
-    .sort((a, b) => b.cleanId.localeCompare(a.cleanId));
+    .sort((a, b) => b.cleanId.localeCompare(a.cleanId))
 }
 
 /**
