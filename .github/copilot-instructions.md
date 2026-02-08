@@ -68,6 +68,14 @@
 - Keep dependencies up to date
 - Write clear, concise commit messages
 - Document new features and changes in `README.md` as needed
+ - Add unit tests for new utility functions. Prefer TypeScript tests and
+   keep them alongside the code (`tests/unit/` or appropriate test folder).
+   For small CI helper scripts or other utilities that must remain plain
+   JavaScript (for example when `ts-node` is problematic in CI), include
+   a `// @ts-check` comment at the top and use JSDoc type annotations so
+   editor/type-checking feedback is preserved without requiring a TypeScript
+   runtime. This helps maintain type-safety and makes such files easier to
+   test and review.
 
 ## Publication & i18n conventions
 

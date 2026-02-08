@@ -2,6 +2,7 @@ import eslintPluginAstro from 'eslint-plugin-astro'
 import jsxA11y from 'eslint-plugin-jsx-a11y'
 import importPlugin from 'eslint-plugin-import'
 import tsParser from '@typescript-eslint/parser'
+import tsPlugin from '@typescript-eslint/eslint-plugin'
 
 const sharedSettings = {
   'import/resolver': { typescript: {} },
@@ -10,7 +11,8 @@ const sharedSettings = {
 
 const sharedRules = {
   'import/no-unresolved': 'error',
-  'import/no-extraneous-dependencies': ['error', { devDependencies: ['cypress/**', 'tests/**', '**/*.spec.*', 'playwright.config.ts', 'vitest.config.ts'] }]
+  'import/no-extraneous-dependencies': ['error', { devDependencies: ['cypress/**', 'tests/**', '**/*.spec.*', 'playwright.config.ts', 'vitest.config.ts'] }],
+  'indent': ['error', 2, { SwitchCase: 1 }]
 }
 
 export default [
@@ -33,10 +35,14 @@ export default [
       }
     },
     plugins: {
-      import: importPlugin
+      import: importPlugin,
+      '@typescript-eslint': tsPlugin
     },
     settings: sharedSettings,
-    rules: sharedRules
+    rules: {
+      ...sharedRules,
+      ...tsPlugin.configs.recommended.rules
+    }
   },
 
   // Reglas para .astro (sin parser TS)
