@@ -25,14 +25,14 @@ Usage (in workflow)
 
 - The workflow should call:
 
-  node .github/scripts/wait-netlify.js
+  node .github/scripts/wait-netlify-runner.js
 
 Local debugging
 
 Export the required env vars and run locally. For PR-like behavior export `PR_BRANCH` and `COMMIT_ID`:
 
 ```bash
-NETLIFY_AUTH_TOKEN=xxx NETLIFY_SITE_ID=yyy PR_BRANCH=feature/abc COMMIT_ID=abcd1234 GITHUB_ENV=/tmp/env node .github/scripts/wait-netlify.js
+NETLIFY_AUTH_TOKEN=xxx NETLIFY_SITE_ID=yyy PR_BRANCH=feature/abc COMMIT_ID=abcd1234 GITHUB_ENV=/tmp/env node .github/scripts/wait-netlify-runner.js
 ```
 
 Security notes
