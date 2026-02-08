@@ -83,26 +83,34 @@ export const sectionsConfig: Record<SectionType, SectionConfig> = {
 }
 
 /**
+ * Helper interno que busca una `SectionConfig` que cumpla un predicado.
+ * Devuelve `null` si no encuentra ninguna coincidencia.
+ * @param predicate - función que recibe una `SectionConfig` y retorna boolean
+ */
+function findSectionConfig(predicate: (c: SectionConfig) => boolean): SectionConfig | null {
+  for (const config of Object.values(sectionsConfig)) {
+    if (predicate(config)) return config
+  }
+  return null
+}
+
+/**
  * Obtiene la configuración de una sección basada en la ruta URL
  */
 export function getSectionConfigByRoute(
   routeParam: string,
   locale: UILanguages
 ): SectionConfig | null {
-  for (const [_key, config] of Object.entries(sectionsConfig)) {
-    if (config.routes[locale] === routeParam) {
-      return config
-    }
-  }
-  return null
+  return findSectionConfig((config) => config.routes[locale] === routeParam)
 }
 
 /**
- * Obtiene todas las rutas para una sección en todos los idiomas
+ * Obtiene la configuración de una sección basada en la clave de colección
  */
-export function getAllRoutesForSection(sectionType: SectionType): string[] {
-  const config = sectionsConfig[sectionType]
-  return Object.values(config.routes)
+export function getSectionConfigByCollection(
+  collection: CollectionKey
+): SectionConfig | null {
+  return findSectionConfig((config) => config.collection === collection)
 }
 
 /**

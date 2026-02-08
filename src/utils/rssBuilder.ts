@@ -1,5 +1,6 @@
 import type { UILanguages } from '@i18n/ui'
-import { sectionsConfig } from '@config/sections'
+import type { CollectionKey } from 'astro:content'
+import { getSectionConfigByCollection } from '@config/sections'
 import { getPostsByLocale } from './paths'
 
 interface RSSItem {
@@ -25,27 +26,30 @@ interface RSSSourcePost {
  * @param locale - Idioma
  * @returns Array de items RSS
  */
-export async function buildRSSItems(collection: string, locale: UILanguages): Promise<RSSItem[]> {
-  const posts = await getPostsByLocale(collection as never, locale) as RSSSourcePost[]
+export async function buildRSSItems(collection: CollectionKey, locale: UILanguages): Promise<RSSItem[]> {
+  const posts = await getPostsByLocale(collection, locale) as RSSSourcePost[]
 
-  return posts.map((post: RSSSourcePost) => {
-    const data = post.data
-    const cleanId = post.cleanId
+  const sectionConfig = getSectionConfigByCollection(collection)
+  const sectionRoute = sectionConfig?.routes[locale] || ''
 
-    // Buscar la sección que contiene esta colección
-    let sectionRoute = ''
-    for (const [_, config] of Object.entries(sectionsConfig)) {
-      if (config.collection === collection) {
-        sectionRoute = config.routes[locale]
-        break
-      }
-    }
+  return posts.map((post: RSSSourcePost) => mapPostToRSSItem(post, sectionRoute, locale))
+}
 
-    return {
-      title: data.title,
-      description: data.excerpt || data.description || '',
-      link: `/${locale}/${sectionRoute}/${cleanId}`,
-      pubDate: new Date(data.date || 0)
-    }
-  })
+/**
+ * Mapea un post fuente a un `RSSItem`
+ */
+/**
+ * Mapea un post fuente a un `RSSItem`
+ * @internal exportado para pruebas
+ */
+export function mapPostToRSSItem(post: RSSSourcePost, sectionRoute: string, locale: UILanguages): RSSItem {
+  const data = post.data
+  const cleanId = post.cleanId
+
+  return {
+    title: data.title,
+    description: data.excerpt || data.description || '',
+    link: `/${locale}/${sectionRoute}/${cleanId}`,
+    pubDate: new Date(data.date || 0)
+  }
 }
