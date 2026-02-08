@@ -158,4 +158,4 @@ Si quieres, puedo:
 - Añadir plantillas de archivos para `tests/pages/` (POM) y `tests/unit` (estructura mínima), o
 - Añadir el paso de subida de `lcov.info` a Codecov en el job `unit-tests`.
 
-*** Fin del documento
+Fin del documento
