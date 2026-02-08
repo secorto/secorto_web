@@ -7,6 +7,8 @@ interface EntryMeta {
   noTranslate?: string[]
 }
 
+export type AvailableLocales = Partial<Record<UILanguages, { slug: string }>>
+
 export interface TranslationLink {
   href: string
   label: string
@@ -83,7 +85,7 @@ export function buildTagLink(targetLang: UILanguages, canonicalSection: string, 
  * @param availableLocales - Mapa de traducciones disponibles por idioma para este contenido
  * @returns Link con disponibilidad según traducciones, incluye razón si no está disponible
  */
-export function buildDetailLink(targetLang: UILanguages, canonicalSection: string, slug: string, availableLocales: Record<string, any>): TranslationLink {
+export function buildDetailLink(targetLang: UILanguages, canonicalSection: string, slug: string, availableLocales: AvailableLocales): TranslationLink {
   const entry = availableLocales[targetLang]
   const localizedSection = resolveLocalized(canonicalSection, targetLang)
 
