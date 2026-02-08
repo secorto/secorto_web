@@ -33,8 +33,8 @@ export async function buildTranslationMap(
       slug,
       title: entry.data.title,
       date,
-      translation_status: (entry.data as any).translation_status,
-      translation_origin: (entry.data as any).translation_origin ?? null,
+      translation_status: entry.data.translation_status,
+      translation_origin: entry.data.translation_origin,
     };
 
     return acc;
