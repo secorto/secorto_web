@@ -10,3 +10,10 @@ beforeEach(() => {
 afterEach(() => {
   vi.restoreAllMocks()
 })
+
+// Provide a default virtual mock for `astro:content` so tests that import
+// modules depending on it don't fail during module resolution. Individual
+// tests may override this with `vi.mock`/`vi.doMock` before dynamic import.
+vi.mock('astro:content', () => ({
+  getCollection: vi.fn(async () => [])
+}))
