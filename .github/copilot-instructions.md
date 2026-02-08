@@ -68,6 +68,14 @@
 - Keep dependencies up to date
 - Write clear, concise commit messages
 - Document new features and changes in `README.md` as needed
+- Add unit tests for new utility functions. Prefer TypeScript tests and
+  keep them alongside the code (`tests/unit/` or appropriate test folder).
+  For small CI helper scripts or other utilities that must remain plain
+  JavaScript (for example when `ts-node` is problematic in CI), include
+  a `// @ts-check` comment at the top and use JSDoc type annotations so
+  editor/type-checking feedback is preserved without requiring a TypeScript
+  runtime. This helps maintain type-safety and makes such files easier to
+  test and review.
 
 ## Publication & i18n conventions
 
@@ -80,7 +88,7 @@
 	- `node ./scripts/auto-mark-translated.js`
 	- `node ./scripts/check-translation-inconsistencies.js`
 
-- Copilot: when generating or refactoring content with assistance, ensure the output includes complete frontmatter and that the suggested filename respects the date prefix. Do not accept suggestions for posts without a date-prefixed filename.
+ - Copilot: when generating or refactoring content with assistance, ensure the output includes complete frontmatter and that the suggested filename respects the date prefix. Do not accept suggestions for posts without a date-prefixed filename. Additionally, Copilot must not introduce the TypeScript `any` type in generated code; always prefer explicit types or interfaces.
 
 - Default site language: Spanish (`es`). When the language is not explicitly specified, prefer Spanish for authoring content and suggested slugs. Contributors should still provide translations and set `translation_status` appropriately.
 

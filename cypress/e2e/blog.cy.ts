@@ -24,4 +24,4 @@ describe('Blog', () => {
     cy.scrollTo('right')
     cy.window().its('scrollX').should('eq', 0)
   })
-  })
+})

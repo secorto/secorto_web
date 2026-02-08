@@ -1,4 +1,4 @@
-name: Playwright Tests
+name: Tests
 on:
   push:
     branches: [ main, master ]
@@ -19,7 +19,32 @@ on:
         required: false
         default: "https://secorto.com"
 jobs:
-  test:
+  unit-tests:
+    name: Unit Tests (Vitest)
+    if: ${{ github.event_name != 'workflow_dispatch' }}
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: lts/*
+    - name: Install dependencies
+      run: npm ci
+    - name: Lint code
+      run: npm run lint
+    - name: Run unit tests with coverage
+      run: npx vitest --run --coverage
+    - name: Upload coverage artifact
+      uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: vitest-coverage
+        path: coverage/
+        retention-days: 30
+
+  e2e-tests:
+    name: E2E Tests (Playwright)
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:

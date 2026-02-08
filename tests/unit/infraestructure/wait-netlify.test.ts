@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { extractShaFromDeploy } from '../../.github/lib/wait-netlify-git.js'
-import { previewDeploysForBranch, findMatchingDeploy, choosePreviewUrl, summarizeCandidates } from '../../.github/lib/wait-netlify-integrator.js'
-import { resolveExpectedSha } from '../../.github/scripts/wait-netlify.js'
+import { extractShaFromDeploy } from '@github/lib/wait-netlify-git.js'
+import { previewDeploysForBranch, findMatchingDeploy, choosePreviewUrl, summarizeCandidates } from '@github/lib/wait-netlify-integrator.js'
+import { resolveExpectedSha } from '@github/scripts/wait-netlify.js'
 
 describe('wait-netlify helpers (TS)', () => {
   it('extracts sha from common fields', () => {
@@ -79,7 +79,7 @@ describe('wait-netlify helpers (TS)', () => {
     const originalMatch = String.prototype.match
     try {
       // force String.prototype.match to return null to exercise defensive branch
-      ;(String.prototype as any).match = function () { return null }
+      ;(String.prototype as { match: (this: string, regexp?: string | RegExp) => RegExpMatchArray | null }).match = function () { return null }
       const d = { commit_ref: fieldValue }
       const r = extractShaFromDeploy(d)
       expect(r.sha).toBeNull()

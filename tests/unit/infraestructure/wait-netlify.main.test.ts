@@ -24,13 +24,13 @@ describe('wait-netlify main integration', () => {
 
     // mock listDeploys to return a ready deploy matching the expected sha
     vi.resetModules()
-    vi.mock('../../.github/lib/wait-netlify-api.js', () => ({
+    vi.mock('@github/lib/wait-netlify-api.js', () => ({
       listDeploys: vi.fn().mockResolvedValue([
         { id: 'd1', state: 'ready', commit_ref: 'abcd1234', links: { permalink: 'https://p.netlify.app' }, context: 'deploy-preview', branch: 'feat' }
       ])
     }))
 
-    const mod = await import('../../.github/scripts/wait-netlify.js')
+    const mod = await import('@github/scripts/wait-netlify.js')
     try {
       if (fs.existsSync(process.env.GITHUB_ENV)) fs.unlinkSync(process.env.GITHUB_ENV)
       const code = await mod.main()

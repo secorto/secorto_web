@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
-const MOD_PATH = '../../.github/scripts/wait-netlify.js'
+const MOD_PATH = '@github/scripts/wait-netlify.js'
 const TMP_EVENT = path.join(process.cwd(), 'tests', 'unit', 'tmp-github-event.json')
 
 function resetEnvAndArgv() {
@@ -16,7 +16,10 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-  try { fs.unlinkSync(TMP_EVENT) } catch (e) {}
+  // only unlink if the temp file was created by the test
+  if (fs.existsSync(TMP_EVENT)) {
+    fs.unlinkSync(TMP_EVENT)
+  }
 })
 
 describe('resolveExpectedSha', () => {

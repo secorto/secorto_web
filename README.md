@@ -71,3 +71,59 @@ npx npm-check-updates -u
 - **Runner script:** El pipeline invoca `node .github/scripts/wait-netlify-runner.js`, que llama internamente a `runAndExit()` del script `wait-netlify.js` sólo cuando se ejecuta directamente. Esto evita problemas con exports mutables y mejora testabilidad.
 - **COMMIT_ID:** El workflow inyecta `COMMIT_ID` con el SHA del PR (o del push). `wait-netlify` usa `COMMIT_ID` para encontrar el deploy que coincide con el commit y exporta `NETLIFY_PREVIEW_URL` al entorno de GitHub Actions.
 - **Requisitos:** El runner requiere Node >= 20 (según `engines.node` en `package.json`) para el soporte global de `fetch` o que esté disponible en el entorno.
+
+## Tests
+
+[![Tests workflow](https://github.com/secorto/secorto_web/actions/workflows/tests.yml/badge.svg)](https://github.com/secorto/secorto_web/actions/workflows/tests.yml)
+
+Ejecutar localmente:
+
+| Command             | Acción                                                           |
+| :------------------ | :--------------------------------------------------------------- |
+| `npm run test`      | Ejecuta las pruebas E2E (Playwright/Cypress según configuración) |
+| `npm run test:unit` | Ejecuta las pruebas unitarias con Vitest                         |
+
+En CI el workflow `Tests` corre dos jobs en paralelo:
+
+- `unit-tests`: ejecuta `vitest --run --coverage` y sube el artifact `vitest-coverage/` (contiene `lcov.info`)
+- `e2e-tests`: ejecuta las pruebas E2E con Playwright y sube el reporte `playwright-report/`
+
+Así las unit y las E2E corren en paralelo y la cobertura la genera únicamente el job `unit-tests`.
+
+Cómo ejecutar E2E localmente con variables de entorno
+
+- `npm run test:e2e` — Ejecuta Playwright directamente (`npx playwright test`). Este comando no carga `.env` automáticamente; si necesitas pasar `NETLIFY_PREVIEW_URL` u otras variables, expórtalas en la misma línea o en tu entorno.
+- `npm run test:e2e:env` — Ejecuta Playwright con `env-cmd` vía `npx` y la opción `-f .env`. Esta opción carga `.env` automáticamente y evita tener que exportar variables manualmente.
+
+Ejemplos rápidos:
+
+ - Exportar en shells POSIX y ejecutar (no requiere `env-cmd`):
+
+```bash
+NETLIFY_PREVIEW_URL=https://preview.example.com npm run test:e2e
+```
+
+ - En PowerShell:
+
+```powershell
+$Env:NETLIFY_PREVIEW_URL = 'https://preview.example.com'
+npm run test:e2e
+```
+
+ - Usar el script que carga `.env` con `env-cmd` (no requiere instalación global):
+
+```bash
+npm run test:e2e:env
+```
+
+Nota: `test:e2e:env` usa `npx env-cmd` para cargar `.env`; `test:e2e` es minimalista y ejecuta Playwright directamente.
+
+## E2E en Devcontainer
+
+Si prefieres ejecutar las pruebas dentro del devcontainer, abre una terminal del contenedor y ejecuta una sola vez:
+
+```bash
+npx playwright install --with-deps
+```
+
+Esto instala los navegadores y las dependencias del sistema necesarias para que Playwright ejecute tests dentro del contenedor. Después de esto puedes usar `npm run test:e2e` desde la terminal del devcontainer sin pasos adicionales.

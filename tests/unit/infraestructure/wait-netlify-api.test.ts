@@ -1,24 +1,7 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { listDeploys } from '../../.github/lib/wait-netlify-api.js'
+import { describe, it, expect, vi } from 'vitest'
+import { listDeploys } from '@github/lib/wait-netlify-api.js'
 
 describe('wait-netlify-api.listDeploys', () => {
-  let originalFetch: typeof globalThis.fetch | undefined
-
-  beforeEach(() => {
-    originalFetch = globalThis.fetch
-  })
-
-  afterEach(() => {
-    if (originalFetch === undefined) {
-      // restore absence of fetch
-      // @ts-ignore
-      delete (globalThis as any).fetch
-    } else {
-      ;(globalThis as any).fetch = originalFetch
-    }
-    vi.restoreAllMocks()
-  })
-
   it('throws on non-ok response', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 500 }))
     await expect(listDeploys('site', 'token')).rejects.toThrow('Netlify API status 500')
