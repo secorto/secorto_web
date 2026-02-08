@@ -4,10 +4,7 @@ import { ui, languageKeys } from '@i18n/ui'
 import { SidebarPage } from '@tests/pages/SidebarPage'
 
 test.describe('Página de inicio (locales)', () => {
-  // Usar las claves tipadas de `ui` para evitar errores de tipo
-  const locales = languageKeys as Array<keyof typeof ui>
-
-  for (const locale of locales) {
+  for (const locale of languageKeys) {
     test.describe(locale, () => {
       test.beforeEach(async ({ page }) => {
         await page.goto(`/${locale}`)

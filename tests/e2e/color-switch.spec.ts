@@ -18,13 +18,13 @@ test.describe('Color switch', () => {
     // capture the SVG circle transform before and after the toggle
     const themeCircle = page.locator('[data-testid="theme-toggle"] svg circle')
     const initialIsDark = await page.evaluate(() => document.documentElement.classList.contains('dark'))
-    const initialTransform = await themeCircle.evaluate((el: Element) => getComputedStyle(el as Element).transform)
+    const initialTransform = await themeCircle.evaluate((el: Element) => getComputedStyle(el).transform)
 
     // toggle -> the "dark" class should be added or removed
     await sidebar.themeToggle().click()
     await expect(html).toHaveClass(initialIsDark ? /light/ : /dark/)
 
-    const afterTransform = await themeCircle.evaluate((el: Element) => getComputedStyle(el as Element).transform)
+    const afterTransform = await themeCircle.evaluate((el: Element) => getComputedStyle(el).transform)
     expect(afterTransform).not.toBe(initialTransform)
 
     // toggle again -> return to initial state

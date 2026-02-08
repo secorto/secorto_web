@@ -1,17 +1,15 @@
 import { test, expect } from '@playwright/test'
-import { ui, type UILanguages } from '@i18n/ui'
+import { languageKeys, ui } from '@i18n/ui'
 
-const locales = ['es', 'en'] as const
 
 test.describe('Footer translations', () => {
-  locales.forEach((locale) => {
+  languageKeys.forEach((locale) => {
     test(`footer texts are correct (${locale})`, async ({ page }) => {
       await page.goto(`/${locale}/`)
 
-      const expectedAlt = ui[locale as UILanguages]['footer.avatar_alt']
-      const expectedRole = ui[locale as UILanguages]['footer.role']
-      const expectedFollow = ui[locale as UILanguages]['footer.follow']
-
+      const expectedAlt = ui[locale]['footer.avatar_alt']
+      const expectedRole = ui[locale]['footer.role']
+      const expectedFollow = ui[locale]['footer.follow']
       // image alt
       const img = page.locator('[data-testid="footer-avatar"]')
       await expect(img).toBeVisible()
