@@ -3,7 +3,7 @@ import { BlogPage } from '@tests/pages/BlogPage'
 import { getURLForSection } from '@config/sections'
 import { type UILanguages } from '@i18n/ui'
 
-const listFixtures = [
+const listFixtures: { locale: UILanguages; pythonTag: string }[] = [
   { locale: 'es', pythonTag: 'python' },
   { locale: 'en', pythonTag: 'python' }
 ]
@@ -11,7 +11,7 @@ const listFixtures = [
 for (const f of listFixtures) {
   test.describe(`Blog list (${f.locale})`, () => {
     test.beforeEach(async ({ page }) => {
-      await page.goto(getURLForSection('blog', f.locale as UILanguages))
+      await page.goto(getURLForSection('blog', f.locale))
     })
 
     test('shows page title and header', async ({ page }) => {

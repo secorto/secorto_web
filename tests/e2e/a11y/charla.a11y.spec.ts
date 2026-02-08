@@ -1,11 +1,11 @@
 import { test, expect } from '@playwright/test'
 import { checkA11y } from '@tests/actions/A11yActions'
 import { getURLForSection } from '@config/sections'
+import { languageKeys } from '@i18n/ui'
 
-const locales = ['es', 'en'] as const
 
 test.describe('A11y - Charlas', () => {
-  locales.forEach((locale) => {
+  languageKeys.forEach((locale) => {
     test(`charla list a11y (${locale})`, async ({ page }) => {
       await page.goto(getURLForSection('talk', locale))
       const listingResults = await checkA11y()({page})
