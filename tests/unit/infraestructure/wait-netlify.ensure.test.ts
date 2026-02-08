@@ -25,6 +25,7 @@ describe('wait-netlify helpers (env & write)', () => {
     process.env.NETLIFY_SITE_ID = 's'
     delete process.env.PR_BRANCH
     delete process.env.GITHUB_REF_NAME
+    delete process.env.GITHUB_REF
     const mod = await import('@github/scripts/wait-netlify.js')
     expect(() => mod.ensureEnv()).toThrow(/Missing env:/)
   })
