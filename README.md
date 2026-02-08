@@ -78,10 +78,10 @@ npx npm-check-updates -u
 
 Ejecutar localmente:
 
-| Command | Acción |
-| :------ | :----- |
-| `npm run test` | Ejecuta las pruebas E2E (Playwright/Cypress según configuración) |
-| `npm run test:unit` | Ejecuta las pruebas unitarias con Vitest y genera cobertura |
+| Command             | Acción                                                           |
+| :------------------ | :--------------------------------------------------------------- |
+| `npm run test`      | Ejecuta las pruebas E2E (Playwright/Cypress según configuración) |
+| `npm run test:unit` | Ejecuta las pruebas unitarias con Vitest                         |
 
 En CI el workflow `Tests` corre dos jobs en paralelo:
 
