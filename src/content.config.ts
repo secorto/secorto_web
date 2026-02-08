@@ -1,12 +1,11 @@
 import { z, defineCollection } from 'astro:content';
-import type { ImageFunction } from 'astro:content';
 import { glob } from 'astro/loaders';
 
 /**
  * Schema base para todos los posts
  * Contiene campos comunes: título, imagen, traducción, cambios
  */
-const createBasePostSchema = (imageHelper: ImageFunction) => z.object({
+const createBasePostSchema = (imageHelper: () => z.ZodTypeAny) => z.object({
   title: z.string(),
   image: imageHelper().optional(),
   excerpt: z.string().optional(),
