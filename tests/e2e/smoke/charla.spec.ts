@@ -1,17 +1,16 @@
 import { test, expect } from '@playwright/test'
 import { ContentListPage } from '@tests/pages/ContentListPage'
-import { ui } from '@i18n/ui'
+import { languageKeys, ui, type UILanguages } from '@i18n/ui'
 import { openItem } from '@tests/actions/ContentListActions'
 import { getURLForSection } from '@config/sections'
 import { mockGiscus } from '@tests/e2e/helpers/mockGiscus'
 
-const locales = ['es', 'en'] as const
-const expectedTitles: Record<typeof locales[number], string> = {
+const expectedTitles: Record<UILanguages, string> = {
   es: 'Devcontainers en localhost',
   en: 'Devcontainers on localhost'
 }
 
-const expectedTags: Record<typeof locales[number], string> = {
+const expectedTags: Record<UILanguages, string> = {
   es: `
     - link "python":
       - /url: /es/charla/tags/python
@@ -32,7 +31,7 @@ const expectedTags: Record<typeof locales[number], string> = {
 
 
 test.describe('Charlas', () => {
-  for (const locale of locales) {
+  for (const locale of languageKeys) {
     test(`Permite navegar por categorías y ver una charla (${locale})`, async ({ page }) => {
       const list = new ContentListPage(page)
       await mockGiscus(page)
