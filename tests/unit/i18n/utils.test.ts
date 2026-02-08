@@ -33,7 +33,9 @@ describe('i18n utils', () => {
     expect(tEn('nav.blog')).toBe(ui.en['nav.blog'])
 
     // unknown key should return undefined (runtime)
-    expect(tEn('non.existent' as any)).toBeUndefined()
+    // intentionally pass an invalid key to test runtime behavior
+    // @ts-expect-error testing unknown translation key
+    expect(tEn('non.existent')).toBeUndefined()
   })
 
   it('useTranslatedPath prefixes paths with language', () => {
