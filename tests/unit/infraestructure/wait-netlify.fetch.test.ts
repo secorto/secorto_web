@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
+import { withDeletedFetch } from '@tests/unit/utils/globalFetch'
 
 describe('wait-netlify fetch guard', () => {
   const OLD_ENV = { ...process.env }
@@ -11,10 +12,8 @@ describe('wait-netlify fetch guard', () => {
     // ensureFetch is exported from the script; call directly rather than exercising main
     const mod = await import('@github/scripts/wait-netlify.js')
 
-    // delete global.fetch
-    // @ts-ignore
-    delete global.fetch
-
-    expect(() => mod.ensureFetch()).toThrow('Global fetch not available')
+    await withDeletedFetch(async () => {
+      expect(() => mod.ensureFetch()).toThrow('Global fetch not available')
+    })
   })
 })

@@ -18,7 +18,7 @@ const sharedRules = {
 export default [
   // Ignore generated artifacts like coverage/dist/public
   {
-    ignores: ['coverage/**', 'dist/**', 'public/**']
+    ignores: ['coverage/**', 'dist/**', 'public/**', '.astro/**.d.ts']
   },
 
   // Recomendado para .astro (deja que el plugin procese .astro)
@@ -41,7 +41,15 @@ export default [
     settings: sharedSettings,
     rules: {
       ...sharedRules,
-      ...tsPlugin.configs.recommended.rules
+      ...tsPlugin.configs.recommended.rules,
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          varsIgnorePattern: '^_',
+          argsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_'
+        }
+      ]
     }
   },
 

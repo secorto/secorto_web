@@ -1,4 +1,5 @@
 const colorMode = (isDark: boolean, isMedia: boolean) => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onBeforeLoad (win: any) {
     const callback = cy.stub(win, 'matchMedia')
     callback.withArgs('(prefers-color-scheme: dark)')
