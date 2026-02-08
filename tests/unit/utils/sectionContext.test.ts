@@ -41,8 +41,8 @@ describe('sectionContext helpers', () => {
     const { buildDetailPageContext } = await import('@utils/sectionContext')
     const ctx = await buildDetailPageContext('blog', 'es', 'one', loadEntry)
     expect(ctx).not.toBeNull()
-    expect((ctx).isUntranslated).toBe(false)
-    expect((ctx).entry.id).toBe('es/one')
+    expect((ctx as any).isUntranslated).toBe(false)
+    expect((ctx as any).entry.id).toBe('es/one')
   })
 
   it('buildDetailPageContext falls back to other locale when not found in requested', async () => {
@@ -58,9 +58,9 @@ describe('sectionContext helpers', () => {
     const { buildDetailPageContext } = await import('@utils/sectionContext')
     const ctx = await buildDetailPageContext('blog', 'es', 'one', loadEntry)
     expect(ctx).not.toBeNull()
-    expect((ctx).isUntranslated).toBe(true)
-    expect((ctx).locale).toBe('en')
-    expect((ctx).entry.id).toBe('en/one')
+    expect((ctx as any).isUntranslated).toBe(true)
+    expect((ctx as any).locale).toBe('en')
+    expect((ctx as any).entry.id).toBe('en/one')
   })
 
   it('buildDetailPageContext returns null when section not found', async () => {
