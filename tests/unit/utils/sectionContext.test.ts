@@ -20,7 +20,13 @@ describe('sectionContext helpers', () => {
       { id: 'es/two', data: { tags: ['b', 'c'] } },
       { id: 'en/other', data: { tags: ['x'] } }
     ]
-    vi.doMock('@utils/paths', () => ({ getPostsByLocale: vi.fn(async (_collection: string, localeArg: string) => mockPosts.filter((p: { id: string }) => p.id.startsWith(`${localeArg}/`))) }))
+    vi.doMock('@utils/paths', () => ({
+      getPostsByLocale: vi.fn(async (_collection: string, localeArg: string) => mockPosts.filter((p: { id: string }) => p.id.startsWith(`${localeArg}/`))),
+      getUniqueTags: vi.fn((posts: { data: { tags?: string[] } }[]) => {
+        const tags = posts.flatMap(p => p.data.tags ?? [])
+        return Array.from(new Set(tags))
+      })
+    }))
 
     const { buildTagsPageContext } = await import('@utils/sectionContext')
     const ctx = (await buildTagsPageContext('blog', 'es', 'b')) as TagsPageContext
