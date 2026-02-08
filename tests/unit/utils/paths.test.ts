@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { getUniqueTags } from '../../../src/utils/paths'
+import { getUniqueTags } from '@utils/paths'
 
 describe('paths utils', () => {
   it('getPostsByLocale filters by locale and sets cleanId', async () => {
@@ -9,7 +9,7 @@ describe('paths utils', () => {
     ]
     vi.resetModules()
     vi.doMock('astro:content', () => ({ getCollection: vi.fn(async () => posts) }))
-    const { getPostsByLocale } = await import('../../../src/utils/paths')
+    const { getPostsByLocale } = await import('@utils/paths')
     const res = await getPostsByLocale('blog', 'en')
     expect(res.length).toBe(1)
     expect(res[0].cleanId).toBe('one')

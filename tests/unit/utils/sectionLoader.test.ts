@@ -9,7 +9,7 @@ describe('sectionLoader', () => {
     ]
     vi.resetModules()
     vi.doMock('astro:content', () => ({ getCollection: vi.fn(async () => entries) }))
-    const { loadEntryByRoute } = await import('../../../src/utils/sectionLoader')
+    const { loadEntryByRoute } = await import('@utils/sectionLoader')
     const res = await loadEntryByRoute('blog', 'en', 'post1')
     expect(res).not.toBeNull()
     if (res) {
