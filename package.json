@@ -15,6 +15,7 @@
     "test:e2e": "npx playwright test",
     "test:e2e:env": "npx env-cmd -f .env npx playwright test",
     "test:unit": "vitest",
+    "validate:content": "node ./scripts/check-translation-inconsistencies.js",
     "test:unit:watch": "vitest --watch",
     "test:unit:ui": "vitest --ui",
     "lint": "eslint ."
@@ -31,6 +32,7 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.11.1",
     "@playwright/test": "^1.58.1",
+    "@types/js-yaml": "^4.0.9",
     "@types/node": "^25.2.1",
     "@typescript-eslint/eslint-plugin": "^8.54.0",
     "@typescript-eslint/parser": "^8.54.0",
@@ -43,6 +45,8 @@
     "eslint-plugin-astro": "^1.5.0",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
-    "vitest": "^4.0.18"
+    "js-yaml": "^4.1.1",
+    "vitest": "^4.0.18",
+    "zod": "^3.25.76"
   }
 }

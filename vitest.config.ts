@@ -16,6 +16,7 @@ export default defineConfig({
       '@utils': resolve(PROJECT_ROOT, 'src/utils'),
       '@tests': resolve(PROJECT_ROOT, 'tests'),
       '@github': resolve(PROJECT_ROOT, '.github'),
+      '@scripts': resolve(PROJECT_ROOT, 'scripts')
     }
   },
   test: {

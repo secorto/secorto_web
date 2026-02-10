@@ -12,7 +12,8 @@
       "@layouts/*": ["src/layouts/*"],
       "@utils/*": ["src/utils/*"],
       "@tests/*": ["tests/*"],
-      "@github/*": [".github/*"]
+      "@github/*": [".github/*"],
+      "@scripts/*": ["scripts/*"]
     }
   }
 }
