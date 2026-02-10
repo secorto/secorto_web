@@ -45,6 +45,7 @@ const t = useTranslations(locale)
 
 // Construir contexto de página (intenta cargar, con fallback a otros locales)
 const context = await buildDetailPageContext(section, locale, id, loadEntryByRoute)
+const site = import.meta.env.SITE
 
 if (!context) {
   return new Response('Not found', { status: 404 })
@@ -65,7 +66,7 @@ const canonicalId = isTranslationDraft && entryData.translation_origin
   ? entryData.translation_origin.id
   : cleanId
 
-const canonicalUrl = `https://secorto.com/${canonicalLocale}/${config.routes[canonicalLocale]}/${canonicalId}`
+const canonicalUrl = `${site}/${canonicalLocale}/${config.routes[canonicalLocale]}/${canonicalId}`
 
 // Obtener locales disponibles para hreflang
 const allEntries = await getCollection(config.collection)
@@ -87,9 +88,9 @@ const routeSlug = config.routes[context.locale]
   <link rel="canonical" href={canonicalUrl} />
   {(isUntranslated || isTranslationDraft) && <meta name="robots" content="noindex" />}
   {availableLocales.map((lk) => (
-    <link rel="alternate" hreflang={lk} href={`https://secorto.com/${lk}/${config.routes[lk]}/${cleanId}`} />
+    <link rel="alternate" hreflang={lk} href={`${site}/${lk}/${config.routes[lk]}/${cleanId}`} />
   ))}
-  <link rel="alternate" hreflang="x-default" href={`https://secorto.com/${defaultLang}/${config.routes[defaultLang]}/${cleanId}`} />
+  <link rel="alternate" hreflang="x-default" href={`${site}/${defaultLang}/${config.routes[defaultLang]}/${cleanId}`} />
 </head>
 
 <BaseLayout pageTitle={pageTitle} description={pageDescription}>

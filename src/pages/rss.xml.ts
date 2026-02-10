@@ -33,7 +33,7 @@ export async function GET(context: APIContext) {
   return rss({
     title: t('nav.blog'),
     description: t('site.description') || 'Blog',
-    site: context.site || 'https://secorto.com',
+    site: context.site || import.meta.env.SITE,
     items: items.map((item) => ({
       title: item.title,
       description: item.description,

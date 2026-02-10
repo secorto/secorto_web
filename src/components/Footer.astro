@@ -6,6 +6,7 @@ import type { UILanguages } from '@i18n/ui';
 type Props = Record<string, never>;
 const locale = Astro.currentLocale as UILanguages;
 const t = useTranslations(locale);
+const site = import.meta.env.SITE
 ---
 <footer class="footer">
   <div class="footer-container">
@@ -13,7 +14,7 @@ const t = useTranslations(locale);
       <Image src={Avatar} alt={t('footer.avatar_alt')} width="64" height="64" class="footer-avatar" data-testid="footer-avatar" />
       <div class="footer-profile-text">
         <p class="css-ekvia8">
-          <a href="https://www.secorto.com/" class="footer-name">Sergio Carlos Orozco Torres</a>
+          <a href={site} class="footer-name">Sergio Carlos Orozco Torres</a>
         </p>
         <p class="footer-role" data-testid="footer-role">{t('footer.role')}</p>
         <div class="css-6fm9if">
