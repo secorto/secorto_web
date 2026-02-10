@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   buildInfoFromLocales,
+  checkMissingFrontmatter,
   checkTranslatedMissingOrigin,
   checkOriginButNotTranslated,
   checkOriginPresentBothOriginal,
@@ -20,6 +21,23 @@ describe('consistency checks (unit)', () => {
     expect(info.en.status).toBe('original')
     expect(info.es.status).toBe('translated')
     expect(info.es.origin).toEqual({ locale: 'en', id: 'a' })
+  })
+
+
+  it('detects missing frontmatter via map-level check', () => {
+    const map = new Map()
+    const coll = new Map()
+    const locales = new Map()
+
+    locales.set('en', { path: 'p', fm: {} })
+    locales.set('es', { path: 'q', fm: { translation_status: 'original' } })
+    coll.set('post.md', locales)
+    map.set('blog', coll)
+
+    const missing = checkMissingFrontmatter(map)
+    expect(missing).toHaveLength(1)
+    expect(missing[0].type).toBe('missing_frontmatter')
+    expect(missing[0].locale).toBe('en')
   })
 
   it('detects translated_missing_origin', () => {

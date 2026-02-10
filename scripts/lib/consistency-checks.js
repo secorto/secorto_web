@@ -24,7 +24,7 @@ export function buildInfoFromLocales(locales) {
   /** @type {InfoMap} */
   const info = {}
   for (const [locale, data] of locales.entries()) {
-    const fm = data && data.fm ? data.fm : {}
+    const fm = /** @type {Record<string, unknown>} */ (data.fm)
     info[locale] = { status: /** @type {string|undefined} */ (fm.translation_status), origin: /** @type {LocaleOrigin|undefined} */ (fm.translation_origin) }
   }
   return info
@@ -80,6 +80,27 @@ export function checkOriginPresentBothOriginal(info, collection, id) {
       const targetData = info[target]
       if (targetData && targetData.status === 'original' && data.status === 'original') {
         out.push({ collection, id, type: 'origin_present_both_original', locale, origin: data.origin })
+      }
+    }
+  }
+  return out
+}
+
+/**
+ * Check for missing frontmatter entries in the content map. Returns an array
+ * of Inconsistency-like objects with type `missing_frontmatter`.
+ * @param {Map<string, Map<string, Map<string, LocaleFile>>>} map
+ * @returns {Inconsistency[]}
+ */
+export function checkMissingFrontmatter(map) {
+  const out = []
+  for (const [collection, collMap] of map.entries()) {
+    for (const [id, locales] of collMap.entries()) {
+      for (const [locale, data] of locales.entries()) {
+        const fm = data && data.fm
+        if (!fm || (typeof fm === 'object' && Object.keys(fm).length === 0)) {
+          out.push({ collection, id, type: 'missing_frontmatter', locale })
+        }
       }
     }
   }
