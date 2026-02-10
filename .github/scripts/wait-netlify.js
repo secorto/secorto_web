@@ -82,15 +82,7 @@ function resolveExpectedSha() {
 
 const wait = ms => new Promise(r => setTimeout(r, ms))
 
-/**
- * Print an error with a base label and the error value.
- * Mirrors previous inline pattern used across the file.
- * @param {string} base
- * @param {any} err
- */
-function printError(base, err) {
-  console.error(base, err && err.message ? err.message : err)
-}
+import { printError } from '../../scripts/lib/log-util.js'
 
 /**
  * Write the chosen preview URL into the GitHub Actions env file.

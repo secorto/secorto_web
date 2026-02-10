@@ -2,6 +2,7 @@
 import fs from 'fs'
 import path from 'path'
 import { parseFrontmatterFromContent } from './frontmatter.js'
+import { printError } from './log-util.js'
 
 /**
  * Recursively list .md files under a directory using simple fs APIs.
@@ -66,7 +67,8 @@ export function buildContentMap(contentDir) {
       const data = parseFrontmatterFromContent(content)
       return { path: filePath, fm: data }
     } catch (e) {
-      console.warn(`Warning: failed to parse frontmatter for ${filePath}: ${e.message || e}`)
+      // use shared printError util from .github scripts to keep logging consistent
+      printError(`Warning: failed to parse frontmatter for ${filePath}:`, e)
       return { path: filePath, fm: {} }
     }
   }
