@@ -11,6 +11,7 @@ import { parseFrontmatterFromContent } from './frontmatter.js'
 export function listMdFiles(dir) {
   if (!fs.existsSync(dir)) return []
   const names = fs.readdirSync(dir, { withFileTypes: true })
+  /** @type {string[]} */
   let files = []
   for (const ent of names) {
     const p = path.join(dir, ent.name)
