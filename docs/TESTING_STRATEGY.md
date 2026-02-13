@@ -13,9 +13,16 @@ Este documento explica el objetivo de las pruebas unitarias y E2E en este reposi
 - Unit: `Vitest`
   - Razonamiento: integración con TypeScript, API compatible con Jest/Vitest, rápido y con `vi.mock` para mocking de módulos.
 - E2E: `Playwright`
-  - Razonamiento: soporta múltiples navegadores, fixtures robustos, rutas de red (`page.route`) para mocks, control en CI y ejecución local headful/headless.
+  - Razonamiento: soporta múltiples navegadores (incluido WebKit/Safari), fixtures robustos, rutas de red (`page.route`) para mocks, control en CI y ejecución local headful/headless.
+  - Además, Playwright no tiene límite de ejecuciones en CI a diferencia de Cypress Cloud (ver abajo).
 
-> Nota: actualmente el repo incluye Cypress; la intención es mantener Playwright como E2E principal. Mantener Cypress temporalmente está bien hasta migrar por completo.
+> **Nota sobre Cypress:** actualmente el repo aún incluye Cypress como dependencia, pero **Playwright es el E2E principal**. La migración se motivó por:
+>
+> - **Límite de 500 ejecuciones/mes en Cypress Cloud (plan gratuito).** Una "ejecución" se cuenta por cada spec file ejecutado en CI. Con ~12 specs × múltiples PRs y pushes, el presupuesto mensual se agotaba, dejando CI sin reportes E2E hasta el siguiente ciclo.
+> - Falta de soporte para WebKit/Safari y multi-tab.
+> - Interceptación de red menos flexible que `page.route()`.
+>
+> Cypress se mantiene temporalmente hasta completar la limpieza (eliminar `cypress/`, `cypress.config.js` y las dependencias). Ver [ADR 002 — Migración de Cypress a Playwright + Vitest](adr/002-testing-framework-migration.md) para el análisis completo.
 
 ## Objetivos concretos por tipo de prueba
 
