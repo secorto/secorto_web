@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets'
 import Gallery from '@components/Gallery.astro'
+import WorkDateRange from '@components/WorkDateRange.astro'
 import { useTranslations } from '@i18n/utils'
 import type { UILanguages } from '@i18n/ui'
 
@@ -14,6 +15,8 @@ interface Props {
       role?: string
       responsibilities?: string
       website?: string
+      startDate?: Date
+      endDate?: Date
       gallery?: Array<{ image: ImageMetadata; alt: string }>
     }
   }
@@ -32,7 +35,7 @@ const t = useTranslations(locale)
   )
 )}
 
-{(entry.data?.role || entry.data?.responsibilities) && (
+{(entry.data?.role || entry.data?.responsibilities || entry.data?.startDate) && (
   <section class="entry-metadata">
     <dl>
       {entry.data?.role && (
@@ -44,6 +47,14 @@ const t = useTranslations(locale)
         <>
           <dt>{t('post.responsibilities')}</dt><dd>{entry.data.responsibilities}</dd>
         </>
+      )}
+      {entry.data?.startDate && (
+        <WorkDateRange
+          locale={locale}
+          startDate={entry.data.startDate}
+          endDate={entry.data.endDate}
+          showLabels={true}
+        />
       )}
     </dl>
   </section>
