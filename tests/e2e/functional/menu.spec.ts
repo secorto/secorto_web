@@ -1,4 +1,4 @@
-import { test, expect, devices } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 
 test.describe('Hamburger menu', () => {
   // Forzar viewport móvil para que el hamburger sea visible
