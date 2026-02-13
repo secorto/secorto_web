@@ -14,6 +14,7 @@ simplificada del [formato de Michael Nygard](https://cognitect.com/blog/2011/11/
 | [002](002-testing-framework-migration.md) | Migración de Cypress a Playwright + Vitest | Aceptada | 2025-07 |
 | [003](003-third-party-mocks.md) | Mocks de servicios de terceros en tests E2E | Aceptada | 2025-07 |
 | [004](004-linting-any-ban-style-conventions.md) | Linting, prohibición de `any` y convenciones de estilo | Parcial | 2025-07 |
+| [005](005-copilot-subscription-proposal.md) | Propuesta: suscripción a GitHub Copilot | Propuesta | 2025-07 |
 
 ## Convenciones
 
