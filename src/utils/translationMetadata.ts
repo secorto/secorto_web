@@ -27,7 +27,7 @@ export interface PageData {
  * taking into account translation drafts that should point to their originals
  *
  * @param params - Entry metadata
- * @param params.translationStatus - Translation status of the entry
+ * @param params.entryDraft - Explicit `draft` frontmatter for the entry
  * @param params.translationOrigin - Origin locale/ID if this is a translation
  * @param params.currentLocale - Current locale being viewed
  * @param params.currentCleanId - Current entry's clean ID
