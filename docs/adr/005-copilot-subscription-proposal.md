@@ -1,7 +1,7 @@
 # ADR 005: Evaluación de suscripción a GitHub Copilot
 
 > **Estado:** Propuesta
-> **Fecha:** 2025-07
+> **Fecha:** 2026-01
 > **Categoría:** Herramientas / Productividad / Ética
 
 ---

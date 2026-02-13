@@ -1,7 +1,7 @@
 # ADR: Mocks de servicios de terceros en tests E2E
 
 > **Estado:** Aceptada
-> **Fecha:** 2025-07-11
+> **Fecha:** 2026-01
 > **Categoría:** Testing / Rendimiento / Arquitectura
 
 ---
