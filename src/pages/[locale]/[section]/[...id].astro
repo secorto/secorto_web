@@ -6,15 +6,13 @@ import Comments from '@components/Comments.astro'
 import BlogTalkPostView from '@components/BlogTalkPostView.astro'
 import WorkProjectCommunityView from '@components/WorkProjectCommunityView.astro'
 import SEOHeadDetail from '@components/SEOHeadDetail.astro'
-import { sectionsConfig } from '@config/sections'
 import { loadEntryByRoute } from '@utils/sectionLoader'
 import { useTranslations } from '@i18n/utils'
-import { languageKeys } from '@i18n/ui'
 import type { UILanguages } from '@i18n/ui'
 import { buildDetailPageContext } from '@utils/sectionContext'
-import { extractCleanId } from '@utils/ids'
 import { getAvailableLocalesForEntry } from '@utils/translationHelpers'
 import { getCanonicalMetadata, getPageMetadata } from '@utils/translationMetadata'
+import { buildAllDetailPaths } from '@utils/staticPathsBuilder'
 
 interface BaseEntryData {
   title: string
@@ -24,24 +22,7 @@ interface BaseEntryData {
 }
 
 export async function getStaticPaths() {
-  const paths: Array<{ params: { locale: UILanguages; section: string; id: string } }> = []
-
-  for (const [_sectionKey, config] of Object.entries(sectionsConfig)) {
-    const allEntries = await getCollection(config.collection)
-
-    for (const localeKey of languageKeys) {
-      const sectionRoute = config.routes[localeKey as UILanguages]
-      const entriesForLocale = allEntries.filter((e) => e.id.startsWith(`${localeKey}/`))
-
-      for (const entry of entriesForLocale) {
-        const fileCleanId = extractCleanId(entry.id)
-        const entrySlug = (entry.data as BaseEntryData).slug || fileCleanId
-        paths.push({ params: { locale: localeKey as UILanguages, section: sectionRoute, id: entrySlug } })
-      }
-    }
-  }
-
-  return paths
+  return await buildAllDetailPaths(getCollection)
 }
 
 const { locale, section, id } = Astro.params as { locale: UILanguages; section: string; id: string }
