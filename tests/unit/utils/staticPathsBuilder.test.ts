@@ -1,6 +1,6 @@
 import { test, expect, describe, vi } from 'vitest'
-import { 
-  buildDetailPathsForSection, 
+import {
+  buildDetailPathsForSection,
   buildAllDetailPaths,
   buildSectionIndexPaths,
   buildTagPaths
@@ -19,6 +19,7 @@ describe('buildDetailPathsForSection', () => {
       en: 'blog'
     },
     listComponent: 'ListPost',
+    detailComponent: 'BlogTalkPostView',
     showFeaturedImage: true
   }
 
@@ -106,6 +107,7 @@ describe('buildDetailPathsForSection', () => {
         en: 'talk'
       },
       listComponent: 'ListPost',
+      detailComponent: 'BlogTalkPostView',
       showFeaturedImage: true
     }
 
