@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { getUniqueTags, type EntryWithCleanId } from '@utils/paths'
+import { getUniqueTags } from '@utils/paths'
 
 describe('paths utils', () => {
   it('getPostsByLocale filters by locale and sets cleanId', async () => {
@@ -36,7 +36,7 @@ describe('paths utils', () => {
       { data: { } },
       { data: { tags: ['b', 'c'] } }
     ]
-    const tags = getUniqueTags(posts as unknown as EntryWithCleanId<'blog' | 'talk'>[])
+    const tags = getUniqueTags(posts)
     expect(tags).toEqual(['a', 'b', 'c'])
   })
 })

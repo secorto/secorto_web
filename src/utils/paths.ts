@@ -32,10 +32,10 @@ export async function getPostsByLocale<C extends CollectionKey>(
  * @param posts - Array de posts con data.tags
  * @returns Array de tags únicos ordenados alfabéticamente
  */
-export function getUniqueTags<C extends CollectionWithTags>(posts: EntryWithCleanId<C>[]) {
+export function getUniqueTags(posts: { data: { tags?: string[] } }[]) {
   return [...new Set(
     posts.flatMap((post) => {
-      const maybeTags = (post.data as { tags?: string[] }).tags
+      const maybeTags = post.data.tags
       return maybeTags ?? []
     })
   )].sort((a, b) => a.localeCompare(b))

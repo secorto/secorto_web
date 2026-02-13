@@ -2,7 +2,7 @@ import { getSectionConfigByRoute, type SectionConfig } from '@config/sections'
 import { getPostsByLocale, getUniqueTags } from '@utils/paths'
 import type { EntryWithCleanId, CollectionWithTags } from '@utils/paths'
 import type { UILanguages } from '@i18n/ui'
-import type { CollectionEntry } from 'astro:content'
+import type { CollectionEntry, CollectionKey } from 'astro:content'
 import { extractCleanId } from "@utils/ids"
 
 export interface SectionContext {
@@ -20,7 +20,7 @@ export interface TagsPageContext {
   tags: string[]
 }
 
-export interface DetailPageContext<T = CollectionEntry<keyof import('astro:content').DataEntryMap> | { id: string; data: Record<string, unknown> }> {
+export interface DetailPageContext<T extends { id: string } = CollectionEntry<CollectionKey>> {
   entry: T
   config: SectionConfig
   locale: UILanguages
@@ -83,7 +83,7 @@ export async function buildTagsPageContext(
  * @param loadEntryByRoute - Función para cargar entrada
  * @returns Contexto con entrada
  */
-export async function buildDetailPageContext<T = CollectionEntry<keyof import('astro:content').DataEntryMap> | { id: string; data: Record<string, unknown> }>(
+export async function buildDetailPageContext<T extends { id: string } = CollectionEntry<CollectionKey>>(
   section: string,
   locale: UILanguages,
   id: string,
@@ -94,11 +94,10 @@ export async function buildDetailPageContext<T = CollectionEntry<keyof import('a
   ) => Promise<{ entry: T; config: SectionConfig }>
 ): Promise<DetailPageContext<T>> {
   const loaded = await loadEntryByRoute(section, locale, id)
-
   return {
     entry: loaded.entry,
     config: loaded.config,
     locale,
-    cleanId: extractCleanId((loaded.entry as unknown as { id: string }).id)
+    cleanId: extractCleanId(loaded.entry.id)
   }
 }
