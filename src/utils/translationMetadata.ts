@@ -15,12 +15,19 @@ export interface TranslationMetadata {
   shouldNoindex: boolean
 }
 
+export interface PageData {
+  title?: string
+  excerpt?: string
+  description?: string
+  [key: string]: unknown
+}
+
 /**
  * Determines if an entry is a translation draft based on its translation_status
- * 
+ *
  * @param translationStatus - The entry's translation_status field
  * @returns true if status is draft/partial/pending, false otherwise
- * 
+ *
  * @example
  * ```ts
  * isTranslationDraft('draft') // true
@@ -37,14 +44,14 @@ export function isTranslationDraft(
 /**
  * Calculates the canonical locale and ID for a content entry,
  * taking into account translation drafts that should point to their originals
- * 
+ *
  * @param params - Entry metadata
  * @param params.translationStatus - Translation status of the entry
  * @param params.translationOrigin - Origin locale/ID if this is a translation
  * @param params.currentLocale - Current locale being viewed
  * @param params.currentCleanId - Current entry's clean ID
  * @returns Canonical metadata for SEO
- * 
+ *
  * @example
  * ```ts
  * // Translation draft - should point to original
@@ -55,7 +62,7 @@ export function isTranslationDraft(
  *   currentCleanId: '2026-01-01-post'
  * })
  * // Returns: { canonicalLocale: 'es', canonicalId: '2026-01-01-post', isTranslationDraft: true, shouldNoindex: true }
- * 
+ *
  * // Complete translation - canonical is self
  * getCanonicalMetadata({
  *   translationStatus: 'translated',
@@ -91,11 +98,11 @@ export function getCanonicalMetadata(params: {
 
 /**
  * Extracts page metadata (title and description) from a content entry
- * 
+ *
  * @param entry - Content entry
  * @param fallbackTitle - Fallback title if entry.data.title is not set
  * @returns Object with pageTitle and pageDescription
- * 
+ *
  * @example
  * ```ts
  * getPageMetadata(entry, 'Blog')
@@ -103,7 +110,7 @@ export function getCanonicalMetadata(params: {
  * ```
  */
 export function getPageMetadata(
-  entry: { data: Record<string, any> },
+  entry: { data: PageData },
   fallbackTitle: string
 ): { pageTitle: string; pageDescription: string } {
   return {
