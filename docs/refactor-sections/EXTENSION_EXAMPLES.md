@@ -24,6 +24,7 @@ export const sectionsConfig = {
       en: 'events'
     },
     listComponent: 'ListPost',
+    detailComponent: 'BlogTalkPostView',
     showFeaturedImage: true
   }
 }
@@ -88,6 +89,7 @@ portfolio: {
   hasTags: false,
   routes: { es: 'portfolio', en: 'portfolio' },
   listComponent: 'ListGallery',  ← ¡Nuevo componente!
+    detailComponent: 'WorkProjectCommunityView',
   showFeaturedImage: false
 }
 
@@ -148,6 +150,7 @@ export const sectionsConfig: Record<SectionType, SectionConfig> = {
     hasTags: true,
     routes: { es: 'blog', en: 'blog' },
     listComponent: 'ListPost',
+    detailComponent: 'BlogTalkPostView',
     showFeaturedImage: true,
 
     // Metadatos nuevos
@@ -293,5 +296,7 @@ talk: {
 // ✅ Todos los links, menús, sitemap se actualizan automáticamente
 
 export default {}
+
+<!-- Nota: se agregó el campo `detailComponent` en los snippets de ejemplo para dejar explícito el componente usado en las vistas de detalle. -->
 
 ```
