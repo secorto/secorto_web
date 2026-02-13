@@ -41,8 +41,9 @@ export async function loadEntryByRoute(
     const entrySlug = e.data.slug || cleanId
     return e.id.startsWith(`${locale}/`) && entrySlug === id
   })
-
-  if (!entry) return null
+  if (!entry) {
+    throw new Error(`Entry not found for ${sectionSlug}/${id} (${locale})`)
+  }
 
   return { config, entry }
 }

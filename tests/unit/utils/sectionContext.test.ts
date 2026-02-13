@@ -1,4 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
+import type { CollectionEntry } from 'astro:content'
+import type { SectionConfig } from '@config/sections'
 
 describe('sectionContext helpers', () => {
   it('buildSectionContext returns config when found', async () => {
@@ -33,23 +35,22 @@ describe('sectionContext helpers', () => {
     expect(ctx.tags.sort()).toEqual(['a', 'b', 'c'].sort())
   })
 
-  it('buildDetailPageContext returns null when entry not found in requested locale', async () => {
+  it('buildDetailPageContext returns context when entry is found', async () => {
     vi.resetModules()
-    // loadEntryByRoute returns null (entry doesn't exist)
-    const loadEntry = vi.fn(async (_section: string, _locale: string, _id: string) => null)
+    const mockEntry = { id: 'es/2026-01-01-post', data: { title: 'Post' } }
+    const mockConfig = { collection: 'blog', routes: { es: 'blog', en: 'blog' } }
+    const loadEntry = vi.fn(async () => ({ entry: mockEntry, config: mockConfig }))
 
     const { buildDetailPageContext } = await import('@utils/sectionContext')
-    const ctx = await buildDetailPageContext('blog', 'es', 'nonexistent', loadEntry)
-    expect(ctx).toBeNull()
-  })
-
-  it('buildDetailPageContext returns null when section not found', async () => {
-    vi.resetModules()
-    const loadEntry = vi.fn(async () => null)
-    // sectionsConfig doesn't contain matching route slug
-    vi.doMock('@config/sections', () => ({ sectionsConfig: {}, getSectionConfigByRoute: (_r: string, _l: string) => null }))
-    const { buildDetailPageContext } = await import('@utils/sectionContext')
-    const res = await buildDetailPageContext('nope', 'es', 'id', loadEntry)
-    expect(res).toBeNull()
+    const ctx = await buildDetailPageContext(
+      'blog',
+      'es',
+      '2026-01-01-post',
+      loadEntry as unknown as (section: string, locale: 'en' | 'es', id: string) => Promise<{ entry: CollectionEntry<any>; config: SectionConfig }>
+    )
+    expect(ctx).not.toBeNull()
+    expect(ctx?.entry).toEqual(mockEntry)
+    expect(ctx?.config).toEqual(mockConfig)
+    expect(ctx?.cleanId).toBe('2026-01-01-post')
   })
 })

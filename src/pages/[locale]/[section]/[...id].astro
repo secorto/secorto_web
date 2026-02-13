@@ -28,12 +28,7 @@ export async function getStaticPaths() {
 const { locale, section, id } = Astro.params as { locale: UILanguages; section: string; id: string }
 const t = useTranslations(locale)
 
-// Construir contexto de página (intenta cargar, con fallback a otros locales)
 const context = await buildDetailPageContext(section, locale, id, loadEntryByRoute)
-
-if (!context) {
-  return new Response('Not found', { status: 404 })
-}
 
 const { entry, config, cleanId } = context
 const entryTyped = entry as CollectionEntry<CollectionKey>

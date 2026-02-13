@@ -72,7 +72,7 @@ describe('loadSectionByRoute & loadEntryByRoute', () => {
     expect(byClean!.entry.id).toBe('es/2025-01-01-title')
   })
 
-  it('loadEntryByRoute returns null when no matching entry', async () => {
+  it('loadEntryByRoute throws when no matching entry', async () => {
     vi.resetModules()
     const entries = [ { id: 'es/one', data: {} } ]
     vi.doMock('@config/sections', () => ({
@@ -80,7 +80,6 @@ describe('loadSectionByRoute & loadEntryByRoute', () => {
     }))
     vi.doMock('astro:content', () => ({ getCollection: vi.fn(async () => entries) }))
     const { loadEntryByRoute } = await import('@utils/sectionLoader')
-    const res = await loadEntryByRoute('blog', 'es', 'nonexistent')
-    expect(res).toBeNull()
+    await expect(loadEntryByRoute('blog', 'es', 'nonexistent')).rejects.toThrow('Entry not found')
   })
 })

@@ -20,8 +20,8 @@ export interface TagsPageContext {
   tags: string[]
 }
 
-export interface DetailPageContext {
-  entry: CollectionEntry<keyof import('astro:content').DataEntryMap> | { id: string; data: Record<string, unknown> }
+export interface DetailPageContext<T = CollectionEntry<keyof import('astro:content').DataEntryMap> | { id: string; data: Record<string, unknown> }> {
+  entry: T
   config: SectionConfig
   locale: UILanguages
   cleanId: string
@@ -81,9 +81,9 @@ export async function buildTagsPageContext(
  * @param locale - Idioma solicitado
  * @param id - ID/slug del contenido
  * @param loadEntryByRoute - Función para cargar entrada
- * @returns Contexto con entrada o null si no existe
+ * @returns Contexto con entrada
  */
-export async function buildDetailPageContext(
+export async function buildDetailPageContext<T = CollectionEntry<keyof import('astro:content').DataEntryMap> | { id: string; data: Record<string, unknown> }>(
   section: string,
   locale: UILanguages,
   id: string,
@@ -91,18 +91,14 @@ export async function buildDetailPageContext(
     section: string,
     locale: UILanguages,
     id: string
-  ) => Promise<{ entry: CollectionEntry<keyof import('astro:content').DataEntryMap>; config: SectionConfig } | null>
-): Promise<DetailPageContext | null> {
+  ) => Promise<{ entry: T; config: SectionConfig }>
+): Promise<DetailPageContext<T>> {
   const loaded = await loadEntryByRoute(section, locale, id)
-
-  if (!loaded) {
-    return null
-  }
 
   return {
     entry: loaded.entry,
     config: loaded.config,
     locale,
-    cleanId: extractCleanId(loaded.entry.id)
+    cleanId: extractCleanId((loaded.entry as unknown as { id: string }).id)
   }
 }

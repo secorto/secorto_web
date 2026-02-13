@@ -21,7 +21,7 @@ const dateFormat = getFullFormat(Astro.url);
       url={`/${basePath}/${post.cleanId}`}
       title={post.data.title}
       translation_status={post.data.translation_status}
-      translation_note={(post.data as any).translation_note}
+      translation_note={(post.data as { translation_note?: string }).translation_note}
     >
       {post.data.excerpt}
       {post.data.date &&
