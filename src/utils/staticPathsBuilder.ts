@@ -39,6 +39,31 @@ interface EntryWithSlug {
 }
 
 /**
+ * Helper: Retorna iterador de todas las secciones.
+ */
+function* iterateSections(): Generator<SectionConfig> {
+  for (const [_, config] of Object.entries(sectionsConfig)) {
+    yield config
+  }
+}
+
+/**
+ * Helper: Retorna iterador de todas las combinaciones sección×locale.
+ * @param filter - Filtro opcional para secciones
+ */
+function* iterateSectionLocales(
+  filter?: (config: SectionConfig) => boolean
+): Generator<[SectionConfig, UILanguages]> {
+  for (const config of iterateSections()) {
+    if (filter && !filter(config)) continue
+    
+    for (const locale of languageKeys) {
+      yield [config, locale]
+    }
+  }
+}
+
+/**
  * Construye todas las rutas estáticas para índices de secciones.
  * Genera una ruta por sección × idioma.
  * @returns Array de paths para getStaticPaths
@@ -46,15 +71,13 @@ interface EntryWithSlug {
 export async function buildSectionIndexPaths(): Promise<SectionPath[]> {
   const paths: SectionPath[] = []
 
-  for (const [_, config] of Object.entries(sectionsConfig)) {
-    for (const locale of languageKeys) {
-      paths.push({
-        params: {
-          locale,
-          section: config.routes[locale]
-        }
-      })
-    }
+  for (const [config, locale] of iterateSectionLocales()) {
+    paths.push({
+      params: {
+        locale,
+        section: config.routes[locale]
+      }
+    })
   }
 
   return paths
@@ -69,15 +92,13 @@ export async function buildSectionIndexPaths(): Promise<SectionPath[]> {
 export async function buildTagPaths(): Promise<TagPath[]> {
   const paths: TagPath[] = []
 
-  for (const [_, config] of Object.entries(sectionsConfig)) {
+  for (const config of iterateSections()) {
     if (!config.hasTags) continue
-
-    const locales = Object.keys(config.routes) as UILanguages[]
 
     // 1. Recolectar todos los tags únicos de todos los locales
     const allTags = new Set<string>()
-
-    for (const locale of locales) {
+    
+    for (const locale of languageKeys) {
       const posts = await getPostsByLocale(config.collection as never, locale)
       const tags = getUniqueTags(posts)
       for (const tag of tags) {
@@ -86,7 +107,7 @@ export async function buildTagPaths(): Promise<TagPath[]> {
     }
 
     // 2. Generar rutas para cada locale × tag
-    for (const locale of locales) {
+    for (const locale of languageKeys) {
       for (const tag of allTags) {
         paths.push({
           params: {
@@ -150,7 +171,7 @@ export async function buildAllDetailPaths(
 ): Promise<DetailPath[]> {
   const allPaths: DetailPath[] = []
 
-  for (const [_, config] of Object.entries(sectionsConfig)) {
+  for (const config of iterateSections()) {
     const allEntries = await getCollection(config.collection)
     const paths = buildDetailPathsForSection(
       allEntries as EntryWithSlug[],
