@@ -36,7 +36,7 @@ const entryData = entryTyped.data as BaseEntryData
 
 // Calculate canonical metadata (handles translation drafts)
 const { isTranslationDraft, canonicalLocale, canonicalId, shouldNoindex } = getCanonicalMetadata({
-  translationStatus: entryData.translation_status,
+  entryDraft: Boolean((entryData as any).draft),
   translationOrigin: entryData.translation_origin,
   currentLocale: context.locale,
   currentCleanId: cleanId
@@ -61,10 +61,12 @@ const routeSlug = config.routes[context.locale]
 />
 
 <BaseLayout pageTitle={pageTitle} description={pageDescription}>
-  {isTranslationDraft && entryData.translation_origin && (
+  {(entryData.draft || isTranslationDraft) && (
     <div class="untranslated-notice" role="status">
-      <p>{t('post.translation_draft_notice')}</p>
-      <a href={`/${entryData.translation_origin.locale}/${config.routes[entryData.translation_origin.locale as UILanguages]}/${entryData.translation_origin.id}`}>{t('post.view_original')}</a>
+      <p>{entryData.draft ? t('post.draft_notice') : t('post.translation_draft_notice')}</p>
+      {isTranslationDraft && entryData.translation_origin && (
+        <a href={`/${entryData.translation_origin.locale}/${config.routes[entryData.translation_origin.locale as UILanguages]}/${entryData.translation_origin.id}`}>{t('post.view_original')}</a>
+      )}
     </div>
   )}
 
