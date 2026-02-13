@@ -73,7 +73,7 @@ const routeSlug = config.routes[context.locale]
     </div>
   )}
 
-  {(config.collection === 'blog' || config.collection === 'talk') ? (
+  {config.detailComponent === 'BlogTalkPostView' ? (
     <BlogTalkPostView
       locale={context.locale}
       routeSlug={routeSlug}
