@@ -32,6 +32,7 @@ test.describe('RSS feed endpoint', () => {
     const response = await request.get('/rss.xml')
     const body = await response.text()
 
-    expect(body).toMatch(/<language>en-us<\/language>/)
+    // Default lang is 'es', so /rss.xml produces es-co
+    expect(body).toMatch(/<language>es-co<\/language>/)
   })
 })
