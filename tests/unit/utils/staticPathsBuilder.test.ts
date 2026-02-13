@@ -252,23 +252,83 @@ describe('buildSectionIndexPaths', () => {
 })
 
 describe('buildTagPaths', () => {
-  test('only builds paths for sections with tags enabled', async () => {
-    const result = await buildTagPaths()
+  const mockFetchPosts = vi.fn(async (_collection: string, locale: string) => {
+    if (locale === 'es') {
+      return [
+        { data: { tags: ['typescript', 'astro'] } },
+        { data: { tags: ['astro', 'testing'] } }
+      ]
+    }
+    if (locale === 'en') {
+      return [
+        { data: { tags: ['typescript'] } }
+      ]
+    }
+    return []
+  })
 
-    // Only blog and talk have tags enabled
+  test('only builds paths for sections with tags enabled', async () => {
+    const result = await buildTagPaths(mockFetchPosts)
+
     const sections = [...new Set(result.map(p => p.params.section))]
-    expect(sections).not.toContain('trabajo') // work section
+    // blog and talk have hasTags=true; work, project, community do not
+    expect(sections).not.toContain('trabajo')
     expect(sections).not.toContain('work')
+    expect(sections).not.toContain('proyecto')
+    expect(sections).not.toContain('project')
+    expect(sections).not.toContain('comunidad')
+    expect(sections).not.toContain('community')
   })
 
   test('includes tag in both params and props', async () => {
-    const result = await buildTagPaths()
+    const result = await buildTagPaths(mockFetchPosts)
 
-    if (result.length > 0) {
-      const firstPath = result[0]
-      expect(firstPath.params.tag).toBeDefined()
-      expect(firstPath.props.tag).toBeDefined()
-      expect(firstPath.params.tag).toBe(firstPath.props.tag)
+    expect(result.length).toBeGreaterThan(0)
+    for (const path of result) {
+      expect(path.params.tag).toBeDefined()
+      expect(path.props.tag).toBeDefined()
+      expect(path.params.tag).toBe(path.props.tag)
     }
+  })
+
+  test('generates paths for each locale × tag combination', async () => {
+    const result = await buildTagPaths(mockFetchPosts)
+
+    // blog: es has [typescript, astro, testing], en has [typescript]
+    // talk:  es has [typescript, astro, testing], en has [typescript]
+    // Per section: es×3 + en×1 = 4; two sections = 8 — but tags are per-locale,
+    // so each (section, locale) pair produces its own unique tags
+    // blog-es: 3 tags, blog-en: 1 tag → 4
+    // talk-es: 3 tags, talk-en: 1 tag → 4
+    // total = 8
+    expect(result).toHaveLength(8)
+  })
+
+  test('uses correct section route per locale', async () => {
+    const result = await buildTagPaths(mockFetchPosts)
+
+    const talkEs = result.filter(p => p.params.locale === 'es' && p.params.section === 'charla')
+    const talkEn = result.filter(p => p.params.locale === 'en' && p.params.section === 'talk')
+
+    expect(talkEs.length).toBeGreaterThan(0)
+    expect(talkEn.length).toBeGreaterThan(0)
+  })
+
+  test('returns empty when no posts have tags', async () => {
+    const emptyMock = vi.fn(async () => [{ data: {} }])
+    const result = await buildTagPaths(emptyMock)
+
+    expect(result).toEqual([])
+  })
+
+  test('deduplicates tags within the same locale', async () => {
+    const dupesMock = vi.fn(async () => [
+      { data: { tags: ['astro', 'astro', 'ts'] } },
+      { data: { tags: ['ts'] } }
+    ])
+    const result = await buildTagPaths(dupesMock)
+
+    // 2 sections (blog, talk) × 2 locales × 2 unique tags = 8
+    expect(result).toHaveLength(8)
   })
 })
