@@ -45,7 +45,7 @@ Las áreas donde Copilot aportó valor en este repo:
 
 ### A. Suscribirse a Copilot
 - Pros:
-  - Aumento de productividad (ej.: epoxy de unit tests completada más rápido)
+  - Aumento de productividad (ej.: épica de unit tests completada más rápido)
   - Integración nativa en VSCode/GitHub
   - Suggestions más precisas que alternativas gratuitas
 - Contras:
