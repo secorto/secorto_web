@@ -3,7 +3,7 @@ import { ContentListPage } from '@tests/pages/ContentListPage'
 import { languageKeys, ui, type UILanguages } from '@i18n/ui'
 import { openItem } from '@tests/actions/ContentListActions'
 import { getURLForSection } from '@config/sections'
-import { mockGiscus } from '@tests/e2e/helpers/mockGiscus'
+import { mockThirdParty } from '@tests/e2e/helpers/mockThirdParty'
 
 const expectedTitles: Record<UILanguages, string> = {
   es: 'Devcontainers en localhost',
@@ -34,7 +34,7 @@ test.describe('Charlas', () => {
   for (const locale of languageKeys) {
     test(`Permite navegar por categorías y ver una charla (${locale})`, async ({ page }) => {
       const list = new ContentListPage(page)
-      await mockGiscus(page)
+      await mockThirdParty(page)
 
       await page.goto(getURLForSection('talk', locale))
 

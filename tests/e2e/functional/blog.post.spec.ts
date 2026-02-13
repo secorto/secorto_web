@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test'
 import { BlogPage } from '@tests/pages/BlogPage'
+import { mockThirdParty } from '@tests/e2e/helpers/mockThirdParty'
 
 const postFixtures = [
   {
@@ -19,6 +20,7 @@ const postFixtures = [
 for (const f of postFixtures) {
   test.describe(`Blog post (${f.locale})`, () => {
     test.beforeEach(async ({ page }) => {
+      await mockThirdParty(page)
       await page.setViewportSize({ width: 480, height: 800 })
       const blog = new BlogPage(page)
       await blog.gotoList(f.listPath)
@@ -32,7 +34,7 @@ for (const f of postFixtures) {
     })
 
     test('no horizontal scroll on mobile', async ({ page }, testInfo) => {
-      const { assertNoHorizontalOverflow } = await import('../../tests/utils/layout')
+      const { assertNoHorizontalOverflow } = await import('@tests/utils/layout')
       await assertNoHorizontalOverflow(page, testInfo, f.locale)
     })
   })

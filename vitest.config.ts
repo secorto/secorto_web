@@ -23,6 +23,14 @@ export default defineConfig({
     setupFiles: ['tests/setup.ts'],
     coverage: {
       reporter: ['text', 'lcov'],
+      include: ['src/**/*.{ts,tsx,js,jsx,vue}','.github/**/*.{ts,tsx,js,jsx,vue}'],
+      exclude: [
+        'src/content.config.ts',
+        'src/env.d.ts',
+        'src/pages/**',          // Endpoints Astro → testear con Playwright e2e
+        'src/scripts/**',        // Browser scripts → testear con Playwright e2e
+        'src/i18n/translations.ts', // Barrel de datos precomputados (buildTranslationMap ya testeado)
+      ],
     }
   }
 })

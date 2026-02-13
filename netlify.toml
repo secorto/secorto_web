@@ -104,3 +104,19 @@ status = 301
 from = "/es/blog/2016-06-18-por-que-uso-npm"
 to = "/es/blog/2025-12-25-por-que-uso-npm"
 status = 301
+
+# RSS feed legacy redirect (was /rss.xml, now per-locale)
+[[redirects]]
+from = "/rss.xml"
+to = "/es/rss.xml"
+status = 301
+
+[[redirects]]
+from = "/rss-es.xml"
+to = "/es/rss.xml"
+status = 301
+
+[[redirects]]
+from = "/rss-en.xml"
+to = "/en/rss.xml"
+status = 301
