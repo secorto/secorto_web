@@ -8,14 +8,22 @@ Quick start (lo que quieres ver al abrir el devcontainer)
   - Al adjuntarte, `postAttachCommand` ejecuta `npm start` por defecto, dejando el servidor en ejecución
   - El puerto `4321` está forwarded y configurado para abrir la vista previa (`onAutoForward: openPreview`)
 - Resultado visible inmediato: servidor en `http://localhost:4321` accesible desde la vista previa de VS Code/Codespaces
-- Consejo UX: el editor suele mostrar el `README.md` del proyecto al abrir el contenedor; asegúrate de que ese README tenga un link o una nota breve hacia este documento para orientar a quienes llegan por primera vez
+- Nota: el editor no siempre muestra automáticamente el `README.md` al abrir el contenedor; por eso este proyecto configura VS Code para intentar abrir `docs/DEVCONTAINER.md` al adjuntarse al devcontainer
+
+Extensiones incluidas
+---------------------
+
+- `astro-build.astro-vscode` — soporte de Astro: sintaxis y snippets
+- `vitest.explorer` — integración para ejecutar y explorar tests de Vitest
+- `ms-playwright.playwright` — herramientas para escribir/ejecutar tests con Playwright
+- `dbaeumer.vscode-eslint` — linting integrado con ESLint
 
 Comandos útiles
 ---------------
 
-- Iniciar desarrollo manualmente: `npm run dev` (inicia Astro en modo dev)
-- Ejecutar E2E localmente: `npm run test:e2e` (Playwright)
-- Ejecutar pruebas E2E con variables de entorno: `npm run test:e2e:env`
+- `npm start` — el devcontainer lo arranca automáticamente al adjuntarse; el script `start` usa `--host` para exponer la app en 0.0.0.0 y permitir conexión desde fuera del contenedor (por eso no necesitas correr `npm run dev` dentro del devcontainer)
+- `npm run dev` — opcional fuera del devcontainer; dentro del contenedor no es necesario porque `npm start` ya deja la app accesible
+- `npm run test:e2e` — ejecutar E2E con Playwright (requiere instalar navegadores primero: `npx playwright install --with-deps`)
 
 Detalles y rationale (instrucciones específicas)
 ---------------------------------------------
@@ -54,11 +62,3 @@ Recomendaciones rápidas
 - Si solo vas a desarrollar la app, evita instalar los navegadores en el contenedor — usa `npm run dev` y depura desde el navegador local
 - Para CI o workflows de validación E2E crea una imagen específica o añade un paso en el pipeline que ejecute `npx playwright install --with-deps`
 - Mantén este documento corto y coloca información de referencia (comandos opcionales y rationale) aquí; deja en el `README.md` raíz una nota breve y el enlace para no saturar la primera vista del contenedor
-
-Más ayuda
----------
-
-Si quieres, puedo:
-
-- Añadir un badge/notice en el `README.md` para que al abrir el contenedor se vea un paso rápido
-- Añadir un script opcional `devcontainer:prepare-e2e` que ejecute `npx playwright install --with-deps` para que la acción sea explícita
