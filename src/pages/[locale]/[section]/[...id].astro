@@ -5,12 +5,14 @@ import BaseLayout from '@layouts/BaseLayout.astro'
 import Comments from '@components/Comments.astro'
 import BlogTalkPostView from '@components/BlogTalkPostView.astro'
 import WorkProjectCommunityView from '@components/WorkProjectCommunityView.astro'
-import { sectionsConfig } from '@config/sections'
+import SEOHeadDetail from '@components/SEOHeadDetail.astro'
 import { loadEntryByRoute } from '@utils/sectionLoader'
 import { useTranslations } from '@i18n/utils'
-import { languageKeys, defaultLang } from '@i18n/ui'
 import type { UILanguages } from '@i18n/ui'
 import { buildDetailPageContext } from '@utils/sectionContext'
+import { getAvailableLocalesForEntry } from '@utils/translationHelpers'
+import { getCanonicalMetadata, getPageMetadata } from '@utils/translationMetadata'
+import { buildAllDetailPaths } from '@utils/staticPathsBuilder'
 
 interface BaseEntryData {
   title: string
@@ -20,98 +22,53 @@ interface BaseEntryData {
 }
 
 export async function getStaticPaths() {
-  const paths: Array<{ params: { locale: UILanguages; section: string; id: string } }> = []
-
-  for (const [_sectionKey, config] of Object.entries(sectionsConfig)) {
-    const allEntries = await getCollection(config.collection)
-
-    for (const localeKey of languageKeys) {
-      const sectionRoute = config.routes[localeKey as UILanguages]
-      const entriesForLocale = allEntries.filter((e) => e.id.startsWith(`${localeKey}/`))
-
-      for (const entry of entriesForLocale) {
-        const fileCleanId = languageKeys.reduce((id, lang) => id.replace(new RegExp(`^${lang}/`), ''), entry.id)
-        const entrySlug = (entry.data as BaseEntryData).slug || fileCleanId
-        paths.push({ params: { locale: localeKey as UILanguages, section: sectionRoute, id: entrySlug } })
-      }
-    }
-  }
-
-  return paths
+  return await buildAllDetailPaths(getCollection)
 }
 
 const { locale, section, id } = Astro.params as { locale: UILanguages; section: string; id: string }
 const t = useTranslations(locale)
 
-// Construir contexto de página (intenta cargar, con fallback a otros locales)
 const context = await buildDetailPageContext(section, locale, id, loadEntryByRoute)
-const site = import.meta.env.SITE
 
-if (!context) {
-  return new Response('Not found', { status: 404 })
-}
-
-const { entry, config, cleanId, isUntranslated, translationOriginLocale } = context
+const { entry, config, cleanId } = context
 const entryTyped = entry as CollectionEntry<CollectionKey>
 const entryData = entryTyped.data as BaseEntryData
-const translationStatus = entryData.translation_status
-const isTranslationDraft = Boolean(translationStatus && translationStatus !== 'translated' && translationStatus !== 'original')
 
-// Obtener URL canónica
-const canonicalLocale = isTranslationDraft && entryData.translation_origin
-  ? (entryData.translation_origin.locale as UILanguages)
-  : translationOriginLocale || context.locale
+// Calculate canonical metadata (handles translation drafts)
+const { isTranslationDraft, canonicalLocale, canonicalId, shouldNoindex } = getCanonicalMetadata({
+  translationStatus: entryData.translation_status,
+  translationOrigin: entryData.translation_origin,
+  currentLocale: context.locale,
+  currentCleanId: cleanId
+})
 
-const canonicalId = isTranslationDraft && entryData.translation_origin
-  ? entryData.translation_origin.id
-  : cleanId
+// Get available locales for hreflang
+const availableLocales = await getAvailableLocalesForEntry(config.collection, cleanId)
 
-const canonicalUrl = `${site}/${canonicalLocale}/${config.routes[canonicalLocale]}/${canonicalId}`
-
-// Obtener locales disponibles para hreflang
-const allEntries = await getCollection(config.collection)
-const availableLocales = languageKeys.filter((lk) =>
-  allEntries.some((e) => {
-    const eCleanId = languageKeys.reduce((id, lang) => id.replace(new RegExp(`^${lang}/`), ''), e.id)
-    return e.id.startsWith(`${lk}/`) && eCleanId === cleanId
-  })
-)
-
+// Extract page metadata
 const { Content } = await render(entryTyped)
-const pageTitle = entryTyped.data.title || t(config.translationKey)
-const pageDescription = (entryTyped.data as any).excerpt || (entryTyped.data as any).description || ''
+const { pageTitle, pageDescription } = getPageMetadata(entryTyped, t(config.translationKey))
 const routeSlug = config.routes[context.locale]
 ---
 
-<head>
-  <meta charset="utf-8" />
-  <link rel="canonical" href={canonicalUrl} />
-  {(isUntranslated || isTranslationDraft) && <meta name="robots" content="noindex" />}
-  {availableLocales.map((lk) => (
-    <link rel="alternate" hreflang={lk} href={`${site}/${lk}/${config.routes[lk]}/${cleanId}`} />
-  ))}
-  <link rel="alternate" hreflang="x-default" href={`${site}/${defaultLang}/${config.routes[defaultLang]}/${cleanId}`} />
-</head>
+<SEOHeadDetail
+  slot="seo-head"
+  config={config}
+  cleanId={canonicalId}
+  canonicalLocale={canonicalLocale}
+  availableLocales={availableLocales}
+  noindex={shouldNoindex}
+/>
 
 <BaseLayout pageTitle={pageTitle} description={pageDescription}>
-  {isUntranslated && translationOriginLocale && (
-    <div class="untranslated-notice" role="status">
-      <p>{t('post.untranslated_notice')}</p>
-      <a href={`/${translationOriginLocale}/${config.routes[translationOriginLocale]}/${cleanId}`}>{t('post.view_original')}</a>
-    </div>
-  )}
-  {isTranslationDraft && (
+  {isTranslationDraft && entryData.translation_origin && (
     <div class="untranslated-notice" role="status">
       <p>{t('post.translation_draft_notice')}</p>
-      {translationOriginLocale && entryData.translation_origin ? (
-        <a href={`/${translationOriginLocale}/${config.routes[translationOriginLocale]}/${entryData.translation_origin.id}`}>{t('post.view_original')}</a>
-      ) : (
-        <a href={`/${context.locale}/${config.routes[context.locale]}/${cleanId}`}>{t('post.view_original')}</a>
-      )}
+      <a href={`/${entryData.translation_origin.locale}/${config.routes[entryData.translation_origin.locale as UILanguages]}/${entryData.translation_origin.id}`}>{t('post.view_original')}</a>
     </div>
   )}
 
-  {(config.collection === 'blog' || config.collection === 'talk') ? (
+  {config.detailComponent === 'BlogTalkPostView' ? (
     <BlogTalkPostView
       locale={context.locale}
       routeSlug={routeSlug}

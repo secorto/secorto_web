@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import fs from 'fs'
 import { listDeploys } from '../lib/wait-netlify-api.js'
 import { previewDeploysForBranch, findMatchingDeploy, choosePreviewUrl, summarizeCandidates } from '../lib/wait-netlify-integrator.js'

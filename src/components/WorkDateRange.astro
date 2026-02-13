@@ -1,0 +1,32 @@
+---
+import { getMonthYearFormat, useTranslations } from '@i18n/utils'
+import type { UILanguages } from '@i18n/ui'
+
+interface Props {
+  locale: UILanguages
+  startDate: Date
+  endDate?: Date
+  /**
+   * Si true, muestra las fechas con labels (dt/dd) en lugar de rango simple
+   * @default false
+   */
+  showLabels?: boolean
+}
+
+const { locale, startDate, endDate, showLabels = false } = Astro.props
+const t = useTranslations(locale)
+const dateFormat = getMonthYearFormat(Astro.url)
+
+const formattedStart = dateFormat.format(startDate)
+const formattedEnd = endDate ? dateFormat.format(endDate) : t('work.today')
+const rangeText = `${formattedStart} - ${formattedEnd}`
+---
+
+{showLabels ? (
+  <>
+    <dt>{t('post.work_period')}</dt>
+    <dd>{rangeText}</dd>
+  </>
+) : (
+  <span>{rangeText}</span>
+)}

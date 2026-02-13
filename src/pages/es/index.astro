@@ -1,11 +1,14 @@
 ---
 import SiteLayout from "@layouts/SiteLayout.astro";
+import SEOHeadHomepage from '@components/SEOHeadHomepage.astro';
 import intro from '@assets/img/intro.inline.svg?raw'
 import Footer from '@components/Footer.astro';
 import { getRelativeLocaleUrl } from 'astro:i18n';
 
 const pageTitle = "Página de inicio";
 ---
+
+<SEOHeadHomepage slot="seo-head" currentLocale="es" />
 
 <SiteLayout pageTitle={pageTitle}>
   <Fragment set:html={intro} />

@@ -18,6 +18,8 @@ export interface SectionConfig {
   routes: Record<UILanguages, string>
   /** Componente a usar para listar items */
   listComponent: 'ListPost' | 'ListWork'
+  /** Componente a usar para vista de detalle */
+  detailComponent: 'BlogTalkPostView' | 'WorkProjectCommunityView'
   /** Si mostrar imagen destacada */
   showFeaturedImage: boolean
 }
@@ -33,6 +35,7 @@ export const sectionsConfig: Record<SectionType, SectionConfig> = {
       en: 'blog'
     },
     listComponent: 'ListPost',
+    detailComponent: 'BlogTalkPostView',
     showFeaturedImage: true
   },
   talk: {
@@ -45,6 +48,7 @@ export const sectionsConfig: Record<SectionType, SectionConfig> = {
       en: 'talk'
     },
     listComponent: 'ListPost',
+    detailComponent: 'BlogTalkPostView',
     showFeaturedImage: true
   },
   work: {
@@ -56,6 +60,7 @@ export const sectionsConfig: Record<SectionType, SectionConfig> = {
       en: 'work'
     },
     listComponent: 'ListWork',
+    detailComponent: 'WorkProjectCommunityView',
     showFeaturedImage: false
   },
   project: {
@@ -67,6 +72,7 @@ export const sectionsConfig: Record<SectionType, SectionConfig> = {
       en: 'project'
     },
     listComponent: 'ListPost',
+    detailComponent: 'WorkProjectCommunityView',
     showFeaturedImage: true
   },
   community: {
@@ -78,6 +84,7 @@ export const sectionsConfig: Record<SectionType, SectionConfig> = {
       en: 'community'
     },
     listComponent: 'ListPost',
+    detailComponent: 'WorkProjectCommunityView',
     showFeaturedImage: true
   }
 }
