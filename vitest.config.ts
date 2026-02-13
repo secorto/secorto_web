@@ -23,6 +23,8 @@ export default defineConfig({
     setupFiles: ['tests/setup.ts'],
     coverage: {
       reporter: ['text', 'lcov'],
+      include: ['src/**/*.{ts,tsx,js,jsx,vue}','.github/**/*.{ts,tsx,js,jsx,vue}'],
+      exclude: ['src/content.config.ts', 'src/env.d.ts'],
     }
   }
 })
