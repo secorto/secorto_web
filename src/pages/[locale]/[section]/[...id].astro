@@ -5,10 +5,11 @@ import BaseLayout from '@layouts/BaseLayout.astro'
 import Comments from '@components/Comments.astro'
 import BlogTalkPostView from '@components/BlogTalkPostView.astro'
 import WorkProjectCommunityView from '@components/WorkProjectCommunityView.astro'
+import SEOHeadDetail from '@components/SEOHeadDetail.astro'
 import { sectionsConfig } from '@config/sections'
 import { loadEntryByRoute } from '@utils/sectionLoader'
 import { useTranslations } from '@i18n/utils'
-import { languageKeys, defaultLang } from '@i18n/ui'
+import { languageKeys } from '@i18n/ui'
 import type { UILanguages } from '@i18n/ui'
 import { buildDetailPageContext } from '@utils/sectionContext'
 
@@ -45,7 +46,6 @@ const t = useTranslations(locale)
 
 // Construir contexto de página (intenta cargar, con fallback a otros locales)
 const context = await buildDetailPageContext(section, locale, id, loadEntryByRoute)
-const site = import.meta.env.SITE
 
 if (!context) {
   return new Response('Not found', { status: 404 })
@@ -57,7 +57,7 @@ const entryData = entryTyped.data as BaseEntryData
 const translationStatus = entryData.translation_status
 const isTranslationDraft = Boolean(translationStatus && translationStatus !== 'translated' && translationStatus !== 'original')
 
-// Obtener URL canónica
+// Calculate canonical locale and ID
 const canonicalLocale = isTranslationDraft && entryData.translation_origin
   ? (entryData.translation_origin.locale as UILanguages)
   : translationOriginLocale || context.locale
@@ -66,9 +66,7 @@ const canonicalId = isTranslationDraft && entryData.translation_origin
   ? entryData.translation_origin.id
   : cleanId
 
-const canonicalUrl = `${site}/${canonicalLocale}/${config.routes[canonicalLocale]}/${canonicalId}`
-
-// Obtener locales disponibles para hreflang
+// Get available locales for hreflang
 const allEntries = await getCollection(config.collection)
 const availableLocales = languageKeys.filter((lk) =>
   allEntries.some((e) => {
@@ -81,17 +79,17 @@ const { Content } = await render(entryTyped)
 const pageTitle = entryTyped.data.title || t(config.translationKey)
 const pageDescription = (entryTyped.data as any).excerpt || (entryTyped.data as any).description || ''
 const routeSlug = config.routes[context.locale]
+const shouldNoindex = isUntranslated || isTranslationDraft
 ---
 
-<head>
-  <meta charset="utf-8" />
-  <link rel="canonical" href={canonicalUrl} />
-  {(isUntranslated || isTranslationDraft) && <meta name="robots" content="noindex" />}
-  {availableLocales.map((lk) => (
-    <link rel="alternate" hreflang={lk} href={`${site}/${lk}/${config.routes[lk]}/${cleanId}`} />
-  ))}
-  <link rel="alternate" hreflang="x-default" href={`${site}/${defaultLang}/${config.routes[defaultLang]}/${cleanId}`} />
-</head>
+<SEOHeadDetail
+  slot="seo-head"
+  config={config}
+  cleanId={canonicalId}
+  canonicalLocale={canonicalLocale}
+  availableLocales={availableLocales}
+  noindex={shouldNoindex}
+/>
 
 <BaseLayout pageTitle={pageTitle} description={pageDescription}>
   {isUntranslated && translationOriginLocale && (

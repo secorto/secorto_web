@@ -1,0 +1,27 @@
+---
+/**
+ * SEO metadata component for homepage
+ * Generates canonical link and alternate language links for the root pages
+ */
+import type { UILanguages } from '@i18n/ui'
+import { defaultLang, languageKeys } from '@i18n/ui'
+import AlternateLinks from './AlternateLinks.astro'
+
+interface Props {
+  /** Current locale */
+  currentLocale: UILanguages
+}
+
+const { currentLocale } = Astro.props
+const site = import.meta.env.SITE
+const canonicalUrl = `${site}/${currentLocale}/`
+
+const alternates = languageKeys.map(lk => ({
+  locale: lk,
+  url: `${site}/${lk}/`
+}))
+const defaultUrl = `${site}/${defaultLang}/`
+---
+
+<link rel="canonical" href={canonicalUrl} />
+<AlternateLinks alternates={alternates} defaultUrl={defaultUrl} />

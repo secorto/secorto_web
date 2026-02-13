@@ -1,0 +1,30 @@
+---
+/**
+ * SEO metadata component for section index pages (blog index, work index, etc.)
+ * Generates canonical link and alternate language links for collection listing pages
+ */
+import type { UILanguages } from '@i18n/ui'
+import { defaultLang, languageKeys } from '@i18n/ui'
+import type { SectionConfig } from '@config/sections'
+import AlternateLinks from './AlternateLinks.astro'
+
+interface Props {
+  /** Section configuration (contains routes, collection, etc.) */
+  config: SectionConfig
+  /** Current locale */
+  currentLocale: UILanguages
+}
+
+const { config, currentLocale } = Astro.props
+const site = import.meta.env.SITE
+const canonicalUrl = `${site}/${currentLocale}/${config.routes[currentLocale]}`
+
+const alternates = languageKeys.map(lk => ({
+  locale: lk,
+  url: `${site}/${lk}/${config.routes[lk]}`
+}))
+const defaultUrl = `${site}/${defaultLang}/${config.routes[defaultLang]}`
+---
+
+<link rel="canonical" href={canonicalUrl} />
+<AlternateLinks alternates={alternates} defaultUrl={defaultUrl} />

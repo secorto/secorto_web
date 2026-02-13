@@ -1,0 +1,27 @@
+---
+/**
+ * Reusable component for rendering alternate language (hreflang) links
+ * Used by all SEO components to avoid duplication
+ */
+import type { UILanguages } from '@i18n/ui'
+import { defaultLang } from '@i18n/ui'
+
+interface AlternateLink {
+  locale: UILanguages
+  url: string
+}
+
+interface Props {
+  /** Array of alternate language links */
+  alternates: AlternateLink[]
+  /** URL for the x-default hreflang (usually default language version) */
+  defaultUrl: string
+}
+
+const { alternates, defaultUrl } = Astro.props
+---
+
+{alternates.map(({ locale, url }) => (
+  <link rel="alternate" hreflang={locale} href={url} />
+))}
+<link rel="alternate" hreflang="x-default" href={defaultUrl} />

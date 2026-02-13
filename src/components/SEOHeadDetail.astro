@@ -1,0 +1,37 @@
+---
+/**
+ * SEO metadata component for detail pages (blog posts, talks, work, etc.)
+ * Generates canonical link and alternate language (hreflang) links for pages with translations
+ */
+import type { UILanguages } from '@i18n/ui'
+import { defaultLang } from '@i18n/ui'
+import type { SectionConfig } from '@config/sections'
+import AlternateLinks from './AlternateLinks.astro'
+
+interface Props {
+  /** Section configuration (contains routes, collection, etc.) */
+  config: SectionConfig
+  /** Entry slug/ID without locale prefix */
+  cleanId: string
+  /** Locale to use for canonical URL */
+  canonicalLocale: UILanguages
+  /** List of locales where this content is available */
+  availableLocales: UILanguages[]
+  /** Whether to mark as noindex (for draft/untranslated content) */
+  noindex?: boolean
+}
+
+const { config, cleanId, canonicalLocale, availableLocales, noindex = false } = Astro.props
+const site = import.meta.env.SITE
+const canonicalUrl = `${site}/${canonicalLocale}/${config.routes[canonicalLocale]}/${cleanId}`
+
+const alternates = availableLocales.map(lk => ({
+  locale: lk,
+  url: `${site}/${lk}/${config.routes[lk]}/${cleanId}`
+}))
+const defaultUrl = `${site}/${defaultLang}/${config.routes[defaultLang]}/${cleanId}`
+---
+
+<link rel="canonical" href={canonicalUrl} />
+{noindex && <meta name="robots" content="noindex" />}
+<AlternateLinks alternates={alternates} defaultUrl={defaultUrl} />
