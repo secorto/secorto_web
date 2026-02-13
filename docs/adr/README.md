@@ -13,6 +13,7 @@ simplificada del [formato de Michael Nygard](https://cognitect.com/blog/2011/11/
 | [001](001-i18n-router-framework.md) | Framework i18n y router polimórfico de secciones | Aceptada | 2025-06 |
 | [002](002-testing-framework-migration.md) | Migración de Cypress a Playwright + Vitest | Aceptada | 2025-07 |
 | [003](003-third-party-mocks.md) | Mocks de servicios de terceros en tests E2E | Aceptada | 2025-07 |
+| [004](004-linting-any-ban-style-conventions.md) | Linting, prohibición de `any` y convenciones de estilo | Parcial | 2025-07 |
 
 ## Convenciones
 
