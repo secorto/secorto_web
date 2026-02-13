@@ -34,22 +34,14 @@ describe('sectionContext helpers', () => {
     expect(ctx.tags.sort()).toEqual(['a', 'b', 'c'].sort())
   })
 
-  it('buildDetailPageContext falls back to other locale when not found in requested', async () => {
+  it('buildDetailPageContext returns null when entry not found in requested locale', async () => {
     vi.resetModules()
-    // loadEntryByRoute returns null
+    // loadEntryByRoute returns null (entry doesn't exist)
     const loadEntry = vi.fn(async (_section: string, _locale: string, _id: string) => null)
-    // getSectionConfigByRouteSlug should find section and locale
-    vi.doMock('@config/sections', () => ({ sectionsConfig: { blog: { collection: 'blog', routes: { es: 'blog', en: 'blog' } } }, /* keep getSectionConfigByRoute used elsewhere */ getSectionConfigByRoute: (_r: string, _l: string) => ({ collection: 'blog', routes: { es: 'blog', en: 'blog' } }) }))
-    // getCollection returns entries in other locale
-    const entries: { id: string; data: Record<string, unknown> }[] = [ { id: 'en/one', data: {} } ]
-    vi.doMock('astro:content', () => ({ getCollection: vi.fn(async () => entries) }))
 
     const { buildDetailPageContext } = await import('@utils/sectionContext')
-    const ctx = (await buildDetailPageContext('blog', 'es', 'one', loadEntry))
-    expect(ctx).not.toBeNull()
-    expect((ctx as DetailPageContext).isUntranslated).toBe(true)
-    expect((ctx as DetailPageContext).locale).toBe('en')
-    expect((ctx as DetailPageContext).entry.id).toBe('en/one')
+    const ctx = await buildDetailPageContext('blog', 'es', 'nonexistent', loadEntry)
+    expect(ctx).toBeNull()
   })
 
   it('buildDetailPageContext returns null when section not found', async () => {

@@ -1,9 +1,8 @@
-import { getSectionConfigByRoute, sectionsConfig, type SectionConfig } from '@config/sections'
+import { getSectionConfigByRoute, type SectionConfig } from '@config/sections'
 import { getPostsByLocale, getUniqueTags } from '@utils/paths'
 import type { EntryWithCleanId, CollectionWithTags } from '@utils/paths'
 import type { UILanguages } from '@i18n/ui'
-import { getCollection, type CollectionEntry } from 'astro:content'
-import { languageKeys } from '@i18n/ui'
+import type { CollectionEntry } from 'astro:content'
 import { extractCleanId } from "@utils/ids"
 
 export interface SectionContext {
@@ -26,8 +25,6 @@ export interface DetailPageContext {
   config: SectionConfig
   locale: UILanguages
   cleanId: string
-  isUntranslated: boolean
-  translationOriginLocale: UILanguages | null
 }
 
 /**
@@ -78,28 +75,8 @@ export async function buildTagsPageContext(
 }
 
 /**
- * Obtiene la configuración de sección a partir de un slug de ruta.
- * Busca en todas las secciones qué configuración corresponde a este slug.
- * @param section - Slug de la sección (ej: 'blog', 'talk')
- * @returns Configuración o null si no existe
- */
-function getSectionConfigByRouteSlug(
-  section: string
-): { config: SectionConfig; locale: UILanguages } | null {
-  for (const [_, cfg] of Object.entries(sectionsConfig)) {
-    for (const locale of languageKeys) {
-      if (cfg.routes[locale as UILanguages] === section) {
-        return { config: cfg, locale: locale as UILanguages }
-      }
-    }
-  }
-
-  return null
-}
-
-/**
  * Construye el contexto de una página de detalle (post/charla/proyecto/etc).
- * Intenta cargar la entrada en el locale actual, con fallback a otros locales.
+ * Intenta cargar la entrada en el locale actual.
  * @param section - Slug de la sección (ej: 'blog')
  * @param locale - Idioma solicitado
  * @param id - ID/slug del contenido
@@ -116,50 +93,16 @@ export async function buildDetailPageContext(
     id: string
   ) => Promise<{ entry: CollectionEntry<keyof import('astro:content').DataEntryMap>; config: SectionConfig } | null>
 ): Promise<DetailPageContext | null> {
-  // Intentar cargar en el locale solicitado
   const loaded = await loadEntryByRoute(section, locale, id)
 
-  if (loaded) {
-    return {
-      entry: loaded.entry,
-      config: loaded.config,
-      locale,
-      cleanId: extractCleanId(loaded.entry.id),
-      isUntranslated: false,
-      translationOriginLocale: null
-    }
-  }
-
-  // Fallback: buscar la entrada en otros locales
-  const sectionInfo = getSectionConfigByRouteSlug(section)
-
-  if (!sectionInfo) {
+  if (!loaded) {
     return null
   }
 
-  const { config } = sectionInfo
-  const allEntries = await getCollection(config.collection)
-
-  for (const searchLocale of languageKeys) {
-    if (searchLocale === locale) continue
-
-    const entry = allEntries.find((e) => {
-      const cleanId = extractCleanId(e.id)
-      const slug = (e.data as { slug?: string }).slug || cleanId
-      return e.id.startsWith(`${searchLocale}/`) && slug === id
-    })
-
-    if (entry) {
-      return {
-        entry,
-        config,
-        locale: searchLocale as UILanguages,
-        cleanId: extractCleanId(entry.id),
-        isUntranslated: true,
-        translationOriginLocale: searchLocale as UILanguages
-      }
-    }
+  return {
+    entry: loaded.entry,
+    config: loaded.config,
+    locale,
+    cleanId: extractCleanId(loaded.entry.id)
   }
-
-  return null
 }
