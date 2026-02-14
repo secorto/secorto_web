@@ -6,6 +6,10 @@ on:
     branches: [ main, master ]
   workflow_dispatch:
     inputs:
+      base_url:
+        description: "Base URL to run tests against (optional). NETLIFY_PREVIEW_URL takes priority if present"
+        required: false
+        default: "https://secorto.com"
       folder:
         description: "Folder to run (optional)"
         required: false
@@ -14,10 +18,11 @@ on:
         description: "Tag to run (optional)"
         required: false
         default: ""
-      base_url:
-        description: "Base URL to run tests against (optional). NETLIFY_PREVIEW_URL takes priority if present"
+      real_third_party:
+        description: "Run tests against real third-party services"
         required: false
-        default: "https://secorto.com"
+        default: 'false'
+        type: boolean
 jobs:
   unit-tests:
     name: Unit Tests (Vitest)
@@ -73,6 +78,7 @@ jobs:
         BASE_URL: ${{ github.event.inputs.base_url }}
         FOLDER: ${{ github.event.inputs.folder }}
         TAG: ${{ github.event.inputs.tag }}
+        REAL_THIRD_PARTY: ${{ github.event.inputs.real_third_party }}
       run: |
         if [ -n "$FOLDER" ] && [ -n "$TAG" ]; then
           npx playwright test "tests/$FOLDER" --grep "$TAG"
