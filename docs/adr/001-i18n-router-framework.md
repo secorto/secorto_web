@@ -209,6 +209,10 @@ implementación original:
 - [MIGRATION_GUIDE.md](./anexos/001-i18n-router-framework/MIGRATION_GUIDE.md) — Guía de migración
 - [DETAIL_VIEW_ARCHITECTURE.md](../DETAIL_VIEW_ARCHITECTURE.md) — Arquitectura de vistas de detalle
 
+- [TRANSLATION_WORKFLOW.md](../TRANSLATION_WORKFLOW.md) — Flujo de traducción y convenios editoriales
+
+Nota operativa: los documentos de proceso y operación enlazados arriba deben mantenerse actualizados si se propone o acepta un nuevo ADR que afecte su ámbito.
+
 ---
 
 ## Referencias
