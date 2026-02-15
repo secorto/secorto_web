@@ -234,5 +234,3 @@ El sistema está listo para crecer sin aumento de complejidad. 🚀
 **Última actualización**: 8 de diciembre de 2025
 **Rama**: `i18n-en`
 **Proyecto**: secorto_web
-
-````

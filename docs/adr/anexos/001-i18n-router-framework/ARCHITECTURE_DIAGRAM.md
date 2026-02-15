@@ -330,6 +330,7 @@ Para agregar nueva sección "Newsletter":
 │ DRY          │      │ Type-Safe    │
 │(No repeat)   │      │(TypeScript)  │
 └──────────────┘      └──────────────┘
+```
 
 Este diagrama muestra cómo los patrones de diseño convergen en una arquitectura
 limpia, mantenible y escalable. ✨
