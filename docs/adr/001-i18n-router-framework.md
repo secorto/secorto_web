@@ -226,12 +226,17 @@ buildAllDetailPaths()
 La carpeta `docs/refactor-sections/` contiene documentación detallada de la
 implementación original:
 
-- [ARCHITECTURE_SECTIONS.md](../refactor-sections/ARCHITECTURE_SECTIONS.md) — Arquitectura técnica detallada
-- [ARCHITECTURE_DIAGRAM.md](../refactor-sections/ARCHITECTURE_DIAGRAM.md) — Diagramas de flujo
-- [BEFORE_AFTER_COMPARISON.md](../refactor-sections/BEFORE_AFTER_COMPARISON.md) — Comparación antes/después
-- [SCALABILITY_ANALYSIS.md](../refactor-sections/SCALABILITY_ANALYSIS.md) — Análisis de escalabilidad
-- [MIGRATION_GUIDE.md](../refactor-sections/MIGRATION_GUIDE.md) — Guía de migración
+
+- [ARCHITECTURE_SECTIONS.md](./anexos/001-i18n-router-framework/ARCHITECTURE_SECTIONS.md) — Arquitectura técnica detallada
+- [ARCHITECTURE_DIAGRAM.md](./anexos/001-i18n-router-framework/ARCHITECTURE_DIAGRAM.md) — Diagramas de flujo
+- [BEFORE_AFTER_COMPARISON.md](./anexos/001-i18n-router-framework/BEFORE_AFTER_COMPARISON.md) — Comparación antes/después
+- [SCALABILITY_ANALYSIS.md](./anexos/001-i18n-router-framework/SCALABILITY_ANALYSIS.md) — Análisis de escalabilidad
+- [MIGRATION_GUIDE.md](./anexos/001-i18n-router-framework/MIGRATION_GUIDE.md) — Guía de migración
 - [DETAIL_VIEW_ARCHITECTURE.md](../DETAIL_VIEW_ARCHITECTURE.md) — Arquitectura de vistas de detalle
+
+Además, hay anexos relacionados con otros ADRs que pueden ser de interés:
+
+- ADR 002 (migración de testing): [METRICS_FOR_PRESENTATION.md](./anexos/002-testing-framework-migration/METRICS_FOR_PRESENTATION.md) — Métricas y artefactos para presentación y migración
 
 ---
 
