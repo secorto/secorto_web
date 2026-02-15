@@ -178,7 +178,7 @@ Para diagramas, snippets de generación de rutas y la comparación detallada ant
   futuro, evaluar si simplifica o reemplaza este framework.
 
 
-- ## Documentación extendida
+## Documentación extendida
 
 - [ARCHITECTURE_SECTIONS.md](./anexos/001-i18n-router-framework/ARCHITECTURE_SECTIONS.md) — Arquitectura técnica detallada
 - [ARCHITECTURE_DIAGRAM.md](./anexos/001-i18n-router-framework/ARCHITECTURE_DIAGRAM.md) — Diagramas de flujo

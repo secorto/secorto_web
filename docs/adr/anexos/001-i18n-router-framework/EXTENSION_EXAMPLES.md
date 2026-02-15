@@ -1,16 +1,12 @@
-```markdown
-/**
- * EJEMPLOS DE EXTENSIÓN
- *
- * Este archivo muestra cómo agregar nuevas secciones, componentes y funcionalidades
- * sin modificar el código de routing o rendering existente.
- */
+# EJEMPLOS DE EXTENSIÓN
 
-// ============================================================================
-// EJEMPLO 1: Agregar una nueva sección "Eventos"
-// ============================================================================
+EJEMPLOS DE EXTENSIÓN
+Este archivo muestra cómo agregar nuevas secciones, componentes y funcionalidades
+sin modificar el código de routing o rendering existente.
+## EJEMPLO 1: Agregar una nueva sección "Eventos"
 
-/* En src/config/sections.ts, simplemente agregar:
+```ts
+ En src/config/sections.ts, simplemente agregar:
 
 export const sectionsConfig = {
   // ... secciones existentes
@@ -28,18 +24,15 @@ export const sectionsConfig = {
     showFeaturedImage: true
   }
 }
-*/
+```
+Resultado automático:
+✅ /es/eventos → carga desde collection: 'events'
+✅ /en/events → misma lógica, diferente idioma
+✅ Tags funcionan: /es/eventos/tags/python
+## EJEMPLO 2: Agregar traducción de sección
 
-// Resultado automático:
-// ✅ /es/eventos → carga desde collection: 'events'
-// ✅ /en/events → misma lógica, diferente idioma
-// ✅ Tags funcionan: /es/eventos/tags/python
-
-// ============================================================================
-// EJEMPLO 2: Agregar traducción de sección
-// ============================================================================
-
-/* En src/i18n/ui.ts:
+```ts
+ En src/i18n/ui.ts:
 
 export const ui = {
   en: {
@@ -51,14 +44,12 @@ export const ui = {
     'nav.events': 'Eventos',
   },
 }
-*/
+```
 
-// ============================================================================
-// EJEMPLO 3: Crear nuevo componente de listado (ListGallery)
-// ============================================================================
+## EJEMPLO 3: Crear nuevo componente de listado (ListGallery)
 
-/*
-// Paso 1: Crear src/components/ListGallery.astro
+```ts
+Paso 1: Crear src/components/ListGallery.astro
 ---
 interface Props {
   posts: any[]
@@ -76,34 +67,27 @@ const { posts, basePath } = Astro.props
     </div>
   ))}
 </div>
-
-// Paso 2: Agregar rama en src/components/SectionRenderer.astro
+Paso 2: Agregar rama en src/components/SectionRenderer.astro
 {config.listComponent === 'ListGallery' && (
   <ListGallery posts={posts} basePath={`${locale}/${routeSlug}`} />
 )}
-
-// Paso 3: Usar en config
+Paso 3: Usar en config
 portfolio: {
   collection: 'portfolio',
   translationKey: 'nav.portfolio',
   hasTags: false,
   routes: { es: 'portfolio', en: 'portfolio' },
   listComponent: 'ListGallery',  ← ¡Nuevo componente!
-    detailComponent: 'WorkProjectCommunityView',
+  detailComponent: 'WorkProjectCommunityView',
   showFeaturedImage: false
 }
+¡Listo! No hay cambios en el routing.
+```
+## EJEMPLO 4: Crear nuevo tipo de renderizador (SectionRendererAdvanced)
 
-// ¡Listo! No hay cambios en el routing.
-*/
-
-// ============================================================================
-// EJEMPLO 4: Crear nuevo tipo de renderizador (SectionRendererAdvanced)
-// ============================================================================
-
-/*
-// Si necesitas más flexibilidad, puedes:
-
-// src/components/SectionRendererAdvanced.astro
+```ts
+Si necesitas más flexibilidad, puedes:
+src/components/SectionRendererAdvanced.astro
 ---
 import type { SectionConfig } from '@config/sections'
 
@@ -123,19 +107,15 @@ const { config, locale, posts, tags, customRenderer: CustomRenderer } = Astro.pr
 ) : (
   <SectionRenderer config={config} locale={locale} posts={posts} tags={tags} />
 )}
-*/
+```
+## EJEMPLO 5: Agregar metadatos avanzados en configuración
 
-// ============================================================================
-// EJEMPLO 5: Agregar metadatos avanzados en configuración
-// ============================================================================
-
-/*
-// Extender SectionConfig con más propiedades:
+```ts
+Extender SectionConfig con más propiedades:
 
 export interface SectionConfig {
-  // ... propiedades existentes
-
-  // Nuevas propiedades
+... propiedades existentes
+Nuevas propiedades
   icon?: string
   color?: string
   displayOrder?: number
@@ -152,27 +132,22 @@ export const sectionsConfig: Record<SectionType, SectionConfig> = {
     listComponent: 'ListPost',
     detailComponent: 'BlogTalkPostView',
     showFeaturedImage: true,
-
-    // Metadatos nuevos
+Metadatos nuevos
     icon: '📝',
     color: '#3498db',
     displayOrder: 1,
     hideFromNav: false
   },
-  // ...
+...
 }
+Luego usar en:
+- Generador de sitemap
+- Menú de navegación dinámico
+- Estilos condicionales
+```
+## EJEMPLO 6: Factory para crear secciones dinámicamente
 
-// Luego usar en:
-// - Generador de sitemap
-// - Menú de navegación dinámico
-// - Estilos condicionales
-*/
-
-// ============================================================================
-// EJEMPLO 6: Factory para crear secciones dinámicamente
-// ============================================================================
-
-/*
+```ts
 export function createSection(
   type: SectionType,
   overrides?: Partial<SectionConfig>
@@ -183,8 +158,7 @@ export function createSection(
     ...overrides
   }
 }
-
-// Uso:
+Uso:
 const blogES = createSection('blog', {
   routes: { es: 'articulos', en: 'blog' }  // Override temporal
 })
@@ -192,13 +166,10 @@ const blogES = createSection('blog', {
 const blogFeatured = createSection('blog', {
   hasTags: false  // Sin tags
 })
-*/
+```
+## EJEMPLO 7: Utilidad para generar menú automáticamente
 
-// ============================================================================
-// EJEMPLO 7: Utilidad para generar menú automáticamente
-// ============================================================================
-
-/*
+```ts
 import { sectionsConfig } from '@config/sections'
 import { useTranslations } from '@i18n/utils'
 import type { UILanguages } from '@i18n/ui'
@@ -213,8 +184,7 @@ export function getNavigationItems(locale: UILanguages) {
     }))
     .sort((a, b) => a.label.localeCompare(b.label))
 }
-
-// Uso en Header.astro:
+Uso en Header.astro:
 <nav>
   {getNavigationItems(locale).map(item => (
     <a href={item.href}>
@@ -222,13 +192,10 @@ export function getNavigationItems(locale: UILanguages) {
     </a>
   ))}
 </nav>
-*/
+```
+## EJEMPLO 8: Validación de configuración
 
-// ============================================================================
-// EJEMPLO 8: Validación de configuración
-// ============================================================================
-
-/*
+```ts
 import { sectionsConfig } from '@config/sections'
 import { ui, languageKeys } from '@i18n/ui'
 
@@ -237,14 +204,13 @@ export function validateSectionsConfig() {
   const routes = new Set<string>()
 
   for (const [type, config] of Object.entries(sectionsConfig)) {
-    // Validar que translationKey existe
+Validar que translationKey existe
     for (const locale of languageKeys) {
       if (!(config.translationKey in ui[locale])) {
         errors.push(`Section '${type}': translation key '${config.translationKey}' not found for locale '${locale}'`)
       }
     }
-
-    // Validar que no hay rutas duplicadas
+Validar que no hay rutas duplicadas
     for (const locale of languageKeys) {
       const route = `${locale}:${config.routes[locale]}`
       if (routes.has(route)) {
@@ -252,8 +218,7 @@ export function validateSectionsConfig() {
       }
       routes.add(route)
     }
-
-    // Validar que colección existe
+Validar que colección existe
     if (!validCollections.includes(config.collection)) {
       errors.push(`Section '${type}': collection '${config.collection}' does not exist`)
     }
@@ -261,42 +226,34 @@ export function validateSectionsConfig() {
 
   return errors
 }
-
-// Uso en build/test:
+Uso en build/test:
 if (import.meta.env.PROD) {
   const errors = validateSectionsConfig()
   if (errors.length > 0) {
     throw new Error(`Invalid sections config:\n${errors.join('\n')}`)
   }
 }
-*/
-
-// ============================================================================
-// EJEMPLO 9: Cambios multi-idioma simplificados
-// ============================================================================
-
-// ANTES: Cambiar "talks" → "plenarias" requería:
-// 1. Editar /es/charla/index.astro
-// 2. Editar /en/talk/index.astro
-// 3. Editar Header.astro
-// 4. Editar Navigation.astro
-// 5. Actualizar links en múltiples partes
-// 6. Esperar a que alguien olvide algo y bugs aparezcan
-
-// AHORA: Cambiar es tan simple como:
-/*
+```
+## EJEMPLO 9: Cambios multi-idioma simplificados
+ANTES: Cambiar "talks" → "plenarias" requería:
+1. Editar /es/charla/index.astro
+2. Editar /en/talk/index.astro
+3. Editar Header.astro
+4. Editar Navigation.astro
+5. Actualizar links en múltiples partes
+6. Esperar a que alguien olvide algo y bugs aparezcan
+AHORA: Cambiar es tan simple como:
+```ts
 talk: {
   routes: {
     es: 'charlas',  // "charla" → "charlas"
     en: 'talks'     // "talk" → "talks" (opcional)
   },
-  // ... resto igual
+... resto igual
 }
-*/
-// ✅ Todos los links, menús, sitemap se actualizan automáticamente
+```
+✅ Todos los links, menús, sitemap se actualizan automáticamente
 
 export default {}
 
-<!-- Nota: se agregó el campo `detailComponent` en los snippets de ejemplo para dejar explícito el componente usado en las vistas de detalle. -->
-
-```
+Nota: se agregó el campo `detailComponent` en los snippets de ejemplo para dejar explícito el componente usado en las vistas de detalle.
