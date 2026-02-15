@@ -94,40 +94,15 @@ itera la configuración centralizada para generar todas las rutas en build time.
 
 ## Arquitectura resultante
 
-```
-Solicitud: /es/charla
-         │
-         ▼
-[locale]/[section]/index.astro    ← Router universal
-         │
-         ├─ getSectionConfigByRoute('charla', 'es')
-         │  └─→ sectionsConfig.talk
-         │
-         ├─ loadSectionByRoute('charla', 'es')
-         │  ├─ getPostsByLocale('talk', 'es')
-         │  └─ getUniqueTags(posts)
-         │
-         └─ SectionRenderer.astro
-            └─ config.listComponent === 'ListPost'
-               └─→ <ListPost posts={posts} />
-```
+Resumen: la solución centraliza la definición de secciones en `src/config/sections.ts`, expone un router universal en `src/pages/[locale]/[section]/index.astro` que delega la carga de datos a `sectionLoader.ts` y el renderizado a `SectionRenderer.astro`. Esto elimina la duplicación previa y permite generar rutas estáticas automáticamente a partir de la configuración.
 
-### Generación de rutas estáticas
+Para diagramas, snippets de generación de rutas y la comparación detallada antes/después, ver los anexos técnicos:
 
-```
-buildSectionIndexPaths()
-  → iterateSectionLocales()
-    → 5 secciones × 2 idiomas = 10 rutas
-
-buildTagPaths()
-  → iterateSectionLocales(c => c.hasTags)
-    → 2 secciones × 2 idiomas × N tags = rutas de tags
-
-buildAllDetailPaths()
-  → iterateSections()
-    → buildDetailPathsForSection(entries, config)
-      → entries por locale × secciones = rutas de detalle
-```
+- [ARCHITECTURE_SECTIONS.md](./anexos/001-i18n-router-framework/ARCHITECTURE_SECTIONS.md)
+- [ARCHITECTURE_DIAGRAM.md](./anexos/001-i18n-router-framework/ARCHITECTURE_DIAGRAM.md)
+- [BEFORE_AFTER_COMPARISON.md](./anexos/001-i18n-router-framework/BEFORE_AFTER_COMPARISON.md)
+- [SCALABILITY_ANALYSIS.md](./anexos/001-i18n-router-framework/SCALABILITY_ANALYSIS.md)
+- [MIGRATION_GUIDE.md](./anexos/001-i18n-router-framework/MIGRATION_GUIDE.md)
 
 ---
 
@@ -233,10 +208,6 @@ implementación original:
 - [SCALABILITY_ANALYSIS.md](./anexos/001-i18n-router-framework/SCALABILITY_ANALYSIS.md) — Análisis de escalabilidad
 - [MIGRATION_GUIDE.md](./anexos/001-i18n-router-framework/MIGRATION_GUIDE.md) — Guía de migración
 - [DETAIL_VIEW_ARCHITECTURE.md](../DETAIL_VIEW_ARCHITECTURE.md) — Arquitectura de vistas de detalle
-
-Además, hay anexos relacionados con otros ADRs que pueden ser de interés:
-
-- ADR 002 (migración de testing): [METRICS_FOR_PRESENTATION.md](./anexos/002-testing-framework-migration/METRICS_FOR_PRESENTATION.md) — Métricas y artefactos para presentación y migración
 
 ---
 

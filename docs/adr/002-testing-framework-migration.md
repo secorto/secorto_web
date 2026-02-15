@@ -232,6 +232,10 @@ e2e-tests:     playwright test          → artifact playwright-report
 
 ---
 
+## Anexos
+
+- [METRICS_FOR_PRESENTATION.md](./anexos/002-testing-framework-migration/METRICS_FOR_PRESENTATION.md) — Métricas y artefactos para presentación y migración
+
 ## Referencias
 
 - [Playwright vs Cypress](https://playwright.dev/docs/why-playwright)
