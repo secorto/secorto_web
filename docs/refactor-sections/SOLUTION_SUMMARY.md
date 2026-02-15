@@ -1,4 +1,3 @@
-````markdown
 # 📋 Resumen Ejecutivo Final
 
 ## 🎯 Problema Resuelto
@@ -122,7 +121,3 @@ sectionLoader  SectionRenderer  [section]/index.astro
 **Ahorro en equipo de 3 personas**:
 - De 5 a 11 secciones = 12.8 horas ahorradas
 - Tiempo para features, no copy-paste
-
-... (contenido recortado para brevedad)
-
-````

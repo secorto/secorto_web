@@ -1,5 +1,6 @@
-````markdown
 # Arquitectura de Secciones - Sistema Polimórfico
+
+Arquitectura de la solución para internacionalización basado en secciones
 
 ## Problema Resuelto
 
@@ -201,5 +202,3 @@ Este es el poder del polimorfismo ✨
 
 Este diagrama muestra cómo los patrones de diseño convergen en una arquitectura
 limpia, mantenible y escalable. ✨
-
-````

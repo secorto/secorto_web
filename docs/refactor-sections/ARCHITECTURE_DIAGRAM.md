@@ -1,6 +1,4 @@
-````markdown
 # Diagrama de Arquitectura - Sistema Polimórfico de Secciones
-
 ## Flujo de Solicitud
 
 ```

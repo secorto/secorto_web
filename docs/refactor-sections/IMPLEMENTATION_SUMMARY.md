@@ -1,4 +1,3 @@
-````markdown
 # Implementación - Resumen Técnico
 
 // Contenido descriptivo sobre implementación y archivos (resumido)
@@ -12,5 +11,3 @@ de secciones, evitando duplicación. Los archivos principales son:
 - `src/pages/[locale]/[section]/index.astro` (router universal)
 
 Ver `ARCHITECTURE_SECTIONS.md` y `SOLUTION_README.md` para más detalles.
-
-````

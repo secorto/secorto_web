@@ -1,5 +1,6 @@
-````markdown
 # Comparación Visual: Antes vs Después
+
+Comparación entre los ficheros antes y después de implementar i18n
 
 ## 🔴 ANTES: Duplicación Masiva
 
@@ -156,7 +157,3 @@ Total: 4 archivos, ~180 líneas
 Duplicación: 0% del código
 Configuración es metadata, no código
 ```
-
-... (contenido recortado en la vista por brevedad)
-
-````
