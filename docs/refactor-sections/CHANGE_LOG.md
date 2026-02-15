@@ -1,5 +1,6 @@
-````markdown
 # 📝 Registro de Cambios - Qué Ha Sido Modificado/Creado
+
+Resumen y anexos relacionados con ADR-001 (Refactorización i18n): cambios, archivos creados y notas de migración.
 
 ## Resumen Rápido
 - **Archivos creados**: 12
@@ -96,9 +97,7 @@
      // Genera paths para items individuales
    }
    ---
-   ```
 
-   **Después**: 47 líneas (router universal para secciones + items)
    ```astro
    import { loadSectionByRoute } from '@utils/sectionLoader'
    import { sectionsConfig } from '@config/sections'

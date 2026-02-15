@@ -1,5 +1,7 @@
 # Checklist de Mantenimiento - Arquitectura de Secciones
 
+Resumen y referencia operativa de la ADR-001 (Refactorización i18n): pasos de verificación y checklists para mantenimiento.
+
 ## 📋 Checklist Diario/Semanal
 
 ### Antes de Agregar una Nueva Sección

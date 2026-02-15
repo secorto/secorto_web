@@ -1,5 +1,7 @@
 # Guía de Migración: Router Dinámico
 
+Resumen y consideraciones prácticas relacionadas con ADR-001 (Refactorización i18n). Aquí se describen opciones de migración y riesgos conocidos.
+
 ## Estado Actual
 
 Tienes 3 formas de definir rutas de secciones:

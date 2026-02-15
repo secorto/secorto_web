@@ -1,5 +1,7 @@
 # 📋 Resumen Ejecutivo Final
 
+Resumen y anexos relacionados con ADR-001 (Refactorización i18n): contexto, resultados y guías prácticas.
+
 ## 🎯 Problema Resuelto
 
 **Situación Inicial**:

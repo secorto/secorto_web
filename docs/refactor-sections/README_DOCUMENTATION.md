@@ -1,6 +1,8 @@
 ````markdown
 # 📑 Índice de Documentación
 
+Resumen y guía rápida de los documentos relacionados con la ADR-001 (Refactorización i18n). Aquí se listan índices y rutas de lectura.
+
 ## 🎯 Comienza Aquí
 
 ### **[SOLUTION_SUMMARY.md](SOLUTION_SUMMARY.md)** ⭐ START HERE
