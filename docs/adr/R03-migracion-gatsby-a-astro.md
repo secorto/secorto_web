@@ -201,7 +201,7 @@ Astro post-i18n  → Playwright E2E + Vitest unitarios (cobertura completa)
   como componentes Astro)
 - **Curva de aprendizaje**: Astro tiene convenciones propias (frontmatter
   script, slots, directivas `client:*`)
-- **Ecosystem más joven**: menos plugins de terceros que Gatsby/Next.js
+- **Ecosistema más joven**: menos plugins de terceros que Gatsby/Next.js
 
 ### Métricas del repositorio
 
