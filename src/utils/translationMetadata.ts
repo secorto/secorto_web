@@ -23,30 +23,11 @@ export interface PageData {
 }
 
 /**
- * Determines if an entry is a translation draft based on its translation_status
- *
- * @param translationStatus - The entry's translation_status field
- * @returns true if status is draft/partial/pending, false otherwise
- *
- * @example
- * ```ts
- * isTranslationDraft('draft') // true
- * isTranslationDraft('translated') // false
- * isTranslationDraft('original') // false
- * ```
- */
-export function isTranslationDraft(
-  translationStatus?: 'original' | 'translated' | 'draft' | 'partial' | 'pending'
-): boolean {
-  return Boolean(translationStatus && translationStatus !== 'translated' && translationStatus !== 'original')
-}
-
-/**
  * Calculates the canonical locale and ID for a content entry,
  * taking into account translation drafts that should point to their originals
  *
  * @param params - Entry metadata
- * @param params.translationStatus - Translation status of the entry
+ * @param params.entryDraft - Explicit `draft` frontmatter for the entry
  * @param params.translationOrigin - Origin locale/ID if this is a translation
  * @param params.currentLocale - Current locale being viewed
  * @param params.currentCleanId - Current entry's clean ID
@@ -73,12 +54,16 @@ export function isTranslationDraft(
  * ```
  */
 export function getCanonicalMetadata(params: {
-  translationStatus?: 'original' | 'translated' | 'draft' | 'partial' | 'pending'
+  /**
+   * Prefer explicit `draft` frontmatter. If `draft` is true and a
+   * `translationOrigin` is provided, canonical points to the origin.
+   */
+  entryDraft?: boolean
   translationOrigin?: TranslationOrigin
   currentLocale: UILanguages
   currentCleanId: string
 }): TranslationMetadata {
-  const isDraft = isTranslationDraft(params.translationStatus)
+  const isDraft = Boolean(params.entryDraft)
 
   const canonicalLocale = isDraft && params.translationOrigin
     ? (params.translationOrigin.locale as UILanguages)
