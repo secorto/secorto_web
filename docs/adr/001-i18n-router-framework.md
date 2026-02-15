@@ -173,12 +173,12 @@ Para diagramas, snippets de generación de rutas y la comparación detallada ant
 - **Testabilidad:** `staticPathsBuilder` usa inyección de dependencias para
 
 ### A tener en cuenta
-- La indirección (ruta URL → config → colección → datos) puede ser confusa
-- para alguien que ve el código por primera vez. La documentación en los
-- anexos del ADR (`docs/adr/anexos/001-i18n-router-framework/`) mitiga esto.
+- La indirección (ruta URL → config → colección → datos) puede ser confusa para alguien que ve el código por primera vez; la documentación en los anexos del ADR (`docs/adr/anexos/001-i18n-router-framework/`) mitiga esto.
 - Si Astro introduce un sistema nativo de aliasing de rutas i18n en el
   futuro, evaluar si simplifica o reemplaza este framework.
 
+
+- ## Documentación extendida
 
 - [ARCHITECTURE_SECTIONS.md](./anexos/001-i18n-router-framework/ARCHITECTURE_SECTIONS.md) — Arquitectura técnica detallada
 - [ARCHITECTURE_DIAGRAM.md](./anexos/001-i18n-router-framework/ARCHITECTURE_DIAGRAM.md) — Diagramas de flujo

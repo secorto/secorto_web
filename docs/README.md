@@ -1,4 +1,3 @@
-````markdown
 # Documentación del proyecto
 
 En esta carpeta `docs/` se agrupan las guías y recursos relacionados con el proyecto.
@@ -13,5 +12,3 @@ Notas:
 
 - Mantén las imágenes organizadas dentro de `docs/images` y utiliza rutas relativas (`./images/nombre.png`) desde los archivos de `docs/`.
 - Si agregas nueva documentación, piensa en crear un pequeño índice en este archivo para facilitar la navegación.
-
-````

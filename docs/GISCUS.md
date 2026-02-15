@@ -1,4 +1,3 @@
-````markdown
 # Giscus (comentarios) — cómo funciona y cómo probarlo
 
 Resumen
@@ -64,5 +63,3 @@ Notas sobre estabilidad
 ```bash
 REAL_THIRD_PARTY=true npm run test:e2e
 ```
-
-````
