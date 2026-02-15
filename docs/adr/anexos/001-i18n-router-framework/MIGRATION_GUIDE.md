@@ -1,5 +1,6 @@
-````markdown
 # Guía de Migración: Router Dinámico
+
+Resumen y consideraciones prácticas relacionadas con ADR-001 (Refactorización i18n). Aquí se describen opciones de migración y riesgos conocidos.
 
 ## Estado Actual
 
@@ -132,17 +133,3 @@ src/pages/
     └── comunidad/  ← Opcional: si tiene lógica MUY especial
         └── index.astro
 ```
-
-## Transición Gradual
-
-Si prefieres no eliminar de golpe:
-
-```bash
-# 1. Dejar ambas coexistiendo (con cuidado)
-# 2. Verificar que el nuevo router genera las mismas rutas
-# 3. Eliminar las viejas cuando estés seguro
-```
-
-Pero recuerda: Astro se quejará de rutas duplicadas.
-
-````

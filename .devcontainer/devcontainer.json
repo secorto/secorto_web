@@ -22,7 +22,8 @@
         "vitest.explorer",
         "ms-playwright.playwright",
         "dbaeumer.vscode-eslint"
-      ]
+      ],
+      "openFiles": ["docs/DEVCONTAINER.md"]
     }
   }
 }

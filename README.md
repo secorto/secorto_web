@@ -25,6 +25,16 @@ Desarrollar un sitio web informativo que demuestre los conocimientos y habilidad
 
 En este [enlace al archivo contributing.md](./docs/CONTRIBUTING.md) puedes ver como contribuir con el mejoramiento de este proyecto
 
+## Documentación
+
+La documentación del proyecto se encuentra en la carpeta `docs/`. Allí hay guías y recursos organizados, por ejemplo:
+
+- `docs/CONTRIBUTING.md` — Guía de contribución
+- `docs/DETAIL_VIEW_ARCHITECTURE.md`, `docs/TESTING_STRATEGY.md`, `docs/TRANSLATION_WORKFLOW.md` — Documentos técnicos y de proceso
+- `docs/README.md` — Índice breve y convenciones de la carpeta `docs/`, incluyendo la ubicación de los assets en `docs/images/`
+
+Si quieres agregar documentación nueva, créala dentro de `docs/` y usa `docs/images/` para las imágenes relacionadas.
+
 ## Guía de seguridad
 
 En este [enlace al archivo security.md](./SECURITY.md) puedes ver como puedes reportar un issue de seguridad
@@ -116,14 +126,7 @@ npm run test:e2e
 npm run test:e2e:env
 ```
 
+Para instrucciones detalladas sobre la ejecución de E2E dentro de un devcontainer, consulta `docs/DEVCONTAINER.md`.
+
 Nota: `test:e2e:env` usa `npx env-cmd` para cargar `.env`; `test:e2e` es minimalista y ejecuta Playwright directamente.
 
-## E2E en Devcontainer
-
-Si prefieres ejecutar las pruebas dentro del devcontainer, abre una terminal del contenedor y ejecuta una sola vez:
-
-```bash
-npx playwright install --with-deps
-```
-
-Esto instala los navegadores y las dependencias del sistema necesarias para que Playwright ejecute tests dentro del contenedor. Después de esto puedes usar `npm run test:e2e` desde la terminal del devcontainer sin pasos adicionales.

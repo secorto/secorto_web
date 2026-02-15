@@ -15,7 +15,7 @@ Para los issues resalto 2 categorías que implican cambios en el código, y las 
 
 Puedes crear nuevos incidentes (issues) usando el botón "New issue" en la pestaña "Issues" del repositorio
 
-![Reportar issue](./issues.png)
+![Reportar issue](./images/issues.png)
 
 Reporte de error: En esta categoría se enumeran todos los comportamientos inesperados (o defectos), ya sean visuales o bien algún error que aparezca en la consola del navegador
 
@@ -23,17 +23,17 @@ Solicitud mejora: Estos se darán cuando haya algo que se pueda mejorar en el si
 
 Selecciona una de las plantillas según el tipo de incidente que deseas reportar presionando el respectivo botón "Get started"
 
-![Seleccionar plantilla del issue](./plantillas_issue.png)
+![Seleccionar plantilla del issue](./images/plantillas_issue.png)
 
 Reemplaza el contenido de acuerdo a lo que quieres reportar para lo cual aparecerá un formulario con la información a diligenciar
 
-![Diligenciar los campos requeridos](./issue_bug.png)
+![Diligenciar los campos requeridos](./images/issue_bug.png)
 
 ### Discussions
 
 Esta funcionalidad permite tener un foro en el repositorio donde se pueden discutir funcionalidades, de hecho surge como una mejora al tipo issue que ya tenia github
 
-![Discussions](./discussions.png)
+![Discussions](./images/discussions.png)
 
 ## Desarrollo
 
@@ -126,19 +126,19 @@ separadas. Es mucho más fácil recibir solicitudes pequeñas y bien definidas, 
 tener que revisar y gestionar solicitudes grandes que apuntan a diferentes
 temas.
 
-![Crear pull request](./crear_pr.png)
+![Crear pull request](./images/crear_pr.png)
 
 Una vez le des crear selecciona la rama base, que para este repositorio es `master` y luego debes seleccionar la rama desde la cual hiciste tus cambios
 
-![Comparación de ramas](./pr_compare.png)
+![Comparación de ramas](./images/pr_compare.png)
 
 Una vez tengas seleccionadas las ramas deberás colocar una descripción a tu pull request, para lo cual aprovecha la plantilla que aparece por defecto
 
-![Descripción Pull request](./pr_descripcion.png)
+![Descripción Pull request](./images/pr_descripcion.png)
 
 Reemplaza el numero de issue asociado y agrega unas observaciones, sugiero colocar acá unas capturas que resalten el cambio que has generado
 
-![Ejemplo de un buen PR](./pr_ejemplar.png)
+![Ejemplo de un buen PR](./images/pr_ejemplar.png)
 
 ### Verificaciones
 
@@ -149,11 +149,11 @@ Para aprobar un pull request, me baso en 2 criterios
 3. Todas las verificaciones pasan en verde
 4. Luego de una verificación manual veo que no se rompió nada (regresión)
 
-![Verificaciones automatizadas](./pr_verificaciones.png)
+![Verificaciones automatizadas](./images/pr_verificaciones.png)
 
 En este repositorio se usan verificaciones automatizadas usando [github actions](https://github.com/features/actions) y [netlify](https://www.netlify.com/)
 
 Las cuales se ven asi:
 
 Panel de administración de netlify
-![Deploy preview en netlify](./netlify_preview_deploy.png)
+![Deploy preview en netlify](./images/netlify_preview_deploy.png)
