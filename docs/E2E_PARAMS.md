@@ -1,4 +1,3 @@
-````markdown
 # Parámetros E2E y uso en CI
 
 Resumen rápido
@@ -58,5 +57,3 @@ Buenas prácticas
 
 - Mantén la mayoría de ejecuciones CI usando mocks; reserva `real_third_party=true` para verificaciones manuales o jobs especiales
 - Evita ejecutar frecuentes jobs con `REAL_THIRD_PARTY=true` porque dependen de servicios externos y pueden ser más lentos o frágiles
-
-````
