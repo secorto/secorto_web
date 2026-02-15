@@ -3,10 +3,12 @@
 EJEMPLOS DE EXTENSIÓN
 Este archivo muestra cómo agregar nuevas secciones, componentes y funcionalidades
 sin modificar el código de routing o rendering existente.
+
 ## EJEMPLO 1: Agregar una nueva sección "Eventos"
 
+En src/config/sections.ts, simplemente agregar:
+
 ```ts
- En src/config/sections.ts, simplemente agregar:
 
 export const sectionsConfig = {
   // ... secciones existentes
@@ -29,11 +31,12 @@ Resultado automático:
 ✅ /es/eventos → carga desde collection: 'events'
 ✅ /en/events → misma lógica, diferente idioma
 ✅ Tags funcionan: /es/eventos/tags/python
+
 ## EJEMPLO 2: Agregar traducción de sección
 
-```ts
  En src/i18n/ui.ts:
 
+```ts
 export const ui = {
   en: {
     // ... traducciones existentes
@@ -48,8 +51,9 @@ export const ui = {
 
 ## EJEMPLO 3: Crear nuevo componente de listado (ListGallery)
 
-```ts
 Paso 1: Crear src/components/ListGallery.astro
+
+```astro
 ---
 interface Props {
   posts: any[]
@@ -67,11 +71,20 @@ const { posts, basePath } = Astro.props
     </div>
   ))}
 </div>
+```
+
 Paso 2: Agregar rama en src/components/SectionRenderer.astro
+
+```astro
 {config.listComponent === 'ListGallery' && (
   <ListGallery posts={posts} basePath={`${locale}/${routeSlug}`} />
 )}
+
+```
+
 Paso 3: Usar en config
+
+```ts
 portfolio: {
   collection: 'portfolio',
   translationKey: 'nav.portfolio',
@@ -81,13 +94,17 @@ portfolio: {
   detailComponent: 'WorkProjectCommunityView',
   showFeaturedImage: false
 }
-¡Listo! No hay cambios en el routing.
 ```
+
+¡Listo! No hay cambios en el routing.
+
 ## EJEMPLO 4: Crear nuevo tipo de renderizador (SectionRendererAdvanced)
 
-```ts
+
 Si necesitas más flexibilidad, puedes:
 src/components/SectionRendererAdvanced.astro
+
+```astro
 ---
 import type { SectionConfig } from '@config/sections'
 
@@ -108,11 +125,13 @@ const { config, locale, posts, tags, customRenderer: CustomRenderer } = Astro.pr
   <SectionRenderer config={config} locale={locale} posts={posts} tags={tags} />
 )}
 ```
+
+
 ## EJEMPLO 5: Agregar metadatos avanzados en configuración
 
-```ts
 Extender SectionConfig con más propiedades:
 
+```ts
 export interface SectionConfig {
 ... propiedades existentes
 Nuevas propiedades
@@ -138,13 +157,15 @@ Metadatos nuevos
     displayOrder: 1,
     hideFromNav: false
   },
-...
+// ...
 }
+```
+
 Luego usar en:
 - Generador de sitemap
 - Menú de navegación dinámico
 - Estilos condicionales
-```
+
 ## EJEMPLO 6: Factory para crear secciones dinámicamente
 
 ```ts
@@ -184,7 +205,11 @@ export function getNavigationItems(locale: UILanguages) {
     }))
     .sort((a, b) => a.label.localeCompare(b.label))
 }
+
+```
+
 Uso en Header.astro:
+```astro
 <nav>
   {getNavigationItems(locale).map(item => (
     <a href={item.href}>
@@ -193,40 +218,68 @@ Uso en Header.astro:
   ))}
 </nav>
 ```
+
 ## EJEMPLO 8: Validación de configuración
 
 ```ts
 import { sectionsConfig } from '@config/sections'
 import { ui, languageKeys } from '@i18n/ui'
 
-export function validateSectionsConfig() {
+// Helper: comprueba que las claves de traducción existen para cada locale
+function checkTranslationKeys(sections: Record<string, any>) {
   const errors: string[] = []
-  const routes = new Set<string>()
-
-  for (const [type, config] of Object.entries(sectionsConfig)) {
-Validar que translationKey existe
+  for (const [type, config] of Object.entries(sections)) {
     for (const locale of languageKeys) {
       if (!(config.translationKey in ui[locale])) {
-        errors.push(`Section '${type}': translation key '${config.translationKey}' not found for locale '${locale}'`)
+        errors.push(
+          `Section '${type}': translation key '${config.translationKey}' not found for locale '${locale}'`
+        )
       }
     }
-Validar que no hay rutas duplicadas
+  }
+  return errors
+}
+
+// Helper: valida duplicados de rutas por locale
+function checkDuplicateRoutes(sections: Record<string, any>) {
+  const errors: string[] = []
+  const routes = new Set<string>()
+  for (const [_type, config] of Object.entries(sections)) {
     for (const locale of languageKeys) {
       const route = `${locale}:${config.routes[locale]}`
       if (routes.has(route)) {
-        errors.push(`Section '${type}': duplicate route '${config.routes[locale]}' for locale '${locale}'`)
+        errors.push(
+          `duplicate route '${config.routes[locale]}' for locale '${locale}'`
+        )
       }
       routes.add(route)
     }
-Validar que colección existe
-    if (!validCollections.includes(config.collection)) {
+  }
+  return errors
+}
+
+// Helper: valida que la colección exista (define `validCollections` en tu entorno)
+function checkCollections(sections: Record<string, any>) {
+  const errors: string[] = []
+  for (const [type, config] of Object.entries(sections)) {
+    // `validCollections` debe estar disponible en el contexto de build/test
+    if (typeof validCollections !== 'undefined' && !validCollections.includes(config.collection)) {
       errors.push(`Section '${type}': collection '${config.collection}' does not exist`)
     }
   }
-
   return errors
 }
-Uso en build/test:
+
+// Composición final
+export function validateSectionsConfig() {
+  const errors: string[] = []
+  errors.push(...checkTranslationKeys(sectionsConfig))
+  errors.push(...checkDuplicateRoutes(sectionsConfig))
+  errors.push(...checkCollections(sectionsConfig))
+  return errors
+}
+
+// Uso en build/test:
 if (import.meta.env.PROD) {
   const errors = validateSectionsConfig()
   if (errors.length > 0) {
@@ -234,8 +287,10 @@ if (import.meta.env.PROD) {
   }
 }
 ```
+
 ## EJEMPLO 9: Cambios multi-idioma simplificados
-ANTES: Cambiar "talks" → "plenarias" requería:
+
+ANTES: Cambiar "talks" → "charlas" requería:
 1. Editar /es/charla/index.astro
 2. Editar /en/talk/index.astro
 3. Editar Header.astro
@@ -243,17 +298,14 @@ ANTES: Cambiar "talks" → "plenarias" requería:
 5. Actualizar links en múltiples partes
 6. Esperar a que alguien olvide algo y bugs aparezcan
 AHORA: Cambiar es tan simple como:
+
 ```ts
 talk: {
   routes: {
     es: 'charlas',  // "charla" → "charlas"
     en: 'talks'     // "talk" → "talks" (opcional)
   },
-... resto igual
 }
 ```
+
 ✅ Todos los links, menús, sitemap se actualizan automáticamente
-
-export default {}
-
-Nota: se agregó el campo `detailComponent` en los snippets de ejemplo para dejar explícito el componente usado en las vistas de detalle.
