@@ -30,6 +30,20 @@ describe('paths utils', () => {
     expect(res.some(r => r.cleanId === 'custom')).toBe(true)
   })
 
+  it('excludes draft posts from getPostsByLocale results', async () => {
+    const posts = [
+      { id: 'en/one', data: { slug: 'one', draft: true } },
+      { id: 'en/two', data: { slug: 'two' } }
+    ]
+    vi.resetModules()
+    vi.doMock('astro:content', () => ({ getCollection: vi.fn(async () => posts) }))
+    const { getPostsByLocale } = await import('@utils/paths')
+    const res = await getPostsByLocale('blog', 'en')
+    expect(res.length).toBe(1)
+    expect(res.some(r => r.cleanId === 'one')).toBe(false)
+    expect(res.some(r => r.cleanId === 'two')).toBe(true)
+  })
+
   it('getUniqueTags extracts unique tags and handles missing tags', () => {
     const posts = [
       { data: { tags: ['a', 'b'] } },
