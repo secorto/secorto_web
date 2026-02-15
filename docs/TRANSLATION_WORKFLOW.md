@@ -1,11 +1,11 @@
 # Flujo de traducción
 
-> Nota: recomendamos definir `translation_status` en el frontmatter de las entradas (colecciones como `blog` y `talk`) para dejar explícito el estado. Los valores permitidos son: `translated`, `draft`, `partial`, `pending` u `original`. Para evitar roturas en builds existentes, el campo es opcional en el schema; sin embargo, mantenerlo explícito facilita el flujo editorial.
+> Nota: recomendamos usar un campo booleano explícito `draft: true` en el frontmatter para marcar borradores (incluidas traducciones en progreso). `translation_status` puede mantenerse como metadata histórica u opcional, pero la detección de borrador en plantillas y listados se basa en `draft`.
 
 Este proyecto usa un flujo de traducción pragmático:
 
 - El contenido se organiza por idioma en `src/content/<collection>/<locale>/`.
-- Si quieres comenzar una traducción pero mantenerla como borrador, crea el archivo en la carpeta del idioma destino y añade `translation_status: 'draft'` en el frontmatter y `translation_origin` apuntando al original.
+- Si quieres comenzar una traducción pero mantenerla como borrador, crea el archivo en la carpeta del idioma destino y añade `draft: true` en el frontmatter y `translation_origin` apuntando al original.
 
 Herramienta rápida (desde la raíz del proyecto):
 
@@ -22,10 +22,12 @@ node ./scripts/create-translation-draft.js talk es 2018-09-17-patrones-automatiz
 Esto copiará el archivo original a `src/content/talk/en/2018-09-17-patrones-automatizacion-pruebas.md` y lo marcará como borrador de traducción.
 
 Comportamiento de la interfaz
-- Las traducciones en estado `draft` muestran un banner y se marcan como `noindex`.
+- Las traducciones marcadas con `draft: true` muestran un banner y se marcan como `noindex`.
 - La etiqueta `canonical` apunta al original (si `translation_origin` está presente).
 
-Cuando completes la traducción, actualiza `translation_status: 'translated'` y rellena el contenido en el idioma destino.
+ Cuando completes la traducción, elimina `draft: true` (o cámbialo a `false`) y, si lo deseas por claridad editorial, añade `translation_status: 'translated'`.
+
+ Esto hará que desaparezcan los banners/noindex y la página en el idioma destino se convierta en la versión activa y canónica (si no sobreescribes `canonical`).
 
 Rationale — por qué este enfoque
 ---------------------------------
@@ -75,12 +77,12 @@ Flujo práctico (pasos rápidos)
 
 	 Esto crea `src/content/<collection>/<targetLocale>/<id>.md` con frontmatter añadido:
 
-	 ```yaml
-	 translation_status: 'draft'
-	 translation_origin:
+	```yaml
+	draft: true
+	translation_origin:
 		 locale: 'es'
 		 id: '2018-09-17-patrones-automatizacion-pruebas'
-	 ```
+	```
 
 2. Edita el archivo en `en/` y trabaja en la traducción. Puedes dejar contenido en el idioma original temporalmente — la web mostrará que es un borrador.
 
@@ -183,7 +185,7 @@ translation_status: 'pending'
 ```yaml
 title: "My post (draft)"
 date: 2022-07-11
-translation_status: 'draft'
+draft: true
 translation_origin:
 	locale: 'es'
 	id: 'mi-post'
@@ -194,7 +196,8 @@ translation_origin:
 ```yaml
 title: "My post"
 date: 2022-07-11
-translation_status: 'translated'
+draft: false
+translation_status: 'translated'  # opcional
 translation_origin:
 	locale: 'es'
 	id: 'mi-post'
@@ -205,6 +208,7 @@ translation_origin:
 ```yaml
 title: "My post (partial)"
 date: 2022-07-11
+draft: false
 translation_status: 'partial'
 translation_origin:
 	locale: 'es'

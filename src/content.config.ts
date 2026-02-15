@@ -12,6 +12,7 @@ const createBasePostSchema = (imageHelper: () => z.ZodTypeAny) => z.object({
   description: z.string().optional(),
   slug: z.string().optional(),
   translation_status: z.enum(['translated', 'draft', 'partial', 'pending', 'original']).optional(),
+  draft: z.boolean().optional(),
   translation_origin: z.object({ locale: z.string(), id: z.string() }).optional(),
   change_log: z.array(z.object({
     date: z.date().optional(),

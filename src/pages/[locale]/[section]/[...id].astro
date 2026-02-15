@@ -19,6 +19,7 @@ interface BaseEntryData {
   translation_status?: 'original' | 'translated' | 'draft' | 'partial' | 'pending'
   translation_origin?: { locale: string; id: string }
   slug?: string
+  draft?: boolean
 }
 
 export async function getStaticPaths() {
@@ -35,8 +36,8 @@ const entryTyped = entry as CollectionEntry<CollectionKey>
 const entryData = entryTyped.data as BaseEntryData
 
 // Calculate canonical metadata (handles translation drafts)
-const { isTranslationDraft, canonicalLocale, canonicalId, shouldNoindex } = getCanonicalMetadata({
-  translationStatus: entryData.translation_status,
+const { canonicalLocale, canonicalId, shouldNoindex } = getCanonicalMetadata({
+  entryDraft: Boolean(entryData.draft),
   translationOrigin: entryData.translation_origin,
   currentLocale: context.locale,
   currentCleanId: cleanId
@@ -61,10 +62,12 @@ const routeSlug = config.routes[context.locale]
 />
 
 <BaseLayout pageTitle={pageTitle} description={pageDescription}>
-  {isTranslationDraft && entryData.translation_origin && (
+  {entryData.draft && (
     <div class="untranslated-notice" role="status">
-      <p>{t('post.translation_draft_notice')}</p>
-      <a href={`/${entryData.translation_origin.locale}/${config.routes[entryData.translation_origin.locale as UILanguages]}/${entryData.translation_origin.id}`}>{t('post.view_original')}</a>
+      <p>{t('post.draft_notice')}</p>
+      {entryData.translation_origin && (
+        <a href={`/${entryData.translation_origin.locale}/${config.routes[entryData.translation_origin.locale as UILanguages]}/${entryData.translation_origin.id}`}>{t('post.view_original')}</a>
+      )}
     </div>
   )}
 
