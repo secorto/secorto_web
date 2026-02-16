@@ -1,5 +1,5 @@
 /**
- * Utilities for handling translation metadata and canonical URLs in content entries
+ * Utilidades para manejar metadata de traducciones y URLs canónicas en entradas de contenido
  */
 import type { UILanguages } from '@i18n/ui'
 
@@ -23,34 +23,34 @@ export interface PageData {
 }
 
 /**
- * Calculates the canonical locale and ID for a content entry,
- * taking into account translation drafts that should point to their originals
+ * Calcula el locale e ID canónicos para una entrada de contenido,
+ * teniendo en cuenta traducciones en estado borrador que deben apuntar a su origen.
  *
- * @param params - Entry metadata
- * @param params.entryDraft - Explicit `draft` frontmatter for the entry
- * @param params.translationOrigin - Origin locale/ID if this is a translation
- * @param params.currentLocale - Current locale being viewed
- * @param params.currentCleanId - Current entry's clean ID
- * @returns Canonical metadata for SEO
+ * @param params - Metadatos de la entrada
+ * @param params.entryDraft - Frontmatter explícito `draft` para la entrada
+ * @param params.translationOrigin - Locale/ID de origen si es una traducción
+ * @param params.currentLocale - Locale actual que se está viendo
+ * @param params.currentCleanId - ID limpio de la entrada actual
+ * @returns Metadatos canónicos para SEO
  *
  * @example
  * ```ts
- * // Translation draft - should point to original
+ * // Traducción en borrador - debe apuntar al original (usar frontmatter `draft: true`)
  * getCanonicalMetadata({
- *   translationStatus: 'draft',
+ *   entryDraft: true,
  *   translationOrigin: { locale: 'es', id: '2026-01-01-post' },
  *   currentLocale: 'en',
  *   currentCleanId: '2026-01-01-post'
  * })
- * // Returns: { canonicalLocale: 'es', canonicalId: '2026-01-01-post', isTranslationDraft: true, shouldNoindex: true }
+ * // Devuelve: { canonicalLocale: 'es', canonicalId: '2026-01-01-post', isTranslationDraft: true, shouldNoindex: true }
  *
- * // Complete translation - canonical is self
+ * // Traducción completa - lo canónico es la propia entrada
  * getCanonicalMetadata({
- *   translationStatus: 'translated',
+ *   entryDraft: false,
  *   currentLocale: 'en',
  *   currentCleanId: '2026-01-01-post'
  * })
- * // Returns: { canonicalLocale: 'en', canonicalId: '2026-01-01-post', isTranslationDraft: false, shouldNoindex: false }
+ * // Devuelve: { canonicalLocale: 'en', canonicalId: '2026-01-01-post', isTranslationDraft: false, shouldNoindex: false }
  * ```
  */
 export function getCanonicalMetadata(params: {
@@ -82,16 +82,16 @@ export function getCanonicalMetadata(params: {
 }
 
 /**
- * Extracts page metadata (title and description) from a content entry
+ * Extrae metadata de página (título y descripción) desde una entrada de contenido
  *
- * @param entry - Content entry
- * @param fallbackTitle - Fallback title if entry.data.title is not set
- * @returns Object with pageTitle and pageDescription
+ * @param entry - Entrada de contenido
+ * @param fallbackTitle - Título por defecto si `entry.data.title` no está definido
+ * @returns Objeto con `pageTitle` y `pageDescription`
  *
  * @example
  * ```ts
  * getPageMetadata(entry, 'Blog')
- * // Returns: { pageTitle: 'My Post Title', pageDescription: 'This is the excerpt...' }
+ * // Devuelve: { pageTitle: 'Título del post', pageDescription: 'Este es el extracto...' }
  * ```
  */
 export function getPageMetadata(
