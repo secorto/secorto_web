@@ -58,45 +58,45 @@ Cuándo usarlo
 --------------
 
 - Te lo recomiendo si:
-	- Publicas con cierta regularidad y quieres traducir algunos posts en el futuro
-	- Quieres un control sencillo sobre qué está pendiente sin entrar en procesos pesados
+  - Publicas con cierta regularidad y quieres traducir algunos posts en el futuro
+  - Quieres un control sencillo sobre qué está pendiente sin entrar en procesos pesados
 
 - Considera no usarlo si:
-	- Publicas muy raramente (1–2 posts por año) y no te importa una nota manual en el contenido
-	- No te preocupa la indexación temporal de borradores
+  - Publicas muy raramente (1–2 posts por año) y no te importa una nota manual en el contenido
+  - No te preocupa la indexación temporal de borradores
 
 Flujo práctico (pasos rápidos)
 --------------------------------
 
 1. Para crear un borrador de traducción desde el original:
 
-	 ```bash
-	 node ./scripts/create-translation-draft.js <collection> <localeFrom> <id> <targetLocale>
-	 # ejemplo: node ./scripts/create-translation-draft.js talk es 2018-09-17-patrones-automatizacion-pruebas en
-	 ```
+   ```bash
+   node ./scripts/create-translation-draft.js <collection> <localeFrom> <id> <targetLocale>
+   # ejemplo: node ./scripts/create-translation-draft.js talk es 2018-09-17-patrones-automatizacion-pruebas en
+   ```
 
-	 Esto crea `src/content/<collection>/<targetLocale>/<id>.md` con frontmatter añadido:
+   Esto crea `src/content/<collection>/<targetLocale>/<id>.md` con frontmatter añadido:
 
-	```yaml
-	draft: true
-	translation_origin:
-		 locale: 'es'
-		 id: '2018-09-17-patrones-automatizacion-pruebas'
-	```
+```yaml
+draft: true
+translation_origin:
+    locale: 'es'
+    id: '2018-09-17-patrones-automatizacion-pruebas'
+```
 
 2. Edita el archivo en `en/` y trabaja en la traducción. Puedes dejar contenido en el idioma original temporalmente — la web mostrará que es un borrador.
 
 3. Mientras el post está `draft`:
-	 - La página en `en/` será accesible pero estará marcada como `noindex` y mostrará un banner indicando que es una traducción en borrador.
-	 - El selector de idioma (LanguagePicker) mostrará un marcador (✏️) para indicar el estado.
+   - La página en `en/` será accesible pero estará marcada como `noindex` y mostrará un banner indicando que es una traducción en borrador.
+   - El selector de idioma (LanguagePicker) mostrará un marcador (✏️) para indicar el estado.
 
 4. Cuando completes la traducción, actualiza el frontmatter a:
 
-	 ```yaml
-	 translation_status: 'translated'
-	 ```
+```yaml
+translation_status: 'translated'
+```
 
-	 Esto hará que desaparezcan los banners/noindex y la página en `en/` se convierta en la versión activa y canónica (si no sobreescribes canonical).
+   Esto hará que desaparezcan los banners/noindex y la página en `en/` se convierta en la versión activa y canónica (si no sobreescribes canonical).
 
 Buenas prácticas
 -----------------
@@ -125,9 +125,9 @@ Comprobaciones disponibles
 - Archivos sin `translation_status`: usa `scripts/list-missing-translation-status.js` (lista los archivos que no tienen el campo en el frontmatter)
 - Pares traducidos detectables: `scripts/auto-mark-translated.js` intenta marcar automáticamente originales como `original` y traducciones como `translated` (añade `translation_origin` si hace falta)
 - Inconsistencias detalladas: `scripts/check-translation-inconsistencies.js` detecta casos como:
-	- traducción marcada `translated` pero sin `translation_origin`
-	- archivo que declara `translation_origin` pero NO tiene `translation_status: 'translated'`
-	- archivo que tiene `translation_origin` pero ambos archivos están marcados `original`
+  - traducción marcada `translated` pero sin `translation_origin`
+  - archivo que declara `translation_origin` pero NO tiene `translation_status: 'translated'`
+  - archivo que tiene `translation_origin` pero ambos archivos están marcados `original`
 
 Uso rápido (desde la raíz del repo):
 
@@ -187,8 +187,8 @@ title: "My post (draft)"
 date: 2022-07-11
 draft: true
 translation_origin:
-	locale: 'es'
-	id: 'mi-post'
+  locale: 'es'
+  id: 'mi-post'
 ```
 
 - Translated (traducción completa publicada):
@@ -199,8 +199,8 @@ date: 2022-07-11
 draft: false
 translation_status: 'translated'  # opcional
 translation_origin:
-	locale: 'es'
-	id: 'mi-post'
+  locale: 'es'
+  id: 'mi-post'
 ```
 
 - Partial (traducción publicada pero incompleta — muestra banner leve):
@@ -211,8 +211,8 @@ date: 2022-07-11
 draft: false
 translation_status: 'partial'
 translation_origin:
-	locale: 'es'
-	id: 'mi-post'
+  locale: 'es'
+  id: 'mi-post'
 ```
 
 Notas importantes:
