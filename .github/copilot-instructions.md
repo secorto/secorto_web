@@ -90,7 +90,43 @@
 
  - Copilot: when generating or refactoring content with assistance, ensure the output includes complete frontmatter and that the suggested filename respects the date prefix. Do not accept suggestions for posts without a date-prefixed filename. Additionally, Copilot must not introduce the TypeScript `any` type in generated code; always prefer explicit types or interfaces.
 
+- Copilot: when generating or refactoring content with assistance, ensure the output includes complete frontmatter and that the suggested filename respects the date prefix. Do not accept suggestions for posts without a date-prefixed filename.
+- **Types (strict)**: Copilot must never introduce the TypeScript `any` type in generated code. The project enforces `@typescript-eslint/no-explicit-any` as `error` in ESLint. If Copilot proposes `any`, reject the suggestion and prefer one of the following:
+  - a concrete interface/type declaration, or
+  - a generic type parameter (e.g., `T`) with a TODO comment linking to an issue for narrowing the type later, or
+  - a small union or unknown-to-typed conversion with an explicit cast and a documented justification.
+
+  Never use `as any` or broad `any` aliases. If an exceptional case genuinely cannot be typed (extraordinary legacy interop), create a short issue in the repo tracking the exception and reference it in the code comment.
+
+- **`@ts-ignore` and variant comments**: `@ts-ignore`, `// @ts-expect-error`, `// @ts-nocheck` are highly restricted. Prefer fixing types instead of silencing the checker. If an ignore is unavoidable:
+  - use `// @ts-expect-error` only with a one-line description of why and a link to an issue (minimum 10 characters), and
+  - avoid `// @ts-ignore`; if used, it must be converted to an issue and justified in the comment as above.
+
+- **Triple-slash references**: triple-slash references are allowed in `.d.ts` declaration files where necessary (for example to consume generated `.astro` types). Prefer adding an ESLint override for `*.d.ts` instead of inline disables.
+
 - Default site language: Spanish (`es`). When the language is not explicitly specified, prefer Spanish for authoring content and suggested slugs. Contributors should still provide translations and set `translation_status` appropriately.
+
+---
+
+*Nota:* se ha reforzado la política de tipos: `any` está prohibido en el código de `src/` y ESLint lo marca como `error`. Para excepciones temporales en tests o carpetas legacy, documentar el caso y abrir un issue que lo rastree.
+
+## Política de excepciones y technical debt (acuerdo)
+
+No crear issues individuales por cada excepción temporal. En su lugar, usar el siguiente patrón inline para marcar deuda técnica que debe revisarse posteriormente:
+
+```ts
+// TODO(debt): <razón breve> — owner: @usuario — until: YYYY-MM-DD
+```
+
+Reglas:
+- El comentario debe aparecer inmediatamente arriba de la línea o bloque afectado.
+- `owner` es el @usuario responsable temporalmente del arreglo (puede ser un equipo).
+- `until` es la fecha estimada para revisar o remediar la deuda.
+- No usar `as any` ni `// eslint-disable` sin este TODO; si una excepción es absolutamente necesaria, debe acompañarse del TODO.
+
+Centralizar los ítems en `docs/tech-debt.md` — el comentario inline actuará como punto de referencia y la lista en `docs/tech-debt.md` servirá como único lugar para seguimiento y revisiones periódicas.
+
+Si una deuda técnica necesita más contexto, agregar una entrada en `docs/tech-debt.md` con más detalles en lugar de crear un issue por cada caso.
 
 ---
 
