@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { sectionsConfig, type SectionConfig } from '@config/sections'
+import { parseFrontmatter, getNested } from '@utils/frontmatter'
 
 /**
  * Valida `translation_origin.locale` inspeccionando los archivos de contenido
@@ -17,15 +18,9 @@ describe('content frontmatter: translation_origin.locale validity', () => {
       for (const [filePath, raw] of Object.entries(modules)) {
         if (!filePath.includes(`/src/content/${String(sectionKey)}/`)) continue
 
-        const fmMatch = raw.match(/^---\n([\s\S]*?)\n---/)
-        if (!fmMatch) continue
-        const fm = fmMatch[1]
-        const toMatch = fm.match(/translation_origin:\s*\n([\s\S]*?)($|\n\w+:)/)
-        if (!toMatch) continue
-        const originBlock = toMatch[1]
-        const localeMatch = originBlock.match(/locale:\s*['"]?([a-zA-Z0-9_-]+)['"]?/)
-        if (!localeMatch) continue
-        const localeVal = localeMatch[1]
+        const fm = parseFrontmatter(raw)
+        const localeVal = getNested<string>(fm, ['translation_origin', 'locale'])
+        if (!localeVal) continue
         const fileName = filePath.split('/').pop() || filePath
         if (!allowedLocales.includes(localeVal)) {
           invalid.push(`${sectionKey}:${fileName} -> ${localeVal}`)
