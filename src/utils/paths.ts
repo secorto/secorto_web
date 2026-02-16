@@ -20,12 +20,7 @@ export async function getPostsByLocale<C extends CollectionKey>(
   const posts = await getCollection(collection);
   return posts
     .filter((post) => post.id.startsWith(`${locale}/`))
-    // Exclude drafts: prefer explicit `draft` frontmatter. Use runtime
-    // checks against a generic object shape to avoid unsafe `any` casts.
-    .filter((post) => {
-      const data = post.data as Record<string, unknown>
-      return data['draft'] !== true
-    })
+    .filter((post) => post.data.draft !== true)
     .map((post) => {
       const data = post.data as Record<string, unknown>
       const slug = typeof data['slug'] === 'string' ? data['slug'] as string : undefined
