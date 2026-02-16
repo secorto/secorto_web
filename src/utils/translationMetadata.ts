@@ -9,7 +9,6 @@ export interface TranslationOrigin {
 }
 
 export interface TranslationMetadata {
-  isTranslationDraft: boolean
   canonicalLocale: UILanguages
   canonicalId: string
   shouldNoindex: boolean
@@ -42,7 +41,7 @@ export interface PageData {
  *   currentLocale: 'en',
  *   currentCleanId: '2026-01-01-post'
  * })
- * // Devuelve: { canonicalLocale: 'es', canonicalId: '2026-01-01-post', isTranslationDraft: true, shouldNoindex: true }
+ * // Devuelve: { canonicalLocale: 'es', canonicalId: '2026-01-01-post', shouldNoindex: true }
  *
  * // Traducción completa - lo canónico es la propia entrada
  * getCanonicalMetadata({
@@ -50,7 +49,7 @@ export interface PageData {
  *   currentLocale: 'en',
  *   currentCleanId: '2026-01-01-post'
  * })
- * // Devuelve: { canonicalLocale: 'en', canonicalId: '2026-01-01-post', isTranslationDraft: false, shouldNoindex: false }
+ * // Devuelve: { canonicalLocale: 'en', canonicalId: '2026-01-01-post', shouldNoindex: false }
  * ```
  */
 export function getCanonicalMetadata(params: {
@@ -74,7 +73,6 @@ export function getCanonicalMetadata(params: {
     : params.currentCleanId
 
   return {
-    isTranslationDraft: isDraft,
     canonicalLocale,
     canonicalId,
     shouldNoindex: isDraft

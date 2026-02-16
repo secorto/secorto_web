@@ -11,7 +11,6 @@ describe('getCanonicalMetadata', () => {
     })
 
     expect(result).toEqual({
-      isTranslationDraft: true,
       canonicalLocale: 'es',
       canonicalId: '2026-01-01-original',
       shouldNoindex: true
@@ -27,7 +26,6 @@ describe('getCanonicalMetadata', () => {
     })
 
     expect(result).toEqual({
-      isTranslationDraft: false,
       canonicalLocale: 'en',
       canonicalId: '2026-01-01-original',
       shouldNoindex: false
@@ -42,7 +40,6 @@ describe('getCanonicalMetadata', () => {
     })
 
     expect(result).toEqual({
-      isTranslationDraft: false,
       canonicalLocale: 'en',
       canonicalId: '2026-01-01-original',
       shouldNoindex: false
@@ -57,7 +54,6 @@ describe('getCanonicalMetadata', () => {
     })
 
     expect(result).toEqual({
-      isTranslationDraft: false,
       canonicalLocale: 'es',
       canonicalId: '2026-01-01-my-post',
       shouldNoindex: false
@@ -71,7 +67,6 @@ describe('getCanonicalMetadata', () => {
     })
 
     expect(result).toEqual({
-      isTranslationDraft: false,
       canonicalLocale: 'es',
       canonicalId: '2026-01-01-post',
       shouldNoindex: false
