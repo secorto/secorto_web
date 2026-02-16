@@ -1,7 +1,7 @@
 # ADR 004: Linting, tipo `any` y convenciones de estilo
 
 > **Estado:** Aceptada (parcialmente — la sección de formateo está en evaluación)
-> **Fecha:** 2025-07
+> **Fecha:** 2026-02-15
 > **Categoría:** Tooling / Calidad de código / Estilo
 
 ---
@@ -39,14 +39,16 @@ más limpio y cercano al estilo natural del autor.
 
 ## Decisiones tomadas
 
-### 1. Prohibir `any` — `@typescript-eslint/no-explicit-any: warn`
+### 1. Prohibir `any` — `@typescript-eslint/no-explicit-any: error`
 
-Se activó la regla `@typescript-eslint/no-explicit-any` en nivel `warn`
-(no `error` para no bloquear builds durante el refactoring gradual).
+Se elevó la regla `@typescript-eslint/no-explicit-any` a `error` para evitar
+introducir nuevos `any` en el código fuente. El cambio ya está aplicado en
+la configuración de ESLint; la idea es que el código del repositorio no
+contenga nuevos `any` y que cualquier excepción sea explícita y justificada.
 
-**Refactoring realizado:**
+**Refactoring realizado / cambios inmediatos:**
 
-Se reemplazaron todos los `any` del código fuente con tipos explícitos:
+Se reemplazaron muchos `any` del código fuente con tipos explícitos:
 
 | Patrón eliminado | Reemplazo |
 |---|---|
@@ -55,9 +57,11 @@ Se reemplazaron todos los `any` del código fuente con tipos explícitos:
 | `any` en retornos | Tipos de colección de Astro (`CollectionEntry<CollectionKey>`) |
 | `any` en tests | Objetos tipados con interfaces de mock |
 
-Resultado: **cero `any`** en el código fuente (`src/`). El único
-`eslint-disable` para `no-explicit-any` que queda está en `cypress/e2e/stubs.ts`,
-que es código legacy pendiente de eliminación.
+Resultado parcial: varios `any` fueron eliminados de `src/` y se
+actualizó `cypress/e2e/stubs.ts` para eliminar un `eslint-disable` y
+reemplazar el parámetro `win: any` por un tipo más seguro. Queda una nota
+pendiente para revisar `src/env.d.ts` y retirar su `eslint-disable` una vez
+que la override para `.d.ts` esté consolidada.
 
 **Regla en `copilot-instructions.md`:**
 
@@ -107,7 +111,8 @@ Esta regla sí está enforceada a nivel `error` y se aplica con `--fix`.
 
 // Reglas clave:
 {
-  '@typescript-eslint/no-explicit-any': 'warn',
+  '@typescript-eslint/no-explicit-any': 'error',
+  'no-warning-comments': ['warn', { terms: ['ts-ignore'], location: 'anywhere' }],
   '@typescript-eslint/no-unused-vars': ['error', {
     varsIgnorePattern: '^_',
     argsIgnorePattern: '^_',
@@ -129,7 +134,7 @@ de organizar:
 
 | Área | Estado | Nota |
 |---|---|---|
-| `no-explicit-any` | ✅ Activa (`warn`) | Subir a `error` cuando se elimine Cypress |
+| `no-explicit-any` | ✅ Activa (`error`) | Elevada a `error`; monitorizar en CI y tests |
 | `no-unused-vars` | ✅ Activa (`error`) | Con ignore para `_` prefixed |
 | `import/no-unresolved` | ✅ Activa | Con módulos core de Astro configurados |
 | `indent` | ✅ Activa (2 espacios) | Enforceada |
@@ -228,8 +233,8 @@ revisión manual.
   generado por `playwright codegen` necesita limpieza manual.
 - Reglas de estilo (quotes, trailing commas, etc.) sin definir.
 - Decisión Prettier vs Stylistic pendiente.
-- `no-explicit-any` en `warn` en lugar de `error`; subir cuando Cypress
-  se elimine.
+ - `no-explicit-any` ahora es `error`; revisar fallos en CI y agregar
+   excepciones justificadas si aparecen casos legítimos.
 - Configuración de ESLint podría consolidarse mejor (algunas reglas
   sueltas).
 
@@ -240,8 +245,10 @@ revisión manual.
 1. [ ] Decidir entre Prettier y ESLint Stylistic
 2. [ ] Definir regla de semicolons (`semi: ['error', 'never']` o vía Prettier)
 3. [ ] Definir regla de quotes (`quotes: ['error', 'single']` o similar)
-4. [ ] Subir `no-explicit-any` de `warn` a `error`
-5. [ ] Eliminar el `eslint-disable` en `cypress/e2e/stubs.ts` al borrar Cypress
+4. [ ] Verificar CI y/o agregar excepciones justificadas para `no-explicit-any`
+5. [ ] Revisar y eliminar `eslint-disable` restantes (ej. `src/env.d.ts`) y
+  confirmar que las overrides en ESLint para `.d.ts` permiten quitar
+  la mayoría de disables inline
 6. [ ] Evaluar si agregar `@stylistic/eslint-plugin` o `prettier` a CI
 7. [ ] Documentar la resolución final en este ADR (cambiar estado a **Aceptada**)
 

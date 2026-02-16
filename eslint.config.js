@@ -12,7 +12,11 @@ const sharedSettings = {
 const sharedRules = {
   'import/no-unresolved': 'error',
   'import/no-extraneous-dependencies': ['error', { devDependencies: ['cypress/**', 'tests/**', '**/*.spec.*', 'playwright.config.ts', 'vitest.config.ts'] }],
-  'indent': ['error', 2, { SwitchCase: 1 }]
+  'indent': ['error', 2, { SwitchCase: 1 }],
+  'no-warning-comments': [
+    'warn',
+    { terms: ['ts-ignore'], location: 'anywhere' }
+  ],
 }
 
 export default [
@@ -42,7 +46,7 @@ export default [
     rules: {
       ...sharedRules,
       ...tsPlugin.configs.recommended.rules,
-      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
