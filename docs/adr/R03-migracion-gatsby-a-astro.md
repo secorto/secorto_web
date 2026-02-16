@@ -1,9 +1,10 @@
 # ADR R03: Migración de Gatsby a Astro
 
 > **Estado:** Aceptada
-> **Fecha original:** 2024-05 (reconstruido retrospectivamente 2026-02)
+> **Fecha:** 2024-05
 > **Categoría:** Plataforma / SSG / Testing / i18n
 > **Repositorio:** `secorto_web` (502+ commits, 2024–presente)
+> **Fecha reconstrucción:** 2026-02
 
 ---
 
