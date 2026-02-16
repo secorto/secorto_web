@@ -10,6 +10,14 @@ describe('frontmatter util', () => {
     expect(fm.count).toBe(5)
   })
 
+  it('parses CRLF frontmatter', () => {
+    const raw = `---\r\ntitle: "Hola"\r\ndraft: true\r\ncount: 5\r\n---\r\n`
+    const fm = parseFrontmatter(raw)
+    expect(fm.title).toBe('Hola')
+    expect(fm.draft).toBe(true)
+    expect(fm.count).toBe(5)
+  })
+
   it('parses arrays and nested maps', () => {
     const raw = `---\ntags:\n  - a\n  - b\ntranslation_origin:\n  locale: 'es'\n  id: '2022-01-01-post'\n---\n`
     const fm = parseFrontmatter(raw)

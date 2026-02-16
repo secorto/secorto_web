@@ -22,10 +22,12 @@ function parseValue(raw: string): unknown {
 }
 
 export function parseFrontmatter(text: string): Frontmatter {
-  const m = text.match(/^---\n([\s\S]*?)\n---/)
+  // Normalize newlines to LF so parser works with files checked out on Windows (CRLF)
+  const normalized = text.replace(/\r\n|\r/g, '\n')
+  const m = normalized.match(/^---\n([\s\S]*?)\n---/)
   if (!m) return {}
   const block = m[1]
-  const lines = block.split(/\r?\n/)
+  const lines = block.split('\n')
 
   const result: Frontmatter = {}
   let currentKey: string | null = null
