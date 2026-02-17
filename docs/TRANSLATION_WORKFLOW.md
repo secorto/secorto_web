@@ -7,19 +7,19 @@ Este proyecto usa un flujo de traducción pragmático:
 - El contenido se organiza por idioma en `src/content/<collection>/<locale>/`.
 - Si quieres comenzar una traducción pero mantenerla como borrador, crea el archivo en la carpeta del idioma destino y añade `draft: true` en el frontmatter y `translation_origin` apuntando al original.
 
-Herramienta rápida (desde la raíz del proyecto):
+Crear borrador (manual):
 
-```
-node ./scripts/create-translation-draft.js <collection> <localeFrom> <id> <targetLocale>
+1. Copia el archivo original desde `src/content/<collection>/<localeFrom>/<id>.md` a `src/content/<collection>/<targetLocale>/<id>.md`
+2. En el frontmatter del nuevo archivo añade:
+
+```yaml
+draft: true
+translation_origin:
+  locale: '<localeFrom>'
+  id: '<id>'
 ```
 
-Ejemplo:
-
-```
-node ./scripts/create-translation-draft.js talk es 2018-09-17-patrones-automatizacion-pruebas en
-```
-
-Esto copiará el archivo original a `src/content/talk/en/2018-09-17-patrones-automatizacion-pruebas.md` y lo marcará como borrador de traducción.
+El nuevo archivo quedará marcado como borrador de traducción y la web lo tratará como tal.
 
 Comportamiento de la interfaz
 - Las traducciones marcadas con `draft: true` muestran un banner y se marcan como `noindex`.
@@ -68,20 +68,16 @@ Cuándo usarlo
 Flujo práctico (pasos rápidos)
 --------------------------------
 
-1. Para crear un borrador de traducción desde el original:
+1. Para crear un borrador de traducción desde el original (manualmente):
 
-  ```bash
-  node ./scripts/create-translation-draft.js <collection> <localeFrom> <id> <targetLocale>
-  # ejemplo: node ./scripts/create-translation-draft.js talk es 2018-09-17-patrones-automatizacion-pruebas en
-  ```
-
-  Esto crea `src/content/<collection>/<targetLocale>/<id>.md` con frontmatter añadido:
+  - Copia el archivo original desde `src/content/<collection>/<localeFrom>/<id>.md` a `src/content/<collection>/<targetLocale>/<id>.md`
+  - Añade en el frontmatter del nuevo archivo:
 
   ```yaml
   draft: true
   translation_origin:
-    locale: 'es'
-    id: '2018-09-17-patrones-automatizacion-pruebas'
+    locale: '<localeFrom>'
+    id: '<id>'
   ```
 
 2. Edita el archivo en `en/` y trabaja en la traducción. Puedes dejar contenido en el idioma original temporalmente — la web mostrará que es un borrador.
@@ -113,40 +109,6 @@ Detección de inconsistencias
 ---------------------------
 
 Cuando trabajas con contenido en varias carpetas por idioma es fácil que se produzcan incongruencias (por ejemplo: existe una versión en otro idioma pero falta `translation_origin`, o hay declaraciones contradictorias entre archivos). Aquí tienes cómo detectarlas y tratarlas.
-
-Comprobaciones disponibles
-
-- Pares traducidos detectables: `scripts/auto-mark-translated.js` intenta marcar automáticamente pares y añadir `translation_origin` cuando es claro
-- Inconsistencias detalladas: `scripts/check-translation-inconsistencies.js` detecta casos como:
-  - traducción sin `translation_origin`
-  - archivo que declara `translation_origin` pero la relación con el origen no es consistente
-  - archivo que tiene `translation_origin` pero la relación es ambigua
-
-Uso rápido (desde la raíz del repo):
-
-```bash
-# intentar auto-marcar pares (añade translation_origin cuando es claro)
-node ./scripts/auto-mark-translated.js
-
-# revisar inconsistencias más finas
-node ./scripts/check-translation-inconsistencies.js
-```
-
-Ejemplo de salida (posible):
-
-```
-Found 2 inconsistency(ies):
-- { collection: 'blog', id: '2011-02-17-software-libre-vs-propietario.md', type: 'origin_but_not_translated', locale: 'en', origin: { locale: 'es', id: '2011-02-17-software-libre-vs-propietario.md' } }
-- { collection: 'talk', id: '2019-10-22-blog-con-gatsby.md', type: 'translated_missing_origin', locale: 'en' }
-```
-
-Qué hacer según el tipo
-
-- `translated_missing_origin`: abrir la traducción y añadir `translation_origin` apuntando al original
-- `origin_but_not_translated`: la entrada declara `translation_origin` pero la metadata no refleja la relación correctamente
-- `origin_present_both_original`: revisar manualmente si ambos son versiones independientes o si existe una relación de traducción
-
-Si quieres, puedo ejecutar estas comprobaciones ahora y generar un pequeño report en `scripts/translation-inconsistencies-report.json` o aplicar correcciones automáticas en los casos no ambiguos.
 
 Ejemplos mínimos de frontmatter (solo campos relevantes aquí):
 
