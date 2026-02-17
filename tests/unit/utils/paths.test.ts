@@ -1,5 +1,4 @@
 import { describe, it, expect, vi } from 'vitest'
-import { getUniqueTags } from '@utils/paths'
 
 describe('paths utils', () => {
   it('getPostsByLocale filters by locale and sets cleanId', async () => {
@@ -30,7 +29,8 @@ describe('paths utils', () => {
     expect(res.some(r => r.cleanId === 'custom')).toBe(true)
   })
 
-  it('getUniqueTags extracts unique tags and handles missing tags', () => {
+  it('getUniqueTags extracts unique tags and handles missing tags', async () => {
+    const { getUniqueTags } = await import('@utils/paths')
     const posts = [
       { data: { tags: ['a', 'b'] } },
       { data: { } },
