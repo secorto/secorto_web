@@ -70,19 +70,19 @@ Flujo práctico (pasos rápidos)
 
 1. Para crear un borrador de traducción desde el original:
 
-   ```bash
-   node ./scripts/create-translation-draft.js <collection> <localeFrom> <id> <targetLocale>
-   # ejemplo: node ./scripts/create-translation-draft.js talk es 2018-09-17-patrones-automatizacion-pruebas en
-   ```
+  ```bash
+  node ./scripts/create-translation-draft.js <collection> <localeFrom> <id> <targetLocale>
+  # ejemplo: node ./scripts/create-translation-draft.js talk es 2018-09-17-patrones-automatizacion-pruebas en
+  ```
 
-   Esto crea `src/content/<collection>/<targetLocale>/<id>.md` con frontmatter añadido:
+  Esto crea `src/content/<collection>/<targetLocale>/<id>.md` con frontmatter añadido:
 
-```yaml
-draft: true
-translation_origin:
+  ```yaml
+  draft: true
+  translation_origin:
     locale: 'es'
     id: '2018-09-17-patrones-automatizacion-pruebas'
-```
+  ```
 
 2. Edita el archivo en `en/` y trabaja en la traducción. Puedes dejar contenido en el idioma original temporalmente — la web mostrará que es un borrador.
 
@@ -92,11 +92,11 @@ translation_origin:
 
 4. Cuando completes la traducción, actualiza el frontmatter a:
 
-```yaml
-translation_status: 'translated'
-```
+  ```yaml
+  translation_status: 'translated'
+  ```
 
-   Esto hará que desaparezcan los banners/noindex y la página en `en/` se convierta en la versión activa y canónica (si no sobreescribes canonical).
+  Esto hará que desaparezcan los banners/noindex y la página en `en/` se convierta en la versión activa y canónica (si no sobreescribes canonical).
 
 Buenas prácticas
 -----------------
