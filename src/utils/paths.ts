@@ -19,11 +19,16 @@ export async function getPostsByLocale<C extends CollectionKey>(
 ): Promise<EntryWithCleanId<C>[]> {
   const posts = await getCollection(collection);
   return posts
-    .filter(post => post.id.startsWith(`${locale}/`))
-    .map(post => ({
-      ...post,
-      cleanId: post.data.slug || extractCleanId(post.id)
-    }))
+    .filter((post) => post.id.startsWith(`${locale}/`))
+    .filter((post) => post.data.draft !== true)
+    .map((post) => {
+      const data = post.data as Record<string, unknown>
+      const slug = typeof data['slug'] === 'string' ? data['slug'] as string : undefined
+      return {
+        ...post,
+        cleanId: slug || extractCleanId(post.id)
+      }
+    })
     .sort((a, b) => b.cleanId.localeCompare(a.cleanId))
 }
 
