@@ -1,6 +1,6 @@
 # Flujo de traducción
 
-> Nota: recomendamos usar un campo booleano explícito `draft: true` en el frontmatter para marcar borradores (incluidas traducciones en progreso). `translation_status` puede mantenerse como metadata histórica u opcional, pero la detección de borrador en plantillas y listados se basa en `draft`.
+> Nota: recomendamos usar un campo booleano explícito `draft: true` en el frontmatter para marcar borradores (incluidas traducciones en progreso). La detección de borrador en plantillas y listados se basa en `draft`.
 
 Este proyecto usa un flujo de traducción pragmático:
 
@@ -25,7 +25,7 @@ Comportamiento de la interfaz
 - Las traducciones marcadas con `draft: true` muestran un banner y se marcan como `noindex`.
 - La etiqueta `canonical` apunta al original (si `translation_origin` está presente).
 
- Cuando completes la traducción, elimina `draft: true` (o cámbialo a `false`) y, si lo deseas por claridad editorial, añade `translation_status: 'translated'`.
+ Cuando completes la traducción, elimina `draft: true` (o cámbialo a `false`).
 
  Esto hará que desaparezcan los banners/noindex y la página en el idioma destino se convierta en la versión activa y canónica (si no sobreescribes `canonical`).
 
@@ -52,7 +52,7 @@ Costes / trade-offs
 
 - Añade un pequeño campo adicional en frontmatter por post en caso de borrador.
 - Requiere recordar usar el helper o crear la copia manualmente cuando empiezas una traducción (aunque el helper reduce la fricción).
-- Existe el riesgo de desincronización entre `translation_status` y el contenido real si no se actualiza cuando la traducción termina — mitigable con checks en build o con simples inspecciones periódicas.
+ - Existe el riesgo de desincronización entre la metadata y el contenido real si no se actualiza cuando la traducción termina — mitigable con checks en build o con simples inspecciones periódicas.
 
 Cuándo usarlo
 --------------
@@ -90,19 +90,13 @@ Flujo práctico (pasos rápidos)
    - La página en `en/` será accesible pero estará marcada como `noindex` y mostrará un banner indicando que es una traducción en borrador.
    - El selector de idioma (LanguagePicker) mostrará un marcador (✏️) para indicar el estado.
 
-4. Cuando completes la traducción, actualiza el frontmatter a:
-
-  ```yaml
-  translation_status: 'translated'
-  ```
-
-  Esto hará que desaparezcan los banners/noindex y la página en `en/` se convierta en la versión activa y canónica (si no sobreescribes canonical).
+4. Cuando completes la traducción, elimina `draft: true` (o cámbialo a `false`).
 
 Buenas prácticas
 -----------------
 
 - Usa el helper para crear borradores — evita errores en frontmatter.
-- Si trabajas en muchas traducciones, añade una pequeña tarea `npm run check-translations` que liste posts con `translation_status` inconsistentes (puedo añadirlo si quieres).
+- Si trabajas en muchas traducciones, añade una pequeña tarea `npm run check-translations` que liste posts con metadata inconsistente (puedo añadirlo si quieres).
 - Documenta en el README del repo el patrón (este archivo ya cumple esa función).
 
 Replicabilidad en otros proyectos
@@ -112,30 +106,26 @@ El patrón es genérico: cualquier sitio estático que se organice por carpetas 
 
 - Archivar traducciones por carpeta de idioma (`/en/`, `/es/`).
 - Metadata opcional en frontmatter para estado y origen.
-- Template que respete `translation_status` (banner, noindex, canonical).
+- Template que respete `draft` y `translation_origin` (banner, noindex, canonical).
 - Un helper ligero para crear borradores automáticamente.
 
 Detección de inconsistencias
 ---------------------------
 
-Cuando trabajas con contenido en varias carpetas por idioma es fácil que se produzcan incongruencias (por ejemplo: la versión traducida existe pero no está marcada como `translated`, o ambos archivos están marcados `original` pero uno tiene `translation_origin` apuntando al otro). Aquí tienes cómo detectarlas y tratarlas.
+Cuando trabajas con contenido en varias carpetas por idioma es fácil que se produzcan incongruencias (por ejemplo: existe una versión en otro idioma pero falta `translation_origin`, o hay declaraciones contradictorias entre archivos). Aquí tienes cómo detectarlas y tratarlas.
 
 Comprobaciones disponibles
 
-- Archivos sin `translation_status`: usa `scripts/list-missing-translation-status.js` (lista los archivos que no tienen el campo en el frontmatter)
-- Pares traducidos detectables: `scripts/auto-mark-translated.js` intenta marcar automáticamente originales como `original` y traducciones como `translated` (añade `translation_origin` si hace falta)
+- Pares traducidos detectables: `scripts/auto-mark-translated.js` intenta marcar automáticamente pares y añadir `translation_origin` cuando es claro
 - Inconsistencias detalladas: `scripts/check-translation-inconsistencies.js` detecta casos como:
-  - traducción marcada `translated` pero sin `translation_origin`
-  - archivo que declara `translation_origin` pero NO tiene `translation_status: 'translated'`
-  - archivo que tiene `translation_origin` pero ambos archivos están marcados `original`
+  - traducción sin `translation_origin`
+  - archivo que declara `translation_origin` pero la relación con el origen no es consistente
+  - archivo que tiene `translation_origin` pero la relación es ambigua
 
 Uso rápido (desde la raíz del repo):
 
 ```bash
-# listar archivos sin translation_status
-node ./scripts/list-missing-translation-status.js
-
-# intentar auto-marcar pares (añade translation_status/translation_origin cuando es claro)
+# intentar auto-marcar pares (añade translation_origin cuando es claro)
 node ./scripts/auto-mark-translated.js
 
 # revisar inconsistencias más finas
@@ -153,37 +143,15 @@ Found 2 inconsistency(ies):
 Qué hacer según el tipo
 
 - `translated_missing_origin`: abrir la traducción y añadir `translation_origin` apuntando al original
-- `origin_but_not_translated`: la entrada declara `translation_origin` pero no está marcada como `translated` — cambia el `translation_status` a `translated` si corresponde
-- `origin_present_both_original`: revisar manualmente si ambos son versiones independientes o si un archivo debe marcarse `translated`
+- `origin_but_not_translated`: la entrada declara `translation_origin` pero la metadata no refleja la relación correctamente
+- `origin_present_both_original`: revisar manualmente si ambos son versiones independientes o si existe una relación de traducción
 
 Si quieres, puedo ejecutar estas comprobaciones ahora y generar un pequeño report en `scripts/translation-inconsistencies-report.json` o aplicar correcciones automáticas en los casos no ambiguos.
 
-Ejemplos de frontmatter por estado
-----------------------------------
-
-Estos ejemplos muestran cómo debes declarar `translation_status` y, cuando aplique,
-`translation_origin`. Coloca estos bloques en la parte superior del archivo Markdown.
-
-- Original (fuente en español):
+Ejemplos mínimos de frontmatter (solo campos relevantes aquí):
 
 ```yaml
 title: "Mi post"
-date: 2022-07-11
-translation_status: 'original'
-```
-
-- Pending (planeado para traducir — metadata solo):
-
-```yaml
-title: "Mi post"
-date: 2022-07-11
-translation_status: 'pending'
-```
-
-- Draft (traducción creada en carpeta destino, no indexable):
-
-```yaml
-title: "My post (draft)"
 date: 2022-07-11
 draft: true
 translation_origin:
@@ -191,34 +159,10 @@ translation_origin:
   id: 'mi-post'
 ```
 
-- Translated (traducción completa publicada):
-
-```yaml
-title: "My post"
-date: 2022-07-11
-draft: false
-translation_status: 'translated'  # opcional
-translation_origin:
-  locale: 'es'
-  id: 'mi-post'
-```
-
-- Partial (traducción publicada pero incompleta — muestra banner leve):
-
-```yaml
-title: "My post (partial)"
-date: 2022-07-11
-draft: false
-translation_status: 'partial'
-translation_origin:
-  locale: 'es'
-  id: 'mi-post'
-```
-
 Notas importantes:
 
-- `translation_status` siempre describe el archivo donde está escrito (es un atributo por archivo). El archivo que es la traducción debe llevar `translation_status: 'translated'` y `translation_origin` apuntando al original.
-- Puedes dejar el campo ausente en archivos antiguos si no quieres migrarlos ahora; los scripts que incluimos ayudan a detectar y actualizar casos evidentes.
-- Para posts creados primero en inglés aplica la misma convención: el archivo en inglés que es fuente debe ser `original`, y la futura versión en español `translated` con `translation_origin.locale: 'en'`.
+- La metadata siempre describe el archivo donde está escrito (es un atributo por archivo). El archivo que es la traducción debe llevar `translation_origin` apuntando al original.
+- Puedes dejar campos ausentes en archivos antiguos si no quieres migrarlos ahora; los scripts que incluimos ayudan a detectar y actualizar casos evidentes.
+- Para posts creados primero en inglés aplica la misma convención: las traducciones deben usar `translation_origin.locale: 'en'` para indicar el origen.
 
 Con esto tienes una solución pragmática, de bajo coste y fácil de transferir a otros repos.
