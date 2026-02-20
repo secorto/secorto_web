@@ -18,6 +18,8 @@ export default getViteConfig({
       '@github': resolve(PROJECT_ROOT, '.github'),
     }
   },
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore - getViteConfig doesn't support the test config, but it is passed through to Vitest
   test: {
     include: ['tests/unit/**/*.test.ts'],
     setupFiles: ['tests/setup.ts'],
