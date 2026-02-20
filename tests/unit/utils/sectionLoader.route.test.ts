@@ -1,20 +1,38 @@
-import { describe, it, expect, vi } from 'vitest'
+import { beforeEach, describe, it, expect, vi } from 'vitest'
+import type { SectionConfig } from '@config/sections'
+
+// Top-level mocks to avoid repeated module reloads
+vi.mock('@config/sections', () => ({ getSectionConfigByRoute: vi.fn() }))
+vi.mock('@utils/paths', () => ({ getPostsByLocale: vi.fn(), getUniqueTags: vi.fn() }))
+vi.mock('astro:content', () => ({ getCollection: vi.fn() }))
+
+import { loadSectionByRoute, loadEntryByRoute } from '@utils/sectionLoader'
+import { getSectionConfigByRoute } from '@config/sections'
+import { getPostsByLocale, getUniqueTags } from '@utils/paths'
+import { getCollection } from 'astro:content'
+import type { CollectionEntry, CollectionKey } from 'astro:content'
 
 describe('loadSectionByRoute & loadEntryByRoute', () => {
-  it('returns posts and tags when config.hasTags = true', async () => {
-    vi.resetModules()
+  const defaultBlogConfig: SectionConfig = {
+    collection: 'blog',
+    translationKey: 'nav.blog',
+    hasTags: true,
+    routes: { es: 'blog', en: 'blog' },
+    listComponent: 'ListPost',
+    detailComponent: 'BlogTalkPostView',
+    showFeaturedImage: false
+  }
 
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
+  it('returns posts and tags when config.hasTags = true', async () => {
     const mockPosts = [{ id: 'es/one', data: { slug: 'one' } }]
 
-    vi.doMock('@config/sections', () => ({
-      getSectionConfigByRoute: (_route: string, _locale: string) => ({ collection: 'blog', hasTags: true, routes: { es: 'blog', en: 'blog' } })
-    }))
-
-    const getPostsMock = vi.fn(async () => mockPosts)
-    const getUniqueMock = vi.fn(() => ['a', 'b'])
-    vi.doMock('@utils/paths', () => ({ getPostsByLocale: getPostsMock, getUniqueTags: getUniqueMock }))
-
-    const { loadSectionByRoute } = await import('@utils/sectionLoader')
+    vi.mocked(getSectionConfigByRoute).mockImplementation((_route: string, _locale: string) => ({ ...defaultBlogConfig }))
+    const getPostsMock = vi.mocked(getPostsByLocale).mockImplementation(async () => mockPosts)
+    const getUniqueMock = vi.mocked(getUniqueTags).mockImplementation(() => ['a', 'b'])
 
     const res = await loadSectionByRoute('blog', 'es')
     expect(res).not.toBeNull()
@@ -25,20 +43,12 @@ describe('loadSectionByRoute & loadEntryByRoute', () => {
   })
 
   it('returns posts and empty tags when config.hasTags = false', async () => {
-    vi.resetModules()
-
     const mockPosts = [{ id: 'es/one', data: { slug: 'one' } }]
+    const workConfig = { ...defaultBlogConfig, collection: 'work', hasTags: false, routes: { es: 'trabajo', en: 'work' } }
 
-    vi.doMock('@config/sections', () => ({
-      getSectionConfigByRoute: (_route: string, _locale: string) => ({ collection: 'work', hasTags: false, routes: { es: 'trabajo', en: 'work' } })
-    }))
-
-    const getPostsMock = vi.fn(async () => mockPosts)
-    const getUniqueMock = vi.fn(() => ['should-not-be-called'])
-    vi.doMock('@utils/paths', () => ({ getPostsByLocale: getPostsMock, getUniqueTags: getUniqueMock }))
-
-    const { loadSectionByRoute } = await import('@utils/sectionLoader')
-
+    vi.mocked(getSectionConfigByRoute).mockImplementation((_route: string, _locale: string) => (workConfig as SectionConfig))
+    const getPostsMock = vi.mocked(getPostsByLocale).mockImplementation(async () => mockPosts)
+    const getUniqueMock = vi.mocked(getUniqueTags).mockImplementation(() => ['should-not-be-called'])
     const res = await loadSectionByRoute('trabajo', 'es')
     expect(res).not.toBeNull()
     expect(res!.posts).toEqual(mockPosts)
@@ -48,21 +58,13 @@ describe('loadSectionByRoute & loadEntryByRoute', () => {
   })
 
   it('loadEntryByRoute finds entry by slug and by cleanId', async () => {
-    vi.resetModules()
-
-    const entries = [
-      { id: 'es/2025-01-01-title', data: {} },
-      { id: 'es/2025-02-02-slugged', data: { slug: 'my-slug' } }
+    const entries: CollectionEntry<CollectionKey>[] = [
+      { id: 'es/2025-01-01-title', data: {} } as unknown as CollectionEntry<CollectionKey>,
+      { id: 'es/2025-02-02-slugged', data: { slug: 'my-slug' } } as unknown as CollectionEntry<CollectionKey>
     ]
-
-    vi.doMock('@config/sections', () => ({
-      getSectionConfigByRoute: (route: string, _locale: string) => route === 'blog' ? ({ collection: 'blog', hasTags: true, routes: { es: 'blog', en: 'blog' } }) : null
-    }))
-
-    vi.doMock('astro:content', () => ({ getCollection: vi.fn(async () => entries) }))
-
-    const { loadEntryByRoute } = await import('@utils/sectionLoader')
-
+    // Always return a valid SectionConfig to satisfy TypeScript and code expectations
+    vi.mocked(getSectionConfigByRoute).mockImplementation((_route: string, _locale: string) => ({ ...defaultBlogConfig }))
+    vi.mocked(getCollection).mockResolvedValue(entries)
     const bySlug = await loadEntryByRoute('blog', 'es', 'my-slug')
     expect(bySlug).not.toBeNull()
     expect(bySlug!.entry.data.slug).toBe('my-slug')
@@ -73,13 +75,9 @@ describe('loadSectionByRoute & loadEntryByRoute', () => {
   })
 
   it('loadEntryByRoute throws when no matching entry', async () => {
-    vi.resetModules()
-    const entries = [ { id: 'es/one', data: {} } ]
-    vi.doMock('@config/sections', () => ({
-      getSectionConfigByRoute: (_route: string, _locale: string) => ({ collection: 'blog', hasTags: true, routes: { es: 'blog', en: 'blog' } })
-    }))
-    vi.doMock('astro:content', () => ({ getCollection: vi.fn(async () => entries) }))
-    const { loadEntryByRoute } = await import('@utils/sectionLoader')
+    const entries: CollectionEntry<CollectionKey>[] = [ { id: 'es/one', data: {} } as unknown as CollectionEntry<CollectionKey> ]
+    vi.mocked(getSectionConfigByRoute).mockImplementation((_route: string, _locale: string) => ({ ...defaultBlogConfig }))
+    vi.mocked(getCollection).mockResolvedValue(entries)
     await expect(loadEntryByRoute('blog', 'es', 'nonexistent')).rejects.toThrow('Entry not found')
   })
 })
