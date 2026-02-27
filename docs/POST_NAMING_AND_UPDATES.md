@@ -90,21 +90,13 @@ updated: 2025-12-25
 3. Si es re-publicación: ¿existe redirect 301 desde la URL antigua al nuevo slug? (sí/no)
 4. Si hay traducciones: ¿translation_origin actualizado en las traducciones? (sí/no)
 5. ¿Se actualizaron enlaces internos relevantes? (sí/no)
-6. Ejecutar scripts: `node ./scripts/check-translation-inconsistencies.js` y `node ./scripts/list-missing-translation-status.js` (sin errores)
-
-## Herramientas y comandos útiles
-
-- Crear borrador de traducción: `node ./scripts/create-translation-draft.js <collection> <localeFrom> <id> <targetLocale>`
-- Marcar archivos en lote: `node ./scripts/set-translation-status.js <status> <file1> [file2 ...]`
-- Auto-marcar pares traducidos: `node ./scripts/auto-mark-translated.js`
-- Detectar inconsistencias: `node ./scripts/check-translation-inconsistencies.js`
-- Listar archivos sin status: `node ./scripts/list-missing-translation-status.js`
+6. Ejecutar comprobaciones de metadata y consistencia (localmente o con tus herramientas preferidas)
 
 ## change_log y scripts
 
 - Hemos optado por `change_log` como forma canónica de registrar hitos en el frontmatter. Es un array opcional con entradas estructuradas (`date`, `author`, `summary`, `type`, `locale`, `details`).
 - Los scripts que actualizan metadata (por ejemplo `auto-mark-translated.js` y `set-translation-status.js`) ahora **añaden una entrada** al `change_log` en vez de modificar solo `updated`. Además, imprimen en consola qué script realizó la modificación y la razón. Esto evita desincronizaciones entre `updated` y el historial.
-- Para migraciones desde `updated` existe `node ./scripts/migrate-updated-to-changelog.js`, que convierte `updated` (y `change_summary` si existe) en la primera entrada de `change_log` y preserva `updated` como atajo (fecha del último cambio) para compatibilidad.
+- Para migraciones desde `updated`, considera usar mecanismos internos o herramientas propias para transformar `updated` en `change_log` según convenga.
 
 ### Formato de ejemplo de `change_log`
 

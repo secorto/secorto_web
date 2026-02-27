@@ -1,118 +1,72 @@
 import { describe, it, expect } from 'vitest'
-import { isTranslationDraft, getCanonicalMetadata, getPageMetadata } from '@utils/translationMetadata'
-
-describe('isTranslationDraft', () => {
-  it('returns true for draft status', () => {
-    expect(isTranslationDraft('draft')).toBe(true)
-  })
-
-  it('returns true for partial status', () => {
-    expect(isTranslationDraft('partial')).toBe(true)
-  })
-
-  it('returns true for pending status', () => {
-    expect(isTranslationDraft('pending')).toBe(true)
-  })
-
-  it('returns false for translated status', () => {
-    expect(isTranslationDraft('translated')).toBe(false)
-  })
-
-  it('returns false for original status', () => {
-    expect(isTranslationDraft('original')).toBe(false)
-  })
-
-  it('returns false for undefined status', () => {
-    expect(isTranslationDraft(undefined)).toBe(false)
-  })
-})
+import { getCanonicalMetadata, getPageMetadata } from '@utils/translationMetadata'
 
 describe('getCanonicalMetadata', () => {
-  it('returns current locale/id for original content', () => {
+  it('prefers explicit `entryDraft` when provided', () => {
     const result = getCanonicalMetadata({
-      translationStatus: 'original',
-      currentLocale: 'es',
-      currentCleanId: '2026-01-01-my-post'
-    })
-
-    expect(result).toEqual({
-      isTranslationDraft: false,
-      canonicalLocale: 'es',
-      canonicalId: '2026-01-01-my-post',
-      shouldNoindex: false
-    })
-  })
-
-  it('returns current locale/id for complete translation', () => {
-    const result = getCanonicalMetadata({
-      translationStatus: 'translated',
-      currentLocale: 'en',
-      currentCleanId: '2026-01-01-my-post'
-    })
-
-    expect(result).toEqual({
-      isTranslationDraft: false,
-      canonicalLocale: 'en',
-      canonicalId: '2026-01-01-my-post',
-      shouldNoindex: false
-    })
-  })
-
-  it('returns origin locale/id for draft translation', () => {
-    const result = getCanonicalMetadata({
-      translationStatus: 'draft',
+      entryDraft: true,
       translationOrigin: { locale: 'es', id: '2026-01-01-original' },
       currentLocale: 'en',
       currentCleanId: '2026-01-01-original'
     })
 
     expect(result).toEqual({
-      isTranslationDraft: true,
       canonicalLocale: 'es',
       canonicalId: '2026-01-01-original',
       shouldNoindex: true
     })
   })
 
-  it('returns origin locale/id for partial translation', () => {
+  it('respects explicit `entryDraft: false`', () => {
     const result = getCanonicalMetadata({
-      translationStatus: 'partial',
-      translationOrigin: { locale: 'es', id: 'some-post' },
+      entryDraft: false,
+      translationOrigin: { locale: 'es', id: '2026-01-01-original' },
       currentLocale: 'en',
-      currentCleanId: 'some-post'
+      currentCleanId: '2026-01-01-original'
     })
 
     expect(result).toEqual({
-      isTranslationDraft: true,
-      canonicalLocale: 'es',
-      canonicalId: 'some-post',
-      shouldNoindex: true
-    })
-  })
-
-  it('returns current locale/id when draft but no translation_origin provided', () => {
-    const result = getCanonicalMetadata({
-      translationStatus: 'draft',
-      currentLocale: 'en',
-      currentCleanId: '2026-01-01-post'
-    })
-
-    expect(result).toEqual({
-      isTranslationDraft: true,
       canonicalLocale: 'en',
-      canonicalId: '2026-01-01-post',
-      shouldNoindex: true
+      canonicalId: '2026-01-01-original',
+      shouldNoindex: false
     })
   })
 
-  it('handles undefined translation_status', () => {
+  it('defaults to non-draft when `entryDraft` is undefined', () => {
+    const result = getCanonicalMetadata({
+      translationOrigin: { locale: 'es', id: '2026-01-01-original' },
+      currentLocale: 'en',
+      currentCleanId: '2026-01-01-original'
+    })
+
+    expect(result).toEqual({
+      canonicalLocale: 'en',
+      canonicalId: '2026-01-01-original',
+      shouldNoindex: false
+    })
+  })
+
+  it('returns current locale/id for original content when entryDraft is false', () => {
+    const result = getCanonicalMetadata({
+      entryDraft: false,
+      currentLocale: 'es',
+      currentCleanId: '2026-01-01-my-post'
+    })
+
+    expect(result).toEqual({
+      canonicalLocale: 'es',
+      canonicalId: '2026-01-01-my-post',
+      shouldNoindex: false
+    })
+  })
+
+  it('handles undefined draft/status (defaults to non-draft)', () => {
     const result = getCanonicalMetadata({
       currentLocale: 'es',
       currentCleanId: '2026-01-01-post'
     })
 
     expect(result).toEqual({
-      isTranslationDraft: false,
       canonicalLocale: 'es',
       canonicalId: '2026-01-01-post',
       shouldNoindex: false

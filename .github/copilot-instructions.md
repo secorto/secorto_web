@@ -83,13 +83,7 @@
 - Minimum frontmatter to avoid build errors: `title`, `date`, `tags`, `excerpt`, and `translation_status` (one of: `original`, `translated`, `draft`, `pending`, `partial`).
 - If the file is a translation, include `translation_origin` with `{ locale: '<origin>', id: '<origin_id>' }`. The `id` must be the filename without `.md`, including the date prefix when applicable.
 - For re-publications (completely rewritten content): create a new file with the current date and add a 301 redirect from the old URL to the new slug (edit `netlify.toml`).
-- Before committing new posts or mass changes: run the helper scripts in `/scripts`:
-	- `node ./scripts/list-missing-translation-status.js`
-	- `node ./scripts/auto-mark-translated.js`
-	- `node ./scripts/check-translation-inconsistencies.js`
-
- - Copilot: when generating or refactoring content with assistance, ensure the output includes complete frontmatter and that the suggested filename respects the date prefix. Do not accept suggestions for posts without a date-prefixed filename. Additionally, Copilot must not introduce the TypeScript `any` type in generated code; always prefer explicit types or interfaces.
-
+- Copilot: when generating or refactoring content with assistance, ensure the output includes complete frontmatter and that the suggested filename respects the date prefix. Do not accept suggestions for posts without a date-prefixed filename. Additionally, Copilot must not introduce the TypeScript `any` type in generated code; always prefer explicit types or interfaces.
 - Default site language: Spanish (`es`). When the language is not explicitly specified, prefer Spanish for authoring content and suggested slugs. Contributors should still provide translations and set `translation_status` appropriately.
 
 ---

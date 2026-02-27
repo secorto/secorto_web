@@ -8,7 +8,6 @@ export const languages = {
 
 export const languageKeys = Object.keys(languages) as Array<keyof typeof languages>;
 
-// keyof languages type as typescript type
 export type UILanguages = keyof typeof languages;
 
 export const ui = {
@@ -27,7 +26,7 @@ export const ui = {
     'talk.slides': 'Slides of talk',
     'talk.tagged': 'Talks tagged with',
     'post.view_original': 'View original',
-    'post.translation_draft_notice': 'This is a draft translation. The canonical original is available.',
+    'post.draft_notice': 'This post is a draft and not yet ready for public viewing.',
     'post.translation_pending': 'Translation pending',
     'post.role': 'Role',
     'post.responsibilities': 'Responsibilities',
@@ -54,7 +53,7 @@ export const ui = {
     'talk.slides': 'Presentación de la charla',
     'talk.tagged': 'Charlas etiquetadas con',
     'post.view_original': 'Ver original',
-    'post.translation_draft_notice': 'Esta es una traducción en borrador. El original canónico está disponible.',
+    'post.draft_notice': 'Este post está en borrador y aún no está listo para publicación pública.',
     'post.translation_pending': 'Traducción pendiente',
     'post.role': 'Rol',
     'post.responsibilities': 'Responsabilidades',
