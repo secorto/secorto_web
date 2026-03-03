@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """
 Genera un título tipo "<Tipo>: <Resumen>" y lista de archivos cambiados vs base (por defecto master).
 Uso:
@@ -11,6 +11,18 @@ from __future__ import annotations
 import argparse
 import subprocess
 import sys
+
+PROMPTS = {
+  "mejora": "Describe la mejora:",
+  "bug": "Describe el bug:"
+}
+
+def get_prompt_for_type(type_: str | None) -> str:
+  if type_ and type_ in PROMPTS:
+    return PROMPTS[type_]
+  available = ", ".join(PROMPTS.keys())
+  print(f"Tipo no reconocido. Tipos disponibles: {available}", file=sys.stderr)
+  return "Describe el issue:"
 
 def run(cmd: list[str]) -> str:
     res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
@@ -39,11 +51,7 @@ def main() -> None:
         print(f"Error ejecutando git diff: {e}", file=sys.stderr)
         sys.exit(1)
 
-    prompts = {
-        "mejora": "Genera una descripción, ventajas y desventajas de esta mejora:",
-        "bug": "Describe el bug, cómo reproducirlo y cuál es el comportamiento esperado:",
-    }
-    print(prompts.get(args.type.lower(), "Describe el issue:"))
+    print(get_prompt_for_type(args.type.lower()))
     title = f"{args.type.capitalize()}: {summary}"
     print(title)
     print()
