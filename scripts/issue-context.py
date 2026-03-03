@@ -7,7 +7,6 @@ Uso:
 Opciones:
   --base BRANCH  rama base para diff (default: master)
 """
-from __future__ import annotations
 import argparse
 import subprocess
 import sys
