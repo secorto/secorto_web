@@ -1,11 +1,11 @@
-import { defineConfig } from 'vitest/config'
+import { getViteConfig } from 'astro/config';
 import { resolve } from 'path'
 import { fileURLToPath } from 'url'
 
 // ESM-safe project root derived from this config file's URL
 const PROJECT_ROOT = fileURLToPath(new URL('.', import.meta.url))
 
-export default defineConfig({
+export default getViteConfig({
   resolve: {
     alias: {
       '@assets': resolve(PROJECT_ROOT, 'src/assets'),
@@ -18,6 +18,8 @@ export default defineConfig({
       '@github': resolve(PROJECT_ROOT, '.github'),
     }
   },
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore - getViteConfig doesn't support the test config, but it is passed through to Vitest
   test: {
     include: ['tests/unit/**/*.test.ts'],
     setupFiles: ['tests/setup.ts'],
