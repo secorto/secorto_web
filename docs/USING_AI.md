@@ -1,10 +1,10 @@
 # Consejos prácticos de uso de IA
 
-En este repositorio he aprendido a usar IA de forma bastante efectiva y he aprendido lo siguiente:
+En este repositorio he aprendido a usar IA de forma bastante efectiva. Algunos puntos clave:
 
 ## Ser explícito en el contexto y el patrón a usar
 
-Si bien la IA es capaz de identificar ciertos patrones existe el riesgo que amplifique un anti-patrón que encuentre en tu repositorio, aca es donde toca ser inteligente y saber que preguntarle y que archivos son tu ejemplo de lo que si se debe hacer
+Si bien la IA es capaz de identificar ciertos patrones, existe el riesgo que amplifique un anti-patrón que encuentre en tu repositorio, acá es donde toca ser inteligente y saber qué preguntarle y qué archivos son tu ejemplo de lo que sí se debe hacer.
 
 ## Generar la descripción de un issue basado en los cambios vs master
 
