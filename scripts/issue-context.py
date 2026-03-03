@@ -47,7 +47,7 @@ def main() -> None:
     title = f"{args.type.capitalize()}: {summary}"
     print(title)
     print()
-    print("Changed files:")
+    print("Archivos modificados:")
     if files:
         for line in files.splitlines():
             print(line)
