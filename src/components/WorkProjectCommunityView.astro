@@ -4,6 +4,7 @@ import Gallery from '@components/Gallery.astro'
 import WorkDateRange from '@components/WorkDateRange.astro'
 import { useTranslations } from '@i18n/utils'
 import type { UILanguages } from '@i18n/ui'
+import type { RenderResult } from 'astro:content'
 
 interface Props {
   locale: UILanguages
@@ -20,7 +21,7 @@ interface Props {
       gallery?: Array<{ image: ImageMetadata; alt: string }>
     }
   }
-  Content: any
+  Content: RenderResult['Content']
 }
 
 const { locale, entry, Content } = Astro.props

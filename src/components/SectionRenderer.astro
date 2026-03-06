@@ -4,11 +4,13 @@ import type { UILanguages } from '@i18n/ui'
 import Tags from '@components/Tags.astro'
 import ListPost from '@components/ListPost.astro'
 import ListWork from '@components/ListWork.astro'
+import type { CollectionKey } from 'astro:content'
+import type { EntryWithCleanId } from '@utils/paths'
 
-interface Props {
+interface Props<K extends CollectionKey> {
   config: SectionConfig
   locale: UILanguages
-  posts: any[]
+  posts: EntryWithCleanId<K>[]
   tags?: string[]
 }
 

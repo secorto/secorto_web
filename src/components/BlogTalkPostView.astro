@@ -5,6 +5,7 @@ import Gallery from '@components/Gallery.astro'
 import { getFullFormat, useTranslations } from '@i18n/utils'
 import type { UILanguages } from '@i18n/ui'
 import ResponsiveIframe from './ResponsiveIframe.astro'
+import type { RenderResult } from 'astro:content'
 
 interface Props {
   locale: UILanguages
@@ -22,7 +23,7 @@ interface Props {
     }
   }
   hasTags: boolean
-  Content: any
+  Content: RenderResult['Content']
 }
 
 const { locale, routeSlug, entry, hasTags, Content } = Astro.props
