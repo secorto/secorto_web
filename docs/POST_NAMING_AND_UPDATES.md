@@ -92,11 +92,9 @@ updated: 2025-12-25
 5. ¿Se actualizaron enlaces internos relevantes? (sí/no)
 6. Ejecutar comprobaciones de metadata y consistencia (localmente o con tus herramientas preferidas)
 
-## change_log y scripts
+## change_log
 
-- Hemos optado por `change_log` como forma canónica de registrar hitos en el frontmatter. Es un array opcional con entradas estructuradas (`date`, `author`, `summary`, `type`, `locale`, `details`).
-- Los scripts que actualizan metadata (por ejemplo `auto-mark-translated.js` y `set-translation-status.js`) ahora **añaden una entrada** al `change_log` en vez de modificar solo `updated`. Además, imprimen en consola qué script realizó la modificación y la razón. Esto evita desincronizaciones entre `updated` y el historial.
-- Para migraciones desde `updated`, considera usar mecanismos internos o herramientas propias para transformar `updated` en `change_log` según convenga.
+Hemos optado por `change_log` como forma canónica de registrar hitos en el frontmatter. Es un array opcional con entradas estructuradas (`date`, `author`, `summary`, `type`, `locale`, `details`).
 
 ### Formato de ejemplo de `change_log`
 
@@ -110,10 +108,11 @@ change_log:
 updated: 2025-12-26
 ```
 
-### Nota para colaboradores y para automatización (Copilot / scripts)
+### Nota para colaboradores y automatización
 
-- Si usas IA o scripts para generar posts, asegúrate de que la salida incluya frontmatter con al menos `title`, `date`, `tags`, `excerpt` y `translation_status`.
-- No crear posts nuevos sin prefijo de fecha en el filename; si una herramienta lo hace, ajusta el nombre antes de commitear.
+Si usas IA o herramientas para generar posts, asegúrate de que la salida incluya frontmatter con al menos `title`, `date`, `tags`, `excerpt`.
+
+No crear posts nuevos sin prefijo de fecha en el filename; si una herramienta lo hace, ajusta el nombre antes de commitear.
 
 ---
 

@@ -25,9 +25,9 @@ Comportamiento de la interfaz
 - Las traducciones marcadas con `draft: true` muestran un banner y se marcan como `noindex`.
 - La etiqueta `canonical` apunta al original (si `translation_origin` está presente).
 
- Cuando completes la traducción, elimina `draft: true` (o cámbialo a `false`).
+Cuando completes la traducción, elimina `draft: true` (o cámbialo a `false`).
 
- Esto hará que desaparezcan los banners/noindex y la página en el idioma destino se convierta en la versión activa y canónica (si no sobreescribes `canonical`).
+Esto hará que desaparezcan los banners/noindex y la página en el idioma destino se convierta en la versión activa y canónica (si no sobreescribes `canonical`).
 
 Rationale — por qué este enfoque
 ---------------------------------
@@ -43,7 +43,7 @@ Ventajas
 --------
 
 - Transparencia: desde el propio repo y desde la UI ves qué posts están en proceso de traducción.
-- Baja fricción: crear un borrador es una acción simple (helper script) y no bloquea la publicación original.
+- Baja fricción: crear un borrador es una acción simple (copiar el archivo y añadir frontmatter) y no bloquea la publicación original.
 - Seguridad SEO: los borradores se marcan `noindex` y la canonical apunta al original, evitando contenido duplicado o indexación prematura.
 - Evolutivo: si en el futuro necesitas un flujo editorial más complejo (colaboradores, asignaciones, deadlines), ya hay metadata para evolucionarlo.
 
@@ -51,8 +51,8 @@ Costes / trade-offs
 -------------------
 
 - Añade un pequeño campo adicional en frontmatter por post en caso de borrador.
-- Requiere recordar usar el helper o crear la copia manualmente cuando empiezas una traducción (aunque el helper reduce la fricción).
- - Existe el riesgo de desincronización entre la metadata y el contenido real si no se actualiza cuando la traducción termina — mitigable con checks en build o con simples inspecciones periódicas.
+- Requiere crear la copia y añadir/editar frontmatter manualmente cuando empiezas una traducción.
+- Existe el riesgo de desincronización entre la metadata y el contenido real si no se actualiza cuando la traducción termina — mitigable con checks en build o con simples inspecciones periódicas.
 
 Cuándo usarlo
 --------------
@@ -88,13 +88,6 @@ Flujo práctico (pasos rápidos)
 
 4. Cuando completes la traducción, elimina `draft: true` (o cámbialo a `false`).
 
-Buenas prácticas
------------------
-
-- Usa el helper para crear borradores — evita errores en frontmatter.
-- Si trabajas en muchas traducciones, añade una pequeña tarea `npm run check-translations` que liste posts con metadata inconsistente (puedo añadirlo si quieres).
-- Documenta en el README del repo el patrón (este archivo ya cumple esa función).
-
 Replicabilidad en otros proyectos
 ---------------------------------
 
@@ -103,7 +96,6 @@ El patrón es genérico: cualquier sitio estático que se organice por carpetas 
 - Archivar traducciones por carpeta de idioma (`/en/`, `/es/`).
 - Metadata opcional en frontmatter para estado y origen.
 - Template que respete `draft` y `translation_origin` (banner, noindex, canonical).
-- Un helper ligero para crear borradores automáticamente.
 
 Detección de inconsistencias
 ---------------------------
@@ -124,7 +116,6 @@ translation_origin:
 Notas importantes:
 
 - La metadata siempre describe el archivo donde está escrito (es un atributo por archivo). El archivo que es la traducción debe llevar `translation_origin` apuntando al original.
-- Puedes dejar campos ausentes en archivos antiguos si no quieres migrarlos ahora; los scripts que incluimos ayudan a detectar y actualizar casos evidentes.
 - Para posts creados primero en inglés aplica la misma convención: las traducciones deben usar `translation_origin.locale: 'en'` para indicar el origen.
 
 Con esto tienes una solución pragmática, de bajo coste y fácil de transferir a otros repos.
