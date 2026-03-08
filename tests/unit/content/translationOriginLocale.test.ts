@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { sectionsConfig, type SectionConfig } from '@domain/section'
-import { parseFrontmatter, getNested } from '@utils/frontmatter'
+import { parseFrontmatter } from '@utils/frontmatter'
 
 /**
  * Valida `translation_origin.locale` inspeccionando los archivos de contenido
@@ -13,25 +13,20 @@ describe('content frontmatter: translation_origin.locale validity', () => {
   for (const [sectionKey, cfg] of sectionEntries) {
     it(`${String(sectionKey)} - translation_origin.locale must be a valid route locale`, async () => {
       const allowedLocales = Object.keys(cfg.routes)
-      const invalid: string[] = []
+      const sectionFiles = Object.entries(modules).filter(([filePath]) =>
+        filePath.includes(`/src/content/${String(sectionKey)}/`)
+      )
 
-      for (const [filePath, raw] of Object.entries(modules)) {
-        if (!filePath.includes(`/src/content/${String(sectionKey)}/`)) continue
-
+      for (const [filePath, raw] of sectionFiles) {
         const fm = parseFrontmatter(raw)
-        const localeVal = getNested<string>(fm, ['translation_origin', 'locale'])
-        if (!localeVal) continue
+        if (!fm.translation_origin) continue  // optional field — not all posts are translations
+        const origin = fm.translation_origin as Record<string, string>
         const fileName = filePath.split('/').pop() || filePath
-        if (!allowedLocales.includes(localeVal)) {
-          invalid.push(`${sectionKey}:${fileName} -> ${localeVal}`)
-        }
+        expect(
+          allowedLocales,
+          `${sectionKey}:${fileName} has invalid translation_origin.locale "${origin.locale}"`
+        ).toContain(origin.locale)
       }
-
-      if (invalid.length > 0) {
-        throw new Error(`Found entries with invalid translation_origin.locale: ${invalid.join(', ')}`)
-      }
-
-      expect(invalid.length).toBe(0)
     })
   }
 })

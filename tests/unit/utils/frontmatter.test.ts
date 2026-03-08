@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { parseFrontmatter, getNested } from '@utils/frontmatter'
+import { parseFrontmatter } from '@utils/frontmatter'
 
 describe('frontmatter util', () => {
   it('parses simple key-values and quoted strings', () => {
@@ -23,10 +23,8 @@ describe('frontmatter util', () => {
     const fm = parseFrontmatter(raw)
     expect(Array.isArray(fm.tags)).toBe(true)
     expect((fm.tags as string[])).toEqual(['a', 'b'])
-    const locale = getNested(fm, ['translation_origin', 'locale'])
-    expect(locale).toBe('es')
-    const id = getNested(fm, ['translation_origin', 'id'])
-    expect(id).toBe('2022-01-01-post')
+    expect(fm).toHaveProperty(['translation_origin', 'locale'], 'es')
+    expect(fm).toHaveProperty(['translation_origin', 'id'], '2022-01-01-post')
   })
 
   it('ignores files without frontmatter', () => {
