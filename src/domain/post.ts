@@ -1,19 +1,13 @@
-import type { CollectionKey } from 'astro:content'
+import type { CollectionKey, CollectionEntry } from 'astro:content'
 
-/**
- * Colecciones que tienen tags en su schema.
- * Array en runtime — el tipo `CollectionWithTags` se deriva de este constante.
- * Fuente de verdad: si una colección añade `tags` a su schema, agregar aquí.
- */
-export const COLLECTIONS_WITH_TAGS = ['blog', 'talk'] as const
+export type CollectionWithTags = {
+  [K in CollectionKey]: 'tags' extends keyof CollectionEntry<K>['data'] ? K : never
+}[CollectionKey]
 
-export type CollectionWithTags = typeof COLLECTIONS_WITH_TAGS[number]
+const TAGS_COLLECTIONS: Record<CollectionWithTags, true> = { blog: true, talk: true }
 
-/**
- * Type guard en runtime: retorna true si la colección tiene tags.
- */
 export function isCollectionWithTags(collection: CollectionKey): collection is CollectionWithTags {
-  return (COLLECTIONS_WITH_TAGS as readonly string[]).includes(collection)
+  return collection in TAGS_COLLECTIONS
 }
 
 /**
