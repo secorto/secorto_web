@@ -65,9 +65,6 @@ const routeSlug = config.routes[context.locale]
   {entryData.draft && (
     <div class="untranslated-notice" role="status">
       <p>{t('post.draft_notice')}</p>
-      {entryData.translation_origin && (
-        <a href={`/${entryData.translation_origin.locale}/${config.routes[entryData.translation_origin.locale as UILanguages]}/${entryData.translation_origin.id}`}>{t('post.view_original')}</a>
-      )}
     </div>
   )}
 
