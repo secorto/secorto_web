@@ -5,7 +5,7 @@ Este documento define las reglas y pasos a seguir al crear, actualizar o re-publ
 ## Resumen corto
 - Nombre de fichero de post: `YYYY-MM-DD-<slug>.md` (ej: `2025-12-25-por-que-uso-npm.md`).
 - Si re-publicas una entrada reescrita y quieres que aparezca como nueva: crea un nuevo fichero con la fecha nueva y deja el antiguo; añade una redirección 301 desde el URL antiguo al nuevo.
-- Siempre actualizar/añadir metadata relevante: `translation_status`, `translation_origin` (si es traducción), `updated` (si solo es revisión), `canonical` (solo si forzas canonical distinto).
+- Siempre actualizar/añadir metadata relevante: `translation_origin` (si es traducción), `updated` (si solo es revisión), `canonical` (solo si forzas canonical distinto). `translation_status` es opcional/histórica — usa `draft: true` para marcar borradores.
 
 ## Convención de nombres (slugs)
 
@@ -22,7 +22,7 @@ Racional: mantener la fecha en el nombre facilita listar por orden cronológico,
    - Si la pieza es reescrita sustancialmente (nuevo enfoque, estructura, longitud) y quieres que aparezca como nueva → crear nueva entrada con fecha actual (ver pasos abajo).
 
 2. Si decides crear nueva entrada (re-publicar):
-   - Crear archivo nuevo con fecha en el nombre: `YYYY-MM-DD-<slug>.md` y frontmatter completo (title, date, tags, excerpt, translation_status: 'original')
+   - Crear archivo nuevo con fecha en el nombre: `YYYY-MM-DD-<slug>.md` y frontmatter mínimo (title, date, tags, excerpt). `translation_status: 'original'` puede añadirse como metadata histórica si se desea.
    - Añadir redirect 301 desde la URL antigua al nuevo slug (ver sección "Redirecciones")
    - Actualizar enlaces internos destacados para apuntar al nuevo slug
    - Si existe una versión traducida antigua y no corresponde al nuevo contenido, decide si:
@@ -37,7 +37,7 @@ Racional: mantener la fecha en el nombre facilita listar por orden cronológico,
 
 ## i18n — qué tener en cuenta
 
-- `translation_status` describe el archivo donde está escrito (por archivo): `original`, `translated`, `draft`, `pending`, `partial`.
+- `translation_status` describe el archivo donde está escrito y es opcional/histórica. Use `draft: true` para marcar borradores; `translation_origin` debe apuntar a la entrada fuente cuando aplique.
 - `translation_origin` (objeto con `locale` e `id`) must point to the source entry id (id = filename without `.md`, including date prefix if present). Ejemplo:
 
 ```yaml
@@ -86,25 +86,15 @@ updated: 2025-12-25
 ## Checklist antes de mergear/puentear
 
 1. ¿Filename sigue convención `YYYY-MM-DD-slug.md`? (sí/no)
-2. ¿Frontmatter completo: title, date, tags, excerpt, translation_status? (sí/no)
+2. ¿Frontmatter completo: title, date, tags, excerpt? (sí/no) (Nota: `translation_status` es opcional)
 3. Si es re-publicación: ¿existe redirect 301 desde la URL antigua al nuevo slug? (sí/no)
 4. Si hay traducciones: ¿translation_origin actualizado en las traducciones? (sí/no)
 5. ¿Se actualizaron enlaces internos relevantes? (sí/no)
-6. Ejecutar scripts: `node ./scripts/check-translation-inconsistencies.js` y `node ./scripts/list-missing-translation-status.js` (sin errores)
+6. Ejecutar comprobaciones de metadata y consistencia (localmente o con tus herramientas preferidas)
 
-## Herramientas y comandos útiles
+## change_log
 
-- Crear borrador de traducción: `node ./scripts/create-translation-draft.js <collection> <localeFrom> <id> <targetLocale>`
-- Marcar archivos en lote: `node ./scripts/set-translation-status.js <status> <file1> [file2 ...]`
-- Auto-marcar pares traducidos: `node ./scripts/auto-mark-translated.js`
-- Detectar inconsistencias: `node ./scripts/check-translation-inconsistencies.js`
-- Listar archivos sin status: `node ./scripts/list-missing-translation-status.js`
-
-## change_log y scripts
-
-- Hemos optado por `change_log` como forma canónica de registrar hitos en el frontmatter. Es un array opcional con entradas estructuradas (`date`, `author`, `summary`, `type`, `locale`, `details`).
-- Los scripts que actualizan metadata (por ejemplo `auto-mark-translated.js` y `set-translation-status.js`) ahora **añaden una entrada** al `change_log` en vez de modificar solo `updated`. Además, imprimen en consola qué script realizó la modificación y la razón. Esto evita desincronizaciones entre `updated` y el historial.
-- Para migraciones desde `updated` existe `node ./scripts/migrate-updated-to-changelog.js`, que convierte `updated` (y `change_summary` si existe) en la primera entrada de `change_log` y preserva `updated` como atajo (fecha del último cambio) para compatibilidad.
+Hemos optado por `change_log` como forma canónica de registrar hitos en el frontmatter. Es un array opcional con entradas estructuradas (`date`, `author`, `summary`, `type`, `locale`, `details`).
 
 ### Formato de ejemplo de `change_log`
 
@@ -118,10 +108,11 @@ change_log:
 updated: 2025-12-26
 ```
 
-### Nota para colaboradores y para automatización (Copilot / scripts)
+### Nota para colaboradores y automatización
 
-- Si usas IA o scripts para generar posts, asegúrate de que la salida incluya frontmatter con al menos `title`, `date`, `tags`, `excerpt` y `translation_status`.
-- No crear posts nuevos sin prefijo de fecha en el filename; si una herramienta lo hace, ajusta el nombre antes de commitear.
+Si usas IA o herramientas para generar posts, asegúrate de que la salida incluya frontmatter con al menos `title`, `date`, `tags`, `excerpt`.
+
+No crear posts nuevos sin prefijo de fecha en el filename; si una herramienta lo hace, ajusta el nombre antes de commitear.
 
 ---
 

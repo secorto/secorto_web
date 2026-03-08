@@ -80,16 +80,10 @@
 ## Publication & i18n conventions
 
 - Post filename: always use `YYYY-MM-DD-slug.md` for new or republished posts. This applies to `src/content/<collection>/<locale>/`.
-- Minimum frontmatter to avoid build errors: `title`, `date`, `tags`, `excerpt`, and `translation_status` (one of: `original`, `translated`, `draft`, `pending`, `partial`).
+- Minimum frontmatter to avoid build errors: `title`, `date`, `tags`, `excerpt`.
+- Use `draft: true` to mark drafts — the build/UI considers `draft` the source of truth for draft state.
 - If the file is a translation, include `translation_origin` with `{ locale: '<origin>', id: '<origin_id>' }`. The `id` must be the filename without `.md`, including the date prefix when applicable.
 - For re-publications (completely rewritten content): create a new file with the current date and add a 301 redirect from the old URL to the new slug (edit `netlify.toml`).
-- Before committing new posts or mass changes: run the helper scripts in `/scripts`:
-	- `node ./scripts/list-missing-translation-status.js`
-	- `node ./scripts/auto-mark-translated.js`
-	- `node ./scripts/check-translation-inconsistencies.js`
-
- - Copilot: when generating or refactoring content with assistance, ensure the output includes complete frontmatter and that the suggested filename respects the date prefix. Do not accept suggestions for posts without a date-prefixed filename. Additionally, Copilot must not introduce the TypeScript `any` type in generated code; always prefer explicit types or interfaces.
-
 - Copilot: when generating or refactoring content with assistance, ensure the output includes complete frontmatter and that the suggested filename respects the date prefix. Do not accept suggestions for posts without a date-prefixed filename.
 - **Types (strict)**: Copilot must never introduce the TypeScript `any` type in generated code. The project enforces `@typescript-eslint/no-explicit-any` as `error` in ESLint. If Copilot proposes `any`, reject the suggestion and prefer one of the following:
   - a concrete interface/type declaration, or
@@ -104,7 +98,7 @@
 
 - **Triple-slash references**: triple-slash references are allowed in `.d.ts` declaration files where necessary (for example to consume generated `.astro` types). Prefer adding an ESLint override for `*.d.ts` instead of inline disables.
 
-- Default site language: Spanish (`es`). When the language is not explicitly specified, prefer Spanish for authoring content and suggested slugs. Contributors should still provide translations and set `translation_status` appropriately.
+- Default site language: Spanish (`es`). When the language is not explicitly specified, prefer Spanish for authoring content and suggested slugs. Contributors should still provide translations and set `translation_origin` when applicable; `translation_status` is optional/historical and not required to indicate draft state.
 
 ---
 
