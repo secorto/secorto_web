@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Genera un título tipo "<Tipo>: <Resumen>" y lista de archivos cambiados vs base (por defecto master).
 Uso:
@@ -59,7 +59,7 @@ def main() -> None:
         for line in files.splitlines():
             print(line)
     else:
-        print("(no hay archivos cambiados respecto a {base})".format(base=args.base))
+        print(f"(no hay archivos cambiados respecto a {args.base})")
 
 if __name__ == "__main__":
     main()
