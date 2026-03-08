@@ -5,7 +5,7 @@ Este documento define las reglas y pasos a seguir al crear, actualizar o re-publ
 ## Resumen corto
 - Nombre de fichero de post: `YYYY-MM-DD-<slug>.md` (ej: `2025-12-25-por-que-uso-npm.md`).
 - Si re-publicas una entrada reescrita y quieres que aparezca como nueva: crea un nuevo fichero con la fecha nueva y deja el antiguo; añade una redirección 301 desde el URL antiguo al nuevo.
-- Siempre actualizar/añadir metadata relevante: `translation_status`, `translation_origin` (si es traducción), `updated` (si solo es revisión), `canonical` (solo si forzas canonical distinto).
+- Siempre actualizar/añadir metadata relevante: `translation_origin` (si es traducción), `updated` (si solo es revisión), `canonical` (solo si forzas canonical distinto). `translation_status` es opcional/histórica — usa `draft: true` para marcar borradores.
 
 ## Convención de nombres (slugs)
 
@@ -22,7 +22,7 @@ Racional: mantener la fecha en el nombre facilita listar por orden cronológico,
    - Si la pieza es reescrita sustancialmente (nuevo enfoque, estructura, longitud) y quieres que aparezca como nueva → crear nueva entrada con fecha actual (ver pasos abajo).
 
 2. Si decides crear nueva entrada (re-publicar):
-   - Crear archivo nuevo con fecha en el nombre: `YYYY-MM-DD-<slug>.md` y frontmatter completo (title, date, tags, excerpt, translation_status: 'original')
+   - Crear archivo nuevo con fecha en el nombre: `YYYY-MM-DD-<slug>.md` y frontmatter mínimo (title, date, tags, excerpt). `translation_status: 'original'` puede añadirse como metadata histórica si se desea.
    - Añadir redirect 301 desde la URL antigua al nuevo slug (ver sección "Redirecciones")
    - Actualizar enlaces internos destacados para apuntar al nuevo slug
    - Si existe una versión traducida antigua y no corresponde al nuevo contenido, decide si:
@@ -37,7 +37,7 @@ Racional: mantener la fecha en el nombre facilita listar por orden cronológico,
 
 ## i18n — qué tener en cuenta
 
-- `translation_status` describe el archivo donde está escrito (por archivo): `original`, `translated`, `draft`, `pending`, `partial`.
+- `translation_status` describe el archivo donde está escrito y es opcional/histórica. Use `draft: true` para marcar borradores; `translation_origin` debe apuntar a la entrada fuente cuando aplique.
 - `translation_origin` (objeto con `locale` e `id`) must point to the source entry id (id = filename without `.md`, including date prefix if present). Ejemplo:
 
 ```yaml
@@ -86,7 +86,7 @@ updated: 2025-12-25
 ## Checklist antes de mergear/puentear
 
 1. ¿Filename sigue convención `YYYY-MM-DD-slug.md`? (sí/no)
-2. ¿Frontmatter completo: title, date, tags, excerpt, translation_status? (sí/no)
+2. ¿Frontmatter completo: title, date, tags, excerpt? (sí/no) (Nota: `translation_status` es opcional)
 3. Si es re-publicación: ¿existe redirect 301 desde la URL antigua al nuevo slug? (sí/no)
 4. Si hay traducciones: ¿translation_origin actualizado en las traducciones? (sí/no)
 5. ¿Se actualizaron enlaces internos relevantes? (sí/no)
