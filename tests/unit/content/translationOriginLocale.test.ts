@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { sectionsConfig, type SectionConfig } from '@config/sections'
+import { sectionsConfig, type SectionConfig } from '@domain/section'
 import { parseFrontmatter, getNested } from '@utils/frontmatter'
 
 /**
