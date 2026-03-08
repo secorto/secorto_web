@@ -7,7 +7,7 @@ import { parseFrontmatter } from '@utils/frontmatter'
  * mediante `import.meta.glob` (eager/raw) para integrarse mejor con Vite/Vitest.
  */
 describe('content frontmatter: translation_origin.locale validity', () => {
-  const modules = import.meta.glob('../../../src/content/**/**', { query: '?raw', import: 'default', eager: true }) as Record<string, string>
+  const modules = import.meta.glob('../../../src/content/**/*.md', { query: '?raw', import: 'default', eager: true }) as Record<string, string>
   const sectionEntries = Object.entries(sectionsConfig) as Array<[keyof typeof sectionsConfig, SectionConfig]>
 
   for (const [sectionKey, cfg] of sectionEntries) {
