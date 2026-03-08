@@ -20,11 +20,9 @@ export async function getPostsByLocale<C extends CollectionKey>(
     .filter((post) => post.id.startsWith(`${locale}/`))
     .filter((post) => post.data.draft !== true)
     .map((post) => {
-      const data = post.data as Record<string, unknown>
-      const slug = typeof data['slug'] === 'string' ? data['slug'] as string : undefined
       return {
         ...post,
-        cleanId: slug || extractCleanId(post.id)
+        cleanId: post.data.slug || extractCleanId(post.id)
       }
     })
     .sort((a, b) => b.cleanId.localeCompare(a.cleanId))

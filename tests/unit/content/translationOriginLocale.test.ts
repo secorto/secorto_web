@@ -11,7 +11,7 @@ describe('content frontmatter: translation_origin.locale validity', () => {
   const sectionEntries = Object.entries(sectionsConfig) as Array<[keyof typeof sectionsConfig, SectionConfig]>
 
   for (const [sectionKey, cfg] of sectionEntries) {
-    it(`${String(sectionKey)} - translation_origin.locale must be a valid route locale`, async () => {
+    it(`${String(sectionKey)} - translation_origin.locale must be a valid route locale`, () => {
       const allowedLocales = Object.keys(cfg.routes)
       const sectionFiles = Object.entries(modules).filter(([filePath]) =>
         filePath.includes(`/src/content/${String(sectionKey)}/`)
