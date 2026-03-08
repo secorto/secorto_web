@@ -1,10 +1,10 @@
 import { describe, it, expect, vi } from 'vitest'
-import type { SectionConfig } from '@config/sections'
+import type { SectionConfig } from '@domain/section'
 
 describe('sectionContext helpers', () => {
   it('buildSectionContext returns config when found', async () => {
     vi.resetModules()
-    vi.doMock('@config/sections', () => ({ getSectionConfigByRoute: (_route: string, _locale: string) => ({ collection: 'blog', routes: { es: 'blog', en: 'blog' } }) }))
+    vi.doMock('@utils/sections', () => ({ getSectionConfigByRoute: (_route: string, _locale: string) => ({ collection: 'blog', routes: { es: 'blog', en: 'blog' } }) }))
     const { buildSectionContext } = await import('@utils/sectionContext')
     const ctx = buildSectionContext('blog', 'es')
     expect(ctx.config.collection).toBe('blog')
@@ -14,7 +14,7 @@ describe('sectionContext helpers', () => {
 
   it('buildTagsPageContext filters posts and aggregates tags', async () => {
     vi.resetModules()
-    vi.doMock('@config/sections', () => ({ getSectionConfigByRoute: (_route: string, _locale: string) => ({ collection: 'blog', routes: { es: 'blog', en: 'blog' } }) }))
+    vi.doMock('@utils/sections', () => ({ getSectionConfigByRoute: (_route: string, _locale: string) => ({ collection: 'blog', routes: { es: 'blog', en: 'blog' } }) }))
     const mockPosts = [
       { id: 'es/one', data: { tags: ['a', 'b'] } },
       { id: 'es/two', data: { tags: ['b', 'c'] } },
@@ -40,7 +40,6 @@ describe('sectionContext helpers', () => {
     const blogConfig: SectionConfig = {
       collection: 'blog',
       translationKey: 'nav.blog',
-      hasTags: true,
       routes: { es: 'blog', en: 'blog' },
       listComponent: 'ListPost',
       detailComponent: 'BlogTalkPostView',
@@ -50,7 +49,6 @@ describe('sectionContext helpers', () => {
     const talkConfig: SectionConfig = {
       collection: 'talk',
       translationKey: 'nav.talks',
-      hasTags: true,
       routes: { es: 'charlas', en: 'talks' },
       listComponent: 'ListPost',
       detailComponent: 'BlogTalkPostView',

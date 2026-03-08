@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 import { BlogPage } from '@tests/pages/BlogPage'
-import { getURLForSection } from '@config/sections'
+import { getURLForSection } from '@utils/sections'
 import { type UILanguages } from '@i18n/ui'
 
 const listFixtures: { locale: UILanguages; pythonTag: string }[] = [

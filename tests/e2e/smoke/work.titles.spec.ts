@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test'
 import { ContentListPage } from '@tests/pages/ContentListPage'
 import { goto } from '@tests/actions/ContentListActions'
 import { languageKeys, ui } from '@i18n/ui'
-import { sectionsConfig, type SectionType } from '@config/sections'
+import { sectionsConfig, type SectionType } from '@domain/section'
 
 const section: SectionType = 'work'
 

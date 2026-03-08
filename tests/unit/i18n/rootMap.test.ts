@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 
 // Mock the sections config used by the module so rootMap is predictable
-vi.mock('@config/sections', () => ({
+vi.mock('@domain/section', () => ({
   sectionsConfig: {
     blog: { routes: { en: 'blog', es: 'blog' } },
     talk: { routes: { en: 'talk', es: 'charla' } },

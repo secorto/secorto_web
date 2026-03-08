@@ -5,14 +5,13 @@ import {
   buildSectionIndexPaths,
   buildTagPaths
 } from '@utils/staticPathsBuilder'
-import type { SectionConfig } from '@config/sections'
+import type { SectionConfig } from '@domain/section'
 import type { CollectionEntry, CollectionKey } from 'astro:content'
 
 describe('buildDetailPathsForSection', () => {
   const mockConfig: SectionConfig = {
     collection: 'blog',
     translationKey: 'nav.blog',
-    hasTags: true,
     taggedKey: 'blog.tagged',
     routes: {
       es: 'blog',
@@ -100,7 +99,6 @@ describe('buildDetailPathsForSection', () => {
     const talkConfig: SectionConfig = {
       collection: 'talk',
       translationKey: 'nav.talks',
-      hasTags: true,
       taggedKey: 'talk.tagged',
       routes: {
         es: 'charla',
