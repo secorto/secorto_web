@@ -60,7 +60,21 @@ describe('getCanonicalMetadata', () => {
     })
   })
 
-  it('handles undefined draft/status (defaults to non-draft)', () => {
+  it('keeps canonical on current entry and noindex when entryDraft is true and no translationOrigin provided', () => {
+    const result = getCanonicalMetadata({
+      entryDraft: true,
+      currentLocale: 'es',
+      currentCleanId: '2026-01-01-my-draft'
+    })
+
+    expect(result).toEqual({
+      canonicalLocale: 'es',
+      canonicalId: '2026-01-01-my-draft',
+      shouldNoindex: true
+    })
+  })
+
+  it('handles missing `entryDraft` (defaults to non-draft)', () => {
     const result = getCanonicalMetadata({
       currentLocale: 'es',
       currentCleanId: '2026-01-01-post'

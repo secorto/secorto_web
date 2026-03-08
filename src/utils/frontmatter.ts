@@ -1,6 +1,5 @@
 import { parse } from 'yaml'
 
-
 /**
  * Extracts and parses the YAML frontmatter block from a Markdown string.
  *
@@ -18,5 +17,3 @@ export function parseFrontmatter(text: string): unknown {
   if (!m) return {}
   return parse(m[1])
 }
-
-export default { parseFrontmatter }
