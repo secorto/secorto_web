@@ -19,13 +19,13 @@ describe('content frontmatter: translation_origin.locale validity', () => {
 
       for (const [filePath, raw] of sectionFiles) {
         const fm = parseFrontmatter(raw)
-        if (!fm.translation_origin) continue  // optional field — not all posts are translations
-        const origin = fm.translation_origin as Record<string, string>
+        if (typeof fm !== 'object' || fm === null) continue
+        const obj = fm as Record<string, unknown>
+        const originRaw = obj.translation_origin
+        if (!originRaw || typeof originRaw !== 'object') continue
+        const origin = originRaw as Record<string, string>
         const fileName = filePath.split('/').pop() || filePath
-        expect(
-          allowedLocales,
-          `${sectionKey}:${fileName} has invalid translation_origin.locale "${origin.locale}"`
-        ).toContain(origin.locale)
+        expect(allowedLocales, `${sectionKey}:${fileName} has invalid translation_origin.locale "${origin.locale}"`).toContain(origin.locale)
       }
     })
   }

@@ -1,7 +1,5 @@
 import { parse } from 'yaml'
 
-/** Parsed frontmatter block represented as a plain key-value map. */
-export type Frontmatter = Record<string, unknown>
 
 /**
  * Extracts and parses the YAML frontmatter block from a Markdown string.
@@ -10,9 +8,10 @@ export type Frontmatter = Record<string, unknown>
  * processed correctly.
  *
  * @param text - Raw file content, including the `---` delimiters.
- * @returns A `Frontmatter` object, or an empty object when no block is found.
+ * @returns The raw result from the YAML parser. Callers must narrow this
+ * `unknown` value to the shape they expect before accessing properties.
  */
-export function parseFrontmatter(text: string): Frontmatter {
+export function parseFrontmatter(text: string): unknown {
   // Normalize newlines to LF so parser works with files checked out on Windows (CRLF)
   const normalized = text.replace(/\r\n|\r/g, '\n')
   const m = normalized.match(/^---\n([\s\S]*?)\n---/)
