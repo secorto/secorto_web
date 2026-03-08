@@ -5,6 +5,7 @@ import Gallery from '@components/Gallery.astro'
 import { getFullFormat, useTranslations } from '@i18n/utils'
 import type { UILanguages } from '@i18n/ui'
 import ResponsiveIframe from './ResponsiveIframe.astro'
+import type { RenderResult } from 'astro:content'
 
 interface Props {
   locale: UILanguages
@@ -21,16 +22,15 @@ interface Props {
       slide? : string
     }
   }
-  hasTags: boolean
-  Content: any
+  Content: RenderResult['Content']
 }
 
-const { locale, routeSlug, entry, hasTags, Content } = Astro.props
+const { locale, routeSlug, entry, Content } = Astro.props
 const t = useTranslations(locale)
 const dateFormat = getFullFormat(Astro.url)
 ---
 
-{hasTags && entry.data.tags && (
+{entry.data.tags && entry.data.tags.length > 0 && (
   <Tags route={`/${locale}/${routeSlug}/tags/`} tags={entry.data.tags} />
 )}
 

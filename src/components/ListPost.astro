@@ -3,11 +3,11 @@ import PostItem from '@components/PostItem.astro';
 import PostList from '@components/PostList.astro';
 import PostDate from '@components/PostDate.astro';
 import { getFullFormat } from '@i18n/utils';
-import type { EntryWithCleanId } from '@utils/paths';
+import type { PostLikeEntry } from '@domain/post';
 
 export interface Props {
-  basePath: string,
-	posts: EntryWithCleanId<'talk'|'blog'>[];
+  basePath: string
+  posts: PostLikeEntry[];
 }
 
 const { posts, basePath } = Astro.props;
@@ -20,8 +20,6 @@ const dateFormat = getFullFormat(Astro.url);
       image={post.data.image}
       url={`/${basePath}/${post.cleanId}`}
       title={post.data.title}
-      translation_status={post.data.translation_status}
-      translation_note={(post.data as { translation_note?: string }).translation_note}
     >
       {post.data.excerpt}
       {post.data.date &&

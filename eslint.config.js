@@ -6,7 +6,7 @@ import tsPlugin from '@typescript-eslint/eslint-plugin'
 
 const sharedSettings = {
   'import/resolver': { typescript: {} },
-  'import/core-modules': ['astro:content', 'astro:assets', 'astro:i18n']
+  'import/core-modules': ['astro:content', 'astro:assets', 'astro:i18n'],
 }
 
 const sharedRules = {
@@ -17,6 +17,15 @@ const sharedRules = {
     'warn',
     { terms: ['ts-ignore'], location: 'anywhere' }
   ],
+  '@typescript-eslint/no-explicit-any': 'error',
+  '@typescript-eslint/no-unused-vars': [
+    'error',
+    {
+      varsIgnorePattern: '^_',
+      argsIgnorePattern: '^_',
+      caughtErrorsIgnorePattern: '^_'
+    }
+  ]
 }
 
 export default [
@@ -44,17 +53,8 @@ export default [
     },
     settings: sharedSettings,
     rules: {
-      ...sharedRules,
       ...tsPlugin.configs.recommended.rules,
-      '@typescript-eslint/no-explicit-any': 'error',
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        {
-          varsIgnorePattern: '^_',
-          argsIgnorePattern: '^_',
-          caughtErrorsIgnorePattern: '^_'
-        }
-      ]
+      ...sharedRules,
     }
   },
 
@@ -63,7 +63,8 @@ export default [
     files: ['**/*.astro'],
     plugins: {
       'jsx-a11y': jsxA11y,
-      import: importPlugin
+      import: importPlugin,
+      '@typescript-eslint': tsPlugin
     },
     settings: sharedSettings,
     rules: {

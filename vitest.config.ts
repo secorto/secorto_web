@@ -10,7 +10,7 @@ export default defineConfig({
     alias: {
       '@assets': resolve(PROJECT_ROOT, 'src/assets'),
       '@components': resolve(PROJECT_ROOT, 'src/components'),
-      '@config': resolve(PROJECT_ROOT, 'src/config'),
+      '@domain': resolve(PROJECT_ROOT, 'src/domain'),
       '@i18n': resolve(PROJECT_ROOT, 'src/i18n'),
       '@layouts': resolve(PROJECT_ROOT, 'src/layouts'),
       '@utils': resolve(PROJECT_ROOT, 'src/utils'),

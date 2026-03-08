@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { getSectionConfigByCollection, getSectionConfigByRoute, sectionsConfig } from '@config/sections'
+import { getSectionConfigByCollection, getSectionConfigByRoute } from '@utils/sections'
+import { sectionsConfig } from '@domain/section'
 
 describe('sections config helpers', () => {
   it('getSectionConfigByCollection returns config for known collection', () => {

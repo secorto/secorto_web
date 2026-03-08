@@ -1,4 +1,5 @@
-import { getSectionRoute, type SectionType } from '@config/sections'
+import { getSectionRoute } from '@utils/sections'
+import type { SectionType } from '@domain/section'
 import type { UILanguages } from '@i18n/ui'
 import type { ContentListPage } from '@tests/pages/ContentListPage'
 import type { Page } from '@playwright/test'

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { getSectionRoute, getURLForSection } from '@config/sections'
+import { getSectionRoute, getURLForSection } from '@utils/sections'
 
 describe('section route helpers', () => {
   it('getSectionRoute returns correct route for locale', () => {

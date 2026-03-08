@@ -1,6 +1,8 @@
-import { getSectionConfigByRoute, type SectionConfig } from '@config/sections'
+import type { SectionConfig } from '@domain/section'
+import { getSectionConfigByRoute } from '@utils/sections'
 import { getPostsByLocale, getUniqueTags } from '@utils/paths'
-import type { EntryWithCleanId, CollectionWithTags } from '@utils/paths'
+import type { EntryWithCleanId } from '@utils/paths'
+import type { CollectionWithTags } from '@domain/post'
 import type { UILanguages } from '@i18n/ui'
 import type { CollectionEntry, CollectionKey } from 'astro:content'
 import { extractCleanId } from "@utils/ids"

@@ -1,6 +1,6 @@
 import type { UILanguages } from '@i18n/ui'
 import type { CollectionKey } from 'astro:content'
-import { getSectionConfigByCollection } from '@config/sections'
+import { getSectionConfigByCollection } from '@utils/sections'
 import { getPostsByLocale } from './paths'
 
 interface RSSItem {

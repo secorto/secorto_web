@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test'
 import { ContentListPage } from '@tests/pages/ContentListPage'
 import { languageKeys, ui, type UILanguages } from '@i18n/ui'
 import { openItem } from '@tests/actions/ContentListActions'
-import { getURLForSection } from '@config/sections'
+import { getURLForSection } from '@utils/sections'
 import { mockThirdParty } from '@tests/e2e/helpers/mockThirdParty'
 
 const expectedTitles: Record<UILanguages, string> = {

@@ -1,6 +1,7 @@
 import { languageKeys, type UILanguages } from '@i18n/ui'
-import { sectionsConfig, type SectionConfig } from '@config/sections'
+import { sectionsConfig, type SectionConfig } from '@domain/section'
 import { getPostsByLocale, getUniqueTags } from './paths'
+import { isCollectionWithTags } from '@domain/post'
 import { extractCleanId } from './ids'
 import type { CollectionEntry, CollectionKey } from 'astro:content'
 
@@ -95,7 +96,7 @@ export async function buildTagPaths(
 ): Promise<TagPath[]> {
   const paths: TagPath[] = []
 
-  for (const [config, locale] of iterateSectionLocales(c => c.hasTags)) {
+  for (const [config, locale] of iterateSectionLocales(c => isCollectionWithTags(c.collection))) {
     const posts = await fetchPostsByLocale(config.collection, locale)
     const tags = getUniqueTags(posts)
 

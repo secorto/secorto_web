@@ -2,8 +2,6 @@ import { getCollection } from "astro:content"
 import type { CollectionEntry, CollectionKey } from "astro:content"
 import { extractCleanId } from "@utils/ids"
 
-export type CollectionWithTags = 'blog'|'talk'
-
 export type EntryWithCleanId<C extends CollectionKey> = CollectionEntry<C> & { cleanId: string, excerpt?: string }
 
 /**

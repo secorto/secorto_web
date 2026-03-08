@@ -10,8 +10,6 @@ export interface SectionConfig {
   collection: CollectionKey
   /** Etiqueta de traducción para el título */
   translationKey: TranslationKey
-  /** Si la sección tiene tags */
-  hasTags: boolean
   /** Clave de traducción para "tagged with" (ej: 'blog.tagged', 'talk.tagged') */
   taggedKey?: TranslationKey
   /** Rutas por idioma: { locale -> ruta_url } */
@@ -28,7 +26,6 @@ export const sectionsConfig: Record<SectionType, SectionConfig> = {
   blog: {
     collection: 'blog',
     translationKey: 'nav.blog',
-    hasTags: true,
     taggedKey: 'blog.tagged',
     routes: {
       es: 'blog',
@@ -41,7 +38,6 @@ export const sectionsConfig: Record<SectionType, SectionConfig> = {
   talk: {
     collection: 'talk',
     translationKey: 'nav.talks',
-    hasTags: true,
     taggedKey: 'talk.tagged',
     routes: {
       es: 'charla',
@@ -54,7 +50,6 @@ export const sectionsConfig: Record<SectionType, SectionConfig> = {
   work: {
     collection: 'work',
     translationKey: 'nav.work',
-    hasTags: false,
     routes: {
       es: 'trabajo',
       en: 'work'
@@ -66,7 +61,6 @@ export const sectionsConfig: Record<SectionType, SectionConfig> = {
   project: {
     collection: 'projects',
     translationKey: 'nav.projects',
-    hasTags: false,
     routes: {
       es: 'proyecto',
       en: 'project'
@@ -78,7 +72,6 @@ export const sectionsConfig: Record<SectionType, SectionConfig> = {
   community: {
     collection: 'community',
     translationKey: 'nav.community',
-    hasTags: false,
     routes: {
       es: 'comunidad',
       en: 'community'
@@ -87,55 +80,4 @@ export const sectionsConfig: Record<SectionType, SectionConfig> = {
     detailComponent: 'WorkProjectCommunityView',
     showFeaturedImage: true
   }
-}
-
-/**
- * Helper interno que busca una `SectionConfig` que cumpla un predicado.
- * @param predicate - función que recibe una `SectionConfig` y retorna boolean
- */
-function findSectionConfig(predicate: (c: SectionConfig) => boolean): SectionConfig {
-  for (const config of Object.values(sectionsConfig)) {
-    if (predicate(config)) return config
-  }
-  throw new Error('Section config not found')
-}
-
-/**
- * Obtiene la configuración de una sección basada en la ruta URL
- */
-export function getSectionConfigByRoute(
-  routeParam: string,
-  locale: UILanguages
-): SectionConfig {
-  return findSectionConfig((config) => config.routes[locale] === routeParam)
-}
-
-/**
- * Obtiene la configuración de una sección basada en la clave de colección
- */
-export function getSectionConfigByCollection(
-  collection: CollectionKey
-): SectionConfig {
-  return findSectionConfig((config) => config.collection === collection)
-}
-
-/**
- * Obtiene la ruta (slug) para una sección en un idioma concreto
- */
-export function getSectionRoute(section: SectionType, locale: UILanguages): string {
-  return sectionsConfig[section].routes[locale]
-}
-
-/**
- * Get the url of a section in a specific locale
- * @param section section to get the url for
- * @param locale locale to get the url for
- * @returns route string for the section in the locale
- */
-export function getURLForSection(
-  section: SectionType,
-  locale: UILanguages
-): string {
-  const route = getSectionRoute(section, locale)
-  return `/${locale}/${route}`
 }

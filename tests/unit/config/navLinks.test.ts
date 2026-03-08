@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { NAV_LINKS } from '@config/navLinks'
+import { NAV_LINKS } from '@domain/nav'
 import { rootMap } from '@i18n/rootMap'
 import { ui } from '@i18n/ui'
 

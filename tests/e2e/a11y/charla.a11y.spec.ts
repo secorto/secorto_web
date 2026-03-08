@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 import { checkA11y } from '@tests/actions/A11yActions'
-import { getURLForSection } from '@config/sections'
+import { getURLForSection } from '@utils/sections'
 import { languageKeys } from '@i18n/ui'
 import { mockThirdParty } from '@tests/e2e/helpers/mockThirdParty'
 

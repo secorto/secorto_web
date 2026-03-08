@@ -1,5 +1,5 @@
 import type { UILanguages } from './ui'
-import { sectionsConfig } from '@config/sections'
+import { sectionsConfig } from '@domain/section'
 
 // Construir el mapa automáticamente a partir de sectionsConfig para evitar duplicación
 // Rutas adicionales (páginas estáticas) que no forman parte de `sectionsConfig`
