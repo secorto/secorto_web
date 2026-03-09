@@ -5,7 +5,6 @@ import type { UILanguages } from '@i18n/ui'
 
 export interface TranslationMetadata {
   canonicalLocale: UILanguages
-  canonicalId: string
   shouldNoindex: boolean
 }
 
@@ -36,7 +35,7 @@ export interface PageData {
  *   currentCleanId: '2026-01-01-post',
  *   seriesCanonicalLocale: 'es'
  * })
- * // Devuelve: { canonicalLocale: 'es', canonicalId: '2026-01-01-post', shouldNoindex: true }
+ * // Devuelve: { canonicalLocale: 'es', shouldNoindex: true }
  *
  * // Traducción publicada - canónico es self
  * getCanonicalMetadata({
@@ -44,7 +43,7 @@ export interface PageData {
  *   currentLocale: 'en',
  *   currentCleanId: '2026-01-01-post'
  * })
- * // Devuelve: { canonicalLocale: 'en', canonicalId: '2026-01-01-post', shouldNoindex: false }
+ * // Devuelve: { canonicalLocale: 'en', shouldNoindex: false }
  * ```
  */
 export function getCanonicalMetadata(params: {
@@ -62,7 +61,6 @@ export function getCanonicalMetadata(params: {
 
   return {
     canonicalLocale,
-    canonicalId: params.currentCleanId,
     shouldNoindex: isDraft
   }
 }

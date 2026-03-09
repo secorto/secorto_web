@@ -12,7 +12,6 @@ describe('getCanonicalMetadata', () => {
 
     expect(result).toEqual({
       canonicalLocale: 'es',
-      canonicalId: '2026-01-01-original',
       shouldNoindex: true
     })
   })
@@ -26,7 +25,6 @@ describe('getCanonicalMetadata', () => {
 
     expect(result).toEqual({
       canonicalLocale: 'es',
-      canonicalId: '2026-01-01-draft',
       shouldNoindex: true
     })
   })
@@ -41,7 +39,6 @@ describe('getCanonicalMetadata', () => {
 
     expect(result).toEqual({
       canonicalLocale: 'en',
-      canonicalId: '2026-01-01-original',
       shouldNoindex: false
     })
   })
@@ -54,7 +51,6 @@ describe('getCanonicalMetadata', () => {
 
     expect(result).toEqual({
       canonicalLocale: 'en',
-      canonicalId: '2026-01-01-original',
       shouldNoindex: false
     })
   })
@@ -68,7 +64,6 @@ describe('getCanonicalMetadata', () => {
 
     expect(result).toEqual({
       canonicalLocale: 'es',
-      canonicalId: '2026-01-01-my-post',
       shouldNoindex: false
     })
   })
@@ -82,7 +77,6 @@ describe('getCanonicalMetadata', () => {
 
     expect(result).toEqual({
       canonicalLocale: 'es',
-      canonicalId: '2026-01-01-my-draft',
       shouldNoindex: true
     })
   })
@@ -95,7 +89,6 @@ describe('getCanonicalMetadata', () => {
 
     expect(result).toEqual({
       canonicalLocale: 'es',
-      canonicalId: '2026-01-01-post',
       shouldNoindex: false
     })
   })

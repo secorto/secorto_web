@@ -1,37 +1,34 @@
 ---
 /**
  * SEO metadata component for detail pages (blog posts, talks, work, etc.)
- * Generates canonical link and alternate language (hreflang) links for pages with translations
+ * Receives fully-built canonical/alternate/default URLs from the page.
  */
 import type { UILanguages } from '@i18n/ui'
-import { defaultLang } from '@i18n/ui'
-import type { SectionConfig } from '@domain/section'
 import AlternateLinks from './AlternateLinks.astro'
 
+interface AlternateLink {
+  locale: UILanguages
+  url: string
+}
+
 interface Props {
-  /** Section configuration (contains routes, collection, etc.) */
-  config: SectionConfig
-  /** Entry slug/ID without locale prefix */
-  cleanId: string
-  /** Locale to use for canonical URL */
-  canonicalLocale: UILanguages
-  /** List of locales where this content is available */
-  availableLocales: UILanguages[]
+  /** Canonical path for this page (relative, e.g. /es/blog/slug) */
+  canonicalPath: string
+  /** Array of alternate language links (relative paths) */
+  alternates: AlternateLink[]
+  /** Default (x-default) path (relative) */
+  defaultPath: string
   /** Whether to mark as noindex (for draft/untranslated content) */
   noindex?: boolean
 }
 
-const { config, cleanId, canonicalLocale, availableLocales, noindex = false } = Astro.props
-const site = import.meta.env.SITE
-const canonicalUrl = `${site}/${canonicalLocale}/${config.routes[canonicalLocale]}/${cleanId}`
-
-const alternates = availableLocales.map(lk => ({
-  locale: lk,
-  url: `${site}/${lk}/${config.routes[lk]}/${cleanId}`
-}))
-const defaultUrl = `${site}/${defaultLang}/${config.routes[defaultLang]}/${cleanId}`
+const { canonicalPath, alternates, defaultPath, noindex = false } = Astro.props
+const site = import.meta.env.SITE ?? ''
+const canonicalUrl = `${site}${canonicalPath}`
+const absoluteAlternates = alternates.map(a => ({ locale: a.locale, url: `${site}${a.url}` }))
+const absoluteDefault = `${site}${defaultPath}`
 ---
 
 <link rel="canonical" href={canonicalUrl} />
 {noindex && <meta name="robots" content="noindex" />}
-<AlternateLinks alternates={alternates} defaultUrl={defaultUrl} />
+<AlternateLinks alternates={absoluteAlternates} defaultUrl={absoluteDefault} />

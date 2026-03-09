@@ -14,7 +14,7 @@ import { buildDetailLink, type TranslationLink } from '@i18n/languagePickerUtils
 import { resolveCanonical } from '@i18n/rootMap'
 import { resolveSeriesCanonicalLocale } from '@i18n/buildTranslationMap'
 import type { UILanguages } from '@i18n/ui'
-import { languageKeys } from '@i18n/ui'
+import { languageKeys, defaultLang } from '@i18n/ui'
 
 export async function getStaticPaths() {
   return await buildAllDetailPaths(getCollection)
@@ -33,12 +33,23 @@ const links = Object.fromEntries(
   languageKeys.map(l => [l, buildDetailLink(l, canonicalSection, localeEntryMap)])
 ) as Record<UILanguages, TranslationLink>
 
-const { canonicalLocale, canonicalId, shouldNoindex } = getCanonicalMetadata({
+const { canonicalLocale, shouldNoindex } = getCanonicalMetadata({
   entryDraft: Boolean(entry.data.draft),
   currentLocale: locale,
   currentCleanId: entry.cleanId,
   seriesCanonicalLocale
 })
+
+// Use existing helper to build the canonical path so formatting is centralized
+const canonicalLink = buildDetailLink(canonicalLocale, canonicalSection, localeEntryMap)
+const canonicalPath = canonicalLink.href
+const alternates = availableLocales.map(lk => ({
+  locale: lk,
+  url: buildDetailLink(lk, canonicalSection, localeEntryMap).href
+}))
+// Prefer defaultLang version for x-default when available, otherwise fall back to canonicalPath
+const defaultLink = buildDetailLink(defaultLang, canonicalSection, localeEntryMap)
+const defaultPath = defaultLink.href || canonicalPath
 
 // Extract page metadata
 const { Content } = await render(entry)
@@ -48,12 +59,11 @@ const routeSlug = config.routes[locale]
 
 <SEOHeadDetail
   slot="seo-head"
-  config={config}
-  cleanId={canonicalId}
-  canonicalLocale={canonicalLocale}
-  availableLocales={availableLocales}
+  canonicalPath={canonicalPath}
+  alternates={alternates}
+  defaultPath={defaultPath}
   noindex={shouldNoindex}
-/>
+/> 
 
 <BaseLayout pageTitle={pageTitle} description={pageDescription}>
   <LanguagePicker slot="langpicker" links={links} />
