@@ -61,4 +61,22 @@ describe('resolveSeriesCanonicalLocale', () => {
   it('returns first element when nothing matches', () => {
     expect(resolveSeriesCanonicalLocale(['en'])).toBe('en')
   })
+
+  it('prefers locale marked canonical when provided a map', () => {
+    const map: Record<import('@i18n/ui').UILanguages, { slug: string; canonical?: boolean }> = { en: { slug: '2025-01-01-my-post', canonical: true }, es: { slug: '2025-01-01-my-post' } }
+    expect(resolveSeriesCanonicalLocale(map)).toBe('en')
+  })
+
+  it('falls back to `es` when provided a map without canonical and es exists', () => {
+    const map: Record<import('@i18n/ui').UILanguages, { slug: string }> = { en: { slug: '2025-01-01-my-post' }, es: { slug: '2025-01-01-my-post' } }
+    expect(resolveSeriesCanonicalLocale(map)).toBe('es')
+  })
+
+  it('falls back to first key when provided a map without canonical and es missing', () => {
+    // use arbitrary string keys (not limited to UILanguages)
+    const orderedMap: Record<string, { slug: string }> = {}
+    orderedMap['fr'] = { slug: '2025-01-01-my-post' }
+    orderedMap['en'] = { slug: '2025-01-01-my-post' }
+    expect(resolveSeriesCanonicalLocale(orderedMap)).toBe('fr')
+  })
 })

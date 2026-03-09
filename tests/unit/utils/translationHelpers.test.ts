@@ -16,8 +16,8 @@ describe('getAvailableLocaleEntries', () => {
     const result = getAvailableLocaleEntries(entries, '2025-01-22-my-post')
 
     expect(Object.keys(result)).toHaveLength(2)
-    expect(result['es']).toEqual({ slug: '2025-01-22-my-post', draft: false })
-    expect(result['en']).toEqual({ slug: '2025-01-22-my-post', draft: false })
+    expect(result['es']).toEqual({ slug: '2025-01-22-my-post', draft: false, canonical: false })
+    expect(result['en']).toEqual({ slug: '2025-01-22-my-post', draft: false, canonical: false })
   })
 
   test('returns only es when entry exists only in Spanish', () => {

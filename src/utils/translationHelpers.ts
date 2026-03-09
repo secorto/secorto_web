@@ -33,7 +33,8 @@ export function getAvailableLocaleEntries(
     if (entry) {
       result[lang] = {
         slug: extractCleanId(entry.id),
-        draft: Boolean((entry.data as { draft?: boolean }).draft)
+        draft: Boolean(entry.data?.draft),
+        canonical: Boolean(entry.data?.canonical)
       }
     }
   }
@@ -59,9 +60,9 @@ export function buildTagLocaleMap(
   // Build canonical → { locale → slug } from actual content
   const canonicalMap: Record<string, Partial<Record<UILanguages, string>>> = {}
   for (const entry of allEntries) {
-    if ((entry.data as { draft?: boolean }).draft) continue
+    if (entry.data?.draft) continue
     const [lang] = entry.id.split('/') as [UILanguages]
-    const tags = (entry.data as { tags?: string[] }).tags ?? []
+    const tags = entry.data?.tags ?? []
     for (const tag of tags) {
       const canonical = tagMap
         ? (Object.entries(tagMap).find(([, locales]) => locales[lang] === tag)?.[0] ?? tag)

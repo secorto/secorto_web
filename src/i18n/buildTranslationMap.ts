@@ -27,20 +27,9 @@ export type TranslationMap = Record<string, Record<string, TranslationEntry>>;
  *   2. file-based clean ID (`locale/<...slug>` → `<...slug>`)
  *
  * Canonical locale selection per series (for draft SEO fallback):
- *   1. Any entry with `data.canonical === true` (NOTE: not currently read)
+ *   1. Any entry with `data.canonical === true` (if present)
  *   2. The `es` entry if present
  *   3. The first locale found
- *
- * NOTE: The JSDoc above mentions a `data.canonical === true` preference,
- * but the current implementation (see `parseCollectionEntries`) does not
- * read a `canonical` frontmatter flag. If canonical frontmatter support is
- * required for SEO/canonical selection it should be implemented in
- * `parseCollectionEntries` and the canonical resolver logic should be
- * updated accordingly.
- *
- * TODO(debt): Add `canonical` frontmatter handling or remove the JSDoc
- * reference if intentionally unsupported. Owner: @sergio.orozcot —
- * until: 2026-06-01
  *
  * The resulting map is indexed by EVERY locale's URL slug so that a lookup
  * by the current page slug always finds the full series.
@@ -151,9 +140,21 @@ export async function buildTranslationMap(
  * (too expensive to re-read per page); for page-level SEO use availableLocales.
  */
 export function resolveSeriesCanonicalLocale(
-  availableLocales: UILanguages[],
+  availableLocalesOrMap: UILanguages[] | Record<string, { slug: string; draft?: boolean; canonical?: boolean }>,
   defaultLocale: UILanguages = "es"
 ): UILanguages {
-  if (availableLocales.includes(defaultLocale)) return defaultLocale;
-  return availableLocales[0]
+  let available: UILanguages[]
+
+  if (Array.isArray(availableLocalesOrMap)) {
+    available = availableLocalesOrMap
+  } else {
+    // Prefer any locale explicitly marked `canonical: true` when a map is provided
+    for (const [locale, entry] of Object.entries(availableLocalesOrMap)) {
+      if (entry?.canonical) return locale as UILanguages
+    }
+    available = Object.keys(availableLocalesOrMap) as UILanguages[]
+  }
+
+  if (available.includes(defaultLocale)) return defaultLocale
+  return available[0]
 }

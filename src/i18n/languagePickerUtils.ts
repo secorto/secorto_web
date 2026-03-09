@@ -2,7 +2,7 @@ import type { UILanguages } from './ui'
 import { languages, defaultLang, languageKeys } from './ui'
 import { showDefaultLang } from '@i18n/config'
 import { resolveLocalized, resolveCanonical, rootMap } from './rootMap'
-export type AvailableLocales = Partial<Record<UILanguages, { slug: string; draft?: boolean }>>
+export type AvailableLocales = Partial<Record<UILanguages, { slug: string; draft?: boolean; canonical?: boolean }>>
 
 export interface TranslationLink {
   href: string
