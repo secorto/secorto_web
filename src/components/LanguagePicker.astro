@@ -4,6 +4,10 @@ import type { UILanguages } from "@i18n/ui"
 import { resolveCanonical } from "@i18n/rootMap"
 import { buildHomeLink, buildTagLink, buildDetailLink, buildCollectionLink, type TranslationLink } from "@i18n/languagePickerUtils"
 import { translationStructures } from "@i18n/translations"
+import { getPostsByLocale, getUniqueTags } from "@utils/paths"
+import { sectionsConfig } from "@domain/section"
+import type { SectionType } from "@domain/section"
+import { isCollectionWithTags } from "@domain/post"
 
 const segments = Astro.url.pathname.split("/").filter(Boolean)
 const currentLang = segments[0] as UILanguages
@@ -20,9 +24,21 @@ const structures = translationStructures?.[canonicalSection as keyof typeof tran
 const seriesKey = structures?.slugIndex?.[slug]
 const availableLocales = isDetailPage && seriesKey ? (structures?.seriesByKey[seriesKey] ?? {}) : {}
 
+const tagName = isTagPage ? slug.replace('tags/', '') : ''
+const tagAvailableLocales = new Set<UILanguages>()
+if (isTagPage && tagName) {
+  const sectionCfg = sectionsConfig[canonicalSection as SectionType]
+  if (sectionCfg && isCollectionWithTags(sectionCfg.collection)) {
+    for (const lang of languageKeys) {
+      const posts = await getPostsByLocale(sectionCfg.collection, lang)
+      if (getUniqueTags(posts).includes(tagName)) tagAvailableLocales.add(lang)
+    }
+  }
+}
+
 function buildLink(targetLang: UILanguages): TranslationLink {
   if (isHomePage) return buildHomeLink(targetLang)
-  if (isTagPage) return buildTagLink(targetLang, canonicalSection, slug)
+  if (isTagPage) return buildTagLink(targetLang, canonicalSection, slug, tagAvailableLocales)
   if (isDetailPage) return buildDetailLink(targetLang, canonicalSection, slug, availableLocales)
   return buildCollectionLink(targetLang, canonicalSection)
 }

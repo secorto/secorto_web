@@ -35,7 +35,15 @@ export function buildHomeLink(targetLang: UILanguages): TranslationLink {
  * @param slug - Slug de la página de tags incluyendo el prefijo (ej: 'tags/typescript')
  * @returns Link disponible a la página de tags en ese idioma
  */
-export function buildTagLink(targetLang: UILanguages, canonicalSection: string, slug: string): TranslationLink {
+export function buildTagLink(
+  targetLang: UILanguages,
+  canonicalSection: string,
+  slug: string,
+  availableLangs: Set<UILanguages>
+): TranslationLink {
+  if (!availableLangs.has(targetLang)) {
+    return { href: '', label: languages[targetLang], isAvailable: false, disabledReason: 'missing' }
+  }
   const localizedSection = resolveLocalized(canonicalSection, targetLang)
   return {
     href: `${buildLangPrefix(targetLang)}/${localizedSection}/${slug}`,
