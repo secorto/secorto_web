@@ -64,28 +64,28 @@ export function getAvailableLocaleEntries(
 }
 
 /**
- * Returns the set of locales in which a given tag exists (has at least one non-draft post).
+ * Builds a full index of tag → locales that have at least one non-draft entry with that tag.
+ * Build this once from allEntries, then look up any tag in O(1).
  * Used by tag pages to build LanguagePicker links with availability info.
  *
  * @param allEntries - Pre-fetched collection entries (caller calls getCollection)
- * @param tag - Tag to check
- * @returns Set of UILanguages where the tag is present
+ * @returns Record mapping each tag to the set of locales where it is present
  */
-export function getLocalesWithTag(
-  allEntries: CollectionEntry<CollectionKey>[],
-  tag: string
-): Set<UILanguages> {
-  const result = new Set<UILanguages>()
+export function buildTagLocaleMap(
+  allEntries: CollectionEntry<CollectionKey>[]
+): Record<string, Set<UILanguages>> {
+  const map: Record<string, Set<UILanguages>> = {}
 
-  for (const lang of languageKeys) {
-    const hasTag = allEntries.some(
-      (e) =>
-        e.id.startsWith(`${lang}/`) &&
-        !(e.data as { draft?: boolean }).draft &&
-        (e.data as { tags?: string[] }).tags?.includes(tag)
-    )
-    if (hasTag) result.add(lang)
+  for (const entry of allEntries) {
+    if ((entry.data as { draft?: boolean }).draft) continue
+    const [locale] = entry.id.split('/')
+    if (!(languageKeys as string[]).includes(locale)) continue
+    const tags = (entry.data as { tags?: string[] }).tags ?? []
+    for (const tag of tags) {
+      if (!map[tag]) map[tag] = new Set()
+      map[tag].add(locale as UILanguages)
+    }
   }
 
-  return result
+  return map
 }

@@ -20,7 +20,7 @@ export interface TagsPageContext {
   tag: string
   posts: EntryWithCleanId<CollectionWithTags>[]
   tags: string[]
-  /** All raw entries across every locale — use for cross-locale queries (e.g. getLocalesWithTag) */
+  /** All raw entries across every locale — use for cross-locale queries (e.g. buildTagLocaleMap) */
   allEntries: CollectionEntry<CollectionWithTags>[]
 }
 

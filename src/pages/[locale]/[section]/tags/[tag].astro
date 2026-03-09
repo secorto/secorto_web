@@ -6,7 +6,6 @@ import LanguagePicker from '@components/LanguagePicker.astro'
 import { useTranslations } from '@i18n/utils'
 import { buildTagPaths, type TagPath } from '@utils/staticPathsBuilder'
 import { filterByLocale, getUniqueTags } from '@utils/paths'
-import { getLocalesWithTag } from '@utils/translationHelpers'
 import { buildTagLink, type TranslationLink } from '@i18n/languagePickerUtils'
 import { resolveCanonical } from '@i18n/rootMap'
 import type { UILanguages } from '@i18n/ui'
@@ -17,7 +16,7 @@ export async function getStaticPaths() {
 }
 
 const { locale, section, tag } = Astro.params as { locale: UILanguages; section: string; tag: string }
-const { allEntries, config } = Astro.props as TagPath['props']
+const { allEntries, config, tagLocaleMap } = Astro.props as TagPath['props']
 const t = useTranslations(locale)
 
 const localePosts = filterByLocale(allEntries, locale)
@@ -27,7 +26,7 @@ const pageTitle = `${t(config.translationKey)} - ${tag}`
 const metaDescription = `${config.taggedKey ? t(config.taggedKey) : t(config.translationKey)} ${tag}`
 
 const canonicalSection = resolveCanonical(section, locale)
-const availableLangs = getLocalesWithTag(allEntries, tag)
+const availableLangs = tagLocaleMap[tag] ?? new Set<UILanguages>()
 const links = Object.fromEntries(
   languageKeys.map(l => [l, buildTagLink(l, canonicalSection, `tags/${tag}`, availableLangs)])
 ) as Record<UILanguages, TranslationLink>

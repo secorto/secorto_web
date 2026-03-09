@@ -4,6 +4,7 @@ import { sectionsConfig, type SectionConfig } from '@domain/section'
 import { filterByLocale, getUniqueTags, type EntryWithCleanId } from './paths'
 import { isCollectionWithTags, type CollectionWithTags } from '@domain/post'
 import { extractCleanId } from './ids'
+import { buildTagLocaleMap } from './translationHelpers'
 import type { CollectionEntry, CollectionKey } from 'astro:content'
 
 /** Minimal shape for the injected collection fetcher — easier to mock than the full generic overload. */
@@ -31,6 +32,7 @@ export interface TagPath {
     tag: string
     allEntries: CollectionEntry<CollectionWithTags>[]
     config: SectionConfig
+    tagLocaleMap: Record<string, Set<UILanguages>>
   }
 }
 
@@ -114,6 +116,7 @@ export async function buildTagPaths(
 
     // isCollectionWithTags guard above narrows config.collection to CollectionWithTags
     const allEntries = await fetchCollection(config.collection) as CollectionEntry<CollectionWithTags>[]
+    const tagLocaleMap = buildTagLocaleMap(allEntries)
 
     for (const locale of languageKeys) {
       const localePosts = filterByLocale(allEntries, locale)
@@ -122,7 +125,7 @@ export async function buildTagPaths(
       for (const tag of tags) {
         paths.push({
           params: { locale, section: config.routes[locale], tag },
-          props: { tag, allEntries, config }
+          props: { tag, allEntries, config, tagLocaleMap }
         })
       }
     }
