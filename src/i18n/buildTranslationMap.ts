@@ -32,41 +32,85 @@ export type TranslationMap = Record<string, Record<string, TranslationEntry>>;
  * The resulting map is indexed by EVERY locale's URL slug so that a lookup
  * by the current page slug always finds the full series.
  */
-export async function buildTranslationMap(
-  collectionName: CollectionKey
-): Promise<TranslationMap> {
-  const entries = await getCollection(collectionName);
+export type ParsedEntry = {
+  seriesKey: string
+  locale: string
+  cleanId: string
+  id: string
+  title: string
+  date?: Date
+  translation_status?: string
+}
 
-  // Step 1: group entries into series by postId ?? cleanId
-  const seriesMap: Record<string, Record<string, TranslationEntry>> = {};
+/** Parse raw entries into a smaller shape used for grouping */
+export function parseCollectionEntries(entries: Awaited<ReturnType<typeof getCollection>>): ParsedEntry[] {
+  const parsed: ParsedEntry[] = []
+  for (const entry of entries as any[]) {
+    const [locale, ...rest] = entry.id.split("/")
+    const cleanId = rest.join("/")
+    const seriesKey: string = (entry.data as { postId?: string }).postId ?? cleanId
+    const date = "date" in entry.data ? (entry.data.date as Date) : undefined
 
-  for (const entry of entries) {
-    const [locale, ...rest] = entry.id.split("/");
-    const cleanId = rest.join("/");
-    const seriesKey: string = (entry.data as { postId?: string }).postId ?? cleanId;
-    const date = "date" in entry.data ? (entry.data.date as Date) : undefined;
-
-    if (!seriesMap[seriesKey]) seriesMap[seriesKey] = {};
-    seriesMap[seriesKey][locale] = {
+    parsed.push({
+      seriesKey,
+      locale,
+      cleanId,
       id: entry.id,
-      slug: cleanId,
       title: entry.data.title,
       date,
       translation_status: entry.data.translation_status,
-    };
+    })
   }
+  return parsed
+}
 
-  // Step 2: index by every locale's URL slug (and by postId/seriesKey)
-  const result: TranslationMap = {};
-
-  for (const [seriesKey, localeEntries] of Object.entries(seriesMap)) {
-    result[seriesKey] = localeEntries;
-    for (const localeEntry of Object.values(localeEntries)) {
-      result[localeEntry.slug] = localeEntries;
+/** Group parsed entries into seriesMap: seriesKey -> locale -> TranslationEntry */
+export function groupBySeries(parsed: ParsedEntry[]): Record<string, Record<string, TranslationEntry>> {
+  const seriesMap: Record<string, Record<string, TranslationEntry>> = {}
+  for (const p of parsed) {
+    if (!seriesMap[p.seriesKey]) seriesMap[p.seriesKey] = {}
+    seriesMap[p.seriesKey][p.locale] = {
+      id: p.id,
+      slug: p.cleanId,
+      title: p.title,
+      date: p.date,
+      translation_status: p.translation_status,
     }
   }
+  return seriesMap
+}
 
-  return result;
+/** Build indices: seriesByKey and slugIndex (slug -> seriesKey) */
+export function buildIndexes(seriesMap: Record<string, Record<string, TranslationEntry>>) {
+  const seriesByKey = { ...seriesMap }
+  const slugIndex: Record<string, string> = {}
+  for (const [seriesKey, localeEntries] of Object.entries(seriesByKey)) {
+    for (const localeEntry of Object.values(localeEntries)) {
+      slugIndex[localeEntry.slug] = seriesKey
+    }
+  }
+  return { seriesByKey, slugIndex }
+}
+
+export async function buildTranslationMap(
+  collectionName: CollectionKey
+): Promise<TranslationMap> {
+  const entries = await getCollection(collectionName)
+
+  const parsed = parseCollectionEntries(entries)
+  const seriesMap = groupBySeries(parsed)
+  const { seriesByKey, slugIndex } = buildIndexes(seriesMap)
+
+  // Build result: keep seriesKey -> entries, and also expose slug -> entries
+  const result: TranslationMap = {}
+  for (const [seriesKey, localeEntries] of Object.entries(seriesByKey)) {
+    result[seriesKey] = localeEntries
+  }
+  for (const [slug, seriesKey] of Object.entries(slugIndex)) {
+    result[slug] = result[seriesKey]
+  }
+
+  return result
 }
 
 /**
