@@ -1,5 +1,5 @@
 ---
-import { render, getCollection } from 'astro:content'
+import { render, getCollection, getEntry } from 'astro:content'
 import BaseLayout from '@layouts/BaseLayout.astro'
 import Comments from '@components/Comments.astro'
 import BlogTalkPostView from '@components/BlogTalkPostView.astro'
@@ -8,35 +8,33 @@ import SEOHeadDetail from '@components/SEOHeadDetail.astro'
 import { getSectionConfigByRoute } from '@utils/sections'
 import { extractCleanId } from '@utils/ids'
 import { useTranslations } from '@i18n/utils'
-import type { UILanguages } from '@i18n/ui'
 import { getAvailableLocalesForEntry } from '@utils/translationHelpers'
 import { getCanonicalMetadata, getPageMetadata } from '@utils/translationMetadata'
 import { buildAllDetailPaths } from '@utils/staticPathsBuilder'
-import { getEntry } from 'astro:content'
 
 export async function getStaticPaths() {
   return await buildAllDetailPaths(getCollection)
 }
 
-const { locale, section, id } = Astro.params as { locale: UILanguages; section: string; id: string }
+const { locale, section, id } = Astro.params
 const t = useTranslations(locale)
 
 const config = getSectionConfigByRoute(section, locale)
 const entry = await getEntry(config.collection, `${locale}/${id}`)
-if(!entry) {
-  throw new Error(`Entry not found for locale "${locale}" and id "${id}" in collection "${config.collection}"`)
-}
+if(!entry) throw new Error(`Entry not found for locale "${locale}" and id "${id}" in collection "${config.collection}"`)
 const context = { entry, config, locale }
+
+const cleanId = extractCleanId(entry.id)
 
 const { canonicalLocale, canonicalId, shouldNoindex } = getCanonicalMetadata({
   entryDraft: Boolean(entry.data.draft),
   translationOrigin: entry.data.translation_origin,
   currentLocale: context.locale,
-  currentCleanId: extractCleanId(entry.id)
+  currentCleanId: cleanId
 })
 
 // Get available locales for hreflang
-const availableLocales = await getAvailableLocalesForEntry(config.collection, entry.id)
+const availableLocales = await getAvailableLocalesForEntry(config.collection, cleanId)
 
 // Extract page metadata
 const { Content } = await render(entry)
