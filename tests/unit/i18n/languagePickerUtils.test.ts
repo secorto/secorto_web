@@ -1,5 +1,13 @@
 import { describe, it, expect, vi } from 'vitest'
 
+// NOTE (tests): the real `translationStructures` shape is `{ seriesByKey, slugIndex }`.
+// This test historically uses a `slugMeta` field in the mock which does not
+// match the consumer shape. Update mocks to more closely reflect the
+// runtime structure to avoid false positives/negatives in tests.
+// TODO: add unit tests for `buildTagLink` availability and the draft branch
+// of `buildDetailLink` (missing test coverage). Owner: @sergio.orozcot
+// until: 2026-06-01
+
 const baseTranslationStructures = {
   blog: {
     seriesByKey: {},

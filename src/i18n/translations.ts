@@ -1,28 +1,29 @@
-import { buildTranslationMap, parseCollectionEntries, groupBySeries, buildIndexes, type RawEntry } from "./buildTranslationMap";
-import { getCollection, type CollectionKey } from 'astro:content'
+import { buildTranslationPayload } from "./buildTranslationMap"
+
+// Resolved: translations and translationStructures are populated from a
+// single payload per collection via `buildTranslationPayload`.
 
 // Old map kept for backward compatibility
+// Build translations + structures while loading each collection only once
+const blogPayload = await buildTranslationPayload('blog')
+const workPayload = await buildTranslationPayload('work')
+const projectPayload = await buildTranslationPayload('projects')
+const communityPayload = await buildTranslationPayload('community')
+const talkPayload = await buildTranslationPayload('talk')
+
 export const translations = {
-  blog: await buildTranslationMap("blog"),
-  work: await buildTranslationMap("work"),
-  project: await buildTranslationMap("projects"),
-  community: await buildTranslationMap("community"),
-  talk: await buildTranslationMap("talk"),
+  blog: blogPayload.translationMap,
+  work: workPayload.translationMap,
+  project: projectPayload.translationMap,
+  community: communityPayload.translationMap,
+  talk: talkPayload.translationMap,
 }
 
 // New structures (seriesByKey + slugIndex) for memory/clarity and better consumers
-async function buildStructures(collectionName: CollectionKey) {
-  const entries = await getCollection(collectionName)
-  const parsed = parseCollectionEntries(entries as RawEntry[])
-  const seriesMap = groupBySeries(parsed)
-  const { seriesByKey, slugIndex } = buildIndexes(seriesMap)
-  return { seriesByKey, slugIndex }
-}
-
 export const translationStructures = {
-  blog: await buildStructures('blog'),
-  work: await buildStructures('work'),
-  project: await buildStructures('projects'),
-  community: await buildStructures('community'),
-  talk: await buildStructures('talk'),
+  blog: { seriesByKey: blogPayload.seriesByKey, slugIndex: blogPayload.slugIndex },
+  work: { seriesByKey: workPayload.seriesByKey, slugIndex: workPayload.slugIndex },
+  project: { seriesByKey: projectPayload.seriesByKey, slugIndex: projectPayload.slugIndex },
+  community: { seriesByKey: communityPayload.seriesByKey, slugIndex: communityPayload.slugIndex },
+  talk: { seriesByKey: talkPayload.seriesByKey, slugIndex: talkPayload.slugIndex },
 }

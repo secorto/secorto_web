@@ -7,6 +7,7 @@ export type TranslationEntry = {
   title: string;
   date?: Date;
   draft?: boolean
+  canonical?: boolean
 };
 
 /**
@@ -25,9 +26,20 @@ export type TranslationMap = Record<string, Record<string, TranslationEntry>>;
  *   2. file-based clean ID (`locale/<...slug>` → `<...slug>`)
  *
  * Canonical locale selection per series (for draft SEO fallback):
- *   1. Any entry with `data.canonical === true`
+ *   1. Any entry with `data.canonical === true` (NOTE: not currently read)
  *   2. The `es` entry if present
  *   3. The first locale found
+ *
+ * NOTE: The JSDoc above mentions a `data.canonical === true` preference,
+ * but the current implementation (see `parseCollectionEntries`) does not
+ * read a `canonical` frontmatter flag. If canonical frontmatter support is
+ * required for SEO/canonical selection it should be implemented in
+ * `parseCollectionEntries` and the canonical resolver logic should be
+ * updated accordingly.
+ *
+ * TODO(debt): Add `canonical` frontmatter handling or remove the JSDoc
+ * reference if intentionally unsupported. Owner: @sergio.orozcot —
+ * until: 2026-06-01
  *
  * The resulting map is indexed by EVERY locale's URL slug so that a lookup
  * by the current page slug always finds the full series.
@@ -40,6 +52,7 @@ export type ParsedEntry = {
   title: string
   date?: Date
   draft?: boolean
+  canonical?: boolean
 }
 /** Raw entry shape returned by `astro:content#getCollection` (subset used here) */
 export type RawEntry = {
@@ -49,6 +62,7 @@ export type RawEntry = {
     postId?: string
     date?: Date
     draft?: boolean
+    canonical?: boolean
   }
 }
 
@@ -61,6 +75,7 @@ export function parseCollectionEntries(entries: RawEntry[]): ParsedEntry[] {
     const seriesKey: string = entry.data.postId ?? cleanId
     const date = entry.data.date
     const draft = entry.data.draft
+    const canonical = entry.data.canonical
     parsed.push({
       seriesKey,
       locale,
@@ -69,6 +84,7 @@ export function parseCollectionEntries(entries: RawEntry[]): ParsedEntry[] {
       title: entry.data.title,
       date,
       draft,
+      canonical,
     })
   }
   return parsed
@@ -85,6 +101,7 @@ export function groupBySeries(parsed: ParsedEntry[]): Record<string, Record<stri
       title: p.title,
       date: p.date,
       draft: p.draft,
+      canonical: p.canonical,
     }
   }
   return seriesMap
@@ -127,6 +144,31 @@ export async function buildTranslationMap(
 }
 
 /**
+ * Build a payload that contains the translation map plus the index structures
+ * (`seriesByKey` and `slugIndex`) so callers can reuse a single collection
+ * load and avoid duplicated `getCollection` calls.
+ */
+export async function buildTranslationPayload(
+  collectionName: CollectionKey
+): Promise<{ translationMap: TranslationMap; seriesByKey: Record<string, Record<string, TranslationEntry>>; slugIndex: Record<string, string> }> {
+  const entries = await getCollection(collectionName)
+
+  const parsed = parseCollectionEntries(entries as RawEntry[])
+  const seriesMap = groupBySeries(parsed)
+  const { seriesByKey, slugIndex } = buildIndexes(seriesMap)
+
+  const translationMap: TranslationMap = {}
+  for (const [seriesKey, localeEntries] of Object.entries(seriesByKey)) {
+    translationMap[seriesKey] = localeEntries
+  }
+  for (const [slug, seriesKey] of Object.entries(slugIndex)) {
+    translationMap[slug] = translationMap[seriesKey]
+  }
+
+  return { translationMap, seriesByKey, slugIndex }
+}
+
+/**
  * Resolves the canonical locale for a series given the available locales.
  * Priority: `es` → first available.
  * The `canonical: true` frontmatter flag is resolved at getStaticPaths time
@@ -138,4 +180,20 @@ export function resolveSeriesCanonicalLocale(
 ): string {
   if (availableLocales.includes(defaultLocale)) return defaultLocale;
   return availableLocales[0] ?? defaultLocale;
+}
+
+/**
+ * Prefer the locale explicitly marked `canonical: true` in the series
+ * entries. If none is marked, fall back to `resolveSeriesCanonicalLocale`.
+ *
+ * @param seriesEntries - map of locale -> TranslationEntry for this series
+ */
+export function resolveSeriesCanonicalLocaleFromSeries(
+  seriesEntries: Record<string, TranslationEntry>,
+  defaultLocale = "es"
+): string {
+  for (const [locale, entry] of Object.entries(seriesEntries)) {
+    if (entry.canonical) return locale
+  }
+  return resolveSeriesCanonicalLocale(Object.keys(seriesEntries), defaultLocale)
 }
