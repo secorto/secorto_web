@@ -7,10 +7,9 @@ import Tags from '@components/Tags.astro'
 import LanguagePicker from '@components/LanguagePicker.astro'
 import { useTranslations } from '@i18n/utils'
 import type { UILanguages } from '@i18n/ui'
-import { languageKeys } from '@i18n/ui'
 import { buildSectionIndexPaths, type SectionPath } from '@utils/staticPathsBuilder'
 import { isCollectionWithTags, type PostEntry } from '@domain/post'
-import { buildCollectionLink, type TranslationLink } from '@i18n/languagePickerUtils'
+import { buildCollectionLink, buildLanguageLinks } from '@i18n/languagePickerUtils'
 import { findCanonicalSectionKey } from '@i18n/rootMap'
 
 export async function getStaticPaths() {
@@ -23,9 +22,7 @@ const t = useTranslations(locale)
 const pageTitle = t(config.translationKey)
 
 const canonicalSection = findCanonicalSectionKey(section, locale)
-const links = Object.fromEntries(
-  languageKeys.map(l => [l, buildCollectionLink(l, canonicalSection)])
-) as Record<UILanguages, TranslationLink>
+const links = buildLanguageLinks(l => buildCollectionLink(l, canonicalSection))
 ---
 
 <SEOHeadIndex slot="seo-head" config={config} currentLocale={locale} />

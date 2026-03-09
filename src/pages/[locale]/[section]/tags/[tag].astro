@@ -6,10 +6,9 @@ import LanguagePicker from '@components/LanguagePicker.astro'
 import { useTranslations } from '@i18n/utils'
 import { buildTagPaths, type TagPath } from '@utils/staticPathsBuilder'
 import { filterByLocale, getUniqueTags } from '@utils/paths'
-import { buildTagLink, type TranslationLink } from '@i18n/languagePickerUtils'
+import { buildTagLink, buildLanguageLinks } from '@i18n/languagePickerUtils'
 import { findCanonicalSectionKey } from '@i18n/rootMap'
 import type { UILanguages } from '@i18n/ui'
-import { languageKeys } from '@i18n/ui'
 
 export async function getStaticPaths() {
   return await buildTagPaths()
@@ -27,9 +26,7 @@ const metaDescription = `${config.taggedKey ? t(config.taggedKey) : t(config.tra
 
 const canonicalSection = findCanonicalSectionKey(section, locale)
 const localeSlugs = tagLocaleMap[tag] ?? { [locale]: tag } as Partial<Record<UILanguages, string>>
-const links = Object.fromEntries(
-  languageKeys.map(l => [l, buildTagLink(l, canonicalSection, localeSlugs)])
-) as Record<UILanguages, TranslationLink>
+const links = buildLanguageLinks(l => buildTagLink(l, canonicalSection, localeSlugs))
 ---
 
 <head>

@@ -5,12 +5,11 @@ import intro from '@assets/img/intro.inline.svg?raw'
 import Footer from '@components/Footer.astro';
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import LanguagePicker from '@components/LanguagePicker.astro'
-import { buildHomeLink } from '@i18n/languagePickerUtils'
-import type { UILanguages } from '@i18n/ui'
-import { languageKeys } from '@i18n/ui'
+import { buildHomeLink, buildLanguageLinks } from '@i18n/languagePickerUtils'
+
 
 const pageTitle = "Homepage";
-const links = Object.fromEntries(languageKeys.map(l => [l, buildHomeLink(l)])) as Record<UILanguages, import('@i18n/languagePickerUtils').TranslationLink>
+const links = buildLanguageLinks(l => buildHomeLink(l))
 
 ---
 

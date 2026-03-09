@@ -92,6 +92,14 @@ export function buildCollectionLink(targetLang: UILanguages, canonicalSection: s
 }
 
 /**
+ * Helper to build a full `Record<UILanguages, T>` of links using a builder callback.
+ * Reduces repetition when creating language maps for the LanguagePicker.
+ */
+export function buildLanguageLinks<T extends TranslationLink>(builder: (l: UILanguages) => T): Record<UILanguages, T> {
+  return Object.fromEntries(languageKeys.map(l => [l, builder(l)])) as Record<UILanguages, T>
+}
+
+/**
  * Construye el mapa completo de links para el LanguagePicker a partir de la URL de una página estática genérica.
  * Centraliza toda la lógica de detección de locale, resolución de sección y disponibilidad.
  * Funciona para cualquier página no basada en colecciones: markdown, Astro estático, etc.
