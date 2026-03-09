@@ -66,26 +66,14 @@ export function buildDetailLink(targetLang: UILanguages, canonicalSection: strin
   const localizedSection = resolveLocalized(canonicalSection, targetLang)
 
   if (!entry) {
-    return {
-      href: '',
-      label: languages[targetLang],
-      isAvailable: false,
-      disabledReason: 'missing'
-    }
-  }
-  if (entry.draft) {
-    return {
-      href: `${buildLangPrefix(targetLang)}/${localizedSection}/${entry.slug}`,
-      label: languages[targetLang],
-      isAvailable: true,
-      disabledReason: 'draft'
-    }
+    return { href: '', label: languages[targetLang], isAvailable: false, disabledReason: 'missing' }
   }
 
   return {
     href: `${buildLangPrefix(targetLang)}/${localizedSection}/${entry.slug}`,
     label: languages[targetLang],
-    isAvailable: true
+    isAvailable: true,
+    ...(entry.draft && { disabledReason: 'draft' as const })
   }
 }
 

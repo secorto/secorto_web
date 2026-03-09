@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 const mockRootMap: Record<string, Record<string, string>> = {
   about: { en: 'about', es: 'acerca-de' },
+  blog: { en: 'blog', es: 'blog' },
 }
 
 vi.mock('@i18n/rootMap', () => ({
@@ -16,35 +17,110 @@ vi.mock('@i18n/rootMap', () => ({
 vi.mock('@i18n/config', () => ({ showDefaultLang: true }))
 
 describe('languagePickerUtils', () => {
-  it('buildHomeLink respects showDefaultLang', async () => {
-    vi.resetModules()
-    vi.doMock('@i18n/config', () => ({ showDefaultLang: true }))
-    const { buildHomeLink } = await import('@i18n/languagePickerUtils')
-    expect(buildHomeLink('en').href).toBe('/en/')
+  describe('buildHomeLink', () => {
+    it('returns correct href and label for non-default lang', async () => {
+      vi.resetModules()
+      vi.doMock('@i18n/config', () => ({ showDefaultLang: true }))
+      const { buildHomeLink } = await import('@i18n/languagePickerUtils')
+      const link = buildHomeLink('en')
+      expect(link.href).toBe('/en/')
+      expect(link.label).toBe('English')
+      expect(link.isAvailable).toBe(true)
+    })
 
-    vi.resetModules()
-    vi.doMock('@i18n/config', () => ({ showDefaultLang: false }))
-    const mod = await import('@i18n/languagePickerUtils')
-    // defaultLang is 'es' — when showDefaultLang is false the default language omits the prefix
-    expect(mod.buildHomeLink('es').href).toBe('/')
+    it('omits locale prefix for defaultLang when showDefaultLang is false', async () => {
+      vi.resetModules()
+      vi.doMock('@i18n/config', () => ({ showDefaultLang: false }))
+      const { buildHomeLink } = await import('@i18n/languagePickerUtils')
+      // defaultLang is 'es'
+      expect(buildHomeLink('es').href).toBe('/')
+    })
   })
 
-  it('buildDetailLink for available translation', async () => {
-    vi.resetModules()
-    vi.doMock('@i18n/config', () => ({ showDefaultLang: true }))
-    const { buildDetailLink } = await import('@i18n/languagePickerUtils')
-    const link = buildDetailLink('en', 'blog', { en: { slug: 'en-slug' } })
-    expect(link.isAvailable).toBe(true)
-    expect(link.href).toBe('/en/blog/en-slug')
+  describe('buildTagLink', () => {
+    it('returns available link when lang is in availableLangs', async () => {
+      vi.resetModules()
+      vi.doMock('@i18n/config', () => ({ showDefaultLang: true }))
+      vi.doMock('@i18n/rootMap', () => ({
+        get rootMap() { return mockRootMap },
+        resolveLocalized: (canonical: string, lang: string) => mockRootMap[canonical]?.[lang] ?? canonical,
+      }))
+      const { buildTagLink } = await import('@i18n/languagePickerUtils')
+      const link = buildTagLink('en', 'blog', 'tags/typescript', new Set(['en', 'es']))
+      expect(link.isAvailable).toBe(true)
+      expect(link.href).toBe('/en/blog/tags/typescript')
+    })
+
+    it('returns missing when lang is not in availableLangs', async () => {
+      vi.resetModules()
+      vi.doMock('@i18n/config', () => ({ showDefaultLang: true }))
+      vi.doMock('@i18n/rootMap', () => ({
+        get rootMap() { return mockRootMap },
+        resolveLocalized: (canonical: string, lang: string) => mockRootMap[canonical]?.[lang] ?? canonical,
+      }))
+      const { buildTagLink } = await import('@i18n/languagePickerUtils')
+      const link = buildTagLink('en', 'blog', 'tags/typescript', new Set(['es']))
+      expect(link.isAvailable).toBe(false)
+      expect(link.disabledReason).toBe('missing')
+    })
   })
 
-  it('buildDetailLink marks missing translation', async () => {
-    vi.resetModules()
-    vi.doMock('@i18n/config', () => ({ showDefaultLang: true }))
-    const { buildDetailLink } = await import('@i18n/languagePickerUtils')
-    const link = buildDetailLink('en', 'blog', {})
-    expect(link.isAvailable).toBe(false)
-    expect(link.disabledReason).toBe('missing')
+  describe('buildCollectionLink', () => {
+    it('returns localized href for the section', async () => {
+      vi.resetModules()
+      vi.doMock('@i18n/config', () => ({ showDefaultLang: true }))
+      vi.doMock('@i18n/rootMap', () => ({
+        get rootMap() { return mockRootMap },
+        resolveLocalized: (canonical: string, lang: string) => mockRootMap[canonical]?.[lang] ?? canonical,
+      }))
+      const { buildCollectionLink } = await import('@i18n/languagePickerUtils')
+      expect(buildCollectionLink('en', 'about').href).toBe('/en/about')
+      expect(buildCollectionLink('es', 'about').href).toBe('/es/acerca-de')
+      expect(buildCollectionLink('en', 'about').isAvailable).toBe(true)
+    })
+  })
+
+  describe('buildDetailLink', () => {
+    it('returns available link for existing translation', async () => {
+      vi.resetModules()
+      vi.doMock('@i18n/config', () => ({ showDefaultLang: true }))
+      vi.doMock('@i18n/rootMap', () => ({
+        get rootMap() { return mockRootMap },
+        resolveLocalized: (canonical: string, lang: string) => mockRootMap[canonical]?.[lang] ?? canonical,
+      }))
+      const { buildDetailLink } = await import('@i18n/languagePickerUtils')
+      const link = buildDetailLink('en', 'blog', { en: { slug: 'en-slug' } })
+      expect(link.isAvailable).toBe(true)
+      expect(link.href).toBe('/en/blog/en-slug')
+      expect(link.disabledReason).toBeUndefined()
+    })
+
+    it('marks draft translation as available with disabledReason draft', async () => {
+      vi.resetModules()
+      vi.doMock('@i18n/config', () => ({ showDefaultLang: true }))
+      vi.doMock('@i18n/rootMap', () => ({
+        get rootMap() { return mockRootMap },
+        resolveLocalized: (canonical: string, lang: string) => mockRootMap[canonical]?.[lang] ?? canonical,
+      }))
+      const { buildDetailLink } = await import('@i18n/languagePickerUtils')
+      const link = buildDetailLink('en', 'blog', { en: { slug: 'en-slug', draft: true } })
+      expect(link.isAvailable).toBe(true)
+      expect(link.disabledReason).toBe('draft')
+      expect(link.href).toBe('/en/blog/en-slug')
+    })
+
+    it('marks missing translation', async () => {
+      vi.resetModules()
+      vi.doMock('@i18n/config', () => ({ showDefaultLang: true }))
+      vi.doMock('@i18n/rootMap', () => ({
+        get rootMap() { return mockRootMap },
+        resolveLocalized: (canonical: string, lang: string) => mockRootMap[canonical]?.[lang] ?? canonical,
+      }))
+      const { buildDetailLink } = await import('@i18n/languagePickerUtils')
+      const link = buildDetailLink('en', 'blog', {})
+      expect(link.isAvailable).toBe(false)
+      expect(link.disabledReason).toBe('missing')
+    })
   })
 
   describe('buildStaticPageLinks', () => {
