@@ -29,7 +29,6 @@ export default defineConfig({
         'src/env.d.ts',
         'src/pages/**',          // Endpoints Astro → testear con Playwright e2e
         'src/scripts/**',        // Browser scripts → testear con Playwright e2e
-        'src/i18n/translations.ts', // Barrel de datos precomputados (buildTranslationMap ya testeado)
       ],
     }
   }

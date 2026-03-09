@@ -1,37 +1,16 @@
 import { describe, it, expect, vi } from 'vitest'
 
-// NOTE (tests): the real `translationStructures` shape is `{ seriesByKey, slugIndex }`.
-// This test historically uses a `slugMeta` field in the mock which does not
-// match the consumer shape. Update mocks to more closely reflect the
-// runtime structure to avoid false positives/negatives in tests.
-// TODO: add unit tests for `buildTagLink` availability and the draft branch
-// of `buildDetailLink` (missing test coverage). Owner: @sergio.orozcot
-// until: 2026-06-01
-
-const baseTranslationStructures = {
-  blog: {
-    seriesByKey: {},
-    slugIndex: {},
-    slugMeta: {
-      '2025-01-01-title': {},
-      '2025-02-01-title': {},
-    },
-  },
-}
-
 describe('languagePickerUtils', () => {
   it('buildHomeLink respects showDefaultLang', async () => {
     vi.resetModules()
     // Mock only the config flag, keep real ui exports
     await vi.doMock('@i18n/config', () => ({ showDefaultLang: true }))
-    vi.doMock('@i18n/translations', () => ({ translationStructures: baseTranslationStructures }))
     const { buildHomeLink } = await import('@i18n/languagePickerUtils')
     const en = buildHomeLink('en')
     expect(en.href).toBe('/en/')
 
     vi.resetModules()
     await vi.doMock('@i18n/config', () => ({ showDefaultLang: false }))
-    vi.doMock('@i18n/translations', () => ({ translationStructures: baseTranslationStructures }))
     const mod = await import('@i18n/languagePickerUtils')
     // defaultLang is 'es' — when showDefaultLang is false the default language omits the prefix
     expect(mod.buildHomeLink('es').href).toBe('/')
@@ -40,7 +19,6 @@ describe('languagePickerUtils', () => {
   it('buildDetailLink for available translation', async () => {
     vi.resetModules()
     await vi.doMock('@i18n/config', () => ({ showDefaultLang: true }))
-    vi.doMock('@i18n/translations', () => ({ translationStructures: baseTranslationStructures }))
     const { buildDetailLink } = await import('@i18n/languagePickerUtils')
     const availableLocales: Record<string, { slug: string; draft?: boolean }> = { en: { slug: 'en-slug' } }
     const link = buildDetailLink('en', 'blog', '2025-02-01-title', availableLocales)
@@ -51,8 +29,6 @@ describe('languagePickerUtils', () => {
   it('buildDetailLink marks missing translation', async () => {
     vi.resetModules()
     await vi.doMock('@i18n/config', () => ({ showDefaultLang: true }))
-    const missingMeta = { '2025-03-01-title': {} }
-    vi.doMock('@i18n/translations', () => ({ translationStructures: { ...baseTranslationStructures, blog: { ...baseTranslationStructures.blog, slugMeta: missingMeta } } }))
     const { buildDetailLink } = await import('@i18n/languagePickerUtils')
     const link = buildDetailLink('en', 'blog', '2025-03-01-title', {})
     expect(link.isAvailable).toBe(false)

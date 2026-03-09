@@ -3,7 +3,8 @@ import { languageKeys, icons as uiIcons, ui as uiStrings } from "@i18n/ui"
 import type { UILanguages } from "@i18n/ui"
 import { resolveCanonical } from "@i18n/rootMap"
 import { buildHomeLink, buildTagLink, buildDetailLink, buildCollectionLink, type TranslationLink } from "@i18n/languagePickerUtils"
-import { translationStructures } from "@i18n/translations"
+import { buildTranslationPayload } from "@i18n/buildTranslationMap"
+import type { TranslationEntry } from "@i18n/buildTranslationMap"
 import { getPostsByLocale, getUniqueTags } from "@utils/paths"
 import { sectionsConfig } from "@domain/section"
 import type { SectionType } from "@domain/section"
@@ -20,9 +21,16 @@ const isDetailPage = Boolean(slug) && !isHomePage
 
 const canonicalSection = isHomePage ? "" : resolveCanonical(rawSection, currentLang)
 
-const structures = translationStructures?.[canonicalSection as keyof typeof translationStructures]
+let structures: { seriesByKey?: Record<string, Record<string, TranslationEntry>>; slugIndex?: Record<string, string> } | undefined = undefined
+if (!isHomePage) {
+  const sectionCfg = sectionsConfig[canonicalSection as SectionType]
+  if (sectionCfg) {
+    const payload = await buildTranslationPayload(sectionCfg.collection)
+    structures = { seriesByKey: payload.seriesByKey, slugIndex: payload.slugIndex }
+  }
+}
 const seriesKey = structures?.slugIndex?.[slug]
-const availableLocales = isDetailPage && seriesKey ? (structures?.seriesByKey[seriesKey] ?? {}) : {}
+const availableLocales = isDetailPage && seriesKey ? (structures?.seriesByKey?.[seriesKey] ?? {}) : {}
 
 const tagName = isTagPage ? slug.replace('tags/', '') : ''
 const tagAvailableLocales = new Set<UILanguages>()
