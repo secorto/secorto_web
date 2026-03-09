@@ -14,10 +14,6 @@ export const rootMap: Record<string, Record<UILanguages, string>> = Object.fromE
     .concat(Object.entries(extraRoutes))
 ) as Record<string, Record<UILanguages, string>>
 
-export function resolveCanonical(raw: string, lang: UILanguages): string {
-  const entry = Object.entries(rootMap).find(([, langs]) => langs[lang] === raw)
-  return entry ? entry[0] : raw // fallback: raw si no está en el mapa
-}
 export function findCanonicalSectionKey(raw: string, lang: UILanguages): string {
   const entry = Object.entries(rootMap).find(([, langs]) => langs[lang] === raw)
   return entry ? entry[0] : raw

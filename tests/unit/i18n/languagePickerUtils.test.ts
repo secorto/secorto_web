@@ -7,7 +7,7 @@ const mockRootMap: Record<string, Record<string, string>> = {
 
 vi.mock('@i18n/rootMap', () => ({
   get rootMap() { return mockRootMap },
-  resolveCanonical: (raw: string, lang: string) => {
+  findCanonicalSectionKey: (raw: string, lang: string) => {
     const entry = Object.entries(mockRootMap).find(([, langs]) => langs[lang] === raw)
     return entry ? entry[0] : raw
   },
@@ -34,6 +34,24 @@ describe('languagePickerUtils', () => {
       const { buildHomeLink } = await import('@i18n/languagePickerUtils')
       // defaultLang is 'es'
       expect(buildHomeLink('es').href).toBe('/')
+    })
+  })
+
+  describe('buildLanguageLinks', () => {
+    it('maps builder result to every language key', async () => {
+      const { buildLanguageLinks } = await import('@i18n/languagePickerUtils')
+      const { languageKeys } = await import('@i18n/ui')
+      const calls: string[] = []
+      const links = buildLanguageLinks(l => {
+        calls.push(l)
+        return { href: `/${l}/x`, label: l === 'en' ? 'English' : 'Spanish', isAvailable: true }
+      })
+
+      expect(calls).toHaveLength(languageKeys.length)
+      for (const k of languageKeys) {
+        expect(links[k].href).toBe(`/${k}/x`)
+        expect(links[k].isAvailable).toBe(true)
+      }
     })
   })
 
@@ -141,7 +159,7 @@ describe('languagePickerUtils', () => {
       vi.doMock('@i18n/config', () => ({ showDefaultLang: true }))
       vi.doMock('@i18n/rootMap', () => ({
         get rootMap() { return mockRootMap },
-        resolveCanonical: (raw: string, lang: string) => {
+        findCanonicalSectionKey: (raw: string, lang: string) => {
           const entry = Object.entries(mockRootMap).find(([, langs]) => langs[lang] === raw)
           return entry ? entry[0] : raw
         },
