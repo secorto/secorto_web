@@ -1,14 +1,24 @@
 ---
 import type { MarkdownLayoutProps } from 'astro';
 import BaseLayout from '@layouts/BaseLayout.astro'
+import LanguagePicker from '@components/LanguagePicker.astro'
+import { buildCollectionLink } from '@i18n/languagePickerUtils'
+import { languageKeys } from '@i18n/ui'
+import type { UILanguages } from '@i18n/ui'
 
 type Props = MarkdownLayoutProps<{
   title: string
+  canonicalSection?: string
 }>;
 const { frontmatter } = Astro.props;
-const { title } = frontmatter;
+const { title, canonicalSection } = frontmatter;
+
+const links = canonicalSection
+  ? Object.fromEntries(languageKeys.map(l => [l, buildCollectionLink(l, canonicalSection)])) as Record<UILanguages, import('@i18n/languagePickerUtils').TranslationLink>
+  : null
 ---
 
 <BaseLayout pageTitle={title}>
+  {links && <LanguagePicker slot="langpicker" links={links} />}
   <slot/>
 </BaseLayout>

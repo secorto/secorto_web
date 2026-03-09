@@ -47,7 +47,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   <body>
     <Hamburger />
     <Sidebar>
-      <slot name="langpicker" />
+      <slot name="langpicker" slot="langpicker" />
     </Sidebar>
     <div class="content">
       <slot />
