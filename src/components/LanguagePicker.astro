@@ -21,7 +21,7 @@ const reasonMeta = {
     const meta = link.disabledReason && reasonMeta[link.disabledReason]
     const text = meta ? `${link.label} ${meta.marker}` : link.label
     const title = meta && uiStrings[targetLang][meta.titleKey]
-    const ariaLabel = title ? `${title}: ${link.label}` : undefined
+    const reasonId = meta ? `lang-${targetLang}-reason` : undefined
 
     if (!link.isAvailable) return (
       <span
@@ -29,7 +29,7 @@ const reasonMeta = {
         role="link"
         aria-disabled="true"
         tabindex="-1"
-        aria-label={ariaLabel}
+        aria-label={title ? `${title}: ${link.label}` : undefined}
         title={title}
         data-disabled-reason={link.disabledReason ?? ''}
         data-testid={`lang-${targetLang}`}
@@ -39,8 +39,15 @@ const reasonMeta = {
     )
 
     return (
-      <a href={link.href} title={title} aria-label={ariaLabel} data-testid={`lang-${targetLang}`}>
+      <a
+        href={link.href}
+        title={title}
+        aria-label={link.label}
+        aria-describedby={reasonId}
+        data-testid={`lang-${targetLang}`}
+      >
         {text}
+        {meta && title ? <span id={reasonId} class="sr-only">{title}</span> : null}
       </a>
     )
   })}
