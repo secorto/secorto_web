@@ -1,23 +1,23 @@
 import { test, expect, describe } from 'vitest'
-import { getAvailableLocalesForEntry, buildTagLocaleMap } from '@utils/translationHelpers'
+import { getAvailableLocaleEntries, buildTagLocaleMap } from '@utils/translationHelpers'
 import type { CollectionEntry, CollectionKey } from 'astro:content'
 
 // Minimal helper to build fake entries for testing
 const entry = (id: string, data: Record<string, unknown> = {}): CollectionEntry<CollectionKey> =>
   ({ id, data }) as CollectionEntry<CollectionKey>
 
-describe('getAvailableLocalesForEntry', () => {
+describe('getAvailableLocaleEntries', () => {
   test('returns both locales when entry exists in es and en', () => {
     const entries = [
       entry('es/2025-01-22-my-post', { title: 'Mi Post' }),
       entry('en/2025-01-22-my-post', { title: 'My Post' }),
     ]
 
-    const locales = getAvailableLocalesForEntry(entries, '2025-01-22-my-post')
+    const result = getAvailableLocaleEntries(entries, '2025-01-22-my-post')
 
-    expect(locales).toHaveLength(2)
-    expect(locales).toContain('es')
-    expect(locales).toContain('en')
+    expect(Object.keys(result)).toHaveLength(2)
+    expect(result['es']).toEqual({ slug: '2025-01-22-my-post', draft: false })
+    expect(result['en']).toEqual({ slug: '2025-01-22-my-post', draft: false })
   })
 
   test('returns only es when entry exists only in Spanish', () => {
@@ -26,11 +26,11 @@ describe('getAvailableLocalesForEntry', () => {
       entry('en/2025-01-22-other-post', { title: 'Other Post' }),
     ]
 
-    const locales = getAvailableLocalesForEntry(entries, '2025-01-22-spanish-only')
+    const result = getAvailableLocaleEntries(entries, '2025-01-22-spanish-only')
 
-    expect(locales).toHaveLength(1)
-    expect(locales).toContain('es')
-    expect(locales).not.toContain('en')
+    expect(Object.keys(result)).toHaveLength(1)
+    expect(result['es']).toBeDefined()
+    expect(result['en']).toBeUndefined()
   })
 
   test('returns only en when entry exists only in English', () => {
@@ -39,22 +39,22 @@ describe('getAvailableLocalesForEntry', () => {
       entry('es/2025-01-22-otro-post', { title: 'Otro Post' }),
     ]
 
-    const locales = getAvailableLocalesForEntry(entries, '2025-01-22-english-only')
+    const result = getAvailableLocaleEntries(entries, '2025-01-22-english-only')
 
-    expect(locales).toHaveLength(1)
-    expect(locales).toContain('en')
-    expect(locales).not.toContain('es')
+    expect(Object.keys(result)).toHaveLength(1)
+    expect(result['en']).toBeDefined()
+    expect(result['es']).toBeUndefined()
   })
 
-  test('returns empty array when entry does not exist in any locale', () => {
+  test('returns empty object when entry does not exist in any locale', () => {
     const entries = [
       entry('es/2025-01-22-some-post', { title: 'Algún Post' }),
       entry('en/2025-01-22-another-post', { title: 'Another Post' }),
     ]
 
-    const locales = getAvailableLocalesForEntry(entries, '2025-01-22-nonexistent')
+    const result = getAvailableLocaleEntries(entries, '2025-01-22-nonexistent')
 
-    expect(locales).toHaveLength(0)
+    expect(Object.keys(result)).toHaveLength(0)
   })
 
   test('handles entries with nested paths correctly', () => {
@@ -63,11 +63,11 @@ describe('getAvailableLocalesForEntry', () => {
       entry('en/talks/2023-09-27-devcontainers', { title: 'DevContainers' }),
     ]
 
-    const locales = getAvailableLocalesForEntry(entries, 'talks/2023-09-27-devcontainers')
+    const result = getAvailableLocaleEntries(entries, 'talks/2023-09-27-devcontainers')
 
-    expect(locales).toHaveLength(2)
-    expect(locales).toContain('es')
-    expect(locales).toContain('en')
+    expect(Object.keys(result)).toHaveLength(2)
+    expect(result['es']?.slug).toBe('talks/2023-09-27-devcontainers')
+    expect(result['en']?.slug).toBe('talks/2023-09-27-devcontainers')
   })
 
   test('handles entries without date prefix', () => {
@@ -76,11 +76,11 @@ describe('getAvailableLocalesForEntry', () => {
       entry('en/simple-slug', { title: 'Simple Slug' }),
     ]
 
-    const locales = getAvailableLocalesForEntry(entries, 'simple-slug')
+    const result = getAvailableLocaleEntries(entries, 'simple-slug')
 
-    expect(locales).toHaveLength(2)
-    expect(locales).toContain('es')
-    expect(locales).toContain('en')
+    expect(Object.keys(result)).toHaveLength(2)
+    expect(result['es']?.slug).toBe('simple-slug')
+    expect(result['en']?.slug).toBe('simple-slug')
   })
 
   test('works with different collections (entries from work)', () => {
@@ -89,17 +89,29 @@ describe('getAvailableLocalesForEntry', () => {
       entry('en/my-work', { title: 'My Work' }),
     ]
 
-    const locales = getAvailableLocalesForEntry(entries, 'my-work')
+    const result = getAvailableLocaleEntries(entries, 'my-work')
 
-    expect(locales).toHaveLength(2)
-    expect(locales).toContain('es')
-    expect(locales).toContain('en')
+    expect(Object.keys(result)).toHaveLength(2)
+    expect(result['es']?.slug).toBe('my-work')
+    expect(result['en']?.slug).toBe('my-work')
   })
 
-  test('returns empty array when entries list is empty', () => {
-    const locales = getAvailableLocalesForEntry([], 'any-post')
+  test('marks draft entries correctly', () => {
+    const entries = [
+      entry('es/2025-01-22-my-post', { draft: true }),
+      entry('en/2025-01-22-my-post', { draft: false }),
+    ]
 
-    expect(locales).toHaveLength(0)
+    const result = getAvailableLocaleEntries(entries, '2025-01-22-my-post')
+
+    expect(result['es']?.draft).toBe(true)
+    expect(result['en']?.draft).toBe(false)
+  })
+
+  test('returns empty object when entries list is empty', () => {
+    const result = getAvailableLocaleEntries([], 'any-post')
+
+    expect(Object.keys(result)).toHaveLength(0)
   })
 })
 

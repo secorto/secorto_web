@@ -13,29 +13,6 @@ import type { AvailableLocales } from '@i18n/languagePickerUtils'
 import type { TagMap } from '@domain/tags'
 
 /**
- * Get list of locales where a specific content entry is available.
- *
- * @param allEntries - Pre-fetched collection entries (caller calls getCollection)
- * @param cleanId - Entry slug/ID without locale prefix
- * @returns Array of locale codes where the entry exists
- *
- * @example
- * ```ts
- * const allEntries = await getCollection('blog')
- * const locales = getAvailableLocalesForEntry(allEntries, '2025-01-22-my-post')
- * // Returns: ['es', 'en']
- * ```
- */
-export function getAvailableLocalesForEntry(
-  allEntries: CollectionEntry<CollectionKey>[],
-  cleanId: string
-): UILanguages[] {
-  return languageKeys.filter((lk) =>
-    allEntries.some((e) => e.id.startsWith(`${lk}/`) && extractCleanId(e.id) === cleanId)
-  )
-}
-
-/**
  * Build a map of available locales for a content entry, including slug and draft status.
  * Used by detail pages to build LanguagePicker links.
  *
