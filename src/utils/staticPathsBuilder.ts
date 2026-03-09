@@ -112,7 +112,7 @@ export async function buildTagPaths(
  * Construye paths de detalle para una sección específica.
  * Función pura: solo transforma datos sin efectos secundarios.
  * @param entries - Entradas de la colección
- * @param config - Configuración de la sección
+ * @param routes - Mapeo de `locale` → ruta de la sección (ej. `{ es: 'blog', en: 'blog' }`)
  * @param locales - Array de locales a procesar (por defecto todos los languageKeys)
  * @returns Array de paths de detalle para esta sección
  */
@@ -129,13 +129,12 @@ export function buildDetailPathsForSection<K extends CollectionKey>(
 
     for (const entry of entriesForLocale) {
       const fileCleanId = extractCleanId(entry.id)
-      const entrySlug = entry.data.slug || fileCleanId
 
       paths.push({
         params: {
           locale,
           section: sectionRoute,
-          id: entrySlug
+          id: fileCleanId
         }
       })
     }

@@ -22,36 +22,6 @@ describe('buildDetailPathsForSection', () => {
     showFeaturedImage: true
   }
 
-  test('builds paths for entries with slug in data', () => {
-    const entries = [
-      {
-        id: 'es/2025-01-22-my-post',
-        data: { slug: 'custom-slug', title: 'Test' }
-      },
-      {
-        id: 'en/2025-01-22-my-post',
-        data: { slug: 'custom-slug', title: 'Test' }
-      }
-    ]
-
-    const result = buildDetailPathsForSection(entries as CollectionEntry<'blog'>[], mockConfig.routes)
-
-    expect(result).toHaveLength(2)
-    expect(result).toContainEqual({
-      params: {
-        locale: 'es',
-        section: 'blog',
-        id: 'custom-slug'
-      }
-    })
-    expect(result).toContainEqual({
-      params: {
-        locale: 'en',
-        section: 'blog',
-        id: 'custom-slug'
-      }
-    })
-  })
 
   test('builds paths using file ID when no slug provided', () => {
     const entries = [
@@ -144,19 +114,6 @@ describe('buildDetailPathsForSection', () => {
 
     expect(result).toHaveLength(1)
     expect(result[0].params.id).toBe('category/subcategory/2025-01-22-post')
-  })
-
-  test('prefers slug over file ID when both exist', () => {
-    const entries = [
-      {
-        id: 'es/2025-01-22-long-file-name',
-        data: { slug: 'short-slug', title: 'Test' }
-      }
-    ]
-
-    const result = buildDetailPathsForSection(entries as CollectionEntry<'blog'>[], mockConfig.routes)
-
-    expect(result[0].params.id).toBe('short-slug')
   })
 })
 
