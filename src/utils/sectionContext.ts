@@ -2,7 +2,7 @@ import type { SectionConfig } from '@domain/section'
 import { getSectionConfigByRoute } from '@utils/sections'
 import { filterByLocale, getUniqueTags } from '@utils/paths'
 import type { EntryWithCleanId } from '@utils/paths'
-import type { CollectionWithTags } from '@domain/post'
+import { isCollectionWithTags, type CollectionWithTags } from '@domain/post'
 import type { UILanguages } from '@i18n/ui'
 import { getCollection } from 'astro:content'
 import type { CollectionEntry, CollectionKey } from 'astro:content'
@@ -61,10 +61,13 @@ export async function buildTagsPageContext(
 ): Promise<TagsPageContext> {
   const config = getSectionConfigByRoute(section, locale)
 
-  // Single getCollection call — allEntries is exposed for cross-locale queries
-  // TODO(debt): cast needed because getCollection loses generic narrowing for union CollectionWithTags — owner: @sergio.orozcot — until: 2026-06-01
-  const allEntries = (await getCollection(config.collection as CollectionWithTags)) as CollectionEntry<CollectionWithTags>[]
-  const allLocalePosts = filterByLocale(allEntries, locale) as EntryWithCleanId<CollectionWithTags>[]
+  if (!isCollectionWithTags(config.collection)) {
+    throw new Error(`Section "${section}" does not support tags`)
+  }
+
+  // isCollectionWithTags guard above narrows config.collection to CollectionWithTags
+  const allEntries = await getCollection(config.collection) as CollectionEntry<CollectionWithTags>[]
+  const allLocalePosts = filterByLocale(allEntries, locale)
 
   // Filtrar por tag y extraer tags únicos
   const posts = allLocalePosts.filter((post) => post.data.tags?.includes(tag))

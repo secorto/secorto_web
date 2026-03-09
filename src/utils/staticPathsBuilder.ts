@@ -6,6 +6,9 @@ import { isCollectionWithTags, type CollectionWithTags } from '@domain/post'
 import { extractCleanId } from './ids'
 import type { CollectionEntry, CollectionKey } from 'astro:content'
 
+/** Minimal shape for the injected collection fetcher — easier to mock than the full generic overload. */
+export type FetchCollection = (collection: CollectionKey) => Promise<CollectionEntry<CollectionKey>[]>
+
 export interface SectionPath {
   params: {
     locale: UILanguages
@@ -71,13 +74,12 @@ function* iterateSections(): Generator<SectionConfig> {
  * @returns Array de paths para getStaticPaths
  */
 export async function buildSectionIndexPaths(
-  fetchCollection: <C extends CollectionKey>(collection: C) => Promise<CollectionEntry<C>[]> = getCollection
+  fetchCollection: FetchCollection = getCollection
 ): Promise<SectionPath[]> {
   const paths: SectionPath[] = []
 
   for (const config of iterateSections()) {
-    // TODO(debt): cast needed because config.collection is the CollectionKey union — owner: @sergio.orozcot — until: 2026-06-01
-    const allEntries = (await fetchCollection(config.collection)) as CollectionEntry<CollectionKey>[]
+    const allEntries = await fetchCollection(config.collection)
 
     for (const locale of languageKeys) {
       const posts = filterByLocale(allEntries, locale)
@@ -103,18 +105,18 @@ export async function buildSectionIndexPaths(
  * @returns Array de paths para getStaticPaths
  */
 export async function buildTagPaths(
-  fetchCollection: <C extends CollectionKey>(collection: C) => Promise<CollectionEntry<C>[]> = getCollection
+  fetchCollection: FetchCollection = getCollection
 ): Promise<TagPath[]> {
   const paths: TagPath[] = []
 
   for (const config of iterateSections()) {
     if (!isCollectionWithTags(config.collection)) continue
 
-    // TODO(debt): cast needed because config.collection is the CollectionKey union — owner: @sergio.orozcot — until: 2026-06-01
-    const allEntries = (await fetchCollection(config.collection as CollectionWithTags)) as CollectionEntry<CollectionWithTags>[]
+    // isCollectionWithTags guard above narrows config.collection to CollectionWithTags
+    const allEntries = await fetchCollection(config.collection) as CollectionEntry<CollectionWithTags>[]
 
     for (const locale of languageKeys) {
-      const localePosts = filterByLocale(allEntries, locale) as EntryWithCleanId<CollectionWithTags>[]
+      const localePosts = filterByLocale(allEntries, locale)
       const tags = getUniqueTags(localePosts)
 
       for (const tag of tags) {
@@ -172,13 +174,12 @@ export function buildDetailPathsForSection<K extends CollectionKey>(
  * @returns Array de paths para getStaticPaths
  */
 export async function buildAllDetailPaths(
-  fetchCollection: <C extends CollectionKey>(collection: C) => Promise<CollectionEntry<C>[]>
+  fetchCollection: FetchCollection
 ): Promise<DetailPath[]> {
   const allPaths: DetailPath[] = []
 
   for (const config of iterateSections()) {
-    // TODO(debt): cast needed because config.collection is the CollectionKey union — owner: @sergio.orozcot — until: 2026-06-01
-    const allEntries = (await fetchCollection(config.collection)) as CollectionEntry<CollectionKey>[]
+    const allEntries = await fetchCollection(config.collection)
 
     for (const locale of languageKeys) {
       const sectionRoute = config.routes[locale]
