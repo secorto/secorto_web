@@ -11,7 +11,7 @@ import { getAvailableLocaleEntries } from '@utils/translationHelpers'
 import { getCanonicalMetadata, getPageMetadata } from '@utils/translationMetadata'
 import { buildAllDetailPaths, type DetailPath } from '@utils/staticPathsBuilder'
 import { buildDetailLink, type TranslationLink } from '@i18n/languagePickerUtils'
-import { resolveCanonical } from '@i18n/rootMap'
+import { findCanonicalSectionKey } from '@i18n/rootMap'
 import { resolveSeriesCanonicalLocale } from '@i18n/buildTranslationMap'
 import type { UILanguages } from '@i18n/ui'
 import { languageKeys, defaultLang } from '@i18n/ui'
@@ -28,7 +28,7 @@ const localeEntryMap = getAvailableLocaleEntries(allEntries, entry.canonicalId)
 const availableLocales = Object.keys(localeEntryMap) as UILanguages[]
 const seriesCanonicalLocale = resolveSeriesCanonicalLocale(availableLocales)
 
-const canonicalSection = resolveCanonical(section, locale)
+const canonicalSection = findCanonicalSectionKey(section, locale)
 const links = Object.fromEntries(
   languageKeys.map(l => [l, buildDetailLink(l, canonicalSection, localeEntryMap)])
 ) as Record<UILanguages, TranslationLink>

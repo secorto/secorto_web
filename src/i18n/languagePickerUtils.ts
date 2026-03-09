@@ -1,7 +1,7 @@
 import type { UILanguages } from './ui'
 import { languages, defaultLang, languageKeys } from './ui'
 import { showDefaultLang } from '@i18n/config'
-import { resolveLocalized, resolveCanonical, rootMap } from './rootMap'
+import { resolveLocalized, findCanonicalSectionKey, rootMap } from './rootMap'
 export type AvailableLocales = Partial<Record<UILanguages, { slug: string; draft?: boolean; canonical?: boolean }>>
 
 export interface TranslationLink {
@@ -110,7 +110,7 @@ export function buildStaticPageLinks(
 ): Record<UILanguages, TranslationLink> {
   const [, maybeLocale, rawSegment] = url.pathname.split('/')
   const currentLocale = (languageKeys as string[]).includes(maybeLocale) ? maybeLocale as UILanguages : null
-  const resolvedSection = currentLocale ? (canonicalSection ?? resolveCanonical(rawSegment, currentLocale)) : null
+  const resolvedSection = currentLocale ? (canonicalSection ?? findCanonicalSectionKey(rawSegment, currentLocale)) : null
   const sectionMap = resolvedSection ? rootMap[resolvedSection] : null
 
   return Object.fromEntries(

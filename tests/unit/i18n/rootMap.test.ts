@@ -8,7 +8,7 @@ vi.mock('@domain/section', () => ({
   },
 }))
 
-const { rootMap, resolveCanonical, resolveLocalized } = await import('../../../src/i18n/rootMap')
+const { rootMap, findCanonicalSectionKey, resolveLocalized } = await import('../../../src/i18n/rootMap')
 
 describe('i18n rootMap', () => {
   it('builds rootMap including extraRoutes', () => {
@@ -22,14 +22,11 @@ describe('i18n rootMap', () => {
     expect(rootMap.about.es).toBe('acerca-de')
   })
 
-  it('resolveCanonical returns canonical key when slug exists', () => {
-    expect(resolveCanonical('blog', 'en')).toBe('blog')
-    expect(resolveCanonical('charla', 'es')).toBe('talk')
-    expect(resolveCanonical('acerca-de', 'es')).toBe('about')
-  })
-
-  it('resolveCanonical falls back to raw when not found', () => {
-    expect(resolveCanonical('unknown-slug', 'en')).toBe('unknown-slug')
+  it('findCanonicalSectionKey returns canonical key when slug exists and falls back to raw', () => {
+    expect(findCanonicalSectionKey('blog', 'en')).toBe('blog')
+    expect(findCanonicalSectionKey('charla', 'es')).toBe('talk')
+    expect(findCanonicalSectionKey('acerca-de', 'es')).toBe('about')
+    expect(findCanonicalSectionKey('unknown-slug', 'en')).toBe('unknown-slug')
   })
 
   it('resolveLocalized returns localized slug for canonical key', () => {

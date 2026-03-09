@@ -18,6 +18,10 @@ export function resolveCanonical(raw: string, lang: UILanguages): string {
   const entry = Object.entries(rootMap).find(([, langs]) => langs[lang] === raw)
   return entry ? entry[0] : raw // fallback: raw si no está en el mapa
 }
+export function findCanonicalSectionKey(raw: string, lang: UILanguages): string {
+  const entry = Object.entries(rootMap).find(([, langs]) => langs[lang] === raw)
+  return entry ? entry[0] : raw
+}
 
 export function resolveLocalized(canonical: string, lang: UILanguages): string {
   const map = rootMap[canonical]
