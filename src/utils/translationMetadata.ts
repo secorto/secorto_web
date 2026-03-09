@@ -25,7 +25,6 @@ export interface PageData {
  * @param params.currentLocale - Locale actual que se está viendo
  * @param params.currentCleanId - ID limpio de la entrada actual
  * @param params.seriesCanonicalLocale - Locale canónico de la serie (calculado desde locales disponibles, por defecto `es`)
- * @param params.seriesCanonicalId - Clean ID canónico de la serie (puede diferir si los filenames difieren)
  * @returns Metadatos canónicos para SEO
  *
  * @example
@@ -54,8 +53,6 @@ export function getCanonicalMetadata(params: {
   currentCleanId: string
   /** Locale canónico de la serie; si omitido se usa currentLocale */
   seriesCanonicalLocale?: UILanguages
-  /** Clean ID del entry canónico de la serie; si omitido se usa currentCleanId */
-  seriesCanonicalId?: string
 }): TranslationMetadata {
   const isDraft = Boolean(params.entryDraft)
 
@@ -63,13 +60,9 @@ export function getCanonicalMetadata(params: {
     ? params.seriesCanonicalLocale
     : params.currentLocale
 
-  const canonicalId = isDraft && (params.seriesCanonicalId ?? params.seriesCanonicalLocale)
-    ? (params.seriesCanonicalId ?? params.currentCleanId)
-    : params.currentCleanId
-
   return {
     canonicalLocale,
-    canonicalId,
+    canonicalId: params.currentCleanId,
     shouldNoindex: isDraft
   }
 }

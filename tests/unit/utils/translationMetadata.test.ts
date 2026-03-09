@@ -6,7 +6,6 @@ describe('getCanonicalMetadata', () => {
     const result = getCanonicalMetadata({
       entryDraft: true,
       seriesCanonicalLocale: 'es',
-      seriesCanonicalId: '2026-01-01-original',
       currentLocale: 'en',
       currentCleanId: '2026-01-01-original'
     })
