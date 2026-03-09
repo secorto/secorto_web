@@ -256,13 +256,14 @@ describe('buildTagPaths', () => {
     }
   })
 
-  test('includes allEntries and config in props', async () => {
+  test('includes allEntries, config and tagLocaleMap in props', async () => {
     const result = await buildTagPaths(mockFetchCollection)
 
     expect(result.length).toBeGreaterThan(0)
     for (const path of result) {
       expect(Array.isArray(path.props.allEntries)).toBe(true)
       expect(path.props.config).toBeDefined()
+      expect(path.props.tagLocaleMap).toBeDefined()
     }
   })
 

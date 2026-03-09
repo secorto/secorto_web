@@ -1,5 +1,5 @@
 import { test, expect, describe } from 'vitest'
-import { getAvailableLocalesForEntry } from '@utils/translationHelpers'
+import { getAvailableLocalesForEntry, buildTagLocaleMap } from '@utils/translationHelpers'
 import type { CollectionEntry, CollectionKey } from 'astro:content'
 
 // Minimal helper to build fake entries for testing
@@ -100,5 +100,64 @@ describe('getAvailableLocalesForEntry', () => {
     const locales = getAvailableLocalesForEntry([], 'any-post')
 
     expect(locales).toHaveLength(0)
+  })
+})
+
+describe('buildTagLocaleMap', () => {
+  test('maps each tag to the locales that have it', () => {
+    const entries = [
+      entry('es/post-1', { tags: ['linux', 'python'] }),
+      entry('en/post-1', { tags: ['linux'] }),
+    ]
+    const map = buildTagLocaleMap(entries)
+    expect(map['linux']).toEqual({ es: 'linux', en: 'linux' })
+    expect(map['python']).toEqual({ es: 'python' })
+  })
+
+  test('excludes draft entries', () => {
+    const entries = [
+      entry('en/draft', { tags: ['testing'], draft: true }),
+      entry('es/pub', { tags: ['testing'] }),
+    ]
+    const map = buildTagLocaleMap(entries)
+    expect(map['testing']).toEqual({ es: 'testing' })
+  })
+
+  test('with tagMap: groups translated slugs under canonical, indexes by both slugs', () => {
+    const entries = [
+      entry('es/post', { tags: ['herramientas'] }),
+      entry('en/post', { tags: ['tools'] }),
+    ]
+    const tagMap = { tools: { en: 'tools', es: 'herramientas' } }
+    const map = buildTagLocaleMap(entries, tagMap)
+
+    // both slugs resolve to the same data
+    expect(map['tools']).toEqual({ en: 'tools', es: 'herramientas' })
+    expect(map['herramientas']).toEqual({ en: 'tools', es: 'herramientas' })
+  })
+
+  test('with tagMap: only marks locale available if content actually exists', () => {
+    const entries = [
+      entry('es/post', { tags: ['herramientas'] }),
+      // no en entry with 'tools'
+    ]
+    const tagMap = { tools: { en: 'tools', es: 'herramientas' } }
+    const map = buildTagLocaleMap(entries, tagMap)
+
+    expect(map['herramientas']).toEqual({ es: 'herramientas' })
+    expect(map['herramientas']['en']).toBeUndefined()
+  })
+
+  test('without tagMap: same-name tags across locales are independent entries', () => {
+    const entries = [
+      entry('es/p', { tags: ['python'] }),
+      entry('en/p', { tags: ['python'] }),
+    ]
+    const map = buildTagLocaleMap(entries)
+    expect(map['python']).toEqual({ es: 'python', en: 'python' })
+  })
+
+  test('returns empty map for empty entries', () => {
+    expect(buildTagLocaleMap([])).toEqual({})
   })
 })

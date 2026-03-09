@@ -10,6 +10,7 @@ import type { UILanguages } from '@i18n/ui'
 import { languageKeys } from '@i18n/ui'
 import { extractCleanId } from './ids'
 import type { AvailableLocales } from '@i18n/languagePickerUtils'
+import type { TagMap } from '@domain/tags'
 
 /**
  * Get list of locales where a specific content entry is available.
@@ -64,28 +65,53 @@ export function getAvailableLocaleEntries(
 }
 
 /**
- * Builds a full index of tag → locales that have at least one non-draft entry with that tag.
- * Build this once from allEntries, then look up any tag in O(1).
- * Used by tag pages to build LanguagePicker links with availability info.
+ * Builds a full index of tag → per-locale slugs, derived from actual content entries.
+ * Understands tag translations via an optional `tagMap` (e.g. `tools ↔ herramientas`).
  *
- * @param allEntries - Pre-fetched collection entries (caller calls getCollection)
- * @returns Record mapping each tag to the set of locales where it is present
+ * The result is indexed by BOTH the canonical key and every locale-specific slug,
+ * so any lookup by the current page's tag slug resolves in O(1).
+ *
+ * @param allEntries - Pre-fetched collection entries
+ * @param tagMap - Optional per-section translation map from domain/tags.ts
+ * @returns Record mapping any tag slug (canonical or locale-specific) → { locale → localized slug }
  */
 export function buildTagLocaleMap(
-  allEntries: CollectionEntry<CollectionKey>[]
-): Record<string, Set<UILanguages>> {
-  const map: Record<string, Set<UILanguages>> = {}
+  allEntries: CollectionEntry<CollectionKey>[],
+  tagMap?: TagMap
+): Record<string, Partial<Record<UILanguages, string>>> {
+  // Build reverse lookup: locale → (locale-slug → canonical)
+  const toCanonical: Partial<Record<UILanguages, Record<string, string>>> = {}
+  if (tagMap) {
+    for (const [canonical, localeMap] of Object.entries(tagMap)) {
+      for (const [locale, slug] of Object.entries(localeMap) as [UILanguages, string][]) {
+        if (!toCanonical[locale]) toCanonical[locale] = {}
+        toCanonical[locale]![slug] = canonical
+      }
+    }
+  }
 
+  // Build canonical → { locale → slug } from actual content
+  const canonicalMap: Record<string, Partial<Record<UILanguages, string>>> = {}
   for (const entry of allEntries) {
     if ((entry.data as { draft?: boolean }).draft) continue
     const [locale] = entry.id.split('/')
     if (!(languageKeys as string[]).includes(locale)) continue
     const tags = (entry.data as { tags?: string[] }).tags ?? []
     for (const tag of tags) {
-      if (!map[tag]) map[tag] = new Set()
-      map[tag].add(locale as UILanguages)
+      const canonical = toCanonical[locale as UILanguages]?.[tag] ?? tag
+      if (!canonicalMap[canonical]) canonicalMap[canonical] = {}
+      canonicalMap[canonical][locale as UILanguages] = tag
     }
   }
 
-  return map
+  // Index by canonical key and all locale-slug aliases for O(1) lookup
+  const result: Record<string, Partial<Record<UILanguages, string>>> = {}
+  for (const [canonical, localeData] of Object.entries(canonicalMap)) {
+    result[canonical] = localeData
+    for (const slug of Object.values(localeData)) {
+      if (slug !== canonical) result[slug] = localeData
+    }
+  }
+
+  return result
 }

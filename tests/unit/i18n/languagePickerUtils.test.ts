@@ -38,7 +38,7 @@ describe('languagePickerUtils', () => {
   })
 
   describe('buildTagLink', () => {
-    it('returns available link when lang is in availableLangs', async () => {
+    it('returns available link when locale has a slug', async () => {
       vi.resetModules()
       vi.doMock('@i18n/config', () => ({ showDefaultLang: true }))
       vi.doMock('@i18n/rootMap', () => ({
@@ -46,12 +46,12 @@ describe('languagePickerUtils', () => {
         resolveLocalized: (canonical: string, lang: string) => mockRootMap[canonical]?.[lang] ?? canonical,
       }))
       const { buildTagLink } = await import('@i18n/languagePickerUtils')
-      const link = buildTagLink('en', 'blog', 'tags/typescript', new Set(['en', 'es']))
+      const link = buildTagLink('en', 'blog', { en: 'tools', es: 'herramientas' })
       expect(link.isAvailable).toBe(true)
-      expect(link.href).toBe('/en/blog/tags/typescript')
+      expect(link.href).toBe('/en/blog/tags/tools')
     })
 
-    it('returns missing when lang is not in availableLangs', async () => {
+    it('returns missing when locale has no slug', async () => {
       vi.resetModules()
       vi.doMock('@i18n/config', () => ({ showDefaultLang: true }))
       vi.doMock('@i18n/rootMap', () => ({
@@ -59,9 +59,21 @@ describe('languagePickerUtils', () => {
         resolveLocalized: (canonical: string, lang: string) => mockRootMap[canonical]?.[lang] ?? canonical,
       }))
       const { buildTagLink } = await import('@i18n/languagePickerUtils')
-      const link = buildTagLink('en', 'blog', 'tags/typescript', new Set(['es']))
+      const link = buildTagLink('en', 'blog', { es: 'herramientas' })
       expect(link.isAvailable).toBe(false)
       expect(link.disabledReason).toBe('missing')
+    })
+
+    it('uses translated section route per locale', async () => {
+      vi.resetModules()
+      vi.doMock('@i18n/config', () => ({ showDefaultLang: true }))
+      vi.doMock('@i18n/rootMap', () => ({
+        get rootMap() { return mockRootMap },
+        resolveLocalized: (_canonical: string, lang: string) => lang === 'es' ? 'charla' : 'talk',
+      }))
+      const { buildTagLink } = await import('@i18n/languagePickerUtils')
+      const link = buildTagLink('es', 'talk', { es: 'testing', en: 'testing' })
+      expect(link.href).toBe('/es/charla/tags/testing')
     })
   })
 

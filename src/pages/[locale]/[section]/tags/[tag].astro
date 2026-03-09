@@ -26,9 +26,9 @@ const pageTitle = `${t(config.translationKey)} - ${tag}`
 const metaDescription = `${config.taggedKey ? t(config.taggedKey) : t(config.translationKey)} ${tag}`
 
 const canonicalSection = resolveCanonical(section, locale)
-const availableLangs = tagLocaleMap[tag] ?? new Set<UILanguages>()
+const localeSlugs = tagLocaleMap[tag] ?? { [locale]: tag } as Partial<Record<UILanguages, string>>
 const links = Object.fromEntries(
-  languageKeys.map(l => [l, buildTagLink(l, canonicalSection, `tags/${tag}`, availableLangs)])
+  languageKeys.map(l => [l, buildTagLink(l, canonicalSection, localeSlugs)])
 ) as Record<UILanguages, TranslationLink>
 ---
 

@@ -32,21 +32,21 @@ export function buildHomeLink(targetLang: UILanguages): TranslationLink {
  * Construye un link de language picker para páginas de tags.
  * @param targetLang - Idioma destino para el link
  * @param canonicalSection - Sección canónica (ej: 'blog', 'talk')
- * @param slug - Slug de la página de tags incluyendo el prefijo (ej: 'tags/typescript')
- * @returns Link disponible a la página de tags en ese idioma
+ * @param localeSlugs - Mapa locale → slug del tag en ese idioma (de buildTagLocaleMap)
+ * @returns Link disponible si el locale tiene un slug, missing si no
  */
 export function buildTagLink(
   targetLang: UILanguages,
   canonicalSection: string,
-  slug: string,
-  availableLangs: Set<UILanguages>
+  localeSlugs: Partial<Record<UILanguages, string>>
 ): TranslationLink {
-  if (!availableLangs.has(targetLang)) {
+  const slug = localeSlugs[targetLang]
+  if (!slug) {
     return { href: '', label: languages[targetLang], isAvailable: false, disabledReason: 'missing' }
   }
   const localizedSection = resolveLocalized(canonicalSection, targetLang)
   return {
-    href: `${buildLangPrefix(targetLang)}/${localizedSection}/${slug}`,
+    href: `${buildLangPrefix(targetLang)}/${localizedSection}/tags/${slug}`,
     label: languages[targetLang],
     isAvailable: true
   }
