@@ -24,7 +24,7 @@ const { locale, section } = Astro.params as { locale: UILanguages; section: stri
 const { entry, allEntries, config } = Astro.props as DetailPath['props']
 const t = useTranslations(locale)
 
-const localeEntryMap = getAvailableLocaleEntries(allEntries, entry.cleanId)
+const localeEntryMap = getAvailableLocaleEntries(allEntries, entry.canonicalId)
 const availableLocales = Object.keys(localeEntryMap) as UILanguages[]
 const seriesCanonicalLocale = resolveSeriesCanonicalLocale(availableLocales)
 

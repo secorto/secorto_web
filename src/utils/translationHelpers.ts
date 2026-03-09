@@ -17,23 +17,21 @@ import type { PostEntry } from '@domain/post'
  * Used by detail pages to build LanguagePicker links.
  *
  * @param allEntries - Pre-fetched collection entries (caller calls getCollection)
- * @param cleanId - Entry slug/ID without locale prefix
+ * @param canonicalId - Canonical ID (postId) used to correlate translations across locales
  * @returns AvailableLocales map: locale -> { slug, draft? }
  */
 export function getAvailableLocaleEntries<C extends CollectionKey = CollectionKey>(
   allEntries: PostEntry<C>[],
-  cleanId: string
+  canonicalId: string
 ): AvailableLocales {
   const result: AvailableLocales = {}
-  // Prefer a direct `cleanId` match as the source; if it has a `postId`, use
-  // that as a fallback when translated slugs differ between locales.
-  const sourcePostId = allEntries.find(e => e && e.cleanId === cleanId)?.data?.postId
+  // Use `canonicalId` as the single source of truth to correlate translations
 
   for (const lang of languageKeys) {
     const prefix = `${lang}/`
     const entry = allEntries.find(e =>
       e && typeof e.id === 'string' && e.id.startsWith(prefix) &&
-      (e.cleanId === cleanId || (sourcePostId && e.data?.postId === sourcePostId))
+      e.canonicalId === canonicalId
     )
     if (!entry) continue
     result[lang as keyof AvailableLocales] = {
