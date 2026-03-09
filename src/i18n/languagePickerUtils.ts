@@ -11,6 +11,14 @@ export interface TranslationLink {
   disabledReason?: 'missing' | 'draft'
 }
 
+function availableLink(href: string, lang: UILanguages): TranslationLink {
+  return { href, label: languages[lang], isAvailable: true }
+}
+
+function missingLink(lang: UILanguages): TranslationLink {
+  return { href: '', label: languages[lang], isAvailable: false, disabledReason: 'missing' }
+}
+
 function buildLangPrefix(targetLang: UILanguages): string {
   return targetLang === defaultLang && !showDefaultLang ? "" : `/${targetLang}`
 }
@@ -21,11 +29,7 @@ function buildLangPrefix(targetLang: UILanguages): string {
  * @returns Link disponible apuntando a la raíz del sitio en ese idioma
  */
 export function buildHomeLink(targetLang: UILanguages): TranslationLink {
-  return {
-    href: `${buildLangPrefix(targetLang)}/`,
-    label: languages[targetLang],
-    isAvailable: true
-  }
+  return availableLink(`${buildLangPrefix(targetLang)}/`, targetLang)
 }
 
 /**
@@ -42,13 +46,11 @@ export function buildTagLink(
 ): TranslationLink {
   const slug = localeSlugs[targetLang]
   if (!slug) {
-    return { href: '', label: languages[targetLang], isAvailable: false, disabledReason: 'missing' }
+    return missingLink(targetLang)
   }
   const localizedSection = resolveLocalized(canonicalSection, targetLang)
   return {
-    href: `${buildLangPrefix(targetLang)}/${localizedSection}/tags/${slug}`,
-    label: languages[targetLang],
-    isAvailable: true
+    ...availableLink(`${buildLangPrefix(targetLang)}/${localizedSection}/tags/${slug}`, targetLang)
   }
 }
 
@@ -65,15 +67,12 @@ export function buildDetailLink(targetLang: UILanguages, canonicalSection: strin
   const localizedSection = resolveLocalized(canonicalSection, targetLang)
 
   if (!entry) {
-    return { href: '', label: languages[targetLang], isAvailable: false, disabledReason: 'missing' }
+    return missingLink(targetLang)
   }
 
-  return {
-    href: `${buildLangPrefix(targetLang)}/${localizedSection}/${entry.slug}`,
-    label: languages[targetLang],
-    isAvailable: true,
-    ...(entry.draft && { disabledReason: 'draft' as const })
-  }
+  const link = availableLink(`${buildLangPrefix(targetLang)}/${localizedSection}/${entry.slug}`, targetLang)
+  if (entry.draft) return { ...link, disabledReason: 'draft' }
+  return link
 }
 
 /**
@@ -84,11 +83,7 @@ export function buildDetailLink(targetLang: UILanguages, canonicalSection: strin
  */
 export function buildCollectionLink(targetLang: UILanguages, canonicalSection: string): TranslationLink {
   const localizedSection = resolveLocalized(canonicalSection, targetLang)
-  return {
-    href: `${buildLangPrefix(targetLang)}/${localizedSection}`,
-    label: languages[targetLang],
-    isAvailable: true
-  }
+  return availableLink(`${buildLangPrefix(targetLang)}/${localizedSection}`, targetLang)
 }
 
 /**
@@ -100,34 +95,27 @@ export function buildLanguageLinks<T extends TranslationLink>(builder: (l: UILan
 }
 
 /**
- * Construye el mapa completo de links para el LanguagePicker a partir de la URL de una página estática genérica.
- * Centraliza toda la lógica de detección de locale, resolución de sección y disponibilidad.
- * Funciona para cualquier página no basada en colecciones: markdown, Astro estático, etc.
- *
- * Escenarios:
- *  - Sin prefijo de locale (/cosito): todos los links → missing
- *  - Con prefijo de locale, sección en rootMap: available si existe entry, missing si no
- *  - Con prefijo de locale, sección NO en rootMap: solo el locale actual → available (self-link)
- *
- * @param url - URL completa de la página actual
- * @param canonicalSection - Override opcional desde frontmatter
+ * Build a single language link for a static (non-collection) page.
+ * Accepts `targetLang` to match the signature of other `build*Link` helpers.
  */
-export function buildStaticPageLinks(
-  url: URL,
-  canonicalSection?: string
-): Record<UILanguages, TranslationLink> {
+export function buildStaticPageLink(targetLang: UILanguages, url: URL, canonicalSection?: string): TranslationLink {
   const [, maybeLocale, rawSegment] = url.pathname.split('/')
-  const currentLocale = (languageKeys as string[]).includes(maybeLocale) ? maybeLocale as UILanguages : null
-  const resolvedSection = currentLocale ? (canonicalSection ?? findCanonicalSectionKey(rawSegment, currentLocale)) : null
-  const sectionMap = resolvedSection ? rootMap[resolvedSection] : null
+  const isLocalePrefixed = (languageKeys as string[]).includes(maybeLocale)
 
-  return Object.fromEntries(
-    languageKeys.map(l => {
-      const localizedSlug = sectionMap ? sectionMap[l] : (l === currentLocale ? rawSegment : undefined)
-      const link: TranslationLink = localizedSlug
-        ? { href: `${buildLangPrefix(l)}/${localizedSlug}`, label: languages[l], isAvailable: true }
-        : { href: '', label: languages[l], isAvailable: false, disabledReason: 'missing' }
-      return [l, link]
-    })
-  ) as Record<UILanguages, TranslationLink>
+  if (!isLocalePrefixed) return missingLink(targetLang)
+
+  const currentLocale: UILanguages = maybeLocale as UILanguages
+  const sectionKey = canonicalSection ?? findCanonicalSectionKey(rawSegment, currentLocale)
+  const sectionMap = rootMap[sectionKey]
+
+  const localized = sectionMap && sectionMap[targetLang]
+  if (localized) return availableLink(`${buildLangPrefix(targetLang)}/${localized}`, targetLang)
+
+  if (targetLang === currentLocale) return availableLink(`${buildLangPrefix(targetLang)}/${rawSegment}`, targetLang)
+
+  return missingLink(targetLang)
+}
+
+export function buildStaticPageLinks(url: URL, canonicalSection?: string): Record<UILanguages, TranslationLink> {
+  return buildLanguageLinks(l => buildStaticPageLink(l, url, canonicalSection))
 }
