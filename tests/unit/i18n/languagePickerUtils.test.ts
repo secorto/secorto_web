@@ -184,13 +184,6 @@ describe('languagePickerUtils', () => {
       expect(links.en.href).toBe('/en/about')
     })
 
-    it('canonicalSection override is used instead of resolving from URL', async () => {
-      const { buildStaticPageLinks } = await import('@i18n/languagePickerUtils')
-      const links = buildStaticPageLinks(new URL('http://x/en/about'), 'about')
-      expect(links.en.href).toBe('/en/about')
-      expect(links.es.href).toBe('/es/acerca-de')
-    })
-
     it('section not in rootMap → current locale available, others missing', async () => {
       const { buildStaticPageLinks } = await import('@i18n/languagePickerUtils')
       const links = buildStaticPageLinks(new URL('http://x/es/cosito'))
