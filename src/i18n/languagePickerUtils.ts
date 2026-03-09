@@ -57,7 +57,6 @@ export function buildTagLink(
  * Verifica si hay traducción disponible para el idioma destino.
  * @param targetLang - Idioma destino para el link
  * @param canonicalSection - Sección canónica (ej: 'blog', 'talk')
- * @param slug - Slug del contenido (ej: '2025-01-22-titulo-post')
  * @param availableLocales - Mapa de traducciones disponibles por idioma para este contenido
  * @returns Link con disponibilidad según traducciones, incluye razón si no está disponible
  */
