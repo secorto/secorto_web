@@ -1,26 +1,18 @@
 ---
 import { render, getCollection } from 'astro:content'
-import type { CollectionEntry, CollectionKey } from 'astro:content'
 import BaseLayout from '@layouts/BaseLayout.astro'
 import Comments from '@components/Comments.astro'
 import BlogTalkPostView from '@components/BlogTalkPostView.astro'
 import WorkProjectCommunityView from '@components/WorkProjectCommunityView.astro'
 import SEOHeadDetail from '@components/SEOHeadDetail.astro'
-import { loadEntryByRoute } from '@utils/sectionLoader'
+import { getSectionConfigByRoute } from '@utils/sections'
+import { extractCleanId } from '@utils/ids'
 import { useTranslations } from '@i18n/utils'
 import type { UILanguages } from '@i18n/ui'
-import { buildDetailPageContext } from '@utils/sectionContext'
 import { getAvailableLocalesForEntry } from '@utils/translationHelpers'
 import { getCanonicalMetadata, getPageMetadata } from '@utils/translationMetadata'
 import { buildAllDetailPaths } from '@utils/staticPathsBuilder'
-
-interface BaseEntryData {
-  title: string
-  translation_status?: 'original' | 'translated' | 'draft' | 'partial' | 'pending'
-  translation_origin?: { locale: string; id: string }
-  slug?: string
-  draft?: boolean
-}
+import { getEntry } from 'astro:content'
 
 export async function getStaticPaths() {
   return await buildAllDetailPaths(getCollection)
@@ -29,26 +21,26 @@ export async function getStaticPaths() {
 const { locale, section, id } = Astro.params as { locale: UILanguages; section: string; id: string }
 const t = useTranslations(locale)
 
-const context = await buildDetailPageContext(section, locale, id, loadEntryByRoute)
+const config = getSectionConfigByRoute(section, locale)
+const entry = await getEntry(config.collection, `${locale}/${id}`)
+if(!entry) {
+  throw new Error(`Entry not found for locale "${locale}" and id "${id}" in collection "${config.collection}"`)
+}
+const context = { entry, config, locale }
 
-const { entry, config, cleanId } = context
-const entryTyped = entry as CollectionEntry<CollectionKey>
-const entryData = entryTyped.data as BaseEntryData
-
-// Calculate canonical metadata (handles translation drafts)
 const { canonicalLocale, canonicalId, shouldNoindex } = getCanonicalMetadata({
-  entryDraft: Boolean(entryData.draft),
-  translationOrigin: entryData.translation_origin,
+  entryDraft: Boolean(entry.data.draft),
+  translationOrigin: entry.data.translation_origin,
   currentLocale: context.locale,
-  currentCleanId: cleanId
+  currentCleanId: extractCleanId(entry.id)
 })
 
 // Get available locales for hreflang
-const availableLocales = await getAvailableLocalesForEntry(config.collection, cleanId)
+const availableLocales = await getAvailableLocalesForEntry(config.collection, entry.id)
 
 // Extract page metadata
-const { Content } = await render(entryTyped)
-const { pageTitle, pageDescription } = getPageMetadata(entryTyped, t(config.translationKey))
+const { Content } = await render(entry)
+const { pageTitle, pageDescription } = getPageMetadata(entry, t(config.translationKey))
 const routeSlug = config.routes[context.locale]
 ---
 
@@ -62,7 +54,7 @@ const routeSlug = config.routes[context.locale]
 />
 
 <BaseLayout pageTitle={pageTitle} description={pageDescription}>
-  {entryData.draft && (
+  {entry.data.draft && (
     <div class="untranslated-notice" role="status">
       <p>{t('post.draft_notice')}</p>
     </div>
@@ -72,13 +64,13 @@ const routeSlug = config.routes[context.locale]
     <BlogTalkPostView
       locale={context.locale}
       routeSlug={routeSlug}
-      entry={entryTyped}
+      entry={entry}
       Content={Content}
     />
   ) : (
     <WorkProjectCommunityView
       locale={context.locale}
-      entry={entryTyped}
+      entry={entry}
       Content={Content}
     />
   )}
