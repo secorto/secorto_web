@@ -1,5 +1,5 @@
 ---
-import { languageKeys } from "@i18n/ui";
+import { languageKeys, icons as uiIcons, ui as uiStrings } from "@i18n/ui";
 import type { UILanguages } from "@i18n/ui";
 import { resolveCanonical } from "@i18n/rootMap";
 import { buildHomeLink, buildTagLink, buildDetailLink, buildCollectionLink, type TranslationLink } from "@i18n/languagePickerUtils";
@@ -42,7 +42,12 @@ function buildLink(targetLang: UILanguages): TranslationLink {
 <div class="language-picker">
   {languageKeys.map((targetLang) => {
     const link = buildLink(targetLang);
-    const text = `${link.label}${link.marker ? ` ${link.marker}` : ''}`;
+    const markerMap = { missing: uiIcons.missing, draft: uiIcons.draft } as const
+    const marker = markerMap[link.disabledReason as keyof typeof markerMap] ?? ''
+    const text = `${link.label}${marker ? ` ${marker}` : ''}`;
+    const titleKeyMap = { missing: 'translation.disabled.missing', draft: 'translation.disabled.draft' } as const
+    const titleText = link.disabledReason ? uiStrings[targetLang][titleKeyMap[link.disabledReason as keyof typeof titleKeyMap]] : undefined
+    const ariaLabel = titleText ? `${titleText}: ${link.label}` : undefined
 
     if (!link.isAvailable) {
       return (
@@ -51,9 +56,9 @@ function buildLink(targetLang: UILanguages): TranslationLink {
           role="link"
           aria-disabled="true"
           tabindex="-1"
-          aria-label={link.aria}
-          title={link.title}
-          data-disabled-reason={link.disabledReason}
+          aria-label={ariaLabel}
+          title={titleText}
+          data-disabled-reason={link.disabledReason ?? ''}
           data-testid={`lang-${targetLang}`}
         >
           {text}
@@ -64,8 +69,8 @@ function buildLink(targetLang: UILanguages): TranslationLink {
     return (
       <a
         href={link.href}
-        title={link.title}
-        aria-label={link.aria}
+        title={titleText}
+        aria-label={ariaLabel}
         data-testid={`lang-${targetLang}`}
       >
         {text}

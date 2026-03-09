@@ -51,15 +51,6 @@ describe('buildTranslationMap', () => {
     const map = await buildTranslationMap('blog')
     expect(map['2025-01-01-my-post'].es.slug).toBe('2025-01-01-my-post')
   })
-
-  it('preserves translation_status metadata', async () => {
-    (getCollection as ReturnType<typeof vi.fn>).mockResolvedValue([
-      { id: 'en/my-post', data: { title: 'Title', translation_status: 'translated' } }
-    ])
-
-    const map = await buildTranslationMap('blog')
-    expect(map['my-post'].en.translation_status).toBe('translated')
-  })
 })
 
 describe('resolveSeriesCanonicalLocale', () => {

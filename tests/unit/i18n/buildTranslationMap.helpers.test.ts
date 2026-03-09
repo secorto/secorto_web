@@ -6,25 +6,24 @@ describe('buildTranslationMap helpers', () => {
     const raw = [
       {
         id: 'es/2025-01-01-mi-post',
-        data: { title: 'Mi post', postId: 'serie-1', date: new Date('2025-01-01'), translation_status: 'original' },
+        data: { title: 'Mi post', postId: 'serie-1', date: new Date('2025-01-01') },
       },
     ]
 
-    const parsed = parseCollectionEntries(raw as any)
+    const parsed = parseCollectionEntries(raw)
     expect(parsed).toHaveLength(1)
     expect(parsed[0].seriesKey).toBe('serie-1')
     expect(parsed[0].cleanId).toBe('2025-01-01-mi-post')
     expect(parsed[0].locale).toBe('es')
-    expect(parsed[0].translation_status).toBe('original')
   })
 
   it('groupBySeries groups entries under the same seriesKey', () => {
     const parsed = [
-      { seriesKey: 'shared', locale: 'es', cleanId: 'calendario', id: 'es/calendario', title: 'ES', date: undefined, translation_status: undefined },
-      { seriesKey: 'shared', locale: 'en', cleanId: 'calendar', id: 'en/calendar', title: 'EN', date: undefined, translation_status: undefined },
+      { seriesKey: 'shared', locale: 'es', cleanId: 'calendario', id: 'es/calendario', title: 'ES', date: undefined },
+      { seriesKey: 'shared', locale: 'en', cleanId: 'calendar', id: 'en/calendar', title: 'EN', date: undefined },
     ]
 
-    const grouped = groupBySeries(parsed as any)
+    const grouped = groupBySeries(parsed)
     expect(grouped['shared']).toBeDefined()
     expect(grouped['shared'].es.slug).toBe('calendario')
     expect(grouped['shared'].en.slug).toBe('calendar')

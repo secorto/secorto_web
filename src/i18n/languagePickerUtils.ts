@@ -1,60 +1,18 @@
 import type { UILanguages } from './ui'
-import { languages, defaultLang, showDefaultLang } from './ui'
+import { languages, defaultLang, ui as uiStrings, icons } from './ui'
+import { showDefaultLang } from '@i18n/config'
 import { resolveLocalized } from './rootMap'
-import type { TranslationEntry } from '@i18n/buildTranslationMap'
-
-type SeriesByKey = Record<string, Record<string, TranslationEntry>>
-
-interface EntryMeta {
-  noTranslate?: string[]
-}
-
-export type AvailableLocales = Partial<Record<UILanguages, { slug: string; noTranslate?: string[] }>>
+export type AvailableLocales = Partial<Record<UILanguages, { slug: string; draft?: boolean }>>
 
 export interface TranslationLink {
   href: string
   label: string
-  title?: string
-  aria?: string
   isAvailable: boolean
-  disabledReason?: 'not-available' | 'no-translate'
-  marker?: string
-}
-
-/**
- * Configuración de razones por las que un idioma no tiene traducción disponible.
- * Define el marcador visual (emoji) y mensaje para cada caso.
- */
-export const DISABLED_REASON_CONFIG: Record<'not-available' | 'no-translate', {
-  marker: string
-  title: string
-}> = {
-  'not-available': {
-    marker: '⌛',
-    title: 'La traducción no está disponible todavía'
-  },
-  'no-translate': {
-    marker: '🔒',
-    title: 'Esta publicación no será traducida'
-  }
+  disabledReason?: 'missing' | 'draft'
 }
 
 function buildLangPrefix(targetLang: UILanguages): string {
   return targetLang === defaultLang && !showDefaultLang ? "" : `/${targetLang}`
-}
-
-function getDisabledReasonForLang(targetLang: UILanguages, availableLocales: AvailableLocales): 'not-available' | 'no-translate' {
-  // Two possible reasons:
-  // - 'no-translate': the entry is explicitly marked as not translatable for targetLang
-  // - 'not-available': no translation exists (or the series/slug doesn't exist)
-
-  for (const localeEntry of Object.values(availableLocales)) {
-    if (Array.isArray(localeEntry?.noTranslate) && localeEntry!.noTranslate!.includes(targetLang)) {
-      return 'no-translate'
-    }
-  }
-
-  return 'not-available'
 }
 
 /**
@@ -100,17 +58,19 @@ export function buildDetailLink(targetLang: UILanguages, canonicalSection: strin
   const localizedSection = resolveLocalized(canonicalSection, targetLang)
 
   if (!entry) {
-    const disabledReason = getDisabledReasonForLang(targetLang, availableLocales)
-    const config = DISABLED_REASON_CONFIG[disabledReason]
-
     return {
       href: '',
       label: languages[targetLang],
       isAvailable: false,
-      disabledReason,
-      marker: config.marker,
-      title: config.title,
-      aria: `${config.title}: ${languages[targetLang]}`
+      disabledReason: 'missing'
+    }
+  }
+  if (entry.draft) {
+    return {
+      href: `${buildLangPrefix(targetLang)}/${localizedSection}/${entry.slug}`,
+      label: languages[targetLang],
+      isAvailable: true,
+      disabledReason: 'draft'
     }
   }
 

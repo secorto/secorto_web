@@ -6,8 +6,7 @@ export type TranslationEntry = {
   slug: string;
   title: string;
   date?: Date;
-  translation_status?: string;
-  noTranslate?: string[]
+  draft?: boolean
 };
 
 /**
@@ -40,8 +39,7 @@ export type ParsedEntry = {
   id: string
   title: string
   date?: Date
-  translation_status?: string
-  noTranslate?: string[]
+  draft?: boolean
 }
 /** Raw entry shape returned by `astro:content#getCollection` (subset used here) */
 export type RawEntry = {
@@ -50,8 +48,7 @@ export type RawEntry = {
     title: string
     postId?: string
     date?: Date
-    translation_status?: string
-    noTranslate?: string[]
+    draft?: boolean
   }
 }
 
@@ -63,8 +60,7 @@ export function parseCollectionEntries(entries: RawEntry[]): ParsedEntry[] {
     const cleanId = rest.join("/")
     const seriesKey: string = entry.data.postId ?? cleanId
     const date = entry.data.date
-    const noTranslate = Array.isArray(entry.data.noTranslate) ? entry.data.noTranslate : undefined
-
+    const draft = entry.data.draft
     parsed.push({
       seriesKey,
       locale,
@@ -72,8 +68,7 @@ export function parseCollectionEntries(entries: RawEntry[]): ParsedEntry[] {
       id: entry.id,
       title: entry.data.title,
       date,
-      translation_status: entry.data.translation_status,
-      noTranslate: entry.data.noTranslate,
+      draft,
     })
   }
   return parsed
@@ -89,7 +84,7 @@ export function groupBySeries(parsed: ParsedEntry[]): Record<string, Record<stri
       slug: p.cleanId,
       title: p.title,
       date: p.date,
-      translation_status: p.translation_status,
+      draft: p.draft,
     }
   }
   return seriesMap

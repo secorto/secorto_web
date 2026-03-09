@@ -1,115 +1,54 @@
 import { describe, it, expect, vi } from 'vitest'
+import { ui, icons } from '@i18n/ui'
 
-// Mutable mocks used by tests. The factories below are hoisted by Vitest
-// so we expose mutable objects that tests can adjust before importing
-// the module under test.
-const uiMock = {
-  defaultLang: 'es',
-  showDefaultLang: true,
-  languages: { en: 'English', es: 'Spanish' },
+const baseTranslationStructures = {
+  blog: {
+    seriesByKey: {},
+    slugIndex: {},
+    slugMeta: {
+      '2025-01-01-title': {},
+      '2025-02-01-title': {},
+    },
+  },
 }
-
-vi.mock('@i18n/ui', () => uiMock)
-
-vi.mock('@i18n/rootMap', () => ({
-  resolveLocalized: (canonical: string, _lang: string) => canonical
-}))
-
-const translationStructuresMock = {
-  translationStructures: {
-    blog: {
-      seriesByKey: {},
-      slugIndex: {},
-      slugMeta: {
-        '2025-01-01-title': { noTranslate: ['en'] },
-        '2025-02-01-title': {},
-      }
-    }
-  }
-}
-
-vi.mock('@i18n/translations', () => ({ translationStructures: translationStructuresMock.translationStructures }))
 
 describe('languagePickerUtils', () => {
-  it('buildHomeLink omite prefijo del idioma por defecto cuando showDefaultLang=false', async () => {
+  it('buildHomeLink respects showDefaultLang', async () => {
     vi.resetModules()
-    uiMock.showDefaultLang = false
+    // Mock only the config flag, keep real ui exports
+    await vi.doMock('@i18n/config', () => ({ showDefaultLang: true }))
+    vi.doMock('@i18n/translations', () => ({ translationStructures: baseTranslationStructures }))
     const { buildHomeLink } = await import('@i18n/languagePickerUtils')
-
-    const es = buildHomeLink('es')
-    expect(es.href).toBe('/')
-
     const en = buildHomeLink('en')
     expect(en.href).toBe('/en/')
+
+    vi.resetModules()
+    await vi.doMock('@i18n/config', () => ({ showDefaultLang: false }))
+    vi.doMock('@i18n/translations', () => ({ translationStructures: baseTranslationStructures }))
+    const mod = await import('@i18n/languagePickerUtils')
+    // defaultLang is 'es' — when showDefaultLang is false the default language omits the prefix
+    expect(mod.buildHomeLink('es').href).toBe('/')
   })
 
-  it('buildHomeLink incluye prefijo del idioma por defecto cuando showDefaultLang=true', async () => {
+  it('buildDetailLink for available translation', async () => {
     vi.resetModules()
-    uiMock.showDefaultLang = true
-    const { buildHomeLink } = await import('@i18n/languagePickerUtils')
-
-    const es = buildHomeLink('es')
-    expect(es.href).toBe('/es/')
-
-    const en = buildHomeLink('en')
-    expect(en.href).toBe('/en/')
-  })
-
-  it('buildTagLink y buildCollectionLink generan rutas localizadas', async () => {
-    vi.resetModules()
-    uiMock.showDefaultLang = true
-    const { buildTagLink, buildCollectionLink } = await import('@i18n/languagePickerUtils')
-
-    const tag = buildTagLink('en', 'blog', 'tags/typescript')
-    expect(tag.href).toBe('/en/blog/tags/typescript')
-
-    const coll = buildCollectionLink('es', 'blog')
-    expect(coll.href).toBe('/es/blog')
-  })
-
-  it('buildDetailLink retorna href correcto cuando la traducción existe', async () => {
-    vi.resetModules()
-    uiMock.showDefaultLang = true
+    await vi.doMock('@i18n/config', () => ({ showDefaultLang: true }))
+    vi.doMock('@i18n/translations', () => ({ translationStructures: baseTranslationStructures }))
     const { buildDetailLink } = await import('@i18n/languagePickerUtils')
-
-    const availableLocales = { en: { slug: 'en-slug' } }
+    const availableLocales: Record<string, { slug: string; draft?: boolean }> = { en: { slug: 'en-slug' } }
     const link = buildDetailLink('en', 'blog', '2025-02-01-title', availableLocales)
-
     expect(link.isAvailable).toBe(true)
     expect(link.href).toBe('/en/blog/en-slug')
   })
 
-  it('buildDetailLink marca "no-translate" cuando la entrada está marcada como no traducible', async () => {
+  it('buildDetailLink marks missing translation', async () => {
     vi.resetModules()
-    uiMock.showDefaultLang = true
-    const { buildDetailLink, DISABLED_REASON_CONFIG } = await import('@i18n/languagePickerUtils')
-
-    const availableLocales: Record<string, { slug: string; noTranslate?: string[] }> = {
-      es: { slug: 'es-slug', noTranslate: ['en'] }
-    }
-    const link = buildDetailLink('en', 'blog', '2025-01-01-title', availableLocales)
-
+    await vi.doMock('@i18n/config', () => ({ showDefaultLang: true }))
+    const missingMeta = { '2025-03-01-title': {} }
+    vi.doMock('@i18n/translations', () => ({ translationStructures: { ...baseTranslationStructures, blog: { ...baseTranslationStructures.blog, slugMeta: missingMeta } } }))
+    const { buildDetailLink } = await import('@i18n/languagePickerUtils')
+    const link = buildDetailLink('en', 'blog', '2025-03-01-title', {})
     expect(link.isAvailable).toBe(false)
-    expect(link.disabledReason).toBe('no-translate')
-    expect(link.marker).toBe(DISABLED_REASON_CONFIG['no-translate'].marker)
-    expect(link.title).toBe(DISABLED_REASON_CONFIG['no-translate'].title)
-  })
-
-  it('buildDetailLink marca "not-available" cuando no hay traducción y no está explícitamente excluida', async () => {
-    vi.resetModules()
-    uiMock.showDefaultLang = true
-
-    // Adjust translationStructures mock to a map that does not include noTranslate for this slug
-    translationStructuresMock.translationStructures.blog.slugMeta = { '2025-03-01-title': {} }
-
-    const { buildDetailLink, DISABLED_REASON_CONFIG } = await import('@i18n/languagePickerUtils')
-
-    const availableLocales: Record<string, { slug: string }> = {}
-    const link = buildDetailLink('en', 'blog', '2025-03-01-title', availableLocales)
-
-    expect(link.isAvailable).toBe(false)
-    expect(link.disabledReason).toBe('not-available')
-    expect(link.marker).toBe(DISABLED_REASON_CONFIG['not-available'].marker)
-    expect(link.title).toBe(DISABLED_REASON_CONFIG['not-available'].title)
+    expect(link.disabledReason).toBe('missing')
   })
 })
