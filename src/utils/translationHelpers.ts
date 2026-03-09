@@ -79,39 +79,28 @@ export function buildTagLocaleMap(
   allEntries: CollectionEntry<CollectionKey>[],
   tagMap?: TagMap
 ): Record<string, Partial<Record<UILanguages, string>>> {
-  // Build reverse lookup: locale → (locale-slug → canonical)
-  const toCanonical: Partial<Record<UILanguages, Record<string, string>>> = {}
-  if (tagMap) {
-    for (const [canonical, localeMap] of Object.entries(tagMap)) {
-      for (const [locale, slug] of Object.entries(localeMap) as [UILanguages, string][]) {
-        if (!toCanonical[locale]) toCanonical[locale] = {}
-        toCanonical[locale]![slug] = canonical
-      }
-    }
-  }
-
   // Build canonical → { locale → slug } from actual content
   const canonicalMap: Record<string, Partial<Record<UILanguages, string>>> = {}
   for (const entry of allEntries) {
     if ((entry.data as { draft?: boolean }).draft) continue
-    const [locale] = entry.id.split('/')
-    if (!(languageKeys as string[]).includes(locale)) continue
+    const [lang] = entry.id.split('/') as [UILanguages]
     const tags = (entry.data as { tags?: string[] }).tags ?? []
     for (const tag of tags) {
-      const canonical = toCanonical[locale as UILanguages]?.[tag] ?? tag
-      if (!canonicalMap[canonical]) canonicalMap[canonical] = {}
-      canonicalMap[canonical][locale as UILanguages] = tag
+      const canonical = tagMap
+        ? (Object.entries(tagMap).find(([, locales]) => locales[lang] === tag)?.[0] ?? tag)
+        : tag
+      canonicalMap[canonical] ??= {}
+      canonicalMap[canonical][lang] = tag
     }
   }
 
   // Index by canonical key and all locale-slug aliases for O(1) lookup
-  const result: Record<string, Partial<Record<UILanguages, string>>> = {}
-  for (const [canonical, localeData] of Object.entries(canonicalMap)) {
-    result[canonical] = localeData
-    for (const slug of Object.values(localeData)) {
-      if (slug !== canonical) result[slug] = localeData
-    }
-  }
-
-  return result
+  return Object.fromEntries(
+    Object.entries(canonicalMap).flatMap(([canonical, localeData]) => [
+      [canonical, localeData],
+      ...Object.values(localeData)
+        .filter(slug => slug !== canonical)
+        .map(slug => [slug, localeData]),
+    ])
+  )
 }
