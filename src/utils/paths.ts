@@ -1,8 +1,7 @@
 import { getCollection } from "astro:content"
 import type { CollectionEntry, CollectionKey } from "astro:content"
 import { extractCleanId } from "@utils/ids"
-
-export type EntryWithCleanId<C extends CollectionKey> = CollectionEntry<C> & { cleanId: string, excerpt?: string }
+import type { PostEntry } from "@domain/post"
 
 /**
  * Filtra y enriquece entradas ya cargadas para un locale específico.
@@ -12,17 +11,24 @@ export type EntryWithCleanId<C extends CollectionKey> = CollectionEntry<C> & { c
  * @returns Array de posts ordenados por cleanId descendente
  */
 export function filterByLocale<C extends CollectionKey>(
-  entries: CollectionEntry<C>[],
+  entries: PostEntry<C>[],
   locale: string
-): EntryWithCleanId<C>[] {
+): PostEntry<C>[] {
   return entries
     .filter((post) => post.id.startsWith(`${locale}/`))
     .filter((post) => post.data.draft !== true)
+    .sort((a, b) => b.cleanId.localeCompare(a.cleanId))
+}
+
+export function mapEntryId<C extends CollectionKey>(
+  entries: CollectionEntry<C>[]
+): PostEntry<C>[] {
+  return entries
     .map((post) => ({
       ...post,
-      cleanId: extractCleanId(post.id)
+      cleanId: extractCleanId(post.id),
+      canonicalId: post.data.postId ?? extractCleanId(post.id)
     }))
-    .sort((a, b) => b.cleanId.localeCompare(a.cleanId))
 }
 
 /**
@@ -35,9 +41,9 @@ export function filterByLocale<C extends CollectionKey>(
 export async function getPostsByLocale<C extends CollectionKey>(
   collection: C,
   locale: string
-): Promise<EntryWithCleanId<C>[]> {
+): Promise<PostEntry<C>[]> {
   const posts = await getCollection(collection)
-  return filterByLocale(posts, locale)
+  return filterByLocale(mapEntryId(posts), locale)
 }
 
 /**

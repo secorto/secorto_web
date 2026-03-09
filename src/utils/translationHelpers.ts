@@ -5,12 +5,13 @@
  * `getCollection` before calling these helpers. This avoids redundant `getCollection`
  * calls when the caller already has entries at hand.
  */
-import type { CollectionEntry, CollectionKey } from 'astro:content'
+import type { CollectionKey } from 'astro:content'
 import type { UILanguages } from '@i18n/ui'
 import { languageKeys } from '@i18n/ui'
 import { extractCleanId } from './ids'
 import type { AvailableLocales } from '@i18n/languagePickerUtils'
 import type { TagMap } from '@domain/tags'
+import type { PostEntry } from '@domain/post'
 
 /**
  * Build a map of available locales for a content entry, including slug and draft status.
@@ -20,8 +21,8 @@ import type { TagMap } from '@domain/tags'
  * @param cleanId - Entry slug/ID without locale prefix
  * @returns AvailableLocales map: locale -> { slug, draft? }
  */
-export function getAvailableLocaleEntries(
-  allEntries: CollectionEntry<CollectionKey>[],
+export function getAvailableLocaleEntries<C extends CollectionKey = CollectionKey>(
+  allEntries: PostEntry<C>[],
   cleanId: string
 ): AvailableLocales {
   const result: AvailableLocales = {}
@@ -58,7 +59,7 @@ export function getAvailableLocaleEntries(
  * @returns Record mapping any tag slug (canonical or locale-specific) → { locale → localized slug }
  */
 export function buildTagLocaleMap(
-  allEntries: CollectionEntry<CollectionKey>[],
+  allEntries: PostEntry<CollectionKey>[],
   tagMap?: TagMap
 ): Record<string, Partial<Record<UILanguages, string>>> {
   // Build canonical → { locale → slug } from actual content

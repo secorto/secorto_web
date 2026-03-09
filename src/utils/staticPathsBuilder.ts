@@ -1,8 +1,8 @@
 import { getCollection } from 'astro:content'
 import { languageKeys, type UILanguages } from '@i18n/ui'
 import { sectionsConfig, type SectionConfig } from '@domain/section'
-import { filterByLocale, getUniqueTags, type EntryWithCleanId } from './paths'
-import { isCollectionWithTags, type CollectionWithTags } from '@domain/post'
+import { filterByLocale, getUniqueTags, mapEntryId } from './paths'
+import { isCollectionWithTags, type CollectionWithTags, type PostEntry } from '@domain/post'
 import { extractCleanId } from './ids'
 import { buildTagLocaleMap } from './translationHelpers'
 import { tagTranslations } from '@domain/tags'
@@ -19,7 +19,7 @@ export interface SectionPath {
   }
   props: {
     config: SectionConfig
-    posts: EntryWithCleanId<CollectionKey>[]
+    posts: PostEntry<CollectionKey>[]
     tags: string[]
   }
 }
@@ -32,7 +32,7 @@ export interface TagPath {
   }
   props: {
     tag: string
-    allEntries: CollectionEntry<CollectionWithTags>[]
+    allEntries: PostEntry<CollectionWithTags>[]
     config: SectionConfig
     tagLocaleMap: Record<string, Partial<Record<UILanguages, string>>>
   }
@@ -54,8 +54,8 @@ export interface DetailPath {
     id: string
   }
   props: {
-    entry: CollectionEntry<CollectionKey>
-    allEntries: CollectionEntry<CollectionKey>[]
+    entry: PostEntry<CollectionKey>
+    allEntries: PostEntry<CollectionKey>[]
     config: SectionConfig
   }
 }
@@ -83,12 +83,12 @@ export async function buildSectionIndexPaths(
   const paths: SectionPath[] = []
 
   for (const config of iterateSections()) {
-    const allEntries = await fetchCollection(config.collection)
+    const allEntries = mapEntryId(await fetchCollection(config.collection))
 
     for (const locale of languageKeys) {
       const posts = filterByLocale(allEntries, locale)
       const tags = isCollectionWithTags(config.collection)
-        ? getUniqueTags(posts as EntryWithCleanId<CollectionWithTags>[])
+        ? getUniqueTags(posts as PostEntry<CollectionWithTags>[])
         : []
 
       paths.push({
@@ -117,7 +117,8 @@ export async function buildTagPaths(
     if (!isCollectionWithTags(config.collection)) continue
 
     // isCollectionWithTags guard above narrows config.collection to CollectionWithTags
-    const allEntries = await fetchCollection(config.collection) as CollectionEntry<CollectionWithTags>[]
+    const collectedEntries = await fetchCollection(config.collection as CollectionWithTags)
+    const allEntries = mapEntryId(collectedEntries) as PostEntry<CollectionWithTags>[]
     const tagLocaleMap = buildTagLocaleMap(allEntries, tagTranslations[sectionType])
 
     for (const locale of languageKeys) {
@@ -184,8 +185,7 @@ export async function buildAllDetailPaths(
   const allPaths: DetailPath[] = []
 
   for (const config of iterateSections()) {
-    const allEntries = await fetchCollection(config.collection)
-
+    const allEntries = mapEntryId(await fetchCollection(config.collection))
     for (const locale of languageKeys) {
       const sectionRoute = config.routes[locale]
       for (const entry of allEntries.filter(e => e.id.startsWith(`${locale}/`))) {

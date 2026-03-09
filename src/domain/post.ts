@@ -10,6 +10,11 @@ export function isCollectionWithTags(collection: CollectionKey): collection is C
   return collection in TAGS_COLLECTIONS
 }
 
+export type PostEntry<C extends CollectionKey> = CollectionEntry<C> & {
+  cleanId: string,
+  canonicalId: string 
+}
+
 /**
  * Contrato mínimo del componente ListPost.
  * Tipo estructural — no re-declara el schema de Astro,
@@ -23,22 +28,5 @@ export interface PostLikeEntry {
     image?: ImageMetadata
     excerpt?: string
     date?: Date
-  }
-}
-
-/**
- * Contrato mínimo del componente ListWork.
- * Tipo estructural — describe exactamente los campos que ListWork accede.
- * `CollectionEntry<'work'> & { cleanId: string }` satisface este tipo estructuralmente.
- */
-export interface WorkLikeEntry {
-  cleanId: string
-  data: {
-    title: string
-    image: ImageMetadata
-    role: string
-    responsibilities: string
-    startDate: Date
-    endDate?: Date
   }
 }

@@ -9,7 +9,7 @@ import { useTranslations } from '@i18n/utils'
 import type { UILanguages } from '@i18n/ui'
 import { languageKeys } from '@i18n/ui'
 import { buildSectionIndexPaths, type SectionPath } from '@utils/staticPathsBuilder'
-import { isCollectionWithTags, type PostLikeEntry, type WorkLikeEntry } from '@domain/post'
+import { isCollectionWithTags, type PostEntry } from '@domain/post'
 import { buildCollectionLink, type TranslationLink } from '@i18n/languagePickerUtils'
 import { resolveCanonical } from '@i18n/rootMap'
 
@@ -36,11 +36,10 @@ const links = Object.fromEntries(
     <Tags route={`/${locale}/${section}/tags/`} tags={tags} />
   )}
   {config.listComponent === 'ListPost' && (
-    // TODO(debt): cast necesario porque `SectionPath['props'].posts` está tipado como `EntryWithCleanId<CollectionKey>[]` en vez de un tipo específico de colección — owner: @sergio.orozcot — until: 2026-06-01
-    <ListPost posts={posts as PostLikeEntry[]} basePath={`${locale}/${config.routes[locale]}`} />
+    <ListPost posts={posts} basePath={`${locale}/${config.routes[locale]}`} />
   )}
   {config.listComponent === 'ListWork' && (
-    // TODO(debt): cast necesario porque `SectionPath['props'].posts` está tipado como `EntryWithCleanId<CollectionKey>[]` en vez de un tipo específico de colección — owner: @sergio.orozcot — until: 2026-06-01
-    <ListWork posts={posts as WorkLikeEntry[]} basePath={`${locale}/${config.routes[locale]}`} lang={locale} />
+    // TODO(debt): cast necesario porque `SectionPath['props'].posts` está tipado como `PostEntry<CollectionKey>[]` en vez de un tipo específico de colección — owner: @sergio.orozcot — until: 2026-06-01
+    <ListWork posts={posts as PostEntry<'work'>[]} basePath={`${locale}/${config.routes[locale]}`} lang={locale} />
   )}
 </BaseLayout>

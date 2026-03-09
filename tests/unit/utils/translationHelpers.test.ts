@@ -1,10 +1,11 @@
 import { test, expect, describe } from 'vitest'
 import { getAvailableLocaleEntries, buildTagLocaleMap } from '@utils/translationHelpers'
-import type { CollectionEntry, CollectionKey } from 'astro:content'
+import type { CollectionKey } from 'astro:content'
+import type { PostEntry } from '@domain/post'
 
 // Minimal helper to build fake entries for testing
-const entry = (id: string, data: Record<string, unknown> = {}): CollectionEntry<CollectionKey> =>
-  ({ id, data }) as CollectionEntry<CollectionKey>
+const entry = (id: string, data: Record<string, unknown> = {}): PostEntry<CollectionKey> =>
+  ({ id, data }) as PostEntry<CollectionKey>
 
 describe('getAvailableLocaleEntries', () => {
   test('returns both locales when entry exists in es and en', () => {
