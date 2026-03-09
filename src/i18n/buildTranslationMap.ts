@@ -140,21 +140,9 @@ export async function buildTranslationMap(
  * (too expensive to re-read per page); for page-level SEO use availableLocales.
  */
 export function resolveSeriesCanonicalLocale(
-  availableLocalesOrMap: UILanguages[] | Record<string, { slug: string; draft?: boolean; canonical?: boolean }>,
+  available: UILanguages[],
   defaultLocale: UILanguages = "es"
 ): UILanguages {
-  let available: UILanguages[]
-
-  if (Array.isArray(availableLocalesOrMap)) {
-    available = availableLocalesOrMap
-  } else {
-    // Prefer any locale explicitly marked `canonical: true` when a map is provided
-    for (const [locale, entry] of Object.entries(availableLocalesOrMap)) {
-      if (entry?.canonical) return locale as UILanguages
-    }
-    available = Object.keys(availableLocalesOrMap) as UILanguages[]
-  }
-
   if (available.includes(defaultLocale)) return defaultLocale
   return available[0]
 }
