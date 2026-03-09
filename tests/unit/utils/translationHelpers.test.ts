@@ -1,112 +1,103 @@
-import { test, expect, vi, describe } from 'vitest'
-
-let mockGetCollection: (name: string) => Promise<unknown[]> = async () => []
-
-vi.mock('astro:content', () => ({
-  getCollection: (name: string) => mockGetCollection(name),
-}))
-
+import { test, expect, describe } from 'vitest'
 import { getAvailableLocalesForEntry } from '@utils/translationHelpers'
+import type { CollectionEntry, CollectionKey } from 'astro:content'
+
+// Minimal helper to build fake entries for testing
+const entry = (id: string, data: Record<string, unknown> = {}): CollectionEntry<CollectionKey> =>
+  ({ id, data }) as CollectionEntry<CollectionKey>
 
 describe('getAvailableLocalesForEntry', () => {
-  test('returns both locales when entry exists in es and en', async () => {
-    mockGetCollection = async () => [
-      { id: 'es/2025-01-22-my-post', data: { title: 'Mi Post' } },
-      { id: 'en/2025-01-22-my-post', data: { title: 'My Post' } },
+  test('returns both locales when entry exists in es and en', () => {
+    const entries = [
+      entry('es/2025-01-22-my-post', { title: 'Mi Post' }),
+      entry('en/2025-01-22-my-post', { title: 'My Post' }),
     ]
 
-    const locales = await getAvailableLocalesForEntry('blog', '2025-01-22-my-post')
+    const locales = getAvailableLocalesForEntry(entries, '2025-01-22-my-post')
 
     expect(locales).toHaveLength(2)
     expect(locales).toContain('es')
     expect(locales).toContain('en')
   })
 
-  test('returns only es when entry exists only in Spanish', async () => {
-    mockGetCollection = async () => [
-      { id: 'es/2025-01-22-spanish-only', data: { title: 'Solo Español' } },
-      { id: 'en/2025-01-22-other-post', data: { title: 'Other Post' } },
+  test('returns only es when entry exists only in Spanish', () => {
+    const entries = [
+      entry('es/2025-01-22-spanish-only', { title: 'Solo Español' }),
+      entry('en/2025-01-22-other-post', { title: 'Other Post' }),
     ]
 
-    const locales = await getAvailableLocalesForEntry('blog', '2025-01-22-spanish-only')
+    const locales = getAvailableLocalesForEntry(entries, '2025-01-22-spanish-only')
 
     expect(locales).toHaveLength(1)
     expect(locales).toContain('es')
     expect(locales).not.toContain('en')
   })
 
-  test('returns only en when entry exists only in English', async () => {
-    mockGetCollection = async () => [
-      { id: 'en/2025-01-22-english-only', data: { title: 'English Only' } },
-      { id: 'es/2025-01-22-otro-post', data: { title: 'Otro Post' } },
+  test('returns only en when entry exists only in English', () => {
+    const entries = [
+      entry('en/2025-01-22-english-only', { title: 'English Only' }),
+      entry('es/2025-01-22-otro-post', { title: 'Otro Post' }),
     ]
 
-    const locales = await getAvailableLocalesForEntry('blog', '2025-01-22-english-only')
+    const locales = getAvailableLocalesForEntry(entries, '2025-01-22-english-only')
 
     expect(locales).toHaveLength(1)
     expect(locales).toContain('en')
     expect(locales).not.toContain('es')
   })
 
-  test('returns empty array when entry does not exist in any locale', async () => {
-    mockGetCollection = async () => [
-      { id: 'es/2025-01-22-some-post', data: { title: 'Algún Post' } },
-      { id: 'en/2025-01-22-another-post', data: { title: 'Another Post' } },
+  test('returns empty array when entry does not exist in any locale', () => {
+    const entries = [
+      entry('es/2025-01-22-some-post', { title: 'Algún Post' }),
+      entry('en/2025-01-22-another-post', { title: 'Another Post' }),
     ]
 
-    const locales = await getAvailableLocalesForEntry('blog', '2025-01-22-nonexistent')
+    const locales = getAvailableLocalesForEntry(entries, '2025-01-22-nonexistent')
 
     expect(locales).toHaveLength(0)
   })
 
-  test('handles entries with nested paths correctly', async () => {
-    mockGetCollection = async () => [
-      { id: 'es/talks/2023-09-27-devcontainers', data: { title: 'DevContainers' } },
-      { id: 'en/talks/2023-09-27-devcontainers', data: { title: 'DevContainers' } },
+  test('handles entries with nested paths correctly', () => {
+    const entries = [
+      entry('es/talks/2023-09-27-devcontainers', { title: 'DevContainers' }),
+      entry('en/talks/2023-09-27-devcontainers', { title: 'DevContainers' }),
     ]
 
-    const locales = await getAvailableLocalesForEntry('talk', 'talks/2023-09-27-devcontainers')
+    const locales = getAvailableLocalesForEntry(entries, 'talks/2023-09-27-devcontainers')
 
     expect(locales).toHaveLength(2)
     expect(locales).toContain('es')
     expect(locales).toContain('en')
   })
 
-  test('handles entries without date prefix', async () => {
-    mockGetCollection = async () => [
-      { id: 'es/simple-slug', data: { title: 'Slug Simple' } },
-      { id: 'en/simple-slug', data: { title: 'Simple Slug' } },
+  test('handles entries without date prefix', () => {
+    const entries = [
+      entry('es/simple-slug', { title: 'Slug Simple' }),
+      entry('en/simple-slug', { title: 'Simple Slug' }),
     ]
 
-    const locales = await getAvailableLocalesForEntry('projects', 'simple-slug')
+    const locales = getAvailableLocalesForEntry(entries, 'simple-slug')
 
     expect(locales).toHaveLength(2)
     expect(locales).toContain('es')
     expect(locales).toContain('en')
   })
 
-  test('works with different collections', async () => {
-    mockGetCollection = async (collectionName) => {
-      if (collectionName === 'work') {
-        return [
-          { id: 'es/my-work', data: { title: 'Mi Trabajo' } },
-          { id: 'en/my-work', data: { title: 'My Work' } },
-        ]
-      }
-      return []
-    }
+  test('works with different collections (entries from work)', () => {
+    const entries = [
+      entry('es/my-work', { title: 'Mi Trabajo' }),
+      entry('en/my-work', { title: 'My Work' }),
+    ]
 
-    const locales = await getAvailableLocalesForEntry('work', 'my-work')
+    const locales = getAvailableLocalesForEntry(entries, 'my-work')
 
     expect(locales).toHaveLength(2)
     expect(locales).toContain('es')
     expect(locales).toContain('en')
   })
 
-  test('returns empty array when collection is empty', async () => {
-    mockGetCollection = async () => []
-
-    const locales = await getAvailableLocalesForEntry('blog', 'any-post')
+  test('returns empty array when entries list is empty', () => {
+    const locales = getAvailableLocalesForEntry([], 'any-post')
 
     expect(locales).toHaveLength(0)
   })

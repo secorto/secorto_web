@@ -4,13 +4,20 @@ import SEOHeadHomepage from '@components/SEOHeadHomepage.astro';
 import intro from '@assets/img/intro.inline.svg?raw'
 import Footer from '@components/Footer.astro';
 import { getRelativeLocaleUrl } from 'astro:i18n';
+import LanguagePicker from '@components/LanguagePicker.astro'
+import { buildHomeLink } from '@i18n/languagePickerUtils'
+import type { UILanguages } from '@i18n/ui'
+import { languageKeys } from '@i18n/ui'
 
 const pageTitle = "Página de inicio";
+const links = Object.fromEntries(languageKeys.map(l => [l, buildHomeLink(l)])) as Record<UILanguages, import('@i18n/languagePickerUtils').TranslationLink>
+
 ---
 
 <SEOHeadHomepage slot="seo-head" currentLocale="es" />
 
 <SiteLayout pageTitle={pageTitle}>
+  <LanguagePicker slot="langpicker" links={links} />
   <Fragment set:html={intro} />
   <main class="main-content">
     <div>

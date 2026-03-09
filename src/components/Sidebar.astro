@@ -5,9 +5,8 @@ import { resolveLocalized } from '@i18n/rootMap'
 import { NAV_LINKS } from '@domain/nav'
 
 import ThemeIcon from './ThemeIcon.astro';
-import LanguagePicker from './LanguagePicker.astro';
 
-type Props = Record<string, never>;
+type Props = Record<string, unknown>
 
 const currentLocale = getLangFromUrl(Astro.url);
 const t = useTranslations(currentLocale);
@@ -31,6 +30,6 @@ const translatePath = useTranslatedPath(currentLocale);
       ))}
     </div>
     <ThemeIcon />
-    <LanguagePicker/>
+    <slot name="langpicker" />
   </div>
 </nav>

@@ -5,13 +5,17 @@ import Comments from '@components/Comments.astro'
 import BlogTalkPostView from '@components/BlogTalkPostView.astro'
 import WorkProjectCommunityView from '@components/WorkProjectCommunityView.astro'
 import SEOHeadDetail from '@components/SEOHeadDetail.astro'
+import LanguagePicker from '@components/LanguagePicker.astro'
 import { getSectionConfigByRoute } from '@utils/sections'
 import { extractCleanId } from '@utils/ids'
 import { useTranslations } from '@i18n/utils'
-import { getAvailableLocalesForEntry } from '@utils/translationHelpers'
+import { getAvailableLocaleEntries } from '@utils/translationHelpers'
 import { getCanonicalMetadata, getPageMetadata } from '@utils/translationMetadata'
 import { buildAllDetailPaths } from '@utils/staticPathsBuilder'
+import { buildDetailLink, type TranslationLink } from '@i18n/languagePickerUtils'
+import { resolveCanonical } from '@i18n/rootMap'
 import type { UILanguages } from '@i18n/ui'
+import { languageKeys } from '@i18n/ui'
 
 export async function getStaticPaths() {
   return await buildAllDetailPaths(getCollection)
@@ -27,11 +31,18 @@ const context = { entry, config, locale }
 
 const cleanId = extractCleanId(entry.id)
 
-// Resolve canonical locale for draft fallbacks: prefer 'es' if available
-const availableLocales = await getAvailableLocalesForEntry(config.collection, cleanId)
+// Single getCollection call provides entries for locale availability and link building
+const allEntries = await getCollection(config.collection)
+const localeEntryMap = getAvailableLocaleEntries(allEntries, cleanId)
+const availableLocales = Object.keys(localeEntryMap) as UILanguages[]
 const seriesCanonicalLocale = (availableLocales.includes('es' as UILanguages)
   ? 'es'
   : (availableLocales[0] ?? locale)) as UILanguages
+
+const canonicalSection = resolveCanonical(section as string, locale as UILanguages)
+const links = Object.fromEntries(
+  languageKeys.map(l => [l, buildDetailLink(l, canonicalSection, cleanId, localeEntryMap)])
+) as Record<UILanguages, TranslationLink>
 
 const { canonicalLocale, canonicalId, shouldNoindex } = getCanonicalMetadata({
   entryDraft: Boolean(entry.data.draft),
@@ -56,6 +67,7 @@ const routeSlug = config.routes[context.locale]
 />
 
 <BaseLayout pageTitle={pageTitle} description={pageDescription}>
+  <LanguagePicker slot="langpicker" links={links} />
   {entry.data.draft && (
     <div class="untranslated-notice" role="status">
       <p>{t('post.draft_notice')}</p>
