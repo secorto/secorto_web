@@ -1,5 +1,4 @@
 import { describe, it, expect, vi } from 'vitest'
-import type { SectionConfig } from '@domain/section'
 
 describe('sectionContext helpers', () => {
   it('buildSectionContext returns config when found', async () => {
