@@ -98,14 +98,14 @@ export function buildLanguageLinks<T extends TranslationLink>(builder: (l: UILan
  * Build a single language link for a static (non-collection) page.
  * Accepts `targetLang` to match the signature of other `build*Link` helpers.
  */
-export function buildStaticPageLink(targetLang: UILanguages, url: URL, canonicalSection?: string): TranslationLink {
+export function buildStaticPageLink(targetLang: UILanguages, url: URL): TranslationLink {
   const [, maybeLocale, rawSegment] = url.pathname.split('/')
   const isLocalePrefixed = (languageKeys as string[]).includes(maybeLocale)
 
   if (!isLocalePrefixed) return missingLink(targetLang)
 
   const currentLocale: UILanguages = maybeLocale as UILanguages
-  const sectionKey = canonicalSection ?? findCanonicalSectionKey(rawSegment, currentLocale)
+  const sectionKey = findCanonicalSectionKey(rawSegment, currentLocale)
   const sectionMap = rootMap[sectionKey]
 
   const localized = sectionMap && sectionMap[targetLang]
@@ -116,6 +116,6 @@ export function buildStaticPageLink(targetLang: UILanguages, url: URL, canonical
   return missingLink(targetLang)
 }
 
-export function buildStaticPageLinks(url: URL, canonicalSection?: string): Record<UILanguages, TranslationLink> {
-  return buildLanguageLinks(l => buildStaticPageLink(l, url, canonicalSection))
+export function buildStaticPageLinks(url: URL): Record<UILanguages, TranslationLink> {
+  return buildLanguageLinks(l => buildStaticPageLink(l, url))
 }

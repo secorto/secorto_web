@@ -6,12 +6,11 @@ import { buildStaticPageLinks } from '@i18n/languagePickerUtils'
 
 type Props = MarkdownLayoutProps<{
   title: string
-  canonicalSection?: string
 }>;
 const { frontmatter } = Astro.props;
-const { title, canonicalSection } = frontmatter;
+const { title } = frontmatter;
 
-const links = buildStaticPageLinks(Astro.url, canonicalSection)
+const links = buildStaticPageLinks(Astro.url)
 ---
 
 <BaseLayout pageTitle={title}>

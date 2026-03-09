@@ -1,7 +1,6 @@
 ---
 title: About me
 layout: "@layouts/MarkdownLayout.astro"
-canonicalSection: about
 ---
 I'm Sergio Carlos Orozco Torres. I was born in Barranquilla, Atlántico on April 30, 1991.
 
