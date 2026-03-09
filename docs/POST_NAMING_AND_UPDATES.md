@@ -7,7 +7,7 @@ Este documento define las reglas y pasos a seguir al crear, actualizar o re-publ
 - Si re-publicas una entrada reescrita y quieres que aparezca como nueva: crea un nuevo fichero con la fecha nueva y deja el antiguo; añade una redirección 301 desde el URL antiguo al nuevo.
 - Siempre actualizar/añadir metadata relevante: `translation_origin` (si es traducción), `updated` (si solo es revisión), `canonical` (solo si forzas canonical distinto). `translation_status` es opcional/histórica — usa `draft: true` para marcar borradores.
 
-## Convención de nombres (slugs)
+## Convención de nombres (slug de fichero)
 
 - Formato: `YYYY-MM-DD-<slug>.md` para todas las entradas en `src/content/<collection>/<locale>/`.
 - El `slug` debe ser en minúsculas, solo letras, números, guiones y sin extensión. Evita duplicados.

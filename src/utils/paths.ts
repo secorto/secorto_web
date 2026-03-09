@@ -19,12 +19,10 @@ export async function getPostsByLocale<C extends CollectionKey>(
   return posts
     .filter((post) => post.id.startsWith(`${locale}/`))
     .filter((post) => post.data.draft !== true)
-    .map((post) => {
-      return {
-        ...post,
-        cleanId: post.data.slug || extractCleanId(post.id)
-      }
-    })
+    .map((post) => ({
+      ...post,
+      cleanId: extractCleanId(post.id)
+    }))
     .sort((a, b) => b.cleanId.localeCompare(a.cleanId))
 }
 

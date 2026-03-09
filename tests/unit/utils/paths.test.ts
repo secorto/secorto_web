@@ -15,21 +15,6 @@ describe('paths utils', () => {
     expect(res[0].cleanId).toBe('one')
   })
 
-  it('uses extractCleanId when post.data.slug is missing', async () => {
-    const posts = [
-      { id: 'en/2024-12-31-title', data: {} },
-      { id: 'en/2023-01-01-other', data: { slug: 'custom' } },
-    ]
-    vi.resetModules()
-    vi.doMock('astro:content', () => ({ getCollection: vi.fn(async () => posts) }))
-    const { getPostsByLocale } = await import('@utils/paths')
-    const res = await getPostsByLocale('blog', 'en')
-    // one entry should derive cleanId from id
-    expect(res.some(r => r.cleanId === '2024-12-31-title')).toBe(true)
-    // other entry uses provided slug
-    expect(res.some(r => r.cleanId === 'custom')).toBe(true)
-  })
-
   it('excludes draft posts from getPostsByLocale results', async () => {
     const posts = [
       { id: 'en/one', data: { slug: 'one', draft: true } },
