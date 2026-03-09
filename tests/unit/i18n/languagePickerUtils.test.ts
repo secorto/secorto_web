@@ -15,20 +15,20 @@ vi.mock('@i18n/rootMap', () => ({
   resolveLocalized: (canonical: string, _lang: string) => canonical
 }))
 
-type TranslationsMock = {
-  translations: Record<string, Record<string, { noTranslate?: string[] }>>
-}
-
-const translationsMock: TranslationsMock = {
-  translations: {
+const translationStructuresMock = {
+  translationStructures: {
     blog: {
-      '2025-01-01-title': { noTranslate: ['en'] },
-      '2025-02-01-title': {},
-    },
-  },
+      seriesByKey: {},
+      slugIndex: {},
+      slugMeta: {
+        '2025-01-01-title': { noTranslate: ['en'] },
+        '2025-02-01-title': {},
+      }
+    }
+  }
 }
 
-vi.mock('@i18n/translations', () => ({ translations: translationsMock.translations, translationStructures: {} }))
+vi.mock('@i18n/translations', () => ({ translationStructures: translationStructuresMock.translationStructures }))
 
 describe('languagePickerUtils', () => {
   it('buildHomeLink omite prefijo del idioma por defecto cuando showDefaultLang=false', async () => {
@@ -84,7 +84,9 @@ describe('languagePickerUtils', () => {
     uiMock.showDefaultLang = true
     const { buildDetailLink, DISABLED_REASON_CONFIG } = await import('@i18n/languagePickerUtils')
 
-    const availableLocales: Record<string, { slug: string }> = {}
+    const availableLocales: Record<string, { slug: string; noTranslate?: string[] }> = {
+      es: { slug: 'es-slug', noTranslate: ['en'] }
+    }
     const link = buildDetailLink('en', 'blog', '2025-01-01-title', availableLocales)
 
     expect(link.isAvailable).toBe(false)
@@ -97,9 +99,8 @@ describe('languagePickerUtils', () => {
     vi.resetModules()
     uiMock.showDefaultLang = true
 
-    // Adjust translations mock to a map that does not include noTranslate for this slug
-
-    translationsMock.translations = { blog: { '2025-03-01-title': {} } }
+    // Adjust translationStructures mock to a map that does not include noTranslate for this slug
+    translationStructuresMock.translationStructures.blog.slugMeta = { '2025-03-01-title': {} }
 
     const { buildDetailLink, DISABLED_REASON_CONFIG } = await import('@i18n/languagePickerUtils')
 

@@ -1,20 +1,15 @@
 import type { UILanguages } from './ui'
 import { languages, defaultLang, showDefaultLang } from './ui'
 import { resolveLocalized } from './rootMap'
-import * as translationsModule from './translations'
 import type { TranslationEntry } from '@i18n/buildTranslationMap'
 
 type SeriesByKey = Record<string, Record<string, TranslationEntry>>
-type TranslationStructures = Record<string, { seriesByKey: SeriesByKey; slugIndex: Record<string, string> }>
-
-const translations = (translationsModule as unknown as { translations: Record<string, Record<string, unknown>> }).translations
-const translationStructures = (translationsModule as unknown as { translationStructures?: TranslationStructures }).translationStructures
 
 interface EntryMeta {
   noTranslate?: string[]
 }
 
-export type AvailableLocales = Partial<Record<UILanguages, { slug: string }>>
+export type AvailableLocales = Partial<Record<UILanguages, { slug: string; noTranslate?: string[] }>>
 
 export interface TranslationLink {
   href: string
@@ -48,18 +43,17 @@ function buildLangPrefix(targetLang: UILanguages): string {
   return targetLang === defaultLang && !showDefaultLang ? "" : `/${targetLang}`
 }
 
-function getDisabledReasonForLang(targetLang: UILanguages, slug: string, canonicalSection: string): 'not-available' | 'no-translate' {
+function getDisabledReasonForLang(targetLang: UILanguages, availableLocales: AvailableLocales): 'not-available' | 'no-translate' {
   // Two possible reasons:
   // - 'no-translate': the entry is explicitly marked as not translatable for targetLang
   // - 'not-available': no translation exists (or the series/slug doesn't exist)
 
-  // Check legacy per-slug metadata (kept for backward compatibility)
-  const meta = translations[canonicalSection as keyof typeof translations]?.[slug] as EntryMeta | undefined
-  if (Array.isArray(meta?.noTranslate) && meta!.noTranslate!.includes(targetLang)) {
-    return 'no-translate'
+  for (const localeEntry of Object.values(availableLocales)) {
+    if (Array.isArray(localeEntry?.noTranslate) && localeEntry!.noTranslate!.includes(targetLang)) {
+      return 'no-translate'
+    }
   }
 
-  // Otherwise, the translation is simply not available
   return 'not-available'
 }
 
@@ -106,7 +100,7 @@ export function buildDetailLink(targetLang: UILanguages, canonicalSection: strin
   const localizedSection = resolveLocalized(canonicalSection, targetLang)
 
   if (!entry) {
-    const disabledReason = getDisabledReasonForLang(targetLang, slug, canonicalSection)
+    const disabledReason = getDisabledReasonForLang(targetLang, availableLocales)
     const config = DISABLED_REASON_CONFIG[disabledReason]
 
     return {

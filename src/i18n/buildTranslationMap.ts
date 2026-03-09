@@ -7,6 +7,7 @@ export type TranslationEntry = {
   title: string;
   date?: Date;
   translation_status?: string;
+  noTranslate?: string[]
 };
 
 /**
@@ -40,6 +41,7 @@ export type ParsedEntry = {
   title: string
   date?: Date
   translation_status?: string
+  noTranslate?: string[]
 }
 /** Raw entry shape returned by `astro:content#getCollection` (subset used here) */
 export type RawEntry = {
@@ -49,6 +51,7 @@ export type RawEntry = {
     postId?: string
     date?: Date
     translation_status?: string
+    noTranslate?: string[]
   }
 }
 
@@ -60,6 +63,7 @@ export function parseCollectionEntries(entries: RawEntry[]): ParsedEntry[] {
     const cleanId = rest.join("/")
     const seriesKey: string = entry.data.postId ?? cleanId
     const date = entry.data.date
+    const noTranslate = Array.isArray(entry.data.noTranslate) ? entry.data.noTranslate : undefined
 
     parsed.push({
       seriesKey,
@@ -69,6 +73,7 @@ export function parseCollectionEntries(entries: RawEntry[]): ParsedEntry[] {
       title: entry.data.title,
       date,
       translation_status: entry.data.translation_status,
+      noTranslate: entry.data.noTranslate,
     })
   }
   return parsed
