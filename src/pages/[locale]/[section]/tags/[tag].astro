@@ -4,8 +4,8 @@ import Tags from '@components/Tags.astro'
 import ListPost from '@components/ListPost.astro'
 import LanguagePicker from '@components/LanguagePicker.astro'
 import { useTranslations } from '@i18n/utils'
-import { buildTagPaths } from '@utils/staticPathsBuilder'
-import { buildTagsPageContext } from '@utils/sectionContext'
+import { buildTagPaths, type TagPath } from '@utils/staticPathsBuilder'
+import { filterByLocale, getUniqueTags } from '@utils/paths'
 import { getLocalesWithTag } from '@utils/translationHelpers'
 import { buildTagLink, type TranslationLink } from '@i18n/languagePickerUtils'
 import { resolveCanonical } from '@i18n/rootMap'
@@ -16,18 +16,18 @@ export async function getStaticPaths() {
   return await buildTagPaths()
 }
 
-const { locale, section, tag } = Astro.params
+const { locale, section, tag } = Astro.params as { locale: UILanguages; section: string; tag: string }
+const { allEntries, config } = Astro.props as TagPath['props']
 const t = useTranslations(locale)
 
-// Construir contexto de página (valida sección y carga posts)
-const context = await buildTagsPageContext(section, locale, tag)
-
-const { config, posts, tags } = context
+const localePosts = filterByLocale(allEntries, locale)
+const posts = localePosts.filter((post) => post.data.tags?.includes(tag))
+const tags = getUniqueTags(localePosts)
 const pageTitle = `${t(config.translationKey)} - ${tag}`
 const metaDescription = `${config.taggedKey ? t(config.taggedKey) : t(config.translationKey)} ${tag}`
 
-const canonicalSection = resolveCanonical(section, locale as UILanguages)
-const availableLangs = getLocalesWithTag(context.allEntries, tag)
+const canonicalSection = resolveCanonical(section, locale)
+const availableLangs = getLocalesWithTag(allEntries, tag)
 const links = Object.fromEntries(
   languageKeys.map(l => [l, buildTagLink(l, canonicalSection, `tags/${tag}`, availableLangs)])
 ) as Record<UILanguages, TranslationLink>

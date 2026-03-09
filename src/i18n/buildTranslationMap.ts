@@ -1,4 +1,5 @@
 import { getCollection, type CollectionKey } from "astro:content";
+import { type UILanguages } from "@i18n/ui";
 
 export type TranslationEntry = {
   id: string;
@@ -175,9 +176,9 @@ export async function buildTranslationPayload(
  * (too expensive to re-read per page); for page-level SEO use availableLocales.
  */
 export function resolveSeriesCanonicalLocale(
-  availableLocales: string[],
-  defaultLocale = "es"
-): string {
+  availableLocales: UILanguages[],
+  defaultLocale: UILanguages = "es"
+): UILanguages {
   if (availableLocales.includes(defaultLocale)) return defaultLocale;
   return availableLocales[0] ?? defaultLocale;
 }
@@ -190,10 +191,10 @@ export function resolveSeriesCanonicalLocale(
  */
 export function resolveSeriesCanonicalLocaleFromSeries(
   seriesEntries: Record<string, TranslationEntry>,
-  defaultLocale = "es"
-): string {
+  defaultLocale: UILanguages = "es"
+): UILanguages {
   for (const [locale, entry] of Object.entries(seriesEntries)) {
-    if (entry.canonical) return locale
+    if (entry.canonical) return locale as UILanguages
   }
-  return resolveSeriesCanonicalLocale(Object.keys(seriesEntries), defaultLocale)
+  return resolveSeriesCanonicalLocale(Object.keys(seriesEntries) as UILanguages[], defaultLocale)
 }

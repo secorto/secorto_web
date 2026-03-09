@@ -1,19 +1,19 @@
 ---
-import { render, getCollection, getEntry } from 'astro:content'
+import { render, getCollection } from 'astro:content'
 import BaseLayout from '@layouts/BaseLayout.astro'
 import Comments from '@components/Comments.astro'
 import BlogTalkPostView from '@components/BlogTalkPostView.astro'
 import WorkProjectCommunityView from '@components/WorkProjectCommunityView.astro'
 import SEOHeadDetail from '@components/SEOHeadDetail.astro'
 import LanguagePicker from '@components/LanguagePicker.astro'
-import { getSectionConfigByRoute } from '@utils/sections'
 import { extractCleanId } from '@utils/ids'
 import { useTranslations } from '@i18n/utils'
 import { getAvailableLocaleEntries } from '@utils/translationHelpers'
 import { getCanonicalMetadata, getPageMetadata } from '@utils/translationMetadata'
-import { buildAllDetailPaths } from '@utils/staticPathsBuilder'
+import { buildAllDetailPaths, type DetailPath } from '@utils/staticPathsBuilder'
 import { buildDetailLink, type TranslationLink } from '@i18n/languagePickerUtils'
 import { resolveCanonical } from '@i18n/rootMap'
+import { resolveSeriesCanonicalLocale } from '@i18n/buildTranslationMap'
 import type { UILanguages } from '@i18n/ui'
 import { languageKeys } from '@i18n/ui'
 
@@ -21,32 +21,24 @@ export async function getStaticPaths() {
   return await buildAllDetailPaths(getCollection)
 }
 
-const { locale, section, id } = Astro.params
+const { locale, section } = Astro.params as { locale: UILanguages; section: string }
+const { entry, allEntries, config } = Astro.props as DetailPath['props']
 const t = useTranslations(locale)
-
-const config = getSectionConfigByRoute(section, locale)
-const entry = await getEntry(config.collection, `${locale}/${id}`)
-if(!entry) throw new Error(`Entry not found for locale "${locale}" and id "${id}" in collection "${config.collection}"`)
-const context = { entry, config, locale }
 
 const cleanId = extractCleanId(entry.id)
 
-// Single getCollection call provides entries for locale availability and link building
-const allEntries = await getCollection(config.collection)
 const localeEntryMap = getAvailableLocaleEntries(allEntries, cleanId)
 const availableLocales = Object.keys(localeEntryMap) as UILanguages[]
-const seriesCanonicalLocale = (availableLocales.includes('es' as UILanguages)
-  ? 'es'
-  : (availableLocales[0] ?? locale)) as UILanguages
+const seriesCanonicalLocale = resolveSeriesCanonicalLocale(availableLocales)
 
-const canonicalSection = resolveCanonical(section as string, locale as UILanguages)
+const canonicalSection = resolveCanonical(section, locale)
 const links = Object.fromEntries(
   languageKeys.map(l => [l, buildDetailLink(l, canonicalSection, cleanId, localeEntryMap)])
 ) as Record<UILanguages, TranslationLink>
 
 const { canonicalLocale, canonicalId, shouldNoindex } = getCanonicalMetadata({
   entryDraft: Boolean(entry.data.draft),
-  currentLocale: context.locale,
+  currentLocale: locale,
   currentCleanId: cleanId,
   seriesCanonicalLocale
 })
@@ -54,7 +46,7 @@ const { canonicalLocale, canonicalId, shouldNoindex } = getCanonicalMetadata({
 // Extract page metadata
 const { Content } = await render(entry)
 const { pageTitle, pageDescription } = getPageMetadata(entry, t(config.translationKey))
-const routeSlug = config.routes[context.locale]
+const routeSlug = config.routes[locale]
 ---
 
 <SEOHeadDetail
@@ -76,14 +68,14 @@ const routeSlug = config.routes[context.locale]
 
   {config.detailComponent === 'BlogTalkPostView' ? (
     <BlogTalkPostView
-      locale={context.locale}
+      locale={locale}
       routeSlug={routeSlug}
       entry={entry}
       Content={Content}
     />
   ) : (
     <WorkProjectCommunityView
-      locale={context.locale}
+      locale={locale}
       entry={entry}
       Content={Content}
     />

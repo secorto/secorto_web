@@ -19,16 +19,12 @@ describe('sectionContext helpers', () => {
       { id: 'es/two', data: { tags: ['b', 'c'] } },
       { id: 'en/other', data: { tags: ['x'] } }
     ]
-    vi.doMock('@utils/paths', () => ({
-      getPostsByLocale: vi.fn(async (_collection: string, localeArg: string) => mockPosts.filter((p: { id: string }) => p.id.startsWith(`${localeArg}/`))),
-      getUniqueTags: vi.fn((posts: { data: { tags?: string[] } }[]) => {
-        const tags = posts.flatMap(p => p.data.tags ?? [])
-        return Array.from(new Set(tags))
-      })
+    vi.doMock('astro:content', () => ({
+      getCollection: vi.fn(async () => mockPosts)
     }))
 
     const { buildTagsPageContext } = await import('@utils/sectionContext')
-    const ctx = (await buildTagsPageContext('blog', 'es', 'b'))
+    const ctx = await buildTagsPageContext('blog', 'es', 'b')
     expect(ctx.posts.length).toBe(2)
     expect(ctx.tags.sort()).toEqual(['a', 'b', 'c'].sort())
   })

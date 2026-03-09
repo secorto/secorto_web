@@ -5,12 +5,10 @@ import ListPost from '@components/ListPost.astro'
 import ListWork from '@components/ListWork.astro'
 import Tags from '@components/Tags.astro'
 import LanguagePicker from '@components/LanguagePicker.astro'
-import { loadSectionByRoute } from '@utils/sectionLoader'
 import { useTranslations } from '@i18n/utils'
 import type { UILanguages } from '@i18n/ui'
 import { languageKeys } from '@i18n/ui'
-import { buildSectionIndexPaths } from '@utils/staticPathsBuilder'
-import { buildSectionContext } from '@utils/sectionContext'
+import { buildSectionIndexPaths, type SectionPath } from '@utils/staticPathsBuilder'
 import { isCollectionWithTags, type PostLikeEntry, type WorkLikeEntry } from '@domain/post'
 import { buildCollectionLink, type TranslationLink } from '@i18n/languagePickerUtils'
 import { resolveCanonical } from '@i18n/rootMap'
@@ -20,15 +18,8 @@ export async function getStaticPaths() {
 }
 
 const { locale, section } = Astro.params as { locale: UILanguages; section: string }
+const { config, posts, tags } = Astro.props as SectionPath['props']
 const t = useTranslations(locale)
-
-// Validar que la sección existe y obtener configuración
-const { config } = buildSectionContext(section, locale)
-
-// Cargar posts y datos de la sección
-const sectionData = await loadSectionByRoute(section, locale)
-
-const { posts, tags } = sectionData
 const pageTitle = t(config.translationKey)
 
 const canonicalSection = resolveCanonical(section, locale)
