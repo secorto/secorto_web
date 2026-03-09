@@ -113,6 +113,19 @@ describe('getAvailableLocaleEntries', () => {
 
     expect(Object.keys(result)).toHaveLength(0)
   })
+
+  test('matches entries sharing postId when cleanIds differ across locales', () => {
+    const entries = [
+      entry('es/2025-01-01-calendario', { title: 'ES', postId: 'shared-id' }),
+      entry('en/2025-01-01-calendar', { title: 'EN', postId: 'shared-id' }),
+    ]
+
+    const result = getAvailableLocaleEntries(entries, '2025-01-01-calendario')
+
+    expect(Object.keys(result)).toHaveLength(2)
+    expect(result['es']?.slug).toBe('2025-01-01-calendario')
+    expect(result['en']?.slug).toBe('2025-01-01-calendar')
+  })
 })
 
 describe('buildTagLocaleMap', () => {

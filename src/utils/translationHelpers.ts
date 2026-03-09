@@ -25,17 +25,21 @@ export function getAvailableLocaleEntries(
   cleanId: string
 ): AvailableLocales {
   const result: AvailableLocales = {}
+  // Prefer a direct `cleanId` match as the source; if it has a `postId`, use
+  // that as a fallback when translated slugs differ between locales.
+  const sourcePostId = allEntries.find(e => e && typeof e.id === 'string' && extractCleanId(e.id) === cleanId)?.data?.postId
 
   for (const lang of languageKeys) {
-    const entry = allEntries.find(
-      (e) => e.id.startsWith(`${lang}/`) && extractCleanId(e.id) === cleanId
+    const prefix = `${lang}/`
+    const entry = allEntries.find(e =>
+      e && typeof e.id === 'string' && e.id.startsWith(prefix) &&
+      (extractCleanId(e.id) === cleanId || (sourcePostId && e.data?.postId === sourcePostId))
     )
-    if (entry) {
-      result[lang] = {
-        slug: extractCleanId(entry.id),
-        draft: Boolean(entry.data?.draft),
-        canonical: Boolean(entry.data?.canonical)
-      }
+    if (!entry) continue
+    result[lang as keyof AvailableLocales] = {
+      slug: extractCleanId(entry.id),
+      draft: Boolean(entry.data?.draft),
+      canonical: Boolean(entry.data?.canonical)
     }
   }
 
