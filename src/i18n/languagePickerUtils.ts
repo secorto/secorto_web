@@ -1,5 +1,5 @@
 import type { UILanguages } from './ui'
-import { languages, defaultLang, ui as uiStrings, icons } from './ui'
+import { languages, defaultLang } from './ui'
 import { showDefaultLang } from '@i18n/config'
 import { resolveLocalized } from './rootMap'
 export type AvailableLocales = Partial<Record<UILanguages, { slug: string; draft?: boolean }>>

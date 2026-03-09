@@ -37,7 +37,7 @@ describe('buildTranslationMap helpers', () => {
       },
     }
 
-    const { seriesByKey, slugIndex } = buildIndexes(seriesMap as any)
+    const { seriesByKey, slugIndex } = buildIndexes(seriesMap)
     expect(seriesByKey.shared).toBeDefined()
     expect(slugIndex['calendario']).toBe('shared')
     expect(slugIndex['calendar']).toBe('shared')

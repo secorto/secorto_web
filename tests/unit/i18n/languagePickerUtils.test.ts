@@ -1,5 +1,4 @@
 import { describe, it, expect, vi } from 'vitest'
-import { ui, icons } from '@i18n/ui'
 
 const baseTranslationStructures = {
   blog: {
