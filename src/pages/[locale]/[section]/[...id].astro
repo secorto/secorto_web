@@ -33,7 +33,7 @@ const seriesCanonicalLocale = resolveSeriesCanonicalLocale(availableLocales)
 
 const canonicalSection = resolveCanonical(section, locale)
 const links = Object.fromEntries(
-  languageKeys.map(l => [l, buildDetailLink(l, canonicalSection, cleanId, localeEntryMap)])
+  languageKeys.map(l => [l, buildDetailLink(l, canonicalSection, localeEntryMap)])
 ) as Record<UILanguages, TranslationLink>
 
 const { canonicalLocale, canonicalId, shouldNoindex } = getCanonicalMetadata({

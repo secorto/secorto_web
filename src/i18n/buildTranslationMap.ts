@@ -145,31 +145,6 @@ export async function buildTranslationMap(
 }
 
 /**
- * Build a payload that contains the translation map plus the index structures
- * (`seriesByKey` and `slugIndex`) so callers can reuse a single collection
- * load and avoid duplicated `getCollection` calls.
- */
-export async function buildTranslationPayload(
-  collectionName: CollectionKey
-): Promise<{ translationMap: TranslationMap; seriesByKey: Record<string, Record<string, TranslationEntry>>; slugIndex: Record<string, string> }> {
-  const entries = await getCollection(collectionName)
-
-  const parsed = parseCollectionEntries(entries as RawEntry[])
-  const seriesMap = groupBySeries(parsed)
-  const { seriesByKey, slugIndex } = buildIndexes(seriesMap)
-
-  const translationMap: TranslationMap = {}
-  for (const [seriesKey, localeEntries] of Object.entries(seriesByKey)) {
-    translationMap[seriesKey] = localeEntries
-  }
-  for (const [slug, seriesKey] of Object.entries(slugIndex)) {
-    translationMap[slug] = translationMap[seriesKey]
-  }
-
-  return { translationMap, seriesByKey, slugIndex }
-}
-
-/**
  * Resolves the canonical locale for a series given the available locales.
  * Priority: `es` → first available.
  * The `canonical: true` frontmatter flag is resolved at getStaticPaths time
@@ -180,21 +155,5 @@ export function resolveSeriesCanonicalLocale(
   defaultLocale: UILanguages = "es"
 ): UILanguages {
   if (availableLocales.includes(defaultLocale)) return defaultLocale;
-  return availableLocales[0] ?? defaultLocale;
-}
-
-/**
- * Prefer the locale explicitly marked `canonical: true` in the series
- * entries. If none is marked, fall back to `resolveSeriesCanonicalLocale`.
- *
- * @param seriesEntries - map of locale -> TranslationEntry for this series
- */
-export function resolveSeriesCanonicalLocaleFromSeries(
-  seriesEntries: Record<string, TranslationEntry>,
-  defaultLocale: UILanguages = "es"
-): UILanguages {
-  for (const [locale, entry] of Object.entries(seriesEntries)) {
-    if (entry.canonical) return locale as UILanguages
-  }
-  return resolveSeriesCanonicalLocale(Object.keys(seriesEntries) as UILanguages[], defaultLocale)
+  return availableLocales[0]
 }

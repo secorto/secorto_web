@@ -61,7 +61,7 @@ export function buildTagLink(
  * @param availableLocales - Mapa de traducciones disponibles por idioma para este contenido
  * @returns Link con disponibilidad según traducciones, incluye razón si no está disponible
  */
-export function buildDetailLink(targetLang: UILanguages, canonicalSection: string, slug: string, availableLocales: AvailableLocales): TranslationLink {
+export function buildDetailLink(targetLang: UILanguages, canonicalSection: string, availableLocales: AvailableLocales): TranslationLink {
   const entry = availableLocales[targetLang]
   const localizedSection = resolveLocalized(canonicalSection, targetLang)
 

@@ -47,7 +47,7 @@ describe('i18n utils', () => {
 
   it('useTranslatedPath omits prefix when showDefaultLang=false', async () => {
     vi.resetModules()
-    await vi.doMock('@i18n/config', () => ({ showDefaultLang: false }))
+    vi.doMock('@i18n/config', () => ({ showDefaultLang: false }))
     const { useTranslatedPath: useTranslatedPathFalse } = await import('@i18n/utils')
 
     const translateEs = useTranslatedPathFalse('es')

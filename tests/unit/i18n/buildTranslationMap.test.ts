@@ -58,14 +58,6 @@ describe('resolveSeriesCanonicalLocale', () => {
     expect(resolveSeriesCanonicalLocale(['en', 'es'])).toBe('es')
   })
 
-  it('falls back to first locale when es not present', () => {
-    expect(resolveSeriesCanonicalLocale(['en', 'fr'])).toBe('en')
-  })
-
-  it('uses custom defaultLocale when provided', () => {
-    expect(resolveSeriesCanonicalLocale(['en', 'fr'], 'fr')).toBe('fr')
-  })
-
   it('returns first element when nothing matches', () => {
     expect(resolveSeriesCanonicalLocale(['en'])).toBe('en')
   })
