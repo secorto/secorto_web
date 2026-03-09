@@ -34,7 +34,7 @@ describe('buildDetailPathsForSection', () => {
       }
     ]
 
-    const result = buildDetailPathsForSection(entries, mockConfig)
+    const result = buildDetailPathsForSection(entries as CollectionEntry<'blog'>[], mockConfig.routes)
 
     expect(result).toHaveLength(2)
     expect(result).toContainEqual({
@@ -61,7 +61,7 @@ describe('buildDetailPathsForSection', () => {
       }
     ]
 
-    const result = buildDetailPathsForSection(entries, mockConfig)
+    const result = buildDetailPathsForSection(entries as CollectionEntry<'blog'>[], mockConfig.routes)
 
     expect(result).toHaveLength(1)
     expect(result[0]).toEqual({
@@ -89,7 +89,7 @@ describe('buildDetailPathsForSection', () => {
       }
     ]
 
-    const result = buildDetailPathsForSection(entries, mockConfig, ['es'])
+    const result = buildDetailPathsForSection(entries as CollectionEntry<'blog'>[], mockConfig.routes, ['es'])
 
     expect(result).toHaveLength(2)
     expect(result.every(p => p.params.locale === 'es')).toBe(true)
@@ -120,7 +120,7 @@ describe('buildDetailPathsForSection', () => {
       }
     ]
 
-    const result = buildDetailPathsForSection(entries, talkConfig)
+    const result = buildDetailPathsForSection(entries as CollectionEntry<'talk'>[], talkConfig.routes)
 
     expect(result).toHaveLength(2)
     expect(result.find(p => p.params.locale === 'es')?.params.section).toBe('charla')
@@ -128,7 +128,7 @@ describe('buildDetailPathsForSection', () => {
   })
 
   test('handles empty entries array', () => {
-    const result = buildDetailPathsForSection([], mockConfig)
+    const result = buildDetailPathsForSection([] as CollectionEntry<'blog'>[], mockConfig.routes)
     expect(result).toEqual([])
   })
 
@@ -140,7 +140,7 @@ describe('buildDetailPathsForSection', () => {
       }
     ]
 
-    const result = buildDetailPathsForSection(entries, mockConfig)
+    const result = buildDetailPathsForSection(entries as CollectionEntry<'blog'>[], mockConfig.routes)
 
     expect(result).toHaveLength(1)
     expect(result[0].params.id).toBe('category/subcategory/2025-01-22-post')
@@ -154,7 +154,7 @@ describe('buildDetailPathsForSection', () => {
       }
     ]
 
-    const result = buildDetailPathsForSection(entries, mockConfig)
+    const result = buildDetailPathsForSection(entries as CollectionEntry<'blog'>[], mockConfig.routes)
 
     expect(result[0].params.id).toBe('short-slug')
   })
