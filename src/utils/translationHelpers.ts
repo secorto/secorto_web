@@ -8,7 +8,6 @@
 import type { CollectionKey } from 'astro:content'
 import type { UILanguages } from '@i18n/ui'
 import { languageKeys } from '@i18n/ui'
-import { extractCleanId } from './ids'
 import type { AvailableLocales } from '@i18n/languagePickerUtils'
 import type { TagMap } from '@domain/tags'
 import type { PostEntry } from '@domain/post'
@@ -28,17 +27,17 @@ export function getAvailableLocaleEntries<C extends CollectionKey = CollectionKe
   const result: AvailableLocales = {}
   // Prefer a direct `cleanId` match as the source; if it has a `postId`, use
   // that as a fallback when translated slugs differ between locales.
-  const sourcePostId = allEntries.find(e => e && typeof e.id === 'string' && extractCleanId(e.id) === cleanId)?.data?.postId
+  const sourcePostId = allEntries.find(e => e && e.cleanId === cleanId)?.data?.postId
 
   for (const lang of languageKeys) {
     const prefix = `${lang}/`
     const entry = allEntries.find(e =>
       e && typeof e.id === 'string' && e.id.startsWith(prefix) &&
-      (extractCleanId(e.id) === cleanId || (sourcePostId && e.data?.postId === sourcePostId))
+      (e.cleanId === cleanId || (sourcePostId && e.data?.postId === sourcePostId))
     )
     if (!entry) continue
     result[lang as keyof AvailableLocales] = {
-      slug: extractCleanId(entry.id),
+      slug: entry.cleanId,
       draft: Boolean(entry.data?.draft),
       canonical: Boolean(entry.data?.canonical)
     }

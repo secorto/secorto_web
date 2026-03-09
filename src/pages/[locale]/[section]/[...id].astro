@@ -6,7 +6,6 @@ import BlogTalkPostView from '@components/BlogTalkPostView.astro'
 import WorkProjectCommunityView from '@components/WorkProjectCommunityView.astro'
 import SEOHeadDetail from '@components/SEOHeadDetail.astro'
 import LanguagePicker from '@components/LanguagePicker.astro'
-import { extractCleanId } from '@utils/ids'
 import { useTranslations } from '@i18n/utils'
 import { getAvailableLocaleEntries } from '@utils/translationHelpers'
 import { getCanonicalMetadata, getPageMetadata } from '@utils/translationMetadata'
@@ -25,9 +24,7 @@ const { locale, section } = Astro.params as { locale: UILanguages; section: stri
 const { entry, allEntries, config } = Astro.props as DetailPath['props']
 const t = useTranslations(locale)
 
-const cleanId = extractCleanId(entry.id)
-
-const localeEntryMap = getAvailableLocaleEntries(allEntries, cleanId)
+const localeEntryMap = getAvailableLocaleEntries(allEntries, entry.cleanId)
 const availableLocales = Object.keys(localeEntryMap) as UILanguages[]
 const seriesCanonicalLocale = resolveSeriesCanonicalLocale(availableLocales)
 
@@ -39,7 +36,7 @@ const links = Object.fromEntries(
 const { canonicalLocale, canonicalId, shouldNoindex } = getCanonicalMetadata({
   entryDraft: Boolean(entry.data.draft),
   currentLocale: locale,
-  currentCleanId: cleanId,
+  currentCleanId: entry.cleanId,
   seriesCanonicalLocale
 })
 

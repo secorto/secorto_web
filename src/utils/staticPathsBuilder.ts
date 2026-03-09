@@ -3,7 +3,6 @@ import { languageKeys, type UILanguages } from '@i18n/ui'
 import { sectionsConfig, type SectionConfig } from '@domain/section'
 import { filterByLocale, getUniqueTags, mapEntryId } from './paths'
 import { isCollectionWithTags, type CollectionWithTags, type PostEntry } from '@domain/post'
-import { extractCleanId } from './ids'
 import { buildTagLocaleMap } from './translationHelpers'
 import { tagTranslations } from '@domain/tags'
 import type { SectionType } from '@domain/section'
@@ -35,15 +34,6 @@ export interface TagPath {
     allEntries: PostEntry<CollectionWithTags>[]
     config: SectionConfig
     tagLocaleMap: Record<string, Partial<Record<UILanguages, string>>>
-  }
-}
-
-/** Params-only path produced by the pure buildDetailPathsForSection helper. */
-export interface DetailParams {
-  params: {
-    locale: UILanguages
-    section: string
-    id: string
   }
 }
 
@@ -138,41 +128,6 @@ export async function buildTagPaths(
 }
 
 /**
- * Construye paths de detalle para una sección específica.
- * Función pura: solo transforma datos sin efectos secundarios.
- * @param entries - Entradas de la colección
- * @param routes - Mapeo de `locale` → ruta de la sección (ej. `{ es: 'blog', en: 'blog' }`)
- * @param locales - Array de locales a procesar (por defecto todos los languageKeys)
- * @returns Array de paths de detalle para esta sección
- */
-export function buildDetailPathsForSection<K extends CollectionKey>(
-  entries: CollectionEntry<K>[],
-  routes: Record<UILanguages, string>,
-  locales: readonly UILanguages[] = languageKeys
-): DetailParams[] {
-  const paths: DetailParams[] = []
-
-  for (const locale of locales) {
-    const sectionRoute = routes[locale]
-    const entriesForLocale = entries.filter((e) => e.id.startsWith(`${locale}/`))
-
-    for (const entry of entriesForLocale) {
-      const fileCleanId = extractCleanId(entry.id)
-
-      paths.push({
-        params: {
-          locale,
-          section: sectionRoute,
-          id: fileCleanId
-        }
-      })
-    }
-  }
-
-  return paths
-}
-
-/**
  * Construye todas las rutas estáticas para páginas de detalle.
  * Genera una ruta por entrada × idioma en todas las secciones.
  * Incluye entry, allEntries y config en props para evitar llamadas redundantes en el render.
@@ -190,7 +145,7 @@ export async function buildAllDetailPaths(
       const sectionRoute = config.routes[locale]
       for (const entry of allEntries.filter(e => e.id.startsWith(`${locale}/`))) {
         allPaths.push({
-          params: { locale, section: sectionRoute, id: extractCleanId(entry.id) },
+          params: { locale, section: sectionRoute, id: entry.cleanId },
           props: { entry, allEntries, config }
         })
       }
