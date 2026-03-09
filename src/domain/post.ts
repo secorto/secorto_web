@@ -12,7 +12,7 @@ export function isCollectionWithTags(collection: CollectionKey): collection is C
 
 export type PostEntry<C extends CollectionKey> = CollectionEntry<C> & {
   cleanId: string,
-  canonicalId: string 
+  canonicalId: string
 }
 
 /**
