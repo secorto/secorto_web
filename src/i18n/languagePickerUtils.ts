@@ -1,7 +1,7 @@
 import type { UILanguages } from './ui'
-import { languages, defaultLang } from './ui'
+import { languages, defaultLang, languageKeys } from './ui'
 import { showDefaultLang } from '@i18n/config'
-import { resolveLocalized } from './rootMap'
+import { resolveLocalized, resolveCanonical, rootMap } from './rootMap'
 export type AvailableLocales = Partial<Record<UILanguages, { slug: string; draft?: boolean }>>
 
 export interface TranslationLink {
@@ -102,4 +102,37 @@ export function buildCollectionLink(targetLang: UILanguages, canonicalSection: s
     label: languages[targetLang],
     isAvailable: true
   }
+}
+
+/**
+ * Construye el mapa completo de links para el LanguagePicker a partir de la URL de una página estática genérica.
+ * Centraliza toda la lógica de detección de locale, resolución de sección y disponibilidad.
+ * Funciona para cualquier página no basada en colecciones: markdown, Astro estático, etc.
+ *
+ * Escenarios:
+ *  - Sin prefijo de locale (/cosito): todos los links → missing
+ *  - Con prefijo de locale, sección en rootMap: available si existe entry, missing si no
+ *  - Con prefijo de locale, sección NO en rootMap: solo el locale actual → available (self-link)
+ *
+ * @param url - URL completa de la página actual
+ * @param canonicalSection - Override opcional desde frontmatter
+ */
+export function buildStaticPageLinks(
+  url: URL,
+  canonicalSection?: string
+): Record<UILanguages, TranslationLink> {
+  const [, maybeLocale, rawSegment] = url.pathname.split('/')
+  const currentLocale = (languageKeys as string[]).includes(maybeLocale) ? maybeLocale as UILanguages : null
+  const resolvedSection = currentLocale ? (canonicalSection ?? resolveCanonical(rawSegment, currentLocale)) : null
+  const sectionMap = resolvedSection ? rootMap[resolvedSection] : null
+
+  return Object.fromEntries(
+    languageKeys.map(l => {
+      const localizedSlug = sectionMap ? sectionMap[l] : (l === currentLocale ? rawSegment : undefined)
+      const link: TranslationLink = localizedSlug
+        ? { href: `${buildLangPrefix(l)}/${localizedSlug}`, label: languages[l], isAvailable: true }
+        : { href: '', label: languages[l], isAvailable: false, disabledReason: 'missing' }
+      return [l, link]
+    })
+  ) as Record<UILanguages, TranslationLink>
 }
