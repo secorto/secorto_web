@@ -52,7 +52,7 @@ Se reemplazaron muchos `any` del código fuente con tipos explícitos:
 
 | Patrón eliminado | Reemplazo |
 |---|---|
-| `any` en parámetros | Interfaces dedicadas (`PageData`, `EntryWithCleanId`, etc.) |
+| `any` en parámetros | Interfaces dedicadas (`PageData`, `PostEntry`, etc.) |
 | `as unknown as any` | Genéricos (`DetailPageContext<T>`) |
 | `any` en retornos | Tipos de colección de Astro (`CollectionEntry<CollectionKey>`) |
 | `any` en tests | Objetos tipados con interfaces de mock |

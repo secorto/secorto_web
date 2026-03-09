@@ -8,45 +8,41 @@ vi.mock('astro:content', () => ({
 
 import { buildTranslationMap } from '../../src/i18n/buildTranslationMap'
 
-test('buildTranslationMap groups translations using canonical when present', async () => {
+test('buildTranslationMap groups same-cleanId entries under the cleanId key', async () => {
   mockGetCollection = async () => [
     {
       id: 'es/blog/post-1',
-      data: { title: 'Post ES', canonical: 'post-1', date: new Date('2020-01-01') },
+      data: { title: 'Post ES', date: new Date('2020-01-01') },
     },
     {
       id: 'en/blog/post-1',
-      data: { title: 'Post EN', canonical: 'post-1', date: new Date('2020-01-01') },
+      data: { title: 'Post EN', date: new Date('2020-01-01') },
     },
   ]
 
   const map = await buildTranslationMap('blog')
 
-  expect(map['post-1']).toBeTruthy()
-  expect(map['post-1'].es).toBeTruthy()
-  expect(map['post-1'].en).toBeTruthy()
-  expect(map['post-1'].es.slug).toBe('blog/post-1')
-  expect(map['post-1'].en.slug).toBe('blog/post-1')
-  expect(map['post-1'].es.title).toBe('Post ES')
+  // keyed by cleanId = 'blog/post-1'
+  expect(map['blog/post-1']).toBeTruthy()
+  expect(map['blog/post-1'].es).toBeTruthy()
+  expect(map['blog/post-1'].en).toBeTruthy()
+  expect(map['blog/post-1'].es.slug).toBe('blog/post-1')
+  expect(map['blog/post-1'].en.slug).toBe('blog/post-1')
+  expect(map['blog/post-1'].es.title).toBe('Post ES')
 })
 
-test('buildTranslationMap handles id with no slug (slug empty) and uses canonical fallback', async () => {
-  // Case A: canonical provided -> key is canonical
+test('buildTranslationMap groups by postId when cleanIds differ across locales', async () => {
   mockGetCollection = async () => [
-    { id: 'es', data: { title: 'Root ES', canonical: 'blog' } },
+    { id: 'es/calendario', data: { title: 'Calendario', postId: 'calendar-series' } },
+    { id: 'en/calendar', data: { title: 'Calendar', postId: 'calendar-series' } },
   ]
 
-  let map = await buildTranslationMap('blog')
-  expect(map['blog']).toBeTruthy()
-  expect(map['blog'].es.slug).toBe('')
+  const map = await buildTranslationMap('blog')
 
-  // Case B: no canonical and id has no slash -> canonical becomes empty string
-  mockGetCollection = async () => [
-    { id: 'es', data: { title: 'Root ES' } },
-  ]
-
-  map = await buildTranslationMap('blog')
-  expect(map['']).toBeTruthy()
-  expect(map[''].es.slug).toBe('')
-  expect(map[''].es.id).toBe('es')
+  // Both locale slugs resolve to the same series
+  expect(map['calendario']).toBeTruthy()
+  expect(map['calendar']).toBeTruthy()
+  expect(map['calendario']).toBe(map['calendar'])
+  expect(map['calendario'].es.slug).toBe('calendario')
+  expect(map['calendario'].en.slug).toBe('calendar')
 })

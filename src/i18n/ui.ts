@@ -1,5 +1,4 @@
 export const defaultLang = 'es';
-export const showDefaultLang = true;
 
 export const languages = {
   en: 'English',
@@ -28,6 +27,8 @@ export const ui = {
     'post.view_original': 'View original',
     'post.draft_notice': 'This post is a draft and not yet ready for public viewing.',
     'post.translation_pending': 'Translation pending',
+    'translation.disabled.missing': 'Translation does not exist',
+    'translation.disabled.draft': 'Translation is a draft',
     'post.role': 'Role',
     'post.responsibilities': 'Responsibilities',
     'post.website': 'Website',
@@ -55,6 +56,8 @@ export const ui = {
     'post.view_original': 'Ver original',
     'post.draft_notice': 'Este post está en borrador y aún no está listo para publicación pública.',
     'post.translation_pending': 'Traducción pendiente',
+    'translation.disabled.missing': 'No existe la traducción',
+    'translation.disabled.draft': 'La traducción es un borrador',
     'post.role': 'Rol',
     'post.responsibilities': 'Responsabilidades',
     'post.website': 'Sitio web',
@@ -66,3 +69,8 @@ export const ui = {
     'footer.follow': 'Sígueme en: '
   },
 } as const;
+
+export const icons = {
+  missing: '🔒',
+  draft: '⌛'
+} as const

@@ -2,46 +2,55 @@ import { describe, it, expect } from 'vitest'
 import { getCanonicalMetadata, getPageMetadata } from '@utils/translationMetadata'
 
 describe('getCanonicalMetadata', () => {
-  it('prefers explicit `entryDraft` when provided', () => {
+  it('draft + seriesCanonicalLocale: points canonical to series canonical locale', () => {
     const result = getCanonicalMetadata({
       entryDraft: true,
-      translationOrigin: { locale: 'es', id: '2026-01-01-original' },
+      seriesCanonicalLocale: 'es',
       currentLocale: 'en',
       currentCleanId: '2026-01-01-original'
     })
 
     expect(result).toEqual({
       canonicalLocale: 'es',
-      canonicalId: '2026-01-01-original',
       shouldNoindex: true
     })
   })
 
-  it('respects explicit `entryDraft: false`', () => {
+  it('draft without seriesCanonicalLocale: canonical points to self', () => {
+    const result = getCanonicalMetadata({
+      entryDraft: true,
+      currentLocale: 'es',
+      currentCleanId: '2026-01-01-draft'
+    })
+
+    expect(result).toEqual({
+      canonicalLocale: 'es',
+      shouldNoindex: true
+    })
+  })
+
+  it('non-draft: canonical is always self regardless of seriesCanonicalLocale', () => {
     const result = getCanonicalMetadata({
       entryDraft: false,
-      translationOrigin: { locale: 'es', id: '2026-01-01-original' },
+      seriesCanonicalLocale: 'es',
       currentLocale: 'en',
       currentCleanId: '2026-01-01-original'
     })
 
     expect(result).toEqual({
       canonicalLocale: 'en',
-      canonicalId: '2026-01-01-original',
       shouldNoindex: false
     })
   })
 
   it('defaults to non-draft when `entryDraft` is undefined', () => {
     const result = getCanonicalMetadata({
-      translationOrigin: { locale: 'es', id: '2026-01-01-original' },
       currentLocale: 'en',
       currentCleanId: '2026-01-01-original'
     })
 
     expect(result).toEqual({
       canonicalLocale: 'en',
-      canonicalId: '2026-01-01-original',
       shouldNoindex: false
     })
   })
@@ -55,12 +64,11 @@ describe('getCanonicalMetadata', () => {
 
     expect(result).toEqual({
       canonicalLocale: 'es',
-      canonicalId: '2026-01-01-my-post',
       shouldNoindex: false
     })
   })
 
-  it('keeps canonical on current entry and noindex when entryDraft is true and no translationOrigin provided', () => {
+  it('noindex when entryDraft is true even without seriesCanonicalLocale', () => {
     const result = getCanonicalMetadata({
       entryDraft: true,
       currentLocale: 'es',
@@ -69,7 +77,6 @@ describe('getCanonicalMetadata', () => {
 
     expect(result).toEqual({
       canonicalLocale: 'es',
-      canonicalId: '2026-01-01-my-draft',
       shouldNoindex: true
     })
   })
@@ -82,7 +89,6 @@ describe('getCanonicalMetadata', () => {
 
     expect(result).toEqual({
       canonicalLocale: 'es',
-      canonicalId: '2026-01-01-post',
       shouldNoindex: false
     })
   })

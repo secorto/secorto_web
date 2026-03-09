@@ -3,12 +3,12 @@ import PostItem from '@components/PostItem.astro'
 import PostList from '@components/PostList.astro'
 import PostDate from '@components/PostDate.astro'
 import WorkDateRange from '@components/WorkDateRange.astro'
-import type { WorkLikeEntry } from '@domain/post'
+import type { PostEntry } from '@domain/post'
 import type { UILanguages } from '@i18n/ui'
 
 export interface Props {
   basePath: string
-  posts: WorkLikeEntry[]
+  posts: PostEntry<'work'>[]
   lang: UILanguages
 }
 

@@ -1,14 +1,25 @@
+import { getCollection } from 'astro:content'
 import { languageKeys, type UILanguages } from '@i18n/ui'
 import { sectionsConfig, type SectionConfig } from '@domain/section'
-import { getPostsByLocale, getUniqueTags } from './paths'
-import { isCollectionWithTags } from '@domain/post'
-import { extractCleanId } from './ids'
+import { filterByLocale, getUniqueTags, mapEntryId } from './paths'
+import { isCollectionWithTags, type CollectionWithTags, type PostEntry } from '@domain/post'
+import { buildTagLocaleMap } from './translationHelpers'
+import { tagTranslations } from '@domain/tags'
+import type { SectionType } from '@domain/section'
 import type { CollectionEntry, CollectionKey } from 'astro:content'
+
+/** Minimal shape for the injected collection fetcher — easier to mock than the full generic overload. */
+export type FetchCollection = (collection: CollectionKey) => Promise<CollectionEntry<CollectionKey>[]>
 
 export interface SectionPath {
   params: {
     locale: UILanguages
     section: string
+  }
+  props: {
+    config: SectionConfig
+    posts: PostEntry<CollectionKey>[]
+    tags: string[]
   }
 }
 
@@ -20,6 +31,9 @@ export interface TagPath {
   }
   props: {
     tag: string
+    allEntries: PostEntry<CollectionWithTags>[]
+    config: SectionConfig
+    tagLocaleMap: Record<string, Partial<Record<UILanguages, string>>>
   }
 }
 
@@ -28,6 +42,11 @@ export interface DetailPath {
     locale: UILanguages
     section: string
     id: string
+  }
+  props: {
+    entry: PostEntry<CollectionKey>
+    allEntries: PostEntry<CollectionKey>[]
+    config: SectionConfig
   }
 }
 
@@ -42,36 +61,31 @@ function* iterateSections(): Generator<SectionConfig> {
 }
 
 /**
- * Helper: Retorna iterador de todas las combinaciones sección×locale.
- * @param filter - Filtro opcional para secciones
- */
-function* iterateSectionLocales(
-  filter?: (config: SectionConfig) => boolean
-): Generator<[SectionConfig, UILanguages]> {
-  for (const config of iterateSections()) {
-    if (filter && !filter(config)) continue
-
-    for (const locale of languageKeys) {
-      yield [config, locale]
-    }
-  }
-}
-
-/**
  * Construye todas las rutas estáticas para índices de secciones.
- * Genera una ruta por sección × idioma.
+ * Genera una ruta por sección × idioma. Incluye posts y tags en props
+ * para evitar llamadas redundantes a getCollection en el render.
+ * @param fetchCollection - Inyectable para testing (default: getCollection de Astro)
  * @returns Array de paths para getStaticPaths
  */
-export async function buildSectionIndexPaths(): Promise<SectionPath[]> {
+export async function buildSectionIndexPaths(
+  fetchCollection: FetchCollection = getCollection
+): Promise<SectionPath[]> {
   const paths: SectionPath[] = []
 
-  for (const [config, locale] of iterateSectionLocales()) {
-    paths.push({
-      params: {
-        locale,
-        section: config.routes[locale]
-      }
-    })
+  for (const config of iterateSections()) {
+    const allEntries = mapEntryId(await fetchCollection(config.collection))
+
+    for (const locale of languageKeys) {
+      const posts = filterByLocale(allEntries, locale)
+      const tags = isCollectionWithTags(config.collection)
+        ? getUniqueTags(posts as PostEntry<CollectionWithTags>[])
+        : []
+
+      paths.push({
+        params: { locale, section: config.routes[locale] },
+        props: { config, posts, tags }
+      })
+    }
   }
 
   return paths
@@ -80,63 +94,33 @@ export async function buildSectionIndexPaths(): Promise<SectionPath[]> {
 /**
  * Construye todas las rutas estáticas para páginas de tags.
  * Solo genera rutas para secciones que tienen tags habilitados.
- * Recolecta tags únicos de todos los locales y genera rutas para cada combinación.
- * @param fetchPostsByLocale - Función para obtener posts por locale (inyectada para testing)
+ * Incluye allEntries y config en props para evitar llamadas redundantes en el render.
+ * @param fetchCollection - Inyectable para testing (default: getCollection de Astro)
  * @returns Array de paths para getStaticPaths
  */
 export async function buildTagPaths(
-  fetchPostsByLocale: (collection: CollectionKey, locale: string) => Promise<{ data: { tags?: string[] } }[]> = getPostsByLocale as never
+  fetchCollection: FetchCollection = getCollection
 ): Promise<TagPath[]> {
   const paths: TagPath[] = []
 
-  for (const [config, locale] of iterateSectionLocales(c => isCollectionWithTags(c.collection))) {
-    const posts = await fetchPostsByLocale(config.collection, locale)
-    const tags = getUniqueTags(posts)
+  for (const [sectionType, config] of Object.entries(sectionsConfig) as [SectionType, SectionConfig][]) {
+    if (!isCollectionWithTags(config.collection)) continue
 
-    for (const tag of tags) {
-      paths.push({
-        params: {
-          locale,
-          section: config.routes[locale],
-          tag
-        },
-        props: { tag }
-      })
-    }
-  }
+    // isCollectionWithTags guard above narrows config.collection to CollectionWithTags
+    const collectedEntries = await fetchCollection(config.collection as CollectionWithTags)
+    const allEntries = mapEntryId(collectedEntries) as PostEntry<CollectionWithTags>[]
+    const tagLocaleMap = buildTagLocaleMap(allEntries, tagTranslations[sectionType])
 
-  return paths
-}
+    for (const locale of languageKeys) {
+      const localePosts = filterByLocale(allEntries, locale)
+      const tags = getUniqueTags(localePosts)
 
-/**
- * Construye paths de detalle para una sección específica.
- * Función pura: solo transforma datos sin efectos secundarios.
- * @param entries - Entradas de la colección
- * @param routes - Mapeo de `locale` → ruta de la sección (ej. `{ es: 'blog', en: 'blog' }`)
- * @param locales - Array de locales a procesar (por defecto todos los languageKeys)
- * @returns Array de paths de detalle para esta sección
- */
-export function buildDetailPathsForSection<K extends CollectionKey>(
-  entries: CollectionEntry<K>[],
-  routes: Record<UILanguages, string>,
-  locales: readonly UILanguages[] = languageKeys
-): DetailPath[] {
-  const paths: DetailPath[] = []
-
-  for (const locale of locales) {
-    const sectionRoute = routes[locale]
-    const entriesForLocale = entries.filter((e) => e.id.startsWith(`${locale}/`))
-
-    for (const entry of entriesForLocale) {
-      const fileCleanId = extractCleanId(entry.id)
-
-      paths.push({
-        params: {
-          locale,
-          section: sectionRoute,
-          id: fileCleanId
-        }
-      })
+      for (const tag of tags) {
+        paths.push({
+          params: { locale, section: config.routes[locale], tag },
+          props: { tag, allEntries, config, tagLocaleMap }
+        })
+      }
     }
   }
 
@@ -146,21 +130,26 @@ export function buildDetailPathsForSection<K extends CollectionKey>(
 /**
  * Construye todas las rutas estáticas para páginas de detalle.
  * Genera una ruta por entrada × idioma en todas las secciones.
- * @param getCollection - Función para obtener colecciones (inyectada para testing)
+ * Incluye entry, allEntries y config en props para evitar llamadas redundantes en el render.
+ * @param fetchCollection - Función para obtener colecciones (inyectada para testing)
  * @returns Array de paths para getStaticPaths
  */
 export async function buildAllDetailPaths(
-  getCollection: <C extends CollectionKey>(collection: C) => Promise<CollectionEntry<C>[]>
+  fetchCollection: FetchCollection
 ): Promise<DetailPath[]> {
   const allPaths: DetailPath[] = []
 
   for (const config of iterateSections()) {
-    const allEntries = await getCollection(config.collection)
-    const paths = buildDetailPathsForSection(
-      allEntries,
-      config.routes
-    )
-    allPaths.push(...paths)
+    const allEntries = mapEntryId(await fetchCollection(config.collection))
+    for (const locale of languageKeys) {
+      const sectionRoute = config.routes[locale]
+      for (const entry of allEntries.filter(e => e.id.startsWith(`${locale}/`))) {
+        allPaths.push({
+          params: { locale, section: sectionRoute, id: entry.cleanId },
+          props: { entry, allEntries, config }
+        })
+      }
+    }
   }
 
   return allPaths

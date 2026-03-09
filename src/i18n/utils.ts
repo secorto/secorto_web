@@ -1,4 +1,5 @@
-import { ui, defaultLang, showDefaultLang, type UILanguages } from './ui'
+import { ui, defaultLang, type UILanguages } from './ui'
+import { showDefaultLang } from '@i18n/config'
 import { full, monthYear } from '@i18n/dateFormat'
 
 /**

@@ -44,7 +44,7 @@
 
     Resultado: {
       config: SectionConfig,
-      posts: EntryWithCleanId[],
+      posts: PostEntry[],
       tags: string[]
     }
 ```

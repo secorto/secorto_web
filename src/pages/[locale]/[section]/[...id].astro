@@ -1,57 +1,70 @@
 ---
-import { render, getCollection, getEntry } from 'astro:content'
+import { render, getCollection } from 'astro:content'
 import BaseLayout from '@layouts/BaseLayout.astro'
 import Comments from '@components/Comments.astro'
 import BlogTalkPostView from '@components/BlogTalkPostView.astro'
 import WorkProjectCommunityView from '@components/WorkProjectCommunityView.astro'
 import SEOHeadDetail from '@components/SEOHeadDetail.astro'
-import { getSectionConfigByRoute } from '@utils/sections'
-import { extractCleanId } from '@utils/ids'
+import LanguagePicker from '@components/LanguagePicker.astro'
 import { useTranslations } from '@i18n/utils'
-import { getAvailableLocalesForEntry } from '@utils/translationHelpers'
+import { getAvailableLocaleEntries } from '@utils/translationHelpers'
 import { getCanonicalMetadata, getPageMetadata } from '@utils/translationMetadata'
-import { buildAllDetailPaths } from '@utils/staticPathsBuilder'
+import { buildAllDetailPaths, type DetailPath } from '@utils/staticPathsBuilder'
+import { buildDetailLink, buildLanguageLinks } from '@i18n/languagePickerUtils'
+import { findCanonicalSectionKey } from '@i18n/rootMap'
+import { resolveSeriesCanonicalLocale } from '@i18n/buildTranslationMap'
+import type { UILanguages } from '@i18n/ui'
+import { defaultLang } from '@i18n/ui'
 
 export async function getStaticPaths() {
   return await buildAllDetailPaths(getCollection)
 }
 
-const { locale, section, id } = Astro.params
+const { locale, section } = Astro.params as { locale: UILanguages; section: string }
+const { entry, allEntries, config } = Astro.props as DetailPath['props']
 const t = useTranslations(locale)
 
-const config = getSectionConfigByRoute(section, locale)
-const entry = await getEntry(config.collection, `${locale}/${id}`)
-if(!entry) throw new Error(`Entry not found for locale "${locale}" and id "${id}" in collection "${config.collection}"`)
-const context = { entry, config, locale }
+const localeEntryMap = getAvailableLocaleEntries(allEntries, entry.canonicalId)
+const availableLocales = Object.keys(localeEntryMap) as UILanguages[]
+const seriesCanonicalLocale = resolveSeriesCanonicalLocale(availableLocales)
 
-const cleanId = extractCleanId(entry.id)
+const canonicalSection = findCanonicalSectionKey(section, locale)
+const links = buildLanguageLinks(l => buildDetailLink(l, canonicalSection, localeEntryMap))
 
-const { canonicalLocale, canonicalId, shouldNoindex } = getCanonicalMetadata({
+const { canonicalLocale, shouldNoindex } = getCanonicalMetadata({
   entryDraft: Boolean(entry.data.draft),
-  translationOrigin: entry.data.translation_origin,
-  currentLocale: context.locale,
-  currentCleanId: cleanId
+  currentLocale: locale,
+  currentCleanId: entry.cleanId,
+  seriesCanonicalLocale
 })
 
-// Get available locales for hreflang
-const availableLocales = await getAvailableLocalesForEntry(config.collection, cleanId)
+// Use existing helper to build the canonical path so formatting is centralized
+const canonicalLink = buildDetailLink(canonicalLocale, canonicalSection, localeEntryMap)
+const canonicalPath = canonicalLink.href
+const alternates = availableLocales.map(lk => ({
+  locale: lk,
+  url: buildDetailLink(lk, canonicalSection, localeEntryMap).href
+}))
+// Prefer defaultLang version for x-default when available, otherwise fall back to canonicalPath
+const defaultLink = buildDetailLink(defaultLang, canonicalSection, localeEntryMap)
+const defaultPath = defaultLink.href || canonicalPath
 
 // Extract page metadata
 const { Content } = await render(entry)
 const { pageTitle, pageDescription } = getPageMetadata(entry, t(config.translationKey))
-const routeSlug = config.routes[context.locale]
+const routeSlug = config.routes[locale]
 ---
 
 <SEOHeadDetail
   slot="seo-head"
-  config={config}
-  cleanId={canonicalId}
-  canonicalLocale={canonicalLocale}
-  availableLocales={availableLocales}
+  canonicalPath={canonicalPath}
+  alternates={alternates}
+  defaultPath={defaultPath}
   noindex={shouldNoindex}
 />
 
 <BaseLayout pageTitle={pageTitle} description={pageDescription}>
+  <LanguagePicker slot="langpicker" links={links} />
   {entry.data.draft && (
     <div class="untranslated-notice" role="status">
       <p>{t('post.draft_notice')}</p>
@@ -60,14 +73,14 @@ const routeSlug = config.routes[context.locale]
 
   {config.detailComponent === 'BlogTalkPostView' ? (
     <BlogTalkPostView
-      locale={context.locale}
+      locale={locale}
       routeSlug={routeSlug}
       entry={entry}
       Content={Content}
     />
   ) : (
     <WorkProjectCommunityView
-      locale={context.locale}
+      locale={locale}
       entry={entry}
       Content={Content}
     />
