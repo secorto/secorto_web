@@ -6,7 +6,7 @@ export type EntryWithCleanId<C extends CollectionKey> = CollectionEntry<C> & { c
 
 /**
  * Obtiene todos los posts de una colección para un locale específico.
- * Enriquece cada post con su cleanId (slug o nombre de archivo limpio).
+ * Enriquece cada post con su cleanId (nombre de archivo limpio).
  * @param collection - Nombre de la colección
  * @param locale - Idioma/locale
  * @returns Array de posts ordenados por cleanId descendente
@@ -19,12 +19,10 @@ export async function getPostsByLocale<C extends CollectionKey>(
   return posts
     .filter((post) => post.id.startsWith(`${locale}/`))
     .filter((post) => post.data.draft !== true)
-    .map((post) => {
-      return {
-        ...post,
-        cleanId: post.data.slug || extractCleanId(post.id)
-      }
-    })
+    .map((post) => ({
+      ...post,
+      cleanId: extractCleanId(post.id)
+    }))
     .sort((a, b) => b.cleanId.localeCompare(a.cleanId))
 }
 

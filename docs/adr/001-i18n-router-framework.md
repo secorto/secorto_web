@@ -153,7 +153,7 @@ Para diagramas, snippets de generación de rutas y la comparación detallada ant
 - `src/utils/staticPathsBuilder.ts` — Generador de `getStaticPaths` a partir de la configuración, respetando locales y alias
 - `src/utils/sectionLoader.ts` — Encapsula la lógica de obtención y normalización de datos (colección, locale, fallbacks)
 - `src/utils/sectionContext.ts` — Construye el objeto de contexto para páginas (metadatos, listados, paginación, enlaces relacionados)
-- `src/utils/paths.ts` — Utilidades para mapear slugs/ids y filtrar por locale/collection
+- `src/utils/paths.ts` — Utilidades para mapear ids (clean IDs) y filtrar por locale/collection
 
 ### Vistas
 

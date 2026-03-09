@@ -31,13 +31,6 @@ export interface DetailPath {
   }
 }
 
-interface EntryWithSlug {
-  id: string
-  data: {
-    slug?: string
-    [key: string]: unknown
-  }
-}
 
 /**
  * Helper: Retorna iterador de todas las secciones.
@@ -119,30 +112,29 @@ export async function buildTagPaths(
  * Construye paths de detalle para una sección específica.
  * Función pura: solo transforma datos sin efectos secundarios.
  * @param entries - Entradas de la colección
- * @param config - Configuración de la sección
+ * @param routes - Mapeo de `locale` → ruta de la sección (ej. `{ es: 'blog', en: 'blog' }`)
  * @param locales - Array de locales a procesar (por defecto todos los languageKeys)
  * @returns Array de paths de detalle para esta sección
  */
-export function buildDetailPathsForSection(
-  entries: EntryWithSlug[],
-  config: SectionConfig,
+export function buildDetailPathsForSection<K extends CollectionKey>(
+  entries: CollectionEntry<K>[],
+  routes: Record<UILanguages, string>,
   locales: readonly UILanguages[] = languageKeys
 ): DetailPath[] {
   const paths: DetailPath[] = []
 
   for (const locale of locales) {
-    const sectionRoute = config.routes[locale]
+    const sectionRoute = routes[locale]
     const entriesForLocale = entries.filter((e) => e.id.startsWith(`${locale}/`))
 
     for (const entry of entriesForLocale) {
       const fileCleanId = extractCleanId(entry.id)
-      const entrySlug = entry.data.slug || fileCleanId
 
       paths.push({
         params: {
           locale,
           section: sectionRoute,
-          id: entrySlug
+          id: fileCleanId
         }
       })
     }
@@ -165,8 +157,8 @@ export async function buildAllDetailPaths(
   for (const config of iterateSections()) {
     const allEntries = await getCollection(config.collection)
     const paths = buildDetailPathsForSection(
-      allEntries as EntryWithSlug[],
-      config
+      allEntries,
+      config.routes
     )
     allPaths.push(...paths)
   }

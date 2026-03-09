@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 
-describe('loadSectionByRoute & loadEntryByRoute', () => {
+describe('loadSectionByRoute', () => {
   it('returns posts and tags when collection is blog', async () => {
     vi.resetModules()
 
@@ -45,41 +45,5 @@ describe('loadSectionByRoute & loadEntryByRoute', () => {
     expect(res!.tags).toEqual([])
     expect(getPostsMock).toHaveBeenCalledWith('work', 'es')
     expect(getUniqueMock).not.toHaveBeenCalled()
-  })
-
-  it('loadEntryByRoute finds entry by slug and by cleanId', async () => {
-    vi.resetModules()
-
-    const entries = [
-      { id: 'es/2025-01-01-title', data: {} },
-      { id: 'es/2025-02-02-slugged', data: { slug: 'my-slug' } }
-    ]
-
-    vi.doMock('@utils/sections', () => ({
-      getSectionConfigByRoute: (route: string, _locale: string) => route === 'blog' ? ({ collection: 'blog', routes: { es: 'blog', en: 'blog' } }) : null
-    }))
-
-    vi.doMock('astro:content', () => ({ getCollection: vi.fn(async () => entries) }))
-
-    const { loadEntryByRoute } = await import('@utils/sectionLoader')
-
-    const bySlug = await loadEntryByRoute('blog', 'es', 'my-slug')
-    expect(bySlug).not.toBeNull()
-    expect(bySlug!.entry.data.slug).toBe('my-slug')
-
-    const byClean = await loadEntryByRoute('blog', 'es', '2025-01-01-title')
-    expect(byClean).not.toBeNull()
-    expect(byClean!.entry.id).toBe('es/2025-01-01-title')
-  })
-
-  it('loadEntryByRoute throws when no matching entry', async () => {
-    vi.resetModules()
-    const entries = [ { id: 'es/one', data: {} } ]
-    vi.doMock('@utils/sections', () => ({
-      getSectionConfigByRoute: (_route: string, _locale: string) => ({ collection: 'blog', routes: { es: 'blog', en: 'blog' } })
-    }))
-    vi.doMock('astro:content', () => ({ getCollection: vi.fn(async () => entries) }))
-    const { loadEntryByRoute } = await import('@utils/sectionLoader')
-    await expect(loadEntryByRoute('blog', 'es', 'nonexistent')).rejects.toThrow('Entry not found')
   })
 })

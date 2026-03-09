@@ -5,7 +5,6 @@ import type { EntryWithCleanId } from '@utils/paths'
 import type { CollectionWithTags } from '@domain/post'
 import type { UILanguages } from '@i18n/ui'
 import type { CollectionEntry, CollectionKey } from 'astro:content'
-import { extractCleanId } from "@utils/ids"
 
 export interface SectionContext {
   config: SectionConfig
@@ -73,33 +72,5 @@ export async function buildTagsPageContext(
     tag,
     posts,
     tags
-  }
-}
-
-/**
- * Construye el contexto de una página de detalle (post/charla/proyecto/etc).
- * Intenta cargar la entrada en el locale actual.
- * @param section - Slug de la sección (ej: 'blog')
- * @param locale - Idioma solicitado
- * @param id - ID/slug del contenido
- * @param loadEntryByRoute - Función para cargar entrada
- * @returns Contexto con entrada
- */
-export async function buildDetailPageContext<T extends { id: string } = CollectionEntry<CollectionKey>>(
-  section: string,
-  locale: UILanguages,
-  id: string,
-  loadEntryByRoute: (
-    section: string,
-    locale: UILanguages,
-    id: string
-  ) => Promise<{ entry: T; config: SectionConfig }>
-): Promise<DetailPageContext<T>> {
-  const loaded = await loadEntryByRoute(section, locale, id)
-  return {
-    entry: loaded.entry,
-    config: loaded.config,
-    locale,
-    cleanId: extractCleanId(loaded.entry.id)
   }
 }

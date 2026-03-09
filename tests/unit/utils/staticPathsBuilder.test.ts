@@ -22,36 +22,6 @@ describe('buildDetailPathsForSection', () => {
     showFeaturedImage: true
   }
 
-  test('builds paths for entries with slug in data', () => {
-    const entries = [
-      {
-        id: 'es/2025-01-22-my-post',
-        data: { slug: 'custom-slug', title: 'Test' }
-      },
-      {
-        id: 'en/2025-01-22-my-post',
-        data: { slug: 'custom-slug', title: 'Test' }
-      }
-    ]
-
-    const result = buildDetailPathsForSection(entries, mockConfig)
-
-    expect(result).toHaveLength(2)
-    expect(result).toContainEqual({
-      params: {
-        locale: 'es',
-        section: 'blog',
-        id: 'custom-slug'
-      }
-    })
-    expect(result).toContainEqual({
-      params: {
-        locale: 'en',
-        section: 'blog',
-        id: 'custom-slug'
-      }
-    })
-  })
 
   test('builds paths using file ID when no slug provided', () => {
     const entries = [
@@ -61,7 +31,7 @@ describe('buildDetailPathsForSection', () => {
       }
     ]
 
-    const result = buildDetailPathsForSection(entries, mockConfig)
+    const result = buildDetailPathsForSection(entries as CollectionEntry<'blog'>[], mockConfig.routes)
 
     expect(result).toHaveLength(1)
     expect(result[0]).toEqual({
@@ -89,7 +59,7 @@ describe('buildDetailPathsForSection', () => {
       }
     ]
 
-    const result = buildDetailPathsForSection(entries, mockConfig, ['es'])
+    const result = buildDetailPathsForSection(entries as CollectionEntry<'blog'>[], mockConfig.routes, ['es'])
 
     expect(result).toHaveLength(2)
     expect(result.every(p => p.params.locale === 'es')).toBe(true)
@@ -120,7 +90,7 @@ describe('buildDetailPathsForSection', () => {
       }
     ]
 
-    const result = buildDetailPathsForSection(entries, talkConfig)
+    const result = buildDetailPathsForSection(entries as CollectionEntry<'talk'>[], talkConfig.routes)
 
     expect(result).toHaveLength(2)
     expect(result.find(p => p.params.locale === 'es')?.params.section).toBe('charla')
@@ -128,7 +98,7 @@ describe('buildDetailPathsForSection', () => {
   })
 
   test('handles empty entries array', () => {
-    const result = buildDetailPathsForSection([], mockConfig)
+    const result = buildDetailPathsForSection([] as CollectionEntry<'blog'>[], mockConfig.routes)
     expect(result).toEqual([])
   })
 
@@ -140,23 +110,10 @@ describe('buildDetailPathsForSection', () => {
       }
     ]
 
-    const result = buildDetailPathsForSection(entries, mockConfig)
+    const result = buildDetailPathsForSection(entries as CollectionEntry<'blog'>[], mockConfig.routes)
 
     expect(result).toHaveLength(1)
     expect(result[0].params.id).toBe('category/subcategory/2025-01-22-post')
-  })
-
-  test('prefers slug over file ID when both exist', () => {
-    const entries = [
-      {
-        id: 'es/2025-01-22-long-file-name',
-        data: { slug: 'short-slug', title: 'Test' }
-      }
-    ]
-
-    const result = buildDetailPathsForSection(entries, mockConfig)
-
-    expect(result[0].params.id).toBe('short-slug')
   })
 })
 
