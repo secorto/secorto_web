@@ -6,7 +6,11 @@ import { NAV_LINKS } from '@domain/nav'
 
 import ThemeIcon from './ThemeIcon.astro';
 
-type Props = Record<string, unknown>
+export interface Props {}
+
+export interface Slots {
+  langpicker?: Record<string, never>
+}
 
 const currentLocale = getLangFromUrl(Astro.url);
 const t = useTranslations(currentLocale);
