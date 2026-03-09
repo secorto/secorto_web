@@ -62,7 +62,7 @@ export function buildTagLocaleMap(
   for (const entry of allEntries) {
     if (entry.data?.draft) continue
     const [lang] = entry.id.split('/') as [UILanguages]
-    const tags = entry.data?.tags ?? []
+    const tags = (entry.data as { tags?: string[] })?.tags ?? []
     for (const tag of tags) {
       const canonical = tagMap
         ? (Object.entries(tagMap).find(([, locales]) => locales[lang] === tag)?.[0] ?? tag)
