@@ -6,7 +6,7 @@ export type EntryWithCleanId<C extends CollectionKey> = CollectionEntry<C> & { c
 
 /**
  * Obtiene todos los posts de una colección para un locale específico.
- * Enriquece cada post con su cleanId (slug o nombre de archivo limpio).
+ * Enriquece cada post con su cleanId (nombre de archivo limpio).
  * @param collection - Nombre de la colección
  * @param locale - Idioma/locale
  * @returns Array de posts ordenados por cleanId descendente
