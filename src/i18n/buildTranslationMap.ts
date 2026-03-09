@@ -41,15 +41,25 @@ export type ParsedEntry = {
   date?: Date
   translation_status?: string
 }
+/** Raw entry shape returned by `astro:content#getCollection` (subset used here) */
+export type RawEntry = {
+  id: string
+  data: {
+    title: string
+    postId?: string
+    date?: Date
+    translation_status?: string
+  }
+}
 
 /** Parse raw entries into a smaller shape used for grouping */
-export function parseCollectionEntries(entries: Awaited<ReturnType<typeof getCollection>>): ParsedEntry[] {
+export function parseCollectionEntries(entries: RawEntry[]): ParsedEntry[] {
   const parsed: ParsedEntry[] = []
-  for (const entry of entries as any[]) {
+  for (const entry of entries) {
     const [locale, ...rest] = entry.id.split("/")
     const cleanId = rest.join("/")
-    const seriesKey: string = (entry.data as { postId?: string }).postId ?? cleanId
-    const date = "date" in entry.data ? (entry.data.date as Date) : undefined
+    const seriesKey: string = entry.data.postId ?? cleanId
+    const date = entry.data.date
 
     parsed.push({
       seriesKey,
@@ -81,8 +91,11 @@ export function groupBySeries(parsed: ParsedEntry[]): Record<string, Record<stri
 }
 
 /** Build indices: seriesByKey and slugIndex (slug -> seriesKey) */
-export function buildIndexes(seriesMap: Record<string, Record<string, TranslationEntry>>) {
-  const seriesByKey = { ...seriesMap }
+export function buildIndexes(seriesMap: Record<string, Record<string, TranslationEntry>>): {
+  seriesByKey: Record<string, Record<string, TranslationEntry>>
+  slugIndex: Record<string, string>
+} {
+  const seriesByKey: Record<string, Record<string, TranslationEntry>> = { ...seriesMap }
   const slugIndex: Record<string, string> = {}
   for (const [seriesKey, localeEntries] of Object.entries(seriesByKey)) {
     for (const localeEntry of Object.values(localeEntries)) {

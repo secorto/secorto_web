@@ -1,7 +1,14 @@
 import type { UILanguages } from './ui'
 import { languages, defaultLang, showDefaultLang } from './ui'
 import { resolveLocalized } from './rootMap'
-import { translations } from './translations'
+import * as translationsModule from './translations'
+import type { TranslationEntry } from '@i18n/buildTranslationMap'
+
+type SeriesByKey = Record<string, Record<string, TranslationEntry>>
+type TranslationStructures = Record<string, { seriesByKey: SeriesByKey; slugIndex: Record<string, string> }>
+
+const translations = (translationsModule as unknown as { translations: Record<string, Record<string, unknown>> }).translations
+const translationStructures = (translationsModule as unknown as { translationStructures?: TranslationStructures }).translationStructures
 
 interface EntryMeta {
   noTranslate?: string[]
@@ -42,9 +49,18 @@ function buildLangPrefix(targetLang: UILanguages): string {
 }
 
 function getDisabledReasonForLang(targetLang: UILanguages, slug: string, canonicalSection: string): 'not-available' | 'no-translate' {
+  // Two possible reasons:
+  // - 'no-translate': the entry is explicitly marked as not translatable for targetLang
+  // - 'not-available': no translation exists (or the series/slug doesn't exist)
+
+  // Check legacy per-slug metadata (kept for backward compatibility)
   const meta = translations[canonicalSection as keyof typeof translations]?.[slug] as EntryMeta | undefined
-  const willNotBeTranslated = Array.isArray(meta?.noTranslate) && meta!.noTranslate!.includes(targetLang)
-  return willNotBeTranslated ? 'no-translate' : 'not-available'
+  if (Array.isArray(meta?.noTranslate) && meta!.noTranslate!.includes(targetLang)) {
+    return 'no-translate'
+  }
+
+  // Otherwise, the translation is simply not available
+  return 'not-available'
 }
 
 /**

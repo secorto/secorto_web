@@ -3,7 +3,14 @@ import { languageKeys } from "../i18n/ui";
 import type { UILanguages } from "../i18n/ui";
 import { resolveCanonical } from "../i18n/rootMap";
 import { buildHomeLink, buildTagLink, buildDetailLink, buildCollectionLink, type TranslationLink } from "../i18n/languagePickerUtils";
-import { translations } from "../i18n/translations";
+import * as translationsModule from "../i18n/translations";
+import type { TranslationEntry } from '../i18n/buildTranslationMap'
+
+type SeriesByKey = Record<string, Record<string, TranslationEntry>>
+type TranslationStructures = Record<string, { seriesByKey: SeriesByKey; slugIndex: Record<string, string> }>
+
+const translations = (translationsModule as unknown as { translations: Record<string, Record<string, unknown>> }).translations
+const translationStructures = (translationsModule as unknown as { translationStructures?: TranslationStructures }).translationStructures
 
 // === PARSING DE URL ===
 const segments = Astro.url.pathname.split("/").filter(Boolean);
@@ -21,7 +28,14 @@ const canonicalSection = isHomePage ? "" : resolveCanonical(rawSection, currentL
 
 // === DATOS DISPONIBLES ===
 const availableLocales = isDetailPage
-  ? translations[canonicalSection as keyof typeof translations]?.[slug] || {}
+  ? (() => {
+      const structures = translationStructures?.[canonicalSection]
+      if (structures && structures.slugIndex) {
+        const seriesKey = structures.slugIndex[slug]
+        return seriesKey ? structures.seriesByKey[seriesKey] : {}
+      }
+      return translations[canonicalSection as keyof typeof translations]?.[slug] || {}
+    })()
   : {};
 
 // === BUILDER DE LINKS SEGÚN TIPO DE PÁGINA ===

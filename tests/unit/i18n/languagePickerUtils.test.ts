@@ -28,7 +28,7 @@ const translationsMock: TranslationsMock = {
   },
 }
 
-vi.mock('@i18n/translations', () => translationsMock)
+vi.mock('@i18n/translations', () => ({ translations: translationsMock.translations, translationStructures: {} }))
 
 describe('languagePickerUtils', () => {
   it('buildHomeLink omite prefijo del idioma por defecto cuando showDefaultLang=false', async () => {
