@@ -11,6 +11,7 @@ import { useTranslations } from '@i18n/utils'
 import { getAvailableLocalesForEntry } from '@utils/translationHelpers'
 import { getCanonicalMetadata, getPageMetadata } from '@utils/translationMetadata'
 import { buildAllDetailPaths } from '@utils/staticPathsBuilder'
+import type { UILanguages } from '@i18n/ui'
 
 export async function getStaticPaths() {
   return await buildAllDetailPaths(getCollection)
@@ -26,15 +27,18 @@ const context = { entry, config, locale }
 
 const cleanId = extractCleanId(entry.id)
 
+// Resolve canonical locale for draft fallbacks: prefer 'es' if available
+const availableLocales = await getAvailableLocalesForEntry(config.collection, cleanId)
+const seriesCanonicalLocale = (availableLocales.includes('es' as UILanguages)
+  ? 'es'
+  : (availableLocales[0] ?? locale)) as UILanguages
+
 const { canonicalLocale, canonicalId, shouldNoindex } = getCanonicalMetadata({
   entryDraft: Boolean(entry.data.draft),
-  translationOrigin: entry.data.translation_origin,
   currentLocale: context.locale,
-  currentCleanId: cleanId
+  currentCleanId: cleanId,
+  seriesCanonicalLocale
 })
-
-// Get available locales for hreflang
-const availableLocales = await getAvailableLocalesForEntry(config.collection, cleanId)
 
 // Extract page metadata
 const { Content } = await render(entry)

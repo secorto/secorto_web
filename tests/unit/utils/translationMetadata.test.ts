@@ -2,10 +2,11 @@ import { describe, it, expect } from 'vitest'
 import { getCanonicalMetadata, getPageMetadata } from '@utils/translationMetadata'
 
 describe('getCanonicalMetadata', () => {
-  it('prefers explicit `entryDraft` when provided', () => {
+  it('draft + seriesCanonicalLocale: points canonical to series canonical locale', () => {
     const result = getCanonicalMetadata({
       entryDraft: true,
-      translationOrigin: { locale: 'es', id: '2026-01-01-original' },
+      seriesCanonicalLocale: 'es',
+      seriesCanonicalId: '2026-01-01-original',
       currentLocale: 'en',
       currentCleanId: '2026-01-01-original'
     })
@@ -17,10 +18,24 @@ describe('getCanonicalMetadata', () => {
     })
   })
 
-  it('respects explicit `entryDraft: false`', () => {
+  it('draft without seriesCanonicalLocale: canonical points to self', () => {
+    const result = getCanonicalMetadata({
+      entryDraft: true,
+      currentLocale: 'es',
+      currentCleanId: '2026-01-01-draft'
+    })
+
+    expect(result).toEqual({
+      canonicalLocale: 'es',
+      canonicalId: '2026-01-01-draft',
+      shouldNoindex: true
+    })
+  })
+
+  it('non-draft: canonical is always self regardless of seriesCanonicalLocale', () => {
     const result = getCanonicalMetadata({
       entryDraft: false,
-      translationOrigin: { locale: 'es', id: '2026-01-01-original' },
+      seriesCanonicalLocale: 'es',
       currentLocale: 'en',
       currentCleanId: '2026-01-01-original'
     })
@@ -34,7 +49,6 @@ describe('getCanonicalMetadata', () => {
 
   it('defaults to non-draft when `entryDraft` is undefined', () => {
     const result = getCanonicalMetadata({
-      translationOrigin: { locale: 'es', id: '2026-01-01-original' },
       currentLocale: 'en',
       currentCleanId: '2026-01-01-original'
     })
@@ -60,7 +74,7 @@ describe('getCanonicalMetadata', () => {
     })
   })
 
-  it('keeps canonical on current entry and noindex when entryDraft is true and no translationOrigin provided', () => {
+  it('noindex when entryDraft is true even without seriesCanonicalLocale', () => {
     const result = getCanonicalMetadata({
       entryDraft: true,
       currentLocale: 'es',

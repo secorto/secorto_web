@@ -3,11 +3,6 @@
  */
 import type { UILanguages } from '@i18n/ui'
 
-export interface TranslationOrigin {
-  locale: string
-  id: string
-}
-
 export interface TranslationMetadata {
   canonicalLocale: UILanguages
   canonicalId: string
@@ -27,23 +22,24 @@ export interface PageData {
  *
  * @param params - Metadatos de la entrada
  * @param params.entryDraft - Frontmatter explícito `draft` para la entrada
- * @param params.translationOrigin - Locale/ID de origen si es una traducción
  * @param params.currentLocale - Locale actual que se está viendo
  * @param params.currentCleanId - ID limpio de la entrada actual
+ * @param params.seriesCanonicalLocale - Locale canónico de la serie (calculado desde locales disponibles, por defecto `es`)
+ * @param params.seriesCanonicalId - Clean ID canónico de la serie (puede diferir si los filenames difieren)
  * @returns Metadatos canónicos para SEO
  *
  * @example
  * ```ts
- * // Traducción en borrador - debe apuntar al original (usar frontmatter `draft: true`)
+ * // Traducción en borrador - apunta al original es
  * getCanonicalMetadata({
  *   entryDraft: true,
- *   translationOrigin: { locale: 'es', id: '2026-01-01-post' },
  *   currentLocale: 'en',
- *   currentCleanId: '2026-01-01-post'
+ *   currentCleanId: '2026-01-01-post',
+ *   seriesCanonicalLocale: 'es'
  * })
  * // Devuelve: { canonicalLocale: 'es', canonicalId: '2026-01-01-post', shouldNoindex: true }
  *
- * // Traducción completa - lo canónico es la propia entrada
+ * // Traducción publicada - canónico es self
  * getCanonicalMetadata({
  *   entryDraft: false,
  *   currentLocale: 'en',
@@ -53,23 +49,22 @@ export interface PageData {
  * ```
  */
 export function getCanonicalMetadata(params: {
-  /**
-   * Prefer explicit `draft` frontmatter. If `draft` is true and a
-   * `translationOrigin` is provided, canonical points to the origin.
-   */
   entryDraft?: boolean
-  translationOrigin?: TranslationOrigin
   currentLocale: UILanguages
   currentCleanId: string
+  /** Locale canónico de la serie; si omitido se usa currentLocale */
+  seriesCanonicalLocale?: UILanguages
+  /** Clean ID del entry canónico de la serie; si omitido se usa currentCleanId */
+  seriesCanonicalId?: string
 }): TranslationMetadata {
   const isDraft = Boolean(params.entryDraft)
 
-  const canonicalLocale = isDraft && params.translationOrigin
-    ? (params.translationOrigin.locale as UILanguages)
+  const canonicalLocale = isDraft && params.seriesCanonicalLocale
+    ? params.seriesCanonicalLocale
     : params.currentLocale
 
-  const canonicalId = isDraft && params.translationOrigin
-    ? params.translationOrigin.id
+  const canonicalId = isDraft && (params.seriesCanonicalId ?? params.seriesCanonicalLocale)
+    ? (params.seriesCanonicalId ?? params.currentCleanId)
     : params.currentCleanId
 
   return {

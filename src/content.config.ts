@@ -10,9 +10,10 @@ const createBasePostSchema = (imageHelper: () => z.ZodTypeAny) => z.object({
   image: imageHelper().optional(),
   excerpt: z.string().optional(),
   description: z.string().optional(),
-  translation_status: z.enum(['translated', 'draft', 'partial', 'pending', 'original']).optional(),
+  postId: z.string().optional(),
+  canonical: z.boolean().optional(),
   draft: z.boolean().optional(),
-  translation_origin: z.object({ locale: z.string(), id: z.string() }).optional(),
+  translation_status: z.enum(['translated', 'draft', 'partial', 'pending', 'original']).optional(),
   change_log: z.array(z.object({
     date: z.date().optional(),
     author: z.string().optional(),
@@ -20,8 +21,7 @@ const createBasePostSchema = (imageHelper: () => z.ZodTypeAny) => z.object({
     details: z.string().optional(),
     type: z.enum(['typo', 'minor', 'rewrite', 'translation', 'meta']).optional(),
     locale: z.string().optional()
-  })).optional(),
-  canonical: z.string().optional()
+  })).optional()
 })
 
 /**
