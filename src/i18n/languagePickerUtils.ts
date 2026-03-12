@@ -95,6 +95,14 @@ export function buildLanguageLinks<T extends TranslationLink>(builder: (l: UILan
 }
 
 /**
+ * Build language links where every locale is intentionally unavailable.
+ * Useful for routes that should show locked translation states (e.g. 404 pages).
+ */
+export function buildMissingLanguageLinks(): Record<UILanguages, TranslationLink> {
+  return buildLanguageLinks(l => missingLink(l))
+}
+
+/**
  * Build a single language link for a static (non-collection) page.
  * Accepts `targetLang` to match the signature of other `build*Link` helpers.
  */
