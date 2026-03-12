@@ -46,7 +46,3 @@ Si decides experimentar con pnpm, prueba primero en un branch y revisa que las d
 ## Por qué NPM es suficiente en este blog
 
 Porque puedo ejecutar todo el build y las tareas auxiliares desde `npm run ...`, las dependencias necesarias están publicadas en el registro y no necesito un comportamiento de instalación especial. Mantener la herramienta mínima reduce la complejidad y la barrera de entrada para contribuciones ocasionales.
-
----
-
-Si quieres, puedo añadir ejemplos de `npm run build`/`npm run dev` en el README o en la entrada misma, o crear una versión traducida en inglés para comenzar la traducción.

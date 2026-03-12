@@ -1,0 +1,21 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro'
+import LanguagePicker from '@components/LanguagePicker.astro'
+import { buildMissingLanguageLinks } from '@i18n/languagePickerUtils'
+
+const pageTitle = 'Site not found'
+const links = buildMissingLanguageLinks()
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  <LanguagePicker slot="langpicker" links={links} />
+  <main class="main-content">
+    <section>
+      <h1>😅 Oops, we couldn't find this page</h1>
+      <p>
+        The link might be outdated, or the content may have moved to a different URL.
+      </p>
+      <p><a href="/en/">Go to homepage</a></p>
+    </section>
+  </main>
+</BaseLayout>

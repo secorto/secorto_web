@@ -1,0 +1,24 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro'
+import LanguagePicker from '@components/LanguagePicker.astro'
+import { buildMissingLanguageLinks } from '@i18n/languagePickerUtils'
+
+const pageTitle = '404'
+const description = 'Page not found / Página no encontrada'
+const links = buildMissingLanguageLinks()
+---
+
+<BaseLayout pageTitle={pageTitle} description={description}>
+  <LanguagePicker slot="langpicker" links={links} />
+  <main class="main-content">
+    <section>
+      <h1>🌐 Page not found · Página no encontrada</h1>
+      <p>The URL seems invalid, outdated, or moved to a different location.</p>
+      <p>La URL parece inválida, desactualizada o movida a otra ubicación.</p>
+      <p>
+        <a href="/en/">Go to homepage (EN)</a> ·
+        <a href="/es/">Ir al inicio (ES)</a>
+      </p>
+    </section>
+  </main>
+</BaseLayout>

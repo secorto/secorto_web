@@ -4,7 +4,6 @@ tags:
   - opensource
 blogger_orig_url: http://scot3004.blogspot.com/2011/02/software-libre-o-cerrado-libertad-o.html
 date: 2011-02-17
-draft: true
 excerpt: Analisis sobre software libre vs propietario
 ---
 
