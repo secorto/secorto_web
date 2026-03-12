@@ -1,0 +1,125 @@
+---
+import { getCollection } from 'astro:content'
+import BaseLayout from '@layouts/BaseLayout.astro'
+import LanguagePicker from '@components/LanguagePicker.astro'
+import { languageKeys, type UILanguages } from '@i18n/ui'
+import { useTranslations } from '@i18n/utils'
+import { buildCollectionLink, buildLanguageLinks } from '@i18n/languagePickerUtils'
+import { sectionsConfig, type SectionType } from '@domain/section'
+import { getCanonicalTag, getLocalizedTag } from '@domain/tags'
+import { filterByLocale, mapEntryId } from '@utils/paths'
+
+interface TagSectionReference {
+  section: SectionType
+  sectionSlug: string
+  sectionLabel: string
+  tagSlug: string
+}
+
+interface TagGroup {
+  canonicalTag: string
+  localizedTag: string
+  references: TagSectionReference[]
+}
+
+export function getStaticPaths() {
+  return languageKeys.map((locale) => ({ params: { locale } }))
+}
+
+const { locale } = Astro.params as { locale: UILanguages }
+const t = useTranslations(locale)
+const pageTitle = t('tags.index_title')
+const links = buildLanguageLinks(l => buildCollectionLink(l, 'tags'))
+
+const groupedTags = new Map<string, { localizedTag: string; references: Map<SectionType, TagSectionReference> }>()
+
+for (const [sectionKey, config] of Object.entries(sectionsConfig) as [SectionType, (typeof sectionsConfig)[SectionType]][]) {
+  const allEntries = mapEntryId(await getCollection(config.collection))
+  const localeEntries = filterByLocale(allEntries, locale)
+
+  for (const entry of localeEntries) {
+    const tags = entry.data.tags ?? []
+    for (const tag of tags) {
+      const canonicalTag = getCanonicalTag(tag, locale)
+      const localizedTag = getLocalizedTag(canonicalTag, locale)
+
+      const current = groupedTags.get(canonicalTag) ?? {
+        localizedTag,
+        references: new Map<SectionType, TagSectionReference>()
+      }
+
+      if (!current.references.has(sectionKey)) {
+        current.references.set(sectionKey, {
+          section: sectionKey,
+          sectionSlug: config.routes[locale],
+          sectionLabel: t(config.translationKey),
+          tagSlug: localizedTag
+        })
+      }
+
+      groupedTags.set(canonicalTag, current)
+    }
+  }
+}
+
+const tagGroups: TagGroup[] = Array.from(groupedTags.entries())
+  .map(([canonicalTag, group]) => ({
+    canonicalTag,
+    localizedTag: group.localizedTag,
+    references: Array.from(group.references.values()).sort((a, b) => a.sectionLabel.localeCompare(b.sectionLabel))
+  }))
+  .sort((a, b) => a.localizedTag.localeCompare(b.localizedTag))
+---
+
+<BaseLayout pageTitle={pageTitle} description={t('tags.index_description')}>
+  <LanguagePicker slot="langpicker" links={links} />
+
+  <main class="main-content">
+    <section>
+      <h1>{t('tags.index_title')}</h1>
+      <p>{t('tags.index_description')}</p>
+
+      {tagGroups.length === 0 ? (
+        <p>{t('tags.untranslated_notice')}</p>
+      ) : (
+        <ul class="tag-groups" data-testid="global-tag-groups">
+          {tagGroups.map((group) => (
+            <li class="tag-group" data-testid={`global-tag-${group.canonicalTag}`}>
+              <h2>{group.localizedTag}</h2>
+              <p>{t('tags.available_in')}:</p>
+              <p>
+                {group.references.map((reference, index) => (
+                  <Fragment>
+                    {index > 0 && ' / '}
+                    <a href={`/${locale}/${reference.sectionSlug}/tags/${encodeURIComponent(reference.tagSlug)}`}>
+                      {reference.sectionLabel}
+                    </a>
+                  </Fragment>
+                ))}
+              </p>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .tag-groups {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+  }
+
+  .tag-group {
+    border: dotted 2px var(--colors-primary);
+    border-radius: .5em;
+    padding: 1rem;
+  }
+
+  .tag-group h2 {
+    margin: 0 0 .5rem;
+  }
+</style>

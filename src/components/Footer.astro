@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import Avatar from "@assets/img/avatar-64.jpg";
 import { useTranslations } from '@i18n/utils';
+import { resolveLocalized } from '@i18n/rootMap';
 import type { UILanguages } from '@i18n/ui';
 type Props = Record<string, never>;
 const locale = Astro.currentLocale as UILanguages;
@@ -23,6 +24,9 @@ const site = import.meta.env.SITE
           <a href="https://github.com/scot3004" target="_blank" rel="noopener noreferrer" class="css-yze98l">GitHub</a>,
           <a href="https://linkedin.com/in/scot3004" target="_blank" rel="noopener noreferrer" class="css-yze98l">LinkedIn</a>
         </div>
+        <p>
+          <a href={`/${locale}/${resolveLocalized('tags', locale)}`}>{t('footer.tags')}</a>
+        </p>
       </div>
     </div>
   </div>

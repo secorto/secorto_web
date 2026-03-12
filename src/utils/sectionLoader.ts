@@ -1,7 +1,6 @@
 import type { UILanguages } from '@i18n/ui'
 import { getPostsByLocale, getUniqueTags } from '@utils/paths'
 import { getSectionConfigByRoute } from '@utils/sections'
-import { isCollectionWithTags, type CollectionWithTags, type PostEntry } from '@domain/post'
 
 /**
  * Carga una sección basada en el parámetro de ruta (URL)
@@ -13,7 +12,7 @@ export async function loadSectionByRoute(
 ) {
   const config = getSectionConfigByRoute(sectionSlug, locale)
   const posts = await getPostsByLocale(config.collection, locale)
-  const tags: string[] = isCollectionWithTags(config.collection) ? getUniqueTags(posts as PostEntry<CollectionWithTags>[]) : []
+  const tags = getUniqueTags(posts)
   return {
     config,
     posts,

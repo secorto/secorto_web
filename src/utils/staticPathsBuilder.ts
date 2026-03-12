@@ -2,10 +2,9 @@ import { getCollection } from 'astro:content'
 import { languageKeys, type UILanguages } from '@i18n/ui'
 import { sectionsConfig, type SectionConfig } from '@domain/section'
 import { filterByLocale, getUniqueTags, mapEntryId } from './paths'
-import { isCollectionWithTags, type CollectionWithTags, type PostEntry } from '@domain/post'
+import { type PostEntry } from '@domain/post'
 import { buildTagLocaleMap } from './translationHelpers'
 import { tagTranslations } from '@domain/tags'
-import type { SectionType } from '@domain/section'
 import type { CollectionEntry, CollectionKey } from 'astro:content'
 
 /** Minimal shape for the injected collection fetcher — easier to mock than the full generic overload. */
@@ -31,7 +30,7 @@ export interface TagPath {
   }
   props: {
     tag: string
-    allEntries: PostEntry<CollectionWithTags>[]
+    allEntries: PostEntry<CollectionKey>[]
     config: SectionConfig
     tagLocaleMap: Record<string, Partial<Record<UILanguages, string>>>
   }
@@ -77,9 +76,7 @@ export async function buildSectionIndexPaths(
 
     for (const locale of languageKeys) {
       const posts = filterByLocale(allEntries, locale)
-      const tags = isCollectionWithTags(config.collection)
-        ? getUniqueTags(posts as PostEntry<CollectionWithTags>[])
-        : []
+      const tags = getUniqueTags(posts)
 
       paths.push({
         params: { locale, section: config.routes[locale] },
@@ -93,7 +90,6 @@ export async function buildSectionIndexPaths(
 
 /**
  * Construye todas las rutas estáticas para páginas de tags.
- * Solo genera rutas para secciones que tienen tags habilitados.
  * Incluye allEntries y config en props para evitar llamadas redundantes en el render.
  * @param fetchCollection - Inyectable para testing (default: getCollection de Astro)
  * @returns Array de paths para getStaticPaths
@@ -103,13 +99,10 @@ export async function buildTagPaths(
 ): Promise<TagPath[]> {
   const paths: TagPath[] = []
 
-  for (const [sectionType, config] of Object.entries(sectionsConfig) as [SectionType, SectionConfig][]) {
-    if (!isCollectionWithTags(config.collection)) continue
-
-    // isCollectionWithTags guard above narrows config.collection to CollectionWithTags
-    const collectedEntries = await fetchCollection(config.collection as CollectionWithTags)
-    const allEntries = mapEntryId(collectedEntries) as PostEntry<CollectionWithTags>[]
-    const tagLocaleMap = buildTagLocaleMap(allEntries, tagTranslations[sectionType])
+  for (const config of Object.values(sectionsConfig)) {
+    const collectedEntries = await fetchCollection(config.collection)
+    const allEntries = mapEntryId(collectedEntries)
+    const tagLocaleMap = buildTagLocaleMap(allEntries, tagTranslations)
 
     for (const locale of languageKeys) {
       const localePosts = filterByLocale(allEntries, locale)

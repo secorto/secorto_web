@@ -8,7 +8,7 @@ import LanguagePicker from '@components/LanguagePicker.astro'
 import { useTranslations } from '@i18n/utils'
 import type { UILanguages } from '@i18n/ui'
 import { buildSectionIndexPaths, type SectionPath } from '@utils/staticPathsBuilder'
-import { isCollectionWithTags, type PostEntry } from '@domain/post'
+import { type PostEntry } from '@domain/post'
 import { buildCollectionLink, buildLanguageLinks } from '@i18n/languagePickerUtils'
 import { findCanonicalSectionKey } from '@i18n/rootMap'
 
@@ -29,7 +29,7 @@ const links = buildLanguageLinks(l => buildCollectionLink(l, canonicalSection))
 
 <BaseLayout pageTitle={pageTitle}>
   <LanguagePicker slot="langpicker" links={links} />
-  {isCollectionWithTags(config.collection) && tags.length > 0 && (
+  {tags.length > 0 && (
     <Tags route={`/${locale}/${section}/tags/`} tags={tags} />
   )}
   {config.listComponent === 'ListPost' && (

@@ -1,15 +1,5 @@
 import type { CollectionKey, CollectionEntry } from 'astro:content'
 
-export type CollectionWithTags = {
-  [K in CollectionKey]: 'tags' extends keyof CollectionEntry<K>['data'] ? K : never
-}[CollectionKey]
-
-const TAGS_COLLECTIONS: Record<CollectionWithTags, true> = { blog: true, talk: true }
-
-export function isCollectionWithTags(collection: CollectionKey): collection is CollectionWithTags {
-  return collection in TAGS_COLLECTIONS
-}
-
 export type PostEntry<C extends CollectionKey> = CollectionEntry<C> & {
   cleanId: string,
   canonicalId: string
