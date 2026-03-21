@@ -38,35 +38,33 @@ const tagGroups: TagGroup[] = buildGlobalTagGroups(locale, sectionInputs)
 <BaseLayout pageTitle={pageTitle} description={t('tags.index_description')}>
   <LanguagePicker slot="langpicker" links={links} />
 
-  <main class="main-content">
-    <section>
-      <h1>{t('tags.index_title')}</h1>
-      <p>{t('tags.index_description')}</p>
+  <section>
+    <h1 data-testid="tags-title">{t('tags.index_title')}</h1>
+    <p data-testid="tags-description">{t('tags.index_description')}</p>
 
-      {tagGroups.length === 0 ? (
-        <p>{t('tags.untranslated_notice')}</p>
-      ) : (
-        <ul class="tag-groups" data-testid="global-tag-groups">
-          {tagGroups.map((group) => (
-            <li class="tag-group" data-testid={`global-tag-${group.canonicalTag}`}>
-              <h2>{group.localizedTag}</h2>
-              <p>{t('tags.available_in')}:</p>
-              <p>
-                {group.references.map((reference, index) => (
-                  <Fragment>
-                    {index > 0 && ' / '}
-                    <a href={`/${locale}/${reference.sectionSlug}/tags/${encodeURIComponent(reference.tagSlug)}`}>
-                      {reference.sectionLabel}
-                    </a>
-                  </Fragment>
-                ))}
-              </p>
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
-  </main>
+    {tagGroups.length === 0 ? (
+      <p>{t('tags.untranslated_notice')}</p>
+    ) : (
+      <ul class="tag-groups" data-testid="global-tag-groups">
+        {tagGroups.map((group) => (
+          <li class="tag-group" data-testid={`global-tag-${group.canonicalTag}`}>
+            <h2>{group.localizedTag}</h2>
+            <p>
+              {t('tags.available_in')}:
+              {group.references.map((reference, index) => (
+                <Fragment>
+                  {index > 0 && ' / '}
+                  <a href={`/${locale}/${reference.sectionSlug}/tags/${encodeURIComponent(reference.tagSlug)}`}>
+                    {reference.sectionLabel}
+                  </a>
+                </Fragment>
+              ))}
+            </p>
+          </li>
+        ))}
+      </ul>
+    )}
+  </section>
 </BaseLayout>
 
 <style>
