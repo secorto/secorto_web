@@ -6,7 +6,7 @@ describe('loadSectionByRoute', () => {
 
     const mockPosts = [{ id: 'es/one', data: { slug: 'one' } }]
 
-    vi.doMock('@config/sections', () => ({
+    vi.doMock('@utils/sections', () => ({
       getSectionConfigByRoute: (_route: string, _locale: string) => ({ collection: 'blog', routes: { es: 'blog', en: 'blog' } })
     }))
 
@@ -29,7 +29,7 @@ describe('loadSectionByRoute', () => {
 
     const mockPosts = [{ id: 'es/one', data: { slug: 'one' } }]
 
-    vi.doMock('@config/sections', () => ({
+    vi.doMock('@utils/sections', () => ({
       getSectionConfigByRoute: (_route: string, _locale: string) => ({ collection: 'work', routes: { es: 'trabajo', en: 'work' } })
     }))
 

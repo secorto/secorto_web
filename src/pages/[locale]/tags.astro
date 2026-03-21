@@ -42,7 +42,7 @@ const tagGroups: TagGroup[] = buildGlobalTagGroups(locale, sectionInputs)
     <p data-testid="tags-description">{t('tags.index_description')}</p>
 
     {tagGroups.length === 0 ? (
-      <p>{t('tags.untranslated_notice')}</p>
+      <p>{t('tags.index_no_tags')}</p>
     ) : (
       <ul class="tag-groups" data-testid="global-tag-groups">
         {tagGroups.map((group) => (
