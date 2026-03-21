@@ -17,6 +17,27 @@ export const tagTranslations: TagMap = {
   games: { en: 'games', es: 'juegos' },
 }
 
+/**
+ * Mapea tags por locale para búsqueda O(1) de canonicales.
+ * Estructura: { locale: { localizedSlug: canonicalTag } }
+ */
+const mapTagByLocale = (translations: TagMap): Record<string, Record<string, string>> => {
+  const result: Record<string, Record<string, string>> = {}
+
+  for (const [canonical, locales] of Object.entries(translations)) {
+    for (const [locale, slug] of Object.entries(locales)) {
+      if (!result[locale]) {
+        result[locale] = {}
+      }
+      result[locale][slug] = canonical
+    }
+  }
+
+  return result
+}
+
+const tagsByLocale = mapTagByLocale(tagTranslations)
+
 export interface TaggableEntry {
   data: {
     /** Array opcional de tags asociados a esta entrada */
@@ -56,15 +77,14 @@ export interface TagGroup {
 }
 
 /**
- * Convierte un tag localizado o canónico a su forma canónica.
+ * Convierte un tag localizado o canónico a su forma canónica (O(1) lookup).
  * Tags que no están en tagTranslations se retornan sin cambios.
  * @param tag - El tag a convertir (puede ser localizado o canónico)
  * @param lang - El contexto de idioma para la búsqueda de traducción
  * @returns El tag canónico (forma en inglés)
  */
 export function getCanonicalTag(tag: string, lang: UILanguages): string {
-  const mappedTag = Object.entries(tagTranslations).find(([, locales]) => locales[lang] === tag)
-  return mappedTag?.[0] ?? tag
+  return tagsByLocale[lang]?.[tag] ?? tag
 }
 
 /**
