@@ -2,7 +2,8 @@ import { describe, test, expect, vi } from 'vitest'
 import {
   buildSectionIndexPaths,
   buildTagPaths,
-  buildAllDetailPaths
+  buildAllDetailPaths,
+  buildTagIndexPaths
 } from '@utils/staticPathsBuilder.adapters'
 import type { FetchCollection } from '@utils/staticPathsBuilder'
 import type { CollectionKey, CollectionEntry } from 'astro:content'
@@ -47,7 +48,7 @@ describe('staticPathsBuilder.adapters', () => {
     })
 
     test('uses injected fetchCollection with default getCollection', async () => {
-      const customFetch: FetchCollection = vi.fn(async () => createMockEntries(2))
+      const customFetch: FetchCollection = vi.fn(async () => createMockEntries('blog', 2))
 
       const result = await buildSectionIndexPaths(customFetch)
 
@@ -69,7 +70,7 @@ describe('staticPathsBuilder.adapters', () => {
   describe('buildTagPaths (adapter with injected sectionsConfig)', () => {
     test('adapts Core with default sectionsConfig', async () => {
       const mockGetCollection: FetchCollection = vi.fn(async () => [
-        createMockEntries(1, { tags: ['typescript'] })[0]
+        createMockEntries('blog', 1, { tags: ['typescript'] })[0]
       ])
 
       const result = await buildTagPaths(mockGetCollection)
@@ -81,8 +82,8 @@ describe('staticPathsBuilder.adapters', () => {
 
     test('passes all deps to Core correctly', async () => {
       const entries = [
-        createMockEntries(1, { tags: ['test', 'astro'] })[0],
-        createMockEntries(1, { id: 'en/post-2', tags: ['web'] })[0]
+        createMockEntries('blog', 1, { tags: ['test', 'astro'] })[0],
+        createMockEntries('blog', 1, { id: 'en/post-2', tags: ['web'] })[0]
       ]
       const mockGetCollection: FetchCollection = vi.fn(async () => entries)
 
@@ -115,7 +116,7 @@ describe('staticPathsBuilder.adapters', () => {
     })
 
     test('injects sectionsConfig automatically without requiring parameter', async () => {
-      const mockGetCollection: FetchCollection = vi.fn(async () => createMockEntries(1))
+      const mockGetCollection: FetchCollection = vi.fn(async () => createMockEntries('blog', 1))
 
       // Note: adapter has signature (fetchCollection) - NO sections parameter
       const result = await buildAllDetailPaths(mockGetCollection)
@@ -145,6 +146,68 @@ describe('staticPathsBuilder.adapters', () => {
     })
   })
 
+  describe('buildTagIndexPaths (adapter with injected sectionsConfig)', () => {
+    test('adapts Core with default sectionsConfig', async () => {
+      const mockGetCollection: FetchCollection = vi.fn(async (collection: CollectionKey) => {
+        const collections: Partial<Record<CollectionKey, CollectionEntry<CollectionKey>[]>> = {
+          blog: collectionMocks.blog(2),
+          talk: collectionMocks.talk(1)
+        }
+        return collections[collection] || []
+      })
+
+      const result = await buildTagIndexPaths(mockGetCollection)
+
+      // Should call getCollection once per mocked section (caching optimization)
+      expect(mockGetCollection).toHaveBeenCalledTimes(2)
+      // Should have one path per locale
+      expect(result).toHaveLength(2)
+    })
+
+    test('caches all collections in props', async () => {
+      const mockGetCollection: FetchCollection = vi.fn(async (collection: CollectionKey) => {
+        const collections: Partial<Record<CollectionKey, CollectionEntry<CollectionKey>[]>> = {
+          blog: collectionMocks.blog(1),
+          talk: collectionMocks.talk(1)
+        }
+        return collections[collection] || []
+      })
+
+      const result = await buildTagIndexPaths(mockGetCollection)
+
+      // Each path should have all cached entries
+      for (const path of result) {
+        expect(path.props.allSectionEntries).toHaveProperty('blog')
+        expect(path.props.allSectionEntries).toHaveProperty('talk')
+        expect(Array.isArray(path.props.allSectionEntries.blog)).toBe(true)
+        expect(Array.isArray(path.props.allSectionEntries.talk)).toBe(true)
+      }
+    })
+
+    test('returns paths with proper locale params', async () => {
+      const mockGetCollection: FetchCollection = vi.fn(async () => [])
+
+      const result = await buildTagIndexPaths(mockGetCollection)
+
+      expect(result).toHaveLength(2)
+      const locales = result.map(p => p.params.locale).sort()
+      expect(locales).toEqual(['en', 'es'])
+    })
+
+    test('maintains adapter responsibility: uses sectionsConfig automatically', async () => {
+      const mockGetCollection: FetchCollection = vi.fn(async () => [])
+
+      // Adapter does NOT require sections as parameter - injects them
+      const result = await buildTagIndexPaths(mockGetCollection)
+
+      // If adapter didn't inject sectionsConfig, would have different call count
+      // With 2 mocked sections, should call getCollection exactly twice
+      expect(mockGetCollection).toHaveBeenCalledTimes(2)
+      // Verify that paths are still generated for all locales
+      expect(result).toHaveLength(2)
+    })
+  })
+
   describe('adapter pattern: explicit coupling at boundary', () => {
     test('all adapters have sectionsConfig knowledge at module level', async () => {
       // Adapters import and use sectionsConfig directly
@@ -161,6 +224,10 @@ describe('staticPathsBuilder.adapters', () => {
 
       expect(async () => {
         await buildAllDetailPaths(mockGetCollection)
+      }).not.toThrow()
+
+      expect(async () => {
+        await buildTagIndexPaths(mockGetCollection)
       }).not.toThrow()
     })
   })

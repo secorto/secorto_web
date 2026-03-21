@@ -7,6 +7,7 @@ import type { SectionConfig } from '@domain/section'
  */
 
 export interface MockEntryOptions {
+  collection?: CollectionKey
   id?: string
   title?: string
   date?: Date
@@ -18,8 +19,12 @@ export interface MockEntryOptions {
 /**
  * Crea una entrada de colección mínima válida con los campos esperados.
  * Proporciona valores por defecto realistas para campos requeridos.
+ * La colección debe especificarse explícitamente para evitar inconsistencias con datos reales.
  */
-export function createMockEntry(options: MockEntryOptions = {}): CollectionEntry<CollectionKey> {
+export function createMockEntry(
+  collection: CollectionKey,
+  options: Omit<MockEntryOptions, 'collection'> = {}
+): CollectionEntry<CollectionKey> {
   const {
     id = 'es/test-entry',
     title = 'Test Entry',
@@ -31,7 +36,7 @@ export function createMockEntry(options: MockEntryOptions = {}): CollectionEntry
 
   return {
     id,
-    collection: 'blog' as CollectionKey,
+    collection,
     data: {
       title,
       date,
@@ -52,17 +57,20 @@ export function createMockEntry(options: MockEntryOptions = {}): CollectionEntry
 
 /**
  * Crea múltiples entradas para una colección.
+ * Todas las entradas comparten la misma colección especificada explícitamente.
  */
 export function createMockEntries(
+  collection: CollectionKey,
   count: number,
-  baseOptions: MockEntryOptions = {},
+  baseOptions: Omit<MockEntryOptions, 'collection'> = {},
   idPrefix = 'entry'
 ): CollectionEntry<CollectionKey>[] {
   return Array.from({ length: count }, (_, i) => {
     const locale = i % 2 === 0 ? 'es' : 'en'
-    return createMockEntry({
+    const id = `${locale}/${idPrefix}-${i + 1}`
+    return createMockEntry(collection, {
       ...baseOptions,
-      id: `${locale}/${idPrefix}-${i + 1}`
+      id
     })
   })
 }
@@ -70,21 +78,23 @@ export function createMockEntries(
 /**
  * Factory para crear mocks de colecciones completas por tipo.
  * Facilita crear escenarios realistas en los tests.
+ * Cada factory especifica explícitamente su collection.
  */
 export const collectionMocks = {
   blog: (count = 2): CollectionEntry<CollectionKey>[] =>
-    createMockEntries(count, { title: 'Blog Post' }, 'blog-post'),
+    createMockEntries('blog', count, { title: 'Blog Post' }, 'blog-post'),
 
   talk: (count = 2): CollectionEntry<CollectionKey>[] =>
-    createMockEntries(count, { title: 'Talk' }, 'talk'),
+    createMockEntries('talk', count, { title: 'Talk' }, 'talk'),
 
   work: (count = 2): CollectionEntry<CollectionKey>[] =>
-    createMockEntries(count, { title: 'Work' }, 'work'),
+    createMockEntries('work', count, { title: 'Work' }, 'work'),
 
   projects: (count = 2): CollectionEntry<CollectionKey>[] =>
-    createMockEntries(count, { title: 'Project' }, 'project'),
+    createMockEntries('projects', count, { title: 'Project' }, 'project'),
 
-  community: (): CollectionEntry<CollectionKey>[] => []
+  community: (): CollectionEntry<CollectionKey>[] =>
+    createMockEntries('community', 0)
 }
 
 /**

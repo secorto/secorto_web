@@ -62,6 +62,19 @@ export interface DetailPath {
   }
 }
 
+/**
+ * TagIndexPath: Para la página de índice de tags global.
+ * Cachea todos los fetches (una sola vez) y lo pasa via props.
+ */
+export interface TagIndexPath {
+  params: {
+    locale: UILanguages
+  }
+  props: {
+    allSectionEntries: Record<string, PostEntry<CollectionKey>[]>
+  }
+}
+
 
 /**
  * Core: Construye rutas de índices de secciones sin acoplamiento.
@@ -154,4 +167,32 @@ export async function buildAllDetailPathsCore(
   }
 
   return allPaths
+}
+
+/**
+ * Core: Construye rutas del índice de tags global (sin acoplamiento).
+ * Cachea las colecciones UNA sola vez en getStaticPaths y las comparte con todas las rutas locales.
+ * Esto evita duplicar fetches (sections × locales = N fetches vs 1 cacheo).
+ *
+ * @param sections - Secciones a procesar (inyectadas)
+ * @param fetchCollection - Función para obtener colecciones
+ * @returns Array de paths para getStaticPaths (uno por locale, con datos cacheados)
+ */
+export async function buildTagIndexPathsCore(
+  sections: SectionConfig[],
+  fetchCollection: FetchCollection
+): Promise<TagIndexPath[]> {
+  // Fetch todas las colecciones UNA sola vez (no por locale)
+  const allSectionEntries: Record<string, PostEntry<CollectionKey>[]> = {}
+
+  for (const config of sections) {
+    const entries = await fetchCollection(config.collection)
+    allSectionEntries[config.collection] = mapEntryId(entries)
+  }
+
+  // Generar rutas compartiendo los datos de colecciones cacheados
+  return languageKeys.map((locale) => ({
+    params: { locale },
+    props: { allSectionEntries }
+  }))
 }

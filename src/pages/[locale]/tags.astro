@@ -1,28 +1,29 @@
 ---
-import { getCollection } from 'astro:content'
 import BaseLayout from '@layouts/BaseLayout.astro'
 import LanguagePicker from '@components/LanguagePicker.astro'
-import { languageKeys, type UILanguages } from '@i18n/ui'
+import { type UILanguages } from '@i18n/ui'
 import { useTranslations } from '@i18n/utils'
 import { buildCollectionLink, buildLanguageLinks } from '@i18n/languagePickerUtils'
 import { sectionsConfig, type SectionType } from '@domain/section'
 import { buildGlobalTagGroups, type TagGroup, type TagGroupSectionInput } from '@domain/tags'
-import { filterByLocale, mapEntryId } from '@utils/paths'
+import { filterByLocale } from '@utils/paths'
+import { buildTagIndexPaths, type TagIndexPath } from '@utils/staticPathsBuilder.adapters'
 
-export function getStaticPaths() {
-  return languageKeys.map((locale) => ({ params: { locale } }))
+export async function getStaticPaths() {
+  return await buildTagIndexPaths()
 }
 
 const { locale } = Astro.params as { locale: UILanguages }
+const { allSectionEntries } = Astro.props as TagIndexPath['props']
 const t = useTranslations(locale)
 const pageTitle = t('tags.index_title')
 const links = buildLanguageLinks(l => buildCollectionLink(l, 'tags'))
 
+// Construir sectionInputs a partir de datos cacheados (sin fetch)
 const sectionInputs: TagGroupSectionInput[] = []
 
 for (const [sectionKey, config] of Object.entries(sectionsConfig) as [SectionType, (typeof sectionsConfig)[SectionType]][]) {
-  const allEntries = mapEntryId(await getCollection(config.collection))
-  const localeEntries = filterByLocale(allEntries, locale)
+  const localeEntries = filterByLocale(allSectionEntries[config.collection], locale)
 
   sectionInputs.push({
     section: sectionKey,

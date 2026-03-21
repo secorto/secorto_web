@@ -3,6 +3,7 @@ import {
   buildAllDetailPathsCore,
   buildSectionIndexPathsCore,
   buildTagPathsCore,
+  buildTagIndexPathsCore,
   type FetchCollection
 } from '@utils/staticPathsBuilder'
 import type { CollectionEntry, CollectionKey } from 'astro:content'
@@ -45,7 +46,7 @@ describe('buildAllDetailPathsCore', () => {
   })
 
   test('generates correct params structure', async () => {
-    const mockGetCollection: FetchCollection = vi.fn(async () => createMockEntries(2))
+    const mockGetCollection: FetchCollection = vi.fn(async () => createMockEntries('blog', 2))
     const mockSections = createMockSectionsArray(['blog'])
 
     const result = await buildAllDetailPathsCore(mockSections, mockGetCollection)
@@ -62,7 +63,7 @@ describe('buildAllDetailPathsCore', () => {
   })
 
   test('properly injects all dependencies', async () => {
-    const mockEntries = createMockEntries(1)
+    const mockEntries = createMockEntries('blog', 1)
     const mockGetCollection: FetchCollection = vi.fn(async () => mockEntries)
     const mockSections = createMockSectionsArray(['blog'])
 
@@ -112,8 +113,8 @@ describe('buildSectionIndexPathsCore', () => {
 
   test('extracts tags from posts', async () => {
     const mockGetCollection: FetchCollection = vi.fn(async () => [
-      createMockEntries(1, { tags: ['typescript', 'testing'] })[0],
-      createMockEntries(1, { id: 'en/post-2', tags: ['testing'] })[0]
+      createMockEntries('blog', 1, { tags: ['typescript', 'testing'] })[0],
+      createMockEntries('blog', 1, { id: 'en/post-2', tags: ['testing'] })[0]
     ])
     const mockSections = createMockSectionsArray(['blog'])
 
@@ -128,8 +129,8 @@ describe('buildSectionIndexPathsCore', () => {
 describe('buildTagPathsCore', () => {
   test('generates tag paths for provided sections', async () => {
     const mockGetCollection: FetchCollection = vi.fn(async () => [
-      createMockEntries(1, { tags: ['typescript', 'astro'] })[0],
-      createMockEntries(1, { id: 'en/post-1', tags: ['testing'] })[0]
+      createMockEntries('blog', 1, { tags: ['typescript', 'astro'] })[0],
+      createMockEntries('blog', 1, { id: 'en/post-1', tags: ['testing'] })[0]
     ])
     const mockSections = createMockSectionsArray(['blog', 'talk'])
 
@@ -141,7 +142,7 @@ describe('buildTagPathsCore', () => {
 
   test('includes tag in both params and props', async () => {
     const mockGetCollection: FetchCollection = vi.fn(async () => [
-      createMockEntries(1, { tags: ['typescript'] })[0]
+      createMockEntries('blog', 1, { tags: ['typescript'] })[0]
     ])
     const mockSections = createMockSectionsArray(['blog'])
 
@@ -156,7 +157,7 @@ describe('buildTagPathsCore', () => {
 
   test('includes allEntries and config in props', async () => {
     const mockGetCollection: FetchCollection = vi.fn(async () => [
-      createMockEntries(1, { tags: ['typescript'] })[0]
+      createMockEntries('blog', 1, { tags: ['typescript'] })[0]
     ])
     const mockSections = createMockSectionsArray(['blog'])
 
@@ -172,7 +173,7 @@ describe('buildTagPathsCore', () => {
 
   test('returns empty when no posts have tags', async () => {
     const mockGetCollection: FetchCollection = vi.fn(async () => [
-      createMockEntries(1, { tags: [] })[0]
+      createMockEntries('blog', 1, { tags: [] })[0]
     ])
     const mockSections = createMockSectionsArray(['blog'])
 
@@ -183,10 +184,10 @@ describe('buildTagPathsCore', () => {
 
   test('deduplicates tags within the same locale', async () => {
     const mockGetCollection: FetchCollection = vi.fn(async () => [
-      createMockEntries(1, { tags: ['astro', 'astro', 'ts'] })[0],
-      createMockEntries(1, { id: 'es/post-2', tags: ['ts'] })[0],
-      createMockEntries(1, { id: 'en/post-1', tags: ['astro', 'astro', 'ts'] })[0],
-      createMockEntries(1, { id: 'en/post-2', tags: ['ts'] })[0]
+      createMockEntries('blog', 1, { tags: ['astro', 'astro', 'ts'] })[0],
+      createMockEntries('blog', 1, { id: 'es/post-2', tags: ['ts'] })[0],
+      createMockEntries('blog', 1, { id: 'en/post-1', tags: ['astro', 'astro', 'ts'] })[0],
+      createMockEntries('blog', 1, { id: 'en/post-2', tags: ['ts'] })[0]
     ])
     const mockSections = createMockSectionsArray(['blog'])
 
@@ -211,5 +212,77 @@ describe('buildTagPathsCore', () => {
     const result = await buildTagPathsCore(mockSections, mockGetCollection)
 
     expect(result).toEqual([])
+  })
+})
+
+describe('buildTagIndexPathsCore', () => {
+  test('generates one path per locale', async () => {
+    const mockGetCollection: FetchCollection = vi.fn(async () => createMockEntries('blog', 1))
+    const mockSections = createMockSectionsArray(['blog'])
+
+    const result = await buildTagIndexPathsCore(mockSections, mockGetCollection)
+
+    expect(result).toHaveLength(2) // 2 locales (es, en)
+  })
+
+  test('includes correct structure with allSectionEntries', async () => {
+    const mockGetCollection: FetchCollection = vi.fn(async () => createMockEntries('blog', 1))
+    const mockSections = createMockSectionsArray(['blog'])
+
+    const result = await buildTagIndexPathsCore(mockSections, mockGetCollection)
+
+    expect(result.length).toBeGreaterThan(0)
+    for (const path of result) {
+      expect(path.params.locale).toMatch(/es|en/)
+      expect(path.props.allSectionEntries).toBeDefined()
+      expect(typeof path.props.allSectionEntries).toBe('object')
+    }
+  })
+
+  test('caches entries by collection', async () => {
+    const mockGetCollection: FetchCollection = vi.fn(async (collection: CollectionKey) => {
+      const collections: Partial<Record<CollectionKey, CollectionEntry<CollectionKey>[]>> = {
+        blog: collectionMocks.blog(2),
+        talk: collectionMocks.talk(1)
+      }
+      return collections[collection] || []
+    })
+    const mockSections = createMockSectionsArray(['blog', 'talk'])
+
+    const result = await buildTagIndexPathsCore(mockSections, mockGetCollection)
+
+    // Each route should have allSectionEntries with both collections
+    for (const path of result) {
+      expect(path.props.allSectionEntries).toHaveProperty('blog')
+      expect(path.props.allSectionEntries).toHaveProperty('talk')
+      expect(Array.isArray(path.props.allSectionEntries.blog)).toBe(true)
+      expect(Array.isArray(path.props.allSectionEntries.talk)).toBe(true)
+    }
+
+    // Verify that getCollection was called once per section (not per locale)
+    expect(mockGetCollection).toHaveBeenCalledTimes(2)
+  })
+
+  test('handles empty sections gracefully', async () => {
+    const mockGetCollection: FetchCollection = vi.fn(async () => [])
+    const mockSections: SectionConfig[] = []
+
+    const result = await buildTagIndexPathsCore(mockSections, mockGetCollection)
+
+    expect(result).toHaveLength(2) // 2 locales, but no collections
+    for (const path of result) {
+      expect(path.props.allSectionEntries).toEqual({})
+    }
+  })
+
+  test('properly injects all dependencies', async () => {
+    const mockEntries = createMockEntries('blog', 2)
+    const mockGetCollection: FetchCollection = vi.fn(async () => mockEntries)
+    const mockSections = createMockSectionsArray(['blog'])
+
+    const result = await buildTagIndexPathsCore(mockSections, mockGetCollection)
+
+    expect(mockGetCollection).toHaveBeenCalled()
+    expect(result.length).toBeGreaterThan(0)
   })
 })
