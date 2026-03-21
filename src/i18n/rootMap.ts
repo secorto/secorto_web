@@ -6,6 +6,7 @@ import { sectionsConfig } from '@domain/section'
 const extraRoutes: Record<string, Record<UILanguages, string>> = {
   // canonicalKey: { en: 'english-slug', es: 'spanish-slug' }
   about: { en: 'about', es: 'acerca-de' },
+  tags: { en: 'tags', es: 'tags' },
 }
 
 export const rootMap: Record<string, Record<UILanguages, string>> = Object.fromEntries(

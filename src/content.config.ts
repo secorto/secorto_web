@@ -55,6 +55,7 @@ const talkCollection = defineCollection({
 const workCollection = defineCollection({
   loader: glob({ pattern: '**\/[^_]*.md', base: "./src/content/work" }),
   schema: ({ image }) => createBasePostSchema(image).extend({
+    tags: z.array(z.string()).optional(),
     excerpt: z.string(),
     image: image(),
     role: z.string(),
@@ -75,6 +76,7 @@ const workCollection = defineCollection({
 const projectsCollection = defineCollection({
   loader: glob({ pattern: '**\/[^_]*.md', base: "./src/content/projects" }),
   schema: ({ image }) => createBasePostSchema(image).extend({
+    tags: z.array(z.string()).optional(),
     excerpt: z.string(),
     image: image(),
     role: z.string(),
@@ -93,6 +95,7 @@ const projectsCollection = defineCollection({
 const communityCollection = defineCollection({
   loader: glob({ pattern: '**\/[^_]*.md', base: "./src/content/community" }),
   schema: ({ image }) => createBasePostSchema(image).extend({
+    tags: z.array(z.string()).optional(),
     excerpt: z.string(),
     image: image(),
     role: z.string(),

@@ -1,11 +1,23 @@
-import { getCollection } from 'astro:content'
+/**
+ * Core business logic for building static paths.
+ *
+ * This module contains pure functions without global coupling.
+ * All dependencies (sections, collection fetcher) are explicitly injected.
+ *
+ * Architecture:
+ * - staticPathsBuilder.ts (this file): Core functions - pure and testable
+ * - staticPathsBuilder.adapters.ts: Adapters - inject sectionsConfig and provide prod defaults
+ *
+ * Tests import from this file (Core).
+ * Production code (Astro pages) imports from adapters.
+ */
+
 import { languageKeys, type UILanguages } from '@i18n/ui'
-import { sectionsConfig, type SectionConfig } from '@domain/section'
+import { type SectionConfig } from '@domain/section'
 import { filterByLocale, getUniqueTags, mapEntryId } from './paths'
-import { isCollectionWithTags, type CollectionWithTags, type PostEntry } from '@domain/post'
+import { type PostEntry } from '@domain/post'
 import { buildTagLocaleMap } from './translationHelpers'
 import { tagTranslations } from '@domain/tags'
-import type { SectionType } from '@domain/section'
 import type { CollectionEntry, CollectionKey } from 'astro:content'
 
 /** Minimal shape for the injected collection fetcher — easier to mock than the full generic overload. */
@@ -31,7 +43,7 @@ export interface TagPath {
   }
   props: {
     tag: string
-    allEntries: PostEntry<CollectionWithTags>[]
+    allEntries: PostEntry<CollectionKey>[]
     config: SectionConfig
     tagLocaleMap: Record<string, Partial<Record<UILanguages, string>>>
   }
@@ -50,36 +62,39 @@ export interface DetailPath {
   }
 }
 
-
 /**
- * Helper: Retorna iterador de todas las secciones.
+ * TagIndexPath: Para la página de índice de tags global.
+ * Cachea todos los fetches (una sola vez) y lo pasa via props.
  */
-function* iterateSections(): Generator<SectionConfig> {
-  for (const [_, config] of Object.entries(sectionsConfig)) {
-    yield config
+export interface TagIndexPath {
+  params: {
+    locale: UILanguages
+  }
+  props: {
+    allSectionEntries: Record<string, PostEntry<CollectionKey>[]>
   }
 }
 
+
 /**
- * Construye todas las rutas estáticas para índices de secciones.
- * Genera una ruta por sección × idioma. Incluye posts y tags en props
- * para evitar llamadas redundantes a getCollection en el render.
- * @param fetchCollection - Inyectable para testing (default: getCollection de Astro)
+ * Core: Construye rutas de índices de secciones sin acoplamiento.
+ * Recibe las secciones como parámetro explícito (array).
+ * @param sections - Secciones a procesar (inyectadas)
+ * @param fetchCollection - Función para obtener colecciones
  * @returns Array de paths para getStaticPaths
  */
-export async function buildSectionIndexPaths(
-  fetchCollection: FetchCollection = getCollection
+export async function buildSectionIndexPathsCore(
+  sections: SectionConfig[],
+  fetchCollection: FetchCollection
 ): Promise<SectionPath[]> {
   const paths: SectionPath[] = []
 
-  for (const config of iterateSections()) {
+  for (const config of sections) {
     const allEntries = mapEntryId(await fetchCollection(config.collection))
 
     for (const locale of languageKeys) {
       const posts = filterByLocale(allEntries, locale)
-      const tags = isCollectionWithTags(config.collection)
-        ? getUniqueTags(posts as PostEntry<CollectionWithTags>[])
-        : []
+      const tags = getUniqueTags(posts)
 
       paths.push({
         params: { locale, section: config.routes[locale] },
@@ -92,24 +107,22 @@ export async function buildSectionIndexPaths(
 }
 
 /**
- * Construye todas las rutas estáticas para páginas de tags.
- * Solo genera rutas para secciones que tienen tags habilitados.
- * Incluye allEntries y config en props para evitar llamadas redundantes en el render.
- * @param fetchCollection - Inyectable para testing (default: getCollection de Astro)
+ * Core: Construye rutas de páginas de tags sin acoplamiento.
+ * Recibe las secciones como parámetro explícito (array).
+ * @param sections - Secciones a procesar (inyectadas)
+ * @param fetchCollection - Función para obtener colecciones
  * @returns Array de paths para getStaticPaths
  */
-export async function buildTagPaths(
-  fetchCollection: FetchCollection = getCollection
+export async function buildTagPathsCore(
+  sections: SectionConfig[],
+  fetchCollection: FetchCollection
 ): Promise<TagPath[]> {
   const paths: TagPath[] = []
 
-  for (const [sectionType, config] of Object.entries(sectionsConfig) as [SectionType, SectionConfig][]) {
-    if (!isCollectionWithTags(config.collection)) continue
-
-    // isCollectionWithTags guard above narrows config.collection to CollectionWithTags
-    const collectedEntries = await fetchCollection(config.collection as CollectionWithTags)
-    const allEntries = mapEntryId(collectedEntries) as PostEntry<CollectionWithTags>[]
-    const tagLocaleMap = buildTagLocaleMap(allEntries, tagTranslations[sectionType])
+  for (const config of sections) {
+    const collectedEntries = await fetchCollection(config.collection)
+    const allEntries = mapEntryId(collectedEntries)
+    const tagLocaleMap = buildTagLocaleMap(allEntries, tagTranslations)
 
     for (const locale of languageKeys) {
       const localePosts = filterByLocale(allEntries, locale)
@@ -128,18 +141,19 @@ export async function buildTagPaths(
 }
 
 /**
- * Construye todas las rutas estáticas para páginas de detalle.
- * Genera una ruta por entrada × idioma en todas las secciones.
- * Incluye entry, allEntries y config en props para evitar llamadas redundantes en el render.
- * @param fetchCollection - Función para obtener colecciones (inyectada para testing)
+ * Core: Construye rutas de páginas de detalle sin acoplamiento.
+ * Recibe las secciones como parámetro explícito (array).
+ * @param sections - Secciones a procesar (inyectadas)
+ * @param fetchCollection - Función para obtener colecciones
  * @returns Array de paths para getStaticPaths
  */
-export async function buildAllDetailPaths(
+export async function buildAllDetailPathsCore(
+  sections: SectionConfig[],
   fetchCollection: FetchCollection
 ): Promise<DetailPath[]> {
   const allPaths: DetailPath[] = []
 
-  for (const config of iterateSections()) {
+  for (const config of sections) {
     const allEntries = mapEntryId(await fetchCollection(config.collection))
     for (const locale of languageKeys) {
       const sectionRoute = config.routes[locale]
@@ -153,4 +167,32 @@ export async function buildAllDetailPaths(
   }
 
   return allPaths
+}
+
+/**
+ * Core: Construye rutas del índice de tags global (sin acoplamiento).
+ * Cachea las colecciones UNA sola vez en getStaticPaths y las comparte con todas las rutas locales.
+ * Esto evita duplicar fetches (sections × locales = N fetches vs 1 cacheo).
+ *
+ * @param sections - Secciones a procesar (inyectadas)
+ * @param fetchCollection - Función para obtener colecciones
+ * @returns Array de paths para getStaticPaths (uno por locale, con datos cacheados)
+ */
+export async function buildTagIndexPathsCore(
+  sections: SectionConfig[],
+  fetchCollection: FetchCollection
+): Promise<TagIndexPath[]> {
+  // Fetch todas las colecciones UNA sola vez (no por locale)
+  const allSectionEntries: Record<string, PostEntry<CollectionKey>[]> = {}
+
+  for (const config of sections) {
+    const entries = await fetchCollection(config.collection)
+    allSectionEntries[config.collection] = mapEntryId(entries)
+  }
+
+  // Generar rutas compartiendo los datos de colecciones cacheados
+  return languageKeys.map((locale) => ({
+    params: { locale },
+    props: { allSectionEntries }
+  }))
 }

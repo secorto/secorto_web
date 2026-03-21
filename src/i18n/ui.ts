@@ -35,9 +35,14 @@ export const ui = {
     'post.video': 'Post video',
     'post.work_period': 'Period',
     'tags.untranslated_notice': 'This tag has no posts available in this language.',
+    'tags.index_title': 'Tags',
+    'tags.index_description': 'Browse all tags grouped by content type.',
+    'tags.index_no_tags': 'No tags available.',
+    'tags.available_in': 'Available in',
     'footer.avatar_alt': 'Featured image',
     'footer.role': 'Software developer',
-    'footer.follow': 'Follow me: '
+    'footer.follow': 'Follow me: ',
+    'footer.tags': 'Browse tags'
   },
   es: {
     'site.description': 'Blog personal de Sergio Orozco - Desarrollador, Conferencista, Entusiasta del Open Source',
@@ -64,9 +69,14 @@ export const ui = {
     'post.video': 'Video del post',
     'post.work_period': 'Periodo',
     'tags.untranslated_notice': 'Este tag no tiene posts disponibles en este idioma.',
+    'tags.index_title': 'Etiquetas',
+    'tags.index_description': 'Explora todas las etiquetas agrupadas por tipo de contenido.',
+    'tags.index_no_tags': 'No hay etiquetas disponibles.',
+    'tags.available_in': 'Disponible en',
     'footer.avatar_alt': 'Foto destacada',
     'footer.role': 'Desarrollador de software',
-    'footer.follow': 'Sígueme en: '
+    'footer.follow': 'Sígueme en: ',
+    'footer.tags': 'Explorar etiquetas'
   },
 } as const;
 

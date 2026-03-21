@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import type { UILanguages } from '@i18n/ui'
 
 const mockRootMap: Record<string, Record<string, string>> = {
   about: { en: 'about', es: 'acerca-de' },
@@ -201,6 +202,23 @@ describe('languagePickerUtils', () => {
       expect(links.en.isAvailable).toBe(false)
       expect(links.en.disabledReason).toBe('missing')
       delete mockRootMap['partial']
+    })
+  })
+
+  describe('buildMissingLanguageLinks', () => {
+    it('returns all locales unavailable with correct labels for 404 pages', async () => {
+      const { buildMissingLanguageLinks } = await import('@i18n/languagePickerUtils')
+      const { languages, languageKeys } = await import('@i18n/ui')
+      const links = buildMissingLanguageLinks()
+
+      expect(Object.keys(links)).toHaveLength(languageKeys.length)
+      for (const lang of languageKeys as UILanguages[]) {
+        const link = links[lang]
+        expect(link.isAvailable).toBe(false)
+        expect(link.disabledReason).toBe('missing')
+        expect(link.href).toBe('')
+        expect(link.label).toBe(languages[lang])
+      }
     })
   })
 })
