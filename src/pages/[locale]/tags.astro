@@ -39,7 +39,6 @@ const tagGroups: TagGroup[] = buildGlobalTagGroups(locale, sectionInputs)
   <LanguagePicker slot="langpicker" links={links} />
 
   <section>
-    <h1 data-testid="tags-title">{t('tags.index_title')}</h1>
     <p data-testid="tags-description">{t('tags.index_description')}</p>
 
     {tagGroups.length === 0 ? (

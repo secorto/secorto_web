@@ -8,7 +8,7 @@ export class TagsPage {
   }
 
   pageTitle(): Locator {
-    return this.page.getByTestId('tags-title')
+    return this.page.getByTestId('header-title')
   }
 
   pageDescription(): Locator {
