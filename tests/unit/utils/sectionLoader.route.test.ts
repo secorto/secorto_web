@@ -1,13 +1,13 @@
 import { describe, it, expect, vi } from 'vitest'
 
 describe('loadSectionByRoute', () => {
-  it('returns posts and tags when collection is blog', async () => {
+  it('returns posts and tags for blog section', async () => {
     vi.resetModules()
 
     const mockPosts = [{ id: 'es/one', data: { slug: 'one' } }]
 
     vi.doMock('@config/sections', () => ({
-      getSectionConfigByRoute: (_route: string, _locale: string) => ({ collection: 'blog', hasTags: true, routes: { es: 'blog', en: 'blog' } })
+      getSectionConfigByRoute: (_route: string, _locale: string) => ({ collection: 'blog', routes: { es: 'blog', en: 'blog' } })
     }))
 
     const getPostsMock = vi.fn(async () => mockPosts)
@@ -24,17 +24,17 @@ describe('loadSectionByRoute', () => {
     expect(getUniqueMock).toHaveBeenCalled()
   })
 
-  it('returns posts and empty tags when collection is work', async () => {
+  it('returns posts and tags for all sections including work', async () => {
     vi.resetModules()
 
     const mockPosts = [{ id: 'es/one', data: { slug: 'one' } }]
 
-    vi.doMock('@utils/sections', () => ({
+    vi.doMock('@config/sections', () => ({
       getSectionConfigByRoute: (_route: string, _locale: string) => ({ collection: 'work', routes: { es: 'trabajo', en: 'work' } })
     }))
 
     const getPostsMock = vi.fn(async () => mockPosts)
-    const getUniqueMock = vi.fn(() => ['should-not-be-called'])
+    const getUniqueMock = vi.fn(() => ['tag1', 'tag2'])
     vi.doMock('@utils/paths', () => ({ getPostsByLocale: getPostsMock, getUniqueTags: getUniqueMock }))
 
     const { loadSectionByRoute } = await import('@utils/sectionLoader')
@@ -42,8 +42,8 @@ describe('loadSectionByRoute', () => {
     const res = await loadSectionByRoute('trabajo', 'es')
     expect(res).not.toBeNull()
     expect(res!.posts).toEqual(mockPosts)
-    expect(res!.tags).toEqual([])
+    expect(res!.tags).toEqual(['tag1', 'tag2'])
     expect(getPostsMock).toHaveBeenCalledWith('work', 'es')
-    expect(getUniqueMock).not.toHaveBeenCalled()
+    expect(getUniqueMock).toHaveBeenCalled()
   })
 })

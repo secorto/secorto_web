@@ -1,6 +1,19 @@
-import { getCollection } from 'astro:content'
+/**
+ * Core business logic for building static paths.
+ *
+ * This module contains pure functions without global coupling.
+ * All dependencies (sections, collection fetcher) are explicitly injected.
+ *
+ * Architecture:
+ * - staticPathsBuilder.ts (this file): Core functions - pure and testable
+ * - staticPathsBuilder.adapters.ts: Adapters - inject sectionsConfig and provide prod defaults
+ *
+ * Tests import from this file (Core).
+ * Production code (Astro pages) imports from adapters.
+ */
+
 import { languageKeys, type UILanguages } from '@i18n/ui'
-import { sectionsConfig, type SectionConfig } from '@domain/section'
+import { type SectionConfig } from '@domain/section'
 import { filterByLocale, getUniqueTags, mapEntryId } from './paths'
 import { type PostEntry } from '@domain/post'
 import { buildTagLocaleMap } from './translationHelpers'
@@ -51,27 +64,19 @@ export interface DetailPath {
 
 
 /**
- * Helper: Retorna iterador de todas las secciones.
- */
-function* iterateSections(): Generator<SectionConfig> {
-  for (const [_, config] of Object.entries(sectionsConfig)) {
-    yield config
-  }
-}
-
-/**
- * Construye todas las rutas estáticas para índices de secciones.
- * Genera una ruta por sección × idioma. Incluye posts y tags en props
- * para evitar llamadas redundantes a getCollection en el render.
- * @param fetchCollection - Inyectable para testing (default: getCollection de Astro)
+ * Core: Construye rutas de índices de secciones sin acoplamiento.
+ * Recibe las secciones como parámetro explícito (array).
+ * @param sections - Secciones a procesar (inyectadas)
+ * @param fetchCollection - Función para obtener colecciones
  * @returns Array de paths para getStaticPaths
  */
-export async function buildSectionIndexPaths(
-  fetchCollection: FetchCollection = getCollection
+export async function buildSectionIndexPathsCore(
+  sections: SectionConfig[],
+  fetchCollection: FetchCollection
 ): Promise<SectionPath[]> {
   const paths: SectionPath[] = []
 
-  for (const config of iterateSections()) {
+  for (const config of sections) {
     const allEntries = mapEntryId(await fetchCollection(config.collection))
 
     for (const locale of languageKeys) {
@@ -89,17 +94,19 @@ export async function buildSectionIndexPaths(
 }
 
 /**
- * Construye todas las rutas estáticas para páginas de tags.
- * Incluye allEntries y config en props para evitar llamadas redundantes en el render.
- * @param fetchCollection - Inyectable para testing (default: getCollection de Astro)
+ * Core: Construye rutas de páginas de tags sin acoplamiento.
+ * Recibe las secciones como parámetro explícito (array).
+ * @param sections - Secciones a procesar (inyectadas)
+ * @param fetchCollection - Función para obtener colecciones
  * @returns Array de paths para getStaticPaths
  */
-export async function buildTagPaths(
-  fetchCollection: FetchCollection = getCollection
+export async function buildTagPathsCore(
+  sections: SectionConfig[],
+  fetchCollection: FetchCollection
 ): Promise<TagPath[]> {
   const paths: TagPath[] = []
 
-  for (const config of Object.values(sectionsConfig)) {
+  for (const config of sections) {
     const collectedEntries = await fetchCollection(config.collection)
     const allEntries = mapEntryId(collectedEntries)
     const tagLocaleMap = buildTagLocaleMap(allEntries, tagTranslations)
@@ -121,18 +128,19 @@ export async function buildTagPaths(
 }
 
 /**
- * Construye todas las rutas estáticas para páginas de detalle.
- * Genera una ruta por entrada × idioma en todas las secciones.
- * Incluye entry, allEntries y config en props para evitar llamadas redundantes en el render.
- * @param fetchCollection - Función para obtener colecciones (inyectada para testing)
+ * Core: Construye rutas de páginas de detalle sin acoplamiento.
+ * Recibe las secciones como parámetro explícito (array).
+ * @param sections - Secciones a procesar (inyectadas)
+ * @param fetchCollection - Función para obtener colecciones
  * @returns Array de paths para getStaticPaths
  */
-export async function buildAllDetailPaths(
+export async function buildAllDetailPathsCore(
+  sections: SectionConfig[],
   fetchCollection: FetchCollection
 ): Promise<DetailPath[]> {
   const allPaths: DetailPath[] = []
 
-  for (const config of iterateSections()) {
+  for (const config of sections) {
     const allEntries = mapEntryId(await fetchCollection(config.collection))
     for (const locale of languageKeys) {
       const sectionRoute = config.routes[locale]
