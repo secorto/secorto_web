@@ -8,6 +8,8 @@ import type { RenderResult } from 'astro:content'
 
 interface Props {
   locale: UILanguages
+  /** Slug de ruta de la sección (solo lo usa BlogTalkPostView; aceptado aquí para call-site uniforme desde [...id].astro) */
+  routeSlug?: string
   entry: {
     data: {
       title: string
