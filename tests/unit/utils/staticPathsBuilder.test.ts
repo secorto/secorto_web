@@ -2,15 +2,18 @@ import { test, expect, describe, vi } from 'vitest'
 import {
   buildAllDetailPathsCore,
   buildSectionIndexPathsCore,
+  buildLocalePathsForSection,
   buildTagPathsCore,
   buildTagIndexPathsCore,
   type FetchCollection
 } from '@utils/staticPathsBuilder'
+import { mapEntryId } from '@utils/paths'
 import type { CollectionEntry, CollectionKey } from 'astro:content'
 import type { SectionConfig } from '@domain/section'
 import {
   collectionMocks,
   createMockEntries,
+  createMockSectionConfig,
   createMockSectionsArray
 } from './staticPathsBuilder.fixtures'
 
@@ -71,6 +74,69 @@ describe('buildAllDetailPathsCore', () => {
 
     expect(mockGetCollection).toHaveBeenCalled()
     expect(result.length).toBeGreaterThan(0)
+  })
+})
+
+describe('buildLocalePathsForSection', () => {
+  const postEntries = mapEntryId(createMockEntries('blog', 4, { tags: ['ts'] }, 'post'))
+  const workEntries = mapEntryId(createMockEntries('work', 4, {}, 'work'))
+
+  test('genera paths para todos los locales configurados', () => {
+    const config = createMockSectionConfig('blog')
+    const result = buildLocalePathsForSection(config, postEntries)
+
+    expect(result).toHaveLength(2) // es + en
+    expect(result.map(p => p.params.locale).sort()).toEqual(['en', 'es'])
+  })
+
+  test('rama post: config.category es "post" y posts son PostEntry[]', () => {
+    const config = createMockSectionConfig('blog') // category: 'post' por defecto
+    const result = buildLocalePathsForSection(config, postEntries)
+
+    for (const path of result) {
+      expect(path.props.config.category).toBe('post')
+      expect(Array.isArray(path.props.posts)).toBe(true)
+    }
+  })
+
+  test('rama experience: config.category es "experience" y posts son ExperienceLikeEntry[]', () => {
+    const config = createMockSectionConfig('work', { category: 'experience' })
+    const result = buildLocalePathsForSection(config, workEntries)
+
+    for (const path of result) {
+      expect(path.props.config.category).toBe('experience')
+      expect(Array.isArray(path.props.posts)).toBe(true)
+    }
+  })
+
+  test('rama post: filtra entradas por locale correctamente', () => {
+    const config = createMockSectionConfig('blog')
+    const result = buildLocalePathsForSection(config, postEntries)
+
+    const esPath = result.find(p => p.params.locale === 'es')
+    const enPath = result.find(p => p.params.locale === 'en')
+
+    // createMockEntries alterna es/en por índice (0→es, 1→en, 2→es, 3→en)
+    expect(esPath?.props.posts).toHaveLength(2)
+    expect(enPath?.props.posts).toHaveLength(2)
+  })
+
+  test('extrae tags desde los posts del locale correspondiente', () => {
+    const config = createMockSectionConfig('blog')
+    const result = buildLocalePathsForSection(config, postEntries)
+
+    const esPath = result.find(p => p.params.locale === 'es')
+    expect(esPath?.props.tags).toContain('ts')
+  })
+
+  test('collection vacía produce arrays de posts y tags vacíos', () => {
+    const config = createMockSectionConfig('blog')
+    const result = buildLocalePathsForSection(config, [])
+
+    for (const path of result) {
+      expect(path.props.posts).toHaveLength(0)
+      expect(path.props.tags).toHaveLength(0)
+    }
   })
 })
 
