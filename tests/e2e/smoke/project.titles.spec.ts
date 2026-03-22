@@ -4,7 +4,7 @@ import { goto } from '@tests/actions/ContentListActions'
 import { languageKeys, ui } from '@i18n/ui'
 import { sectionsConfig, type SectionType } from '@domain/section'
 
-const section: SectionType = 'project'
+const section: SectionType = 'projects'
 
 test.describe('Project list title', () => {
   languageKeys.forEach((locale) => {

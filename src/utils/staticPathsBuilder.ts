@@ -90,7 +90,7 @@ export async function buildSectionIndexPathsCore(
   const paths: SectionPath[] = []
 
   for (const config of sections) {
-    const allEntries = mapEntryId(await fetchCollection(config.collection))
+    const allEntries = mapEntryId(await fetchCollection(config.name))
 
     for (const locale of languageKeys) {
       const posts = filterByLocale(allEntries, locale)
@@ -120,7 +120,7 @@ export async function buildTagPathsCore(
   const paths: TagPath[] = []
 
   for (const config of sections) {
-    const collectedEntries = await fetchCollection(config.collection)
+    const collectedEntries = await fetchCollection(config.name)
     const allEntries = mapEntryId(collectedEntries)
     const tagLocaleMap = buildTagLocaleMap(allEntries, tagTranslations)
 
@@ -154,7 +154,7 @@ export async function buildAllDetailPathsCore(
   const allPaths: DetailPath[] = []
 
   for (const config of sections) {
-    const allEntries = mapEntryId(await fetchCollection(config.collection))
+    const allEntries = mapEntryId(await fetchCollection(config.name))
     for (const locale of languageKeys) {
       const sectionRoute = config.routes[locale]
       for (const entry of allEntries.filter(e => e.id.startsWith(`${locale}/`))) {
@@ -186,8 +186,8 @@ export async function buildTagIndexPathsCore(
   const allSectionEntries: Record<string, PostEntry<CollectionKey>[]> = {}
 
   for (const config of sections) {
-    const entries = await fetchCollection(config.collection)
-    allSectionEntries[config.collection] = mapEntryId(entries)
+    const entries = await fetchCollection(config.name)
+    allSectionEntries[config.name] = mapEntryId(entries)
   }
 
   // Generar rutas compartiendo los datos de colecciones cacheados

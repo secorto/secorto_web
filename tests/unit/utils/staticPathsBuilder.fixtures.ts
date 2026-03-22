@@ -106,11 +106,10 @@ export function createMockSectionConfig(
   overrides: Partial<SectionConfig> = {}
 ): SectionConfig {
   return {
-    collection: key as CollectionKey,
+    name: key as SectionConfig['name'],
+    category: 'post',
     translationKey: 'nav.blog',
     routes: { es: key, en: key },
-    listComponent: 'ListPost',
-    detailComponent: 'BlogTalkPostView',
     showFeaturedImage: true,
     ...overrides
   }

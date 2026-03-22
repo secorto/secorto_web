@@ -13,19 +13,17 @@ import { collectionMocks, createMockEntries } from './staticPathsBuilder.fixture
 vi.mock('@domain/section', () => {
   const mockConfig = {
     blog: {
-      collection: 'blog' as CollectionKey,
+      name: 'blog' as const,
+      category: 'post' as const,
       translationKey: 'nav.blog',
       routes: { es: 'blog', en: 'blog' },
-      listComponent: 'ListPost',
-      detailComponent: 'BlogTalkPostView',
       showFeaturedImage: true
     },
     talk: {
-      collection: 'talk' as CollectionKey,
+      name: 'talk' as const,
+      category: 'post' as const,
       translationKey: 'nav.talks',
       routes: { es: 'charla', en: 'talk' },
-      listComponent: 'ListPost',
-      detailComponent: 'BlogTalkPostView',
       showFeaturedImage: true
     }
   }

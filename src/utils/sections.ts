@@ -2,6 +2,7 @@ import type { UILanguages } from '@i18n/ui'
 import type { CollectionKey } from 'astro:content'
 import { sectionsConfig, type SectionConfig, type SectionType } from '@domain/section'
 
+
 /**
  * Helper interno que busca una `SectionConfig` que cumpla un predicado.
  * @param predicate - función que recibe una `SectionConfig` y retorna boolean
@@ -29,7 +30,7 @@ export function getSectionConfigByRoute(
 export function getSectionConfigByCollection(
   collection: CollectionKey
 ): SectionConfig {
-  return findSectionConfig((config) => config.collection === collection)
+  return findSectionConfig((config) => config.name === collection)
 }
 
 /**

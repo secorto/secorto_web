@@ -7,7 +7,7 @@ describe('loadSectionByRoute', () => {
     const mockPosts = [{ id: 'es/one', data: { slug: 'one' } }]
 
     vi.doMock('@utils/sections', () => ({
-      getSectionConfigByRoute: (_route: string, _locale: string) => ({ collection: 'blog', routes: { es: 'blog', en: 'blog' } })
+      getSectionConfigByRoute: (_route: string, _locale: string) => ({ name: 'blog', routes: { es: 'blog', en: 'blog' } })
     }))
 
     const getPostsMock = vi.fn(async () => mockPosts)
@@ -30,7 +30,7 @@ describe('loadSectionByRoute', () => {
     const mockPosts = [{ id: 'es/one', data: { slug: 'one' } }]
 
     vi.doMock('@utils/sections', () => ({
-      getSectionConfigByRoute: (_route: string, _locale: string) => ({ collection: 'work', routes: { es: 'trabajo', en: 'work' } })
+      getSectionConfigByRoute: (_route: string, _locale: string) => ({ name: 'work', routes: { es: 'trabajo', en: 'work' } })
     }))
 
     const getPostsMock = vi.fn(async () => mockPosts)
