@@ -11,7 +11,7 @@ export async function loadSectionByRoute(
   locale: UILanguages
 ) {
   const config = getSectionConfigByRoute(sectionSlug, locale)
-  const posts = await getPostsByLocale(config.collection, locale)
+  const posts = await getPostsByLocale(config.name, locale)
   const tags = getUniqueTags(posts)
   return {
     config,

@@ -49,10 +49,17 @@ const alternates = availableLocales.map(lk => ({
 const defaultLink = buildDetailLink(defaultLang, canonicalSection, localeEntryMap)
 const defaultPath = defaultLink.href || canonicalPath
 
-// Extract page metadata
+// Map category to component
+const detailComponentMap = {
+  post: BlogTalkPostView,
+  experience: WorkProjectCommunityView
+} as const
+
+const DetailComponent = detailComponentMap[config.category]
+const routeSlug = config.routes[locale]
+
 const { Content } = await render(entry)
 const { pageTitle, pageDescription } = getPageMetadata(entry, t(config.translationKey))
-const routeSlug = config.routes[locale]
 ---
 
 <SEOHeadDetail
@@ -71,20 +78,12 @@ const routeSlug = config.routes[locale]
     </div>
   )}
 
-  {config.detailComponent === 'BlogTalkPostView' ? (
-    <BlogTalkPostView
-      locale={locale}
-      routeSlug={routeSlug}
-      entry={entry}
-      Content={Content}
-    />
-  ) : (
-    <WorkProjectCommunityView
-      locale={locale}
-      entry={entry}
-      Content={Content}
-    />
-  )}
+  <DetailComponent
+    locale={locale}
+    routeSlug={routeSlug}
+    entry={entry}
+    Content={Content}
+  />
 
   <Comments />
 </BaseLayout>

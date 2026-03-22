@@ -1,5 +1,5 @@
 import type { CollectionEntry, CollectionKey } from 'astro:content'
-import type { SectionConfig } from '@domain/section'
+import type { SectionConfig, SectionType } from '@domain/section'
 
 /**
  * Factory para crear datos de prueba realistas que coincidan con el schema de Astro.
@@ -102,15 +102,14 @@ export const collectionMocks = {
  * Útil para pasar como parte de mock sections array.
  */
 export function createMockSectionConfig(
-  key: string,
+  key: SectionType,
   overrides: Partial<SectionConfig> = {}
 ): SectionConfig {
   return {
-    collection: key as CollectionKey,
+    name: key,
+    category: 'post',
     translationKey: 'nav.blog',
     routes: { es: key, en: key },
-    listComponent: 'ListPost',
-    detailComponent: 'BlogTalkPostView',
     showFeaturedImage: true,
     ...overrides
   }
@@ -121,7 +120,7 @@ export function createMockSectionConfig(
  * Permite crear configuraciones mínimas sin depender de sectionsConfig global.
  */
 export function createMockSectionsArray(
-  sectionKeys: string[],
+  sectionKeys: SectionType[],
   baseOverrides: Partial<SectionConfig> = {}
 ): SectionConfig[] {
   return sectionKeys.map(key => createMockSectionConfig(key, baseOverrides))

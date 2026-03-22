@@ -16,5 +16,5 @@ export const NAV_LINKS: Array<{
   { routeKey: 'blog', translationKey: 'nav.blog' },
   { routeKey: 'work', translationKey: 'nav.work' },
   { routeKey: 'community', translationKey: 'nav.community' },
-  { routeKey: 'project', translationKey: 'nav.projects' },
+  { routeKey: 'projects', translationKey: 'nav.projects' },
 ]
