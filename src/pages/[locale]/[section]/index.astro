@@ -32,10 +32,10 @@ const links = buildLanguageLinks(l => buildCollectionLink(l, canonicalSection))
   {tags.length > 0 && (
     <Tags route={`/${locale}/${section}/tags/`} tags={tags} />
   )}
-  {config.listComponent === 'ListPost' && (
+  {config.category === 'post' && (
     <ListPost posts={posts} basePath={`${locale}/${config.routes[locale]}`} />
   )}
-  {config.listComponent === 'ListWork' && (
+  {config.category === 'experience' && (
     // TODO(debt): cast necesario porque `SectionPath['props'].posts` está tipado como `PostEntry<CollectionKey>[]` en vez de un tipo específico de colección — owner: @sergio.orozcot — until: 2026-06-01
     <ListWork posts={posts as PostEntry<'work'>[]} basePath={`${locale}/${config.routes[locale]}`} lang={locale} />
   )}

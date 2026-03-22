@@ -5,7 +5,7 @@ import { sectionsConfig } from '@domain/section'
 describe('sections config helpers', () => {
   it('getSectionConfigByCollection returns config for known collection', () => {
     const cfg = getSectionConfigByCollection('blog')
-    expect(cfg.collection).toBe('blog')
+    expect(cfg.name).toBe('blog')
     expect(cfg.routes.es).toBe('blog')
   })
 
@@ -17,35 +17,35 @@ describe('sections config helpers', () => {
 
   it('getSectionConfigByRoute returns config for known route', () => {
     const cfg = getSectionConfigByRoute('blog', 'es')
-    expect(cfg.collection).toBe('blog')
+    expect(cfg.name).toBe('blog')
   })
 })
 
-describe('sections config detailComponent', () => {
-  it('blog uses BlogTalkPostView', () => {
-    expect(sectionsConfig.blog.detailComponent).toBe('BlogTalkPostView')
+describe('sections config category', () => {
+  it('blog uses post category', () => {
+    expect(sectionsConfig.blog.category).toBe('post')
   })
 
-  it('talk uses BlogTalkPostView', () => {
-    expect(sectionsConfig.talk.detailComponent).toBe('BlogTalkPostView')
+  it('talk uses post category', () => {
+    expect(sectionsConfig.talk.category).toBe('post')
   })
 
-  it('work uses WorkProjectCommunityView', () => {
-    expect(sectionsConfig.work.detailComponent).toBe('WorkProjectCommunityView')
+  it('work uses experience category', () => {
+    expect(sectionsConfig.work.category).toBe('experience')
   })
 
-  it('project uses WorkProjectCommunityView', () => {
-    expect(sectionsConfig.project.detailComponent).toBe('WorkProjectCommunityView')
+  it('projects uses experience category', () => {
+    expect(sectionsConfig.projects.category).toBe('experience')
   })
 
-  it('community uses WorkProjectCommunityView', () => {
-    expect(sectionsConfig.community.detailComponent).toBe('WorkProjectCommunityView')
+  it('community uses experience category', () => {
+    expect(sectionsConfig.community.category).toBe('experience')
   })
 
-  it('all sections have detailComponent defined', () => {
+  it('all sections have category defined', () => {
     Object.values(sectionsConfig).forEach(config => {
-      expect(config.detailComponent).toBeDefined()
-      expect(['BlogTalkPostView', 'WorkProjectCommunityView']).toContain(config.detailComponent)
+      expect(config.category).toBeDefined()
+      expect(['post', 'experience']).toContain(config.category)
     })
   })
 })

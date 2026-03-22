@@ -23,7 +23,7 @@ const links = buildLanguageLinks(l => buildCollectionLink(l, 'tags'))
 const sectionInputs: TagGroupSectionInput[] = []
 
 for (const [sectionKey, config] of Object.entries(sectionsConfig) as [SectionType, (typeof sectionsConfig)[SectionType]][]) {
-  const localeEntries = filterByLocale(allSectionEntries[config.collection], locale)
+  const localeEntries = filterByLocale(allSectionEntries[config.name], locale)
 
   sectionInputs.push({
     section: sectionKey,
