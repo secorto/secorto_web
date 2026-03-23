@@ -1,7 +1,7 @@
 import { getCollection } from "astro:content"
 import type { CollectionEntry, CollectionKey } from "astro:content"
-import { extractCleanId } from "@utils/ids"
 import type { PostEntry } from "@domain/post"
+import { adaptToDomainEntry } from './entryAdapter'
 
 /**
  * Filtra y enriquece entradas ya cargadas para un locale específico.
@@ -23,12 +23,7 @@ export function filterByLocale<C extends CollectionKey>(
 export function mapEntryId<C extends CollectionKey>(
   entries: CollectionEntry<C>[]
 ): PostEntry<C>[] {
-  return entries
-    .map((post) => ({
-      ...post,
-      cleanId: extractCleanId(post.id),
-      canonicalId: post.data.postId ?? extractCleanId(post.id)
-    }))
+  return entries.map((post) => adaptToDomainEntry(post))
 }
 
 /**
