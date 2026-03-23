@@ -47,7 +47,7 @@ export interface ExperienceLikeEntry {
  *
  * @param startDate - Fecha de inicio (opcional)
  * @param endDate - Fecha de fin (opcional; si falta, se usa `todayLabel`)
- * @param format - Función que convierte una Date en string según el locale
+ * @param format - Función que convierte una fecha (Date) en string según el locale
  * @param todayLabel - Texto traducido para "hoy" (cuando no hay endDate)
  */
 export function formatDateRange(
