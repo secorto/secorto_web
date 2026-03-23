@@ -3,16 +3,12 @@
  * Reusable component for rendering alternate language (hreflang) links
  * Used by all SEO components to avoid duplication
  */
-import type { UILanguages } from '@i18n/ui'
+import type { Alternative } from '@domain/pageDetail'
 
-interface AlternateLink {
-  locale: UILanguages
-  url: string
-}
 
 interface Props {
   /** Array of alternate language links */
-  alternates: AlternateLink[]
+  alternates: Alternative[]
   /** URL for the x-default hreflang (usually default language version) */
   defaultUrl: string
 }

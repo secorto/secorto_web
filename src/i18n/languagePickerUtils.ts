@@ -2,21 +2,34 @@ import type { UILanguages } from './ui'
 import { languages, defaultLang, languageKeys } from './ui'
 import { showDefaultLang } from '@i18n/config'
 import { resolveLocalized, findCanonicalSectionKey, rootMap } from './rootMap'
-export type AvailableLocales = Partial<Record<UILanguages, { slug: string; draft?: boolean; canonical?: boolean }>>
+export type AvailableLocales = Partial<Record<UILanguages, {
+  /** Local slug para este entry en el locale (p.ej. 'mi-articulo') */
+  slug: string
+  /** Marca si la traducción está en estado draft (no pública) */
+  draft?: boolean
+  /** Indica si esta entrada es la versión canónica dentro de la serie */
+  canonical?: boolean
+}>>
 
 export interface TranslationLink {
+  /** URL destino del link (puede ser string vacío si no está disponible) */
   href: string
+  /** Etiqueta legible para el selector de idioma (p.ej. 'Español') */
   label: string
+  /** Si la traducción/route está disponible para navegación */
   isAvailable: boolean
+  /** Locale asociado a este link (clave de idioma) */
+  locale: UILanguages
+  /** Razón por la que no está disponible (cuando `isAvailable` es false) */
   disabledReason?: 'missing' | 'draft'
 }
 
 function availableLink(href: string, lang: UILanguages): TranslationLink {
-  return { href, label: languages[lang], isAvailable: true }
+  return { href, label: languages[lang], isAvailable: true, locale: lang }
 }
 
 function missingLink(lang: UILanguages): TranslationLink {
-  return { href: '', label: languages[lang], isAvailable: false, disabledReason: 'missing' }
+  return { href: '', label: languages[lang], isAvailable: false, disabledReason: 'missing', locale: lang }
 }
 
 function buildLangPrefix(targetLang: UILanguages): string {

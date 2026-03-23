@@ -1,9 +1,7 @@
 import type { CollectionKey, CollectionEntry } from 'astro:content'
+import type { ComputedFields } from './entryComputed'
 
-export type PostEntry<C extends CollectionKey> = CollectionEntry<C> & {
-  cleanId: string,
-  canonicalId: string
-}
+export type PostEntry<C extends CollectionKey> = CollectionEntry<C> & ComputedFields
 
 /**
  * Contrato mínimo del componente ListPost.

@@ -1,5 +1,5 @@
 import { test, expect, describe } from 'vitest'
-import { getAvailableLocaleEntries, buildTagLocaleMap } from '@utils/translationHelpers'
+import { buildTagLocaleMap, getAvailableLocaleEntriesFromMap, buildLocaleEntryMap } from '@utils/translationHelpers'
 import type { CollectionKey } from 'astro:content'
 import type { PostEntry } from '@domain/post'
 
@@ -10,54 +10,69 @@ const entry = (id: string, data: Record<string, unknown> = {}, canonicalId: stri
   return ({ id, data, cleanId, canonicalId } as unknown) as PostEntry<CollectionKey>
 }
 
-describe('getAvailableLocaleEntries', () => {
+// test helper to get the precomputed localeEntryMap quickly
+const localeMap = (entries: PostEntry<CollectionKey>[]) => buildLocaleEntryMap(entries).localeEntryMap
+
+describe('getAvailableLocaleEntriesFromMap', () => {
   test('returns both locales when entry exists in es and en', () => {
     const entries = [
       entry('es/2025-01-22-my-post', { title: 'Mi Post' }, '2025-01-22-my-post'),
       entry('en/2025-01-22-my-post', { title: 'My Post' }, '2025-01-22-my-post'),
     ]
 
-    const result = getAvailableLocaleEntries(entries, '2025-01-22-my-post')
+    const { localeEntryMap: map } = buildLocaleEntryMap(entries)
+    const result = getAvailableLocaleEntriesFromMap(map, '2025-01-22-my-post')
 
     expect(Object.keys(result)).toHaveLength(2)
     expect(result['es']).toEqual({ slug: '2025-01-22-my-post', draft: false, canonical: false })
     expect(result['en']).toEqual({ slug: '2025-01-22-my-post', draft: false, canonical: false })
   })
 
-  test('returns only es when entry exists only in Spanish', () => {
-    const entries = [
-      entry('es/2025-01-22-spanish-only', { title: 'Solo Español' }, '2025-01-22-spanish-only'),
-      entry('en/2025-01-22-other-post', { title: 'Other Post' }, '2025-01-22-other-post'),
-    ]
 
-    const result = getAvailableLocaleEntries(entries, '2025-01-22-spanish-only')
-
-    expect(Object.keys(result)).toHaveLength(1)
-    expect(result['es']).toBeDefined()
-    expect(result['en']).toBeUndefined()
+  test.each([
+    {
+      name: 'only es',
+      entries: [
+        entry('es/2025-01-22-spanish-only', { title: 'Solo Español' }, '2025-01-22-spanish-only'),
+        entry('en/2025-01-22-other-post', { title: 'Other Post' }, '2025-01-22-other-post'),
+      ],
+      query: '2025-01-22-spanish-only',
+      expected: ['es'],
+    },
+    {
+      name: 'only en',
+      entries: [
+        entry('en/2025-01-22-english-only', { title: 'English Only' }, '2025-01-22-english-only'),
+        entry('es/2025-01-22-otro-post', { title: 'Otro Post' }, '2025-01-22-otro-post'),
+      ],
+      query: '2025-01-22-english-only',
+      expected: ['en'],
+    },
+  ])('returns only expected locales: $name', ({ entries, query, expected }) => {
+    const { localeEntryMap: map } = buildLocaleEntryMap(entries)
+    const result = getAvailableLocaleEntriesFromMap(map, query)
+    const keys = Object.keys(result)
+    expect(keys).toHaveLength(expected.length)
+    expected.forEach(l => expect(result[l as keyof typeof result]).toBeDefined())
   })
 
-  test('returns only en when entry exists only in English', () => {
-    const entries = [
-      entry('en/2025-01-22-english-only', { title: 'English Only' }, '2025-01-22-english-only'),
-      entry('es/2025-01-22-otro-post', { title: 'Otro Post' }, '2025-01-22-otro-post'),
-    ]
-
-    const result = getAvailableLocaleEntries(entries, '2025-01-22-english-only')
-
-    expect(Object.keys(result)).toHaveLength(1)
-    expect(result['en']).toBeDefined()
-    expect(result['es']).toBeUndefined()
-  })
-
-  test('returns empty object when entry does not exist in any locale', () => {
-    const entries = [
-      entry('es/2025-01-22-some-post', { title: 'Algún Post' }, '2025-01-22-some-post'),
-      entry('en/2025-01-22-another-post', { title: 'Another Post' }, '2025-01-22-another-post'),
-    ]
-
-    const result = getAvailableLocaleEntries(entries, '2025-01-22-nonexistent')
-
+  test.each([
+    {
+      name: 'nonexistent id',
+      entries: [
+        entry('es/2025-01-22-some-post', { title: 'Algún Post' }, '2025-01-22-some-post'),
+        entry('en/2025-01-22-another-post', { title: 'Another Post' }, '2025-01-22-another-post'),
+      ],
+      query: '2025-01-22-nonexistent',
+    },
+    {
+      name: 'empty list',
+      entries: [],
+      query: 'any-post',
+    },
+  ])('returns empty object: $name', ({ entries, query }) => {
+    const { localeEntryMap: map } = buildLocaleEntryMap(entries)
+    const result = getAvailableLocaleEntriesFromMap(map, query)
     expect(Object.keys(result)).toHaveLength(0)
   })
 
@@ -67,7 +82,8 @@ describe('getAvailableLocaleEntries', () => {
       entry('en/talks/2023-09-27-devcontainers', { title: 'DevContainers' }, 'talks/2023-09-27-devcontainers'),
     ]
 
-    const result = getAvailableLocaleEntries(entries, 'talks/2023-09-27-devcontainers')
+    const { localeEntryMap: map } = buildLocaleEntryMap(entries)
+    const result = getAvailableLocaleEntriesFromMap(map, 'talks/2023-09-27-devcontainers')
 
     expect(Object.keys(result)).toHaveLength(2)
     expect(result['es']?.slug).toBe('talks/2023-09-27-devcontainers')
@@ -80,7 +96,8 @@ describe('getAvailableLocaleEntries', () => {
       entry('en/simple-slug', { title: 'Simple Slug' }, 'simple-slug'),
     ]
 
-    const result = getAvailableLocaleEntries(entries, 'simple-slug')
+    const { localeEntryMap: map } = buildLocaleEntryMap(entries)
+    const result = getAvailableLocaleEntriesFromMap(map, 'simple-slug')
 
     expect(Object.keys(result)).toHaveLength(2)
     expect(result['es']?.slug).toBe('simple-slug')
@@ -93,7 +110,8 @@ describe('getAvailableLocaleEntries', () => {
       entry('en/my-work', { title: 'My Work' }, 'my-work'),
     ]
 
-    const result = getAvailableLocaleEntries(entries, 'my-work')
+    const { localeEntryMap: map } = buildLocaleEntryMap(entries)
+    const result = getAvailableLocaleEntriesFromMap(map, 'my-work')
 
     expect(Object.keys(result)).toHaveLength(2)
     expect(result['es']?.slug).toBe('my-work')
@@ -106,14 +124,16 @@ describe('getAvailableLocaleEntries', () => {
       entry('en/2025-01-22-my-post', { draft: false }, '2025-01-22-my-post'),
     ]
 
-    const result = getAvailableLocaleEntries(entries, '2025-01-22-my-post')
+    const { localeEntryMap: map } = buildLocaleEntryMap(entries)
+    const result = getAvailableLocaleEntriesFromMap(map, '2025-01-22-my-post')
 
     expect(result['es']?.draft).toBe(true)
     expect(result['en']?.draft).toBe(false)
   })
 
   test('returns empty object when entries list is empty', () => {
-    const result = getAvailableLocaleEntries([], 'any-post')
+    const map = localeMap([])
+    const result = getAvailableLocaleEntriesFromMap(map, 'any-post')
 
     expect(Object.keys(result)).toHaveLength(0)
   })
@@ -125,7 +145,8 @@ describe('getAvailableLocaleEntries', () => {
     ]
 
     // entries share canonicalId 'shared-id' so we query by canonicalId 'shared-id'
-    const result = getAvailableLocaleEntries(entries, 'shared-id')
+    const { localeEntryMap: map } = buildLocaleEntryMap(entries)
+    const result = getAvailableLocaleEntriesFromMap(map, 'shared-id')
 
     expect(Object.keys(result)).toHaveLength(2)
     expect(result['es']?.slug).toBe('2025-01-01-calendario')
@@ -189,5 +210,36 @@ describe('buildTagLocaleMap', () => {
 
   test('returns empty map for empty entries', () => {
     expect(buildTagLocaleMap([])).toEqual({})
+  })
+})
+
+describe('buildLocaleEntryMap', () => {
+  test('throws on duplicate canonical+locale', () => {
+    const entries = [
+      entry('es/2025-01-01-a', { title: 'A' }, 'dup-id'),
+      entry('es/2025-01-02-b', { title: 'B' }, 'dup-id')
+    ]
+
+    expect(() => buildLocaleEntryMap(entries)).toThrow(/Duplicate entry for canonical "dup-id" and locale "es"/)
+  })
+
+  test('precomputes map canonicalId -> AvailableLocales', () => {
+    const entries = [
+      entry('es/alpha', { title: 'A' }, 'alpha'),
+      entry('en/alpha', { title: 'A-en' }, 'alpha'),
+      entry('es/beta', { title: 'B' }, 'beta')
+    ]
+    const { localeEntryMap: result, entryLocaleMap } = buildLocaleEntryMap(entries)
+
+    expect(result.alpha).toBeDefined()
+    expect(result.alpha.es?.slug).toBe('alpha')
+    expect(result.alpha.en?.slug).toBe('alpha')
+    expect(result.beta.es?.slug).toBe('beta')
+    expect(result.beta.en).toBeUndefined()
+
+    // Verify entry.id -> locale mapping
+    expect(entryLocaleMap['es/alpha']).toBe('es')
+    expect(entryLocaleMap['en/alpha']).toBe('en')
+    expect(entryLocaleMap['es/beta']).toBe('es')
   })
 })

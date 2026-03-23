@@ -13,6 +13,7 @@ import type { SectionConfig } from '@domain/section'
 import {
   collectionMocks,
   createMockEntries,
+  createMockEntry,
   createMockSectionConfig,
   createMockSectionsArray
 } from './staticPathsBuilder.fixtures'
@@ -60,7 +61,7 @@ describe('buildAllDetailPathsCore', () => {
       expect(path.params.section).toBeDefined()
       expect(path.params.id).toBeDefined()
       expect(path.props.entry).toBeDefined()
-      expect(path.props.allEntries).toBeDefined()
+      expect(path.props.availableLocales).toBeDefined()
       expect(path.props.config).toBeDefined()
     }
   })
@@ -74,6 +75,15 @@ describe('buildAllDetailPathsCore', () => {
 
     expect(mockGetCollection).toHaveBeenCalled()
     expect(result.length).toBeGreaterThan(0)
+  })
+
+  test('lanza error si un entry no está bajo una carpeta de locale válida', async () => {
+    const invalidEntry = createMockEntry('blog', { id: 'orphan/my-post' })
+    const mockGetCollection: FetchCollection = vi.fn(async () => [invalidEntry])
+    const mockSections = createMockSectionsArray(['blog'])
+
+    await expect(buildAllDetailPathsCore(mockSections, mockGetCollection))
+      .rejects.toThrow('Entry "orphan/my-post" is not under a valid locale folder')
   })
 })
 

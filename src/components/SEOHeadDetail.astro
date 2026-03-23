@@ -3,19 +3,14 @@
  * SEO metadata component for detail pages (blog posts, talks, work, etc.)
  * Receives fully-built canonical/alternate/default URLs from the page.
  */
-import type { UILanguages } from '@i18n/ui'
+import type { Alternative } from '@domain/pageDetail'
 import AlternateLinks from './AlternateLinks.astro'
-
-interface AlternateLink {
-  locale: UILanguages
-  url: string
-}
 
 interface Props {
   /** Canonical path for this page (relative, e.g. /es/blog/slug) */
   canonicalPath: string
-  /** Array of alternate language links (relative paths) */
-  alternates: AlternateLink[]
+  /** Array of precomputed absolute alternates { locale, url } */
+  alternates: Alternative[]
   /** Default (x-default) path (relative) */
   defaultPath: string
   /** Whether to mark as noindex (for draft/untranslated content) */

@@ -7,47 +7,21 @@ import WorkProjectCommunityView from '@components/WorkProjectCommunityView.astro
 import SEOHeadDetail from '@components/SEOHeadDetail.astro'
 import LanguagePicker from '@components/LanguagePicker.astro'
 import { useTranslations } from '@i18n/utils'
-import { getAvailableLocaleEntries } from '@utils/translationHelpers'
-import { getCanonicalMetadata, getPageMetadata } from '@utils/translationMetadata'
-import { buildAllDetailPaths, type DetailPath } from '@utils/staticPathsBuilder.adapters'
-import { buildDetailLink, buildLanguageLinks } from '@i18n/languagePickerUtils'
-import { findCanonicalSectionKey } from '@i18n/rootMap'
-import { resolveSeriesCanonicalLocale } from '@i18n/buildTranslationMap'
-import type { UILanguages } from '@i18n/ui'
-import { defaultLang } from '@i18n/ui'
+import { getPageMetadata } from '@utils/translationMetadata'
+import { buildAllDetailPaths } from '@utils/staticPathsBuilder.adapters'
 
 export async function getStaticPaths() {
   return await buildAllDetailPaths(getCollection)
 }
 
-const { locale, section } = Astro.params as { locale: UILanguages; section: string }
-const { entry, allEntries, config } = Astro.props as DetailPath['props']
+const { locale } = Astro.params
+const { entry, localeLinks, config, alternates, defaultPath, canonicalLocale } = Astro.props
+
 const t = useTranslations(locale)
 
-const localeEntryMap = getAvailableLocaleEntries(allEntries, entry.canonicalId)
-const availableLocales = Object.keys(localeEntryMap) as UILanguages[]
-const seriesCanonicalLocale = resolveSeriesCanonicalLocale(availableLocales)
-
-const canonicalSection = findCanonicalSectionKey(section, locale)
-const links = buildLanguageLinks(l => buildDetailLink(l, canonicalSection, localeEntryMap))
-
-const { canonicalLocale, shouldNoindex } = getCanonicalMetadata({
-  entryDraft: Boolean(entry.data.draft),
-  currentLocale: locale,
-  currentCleanId: entry.cleanId,
-  seriesCanonicalLocale
-})
-
 // Use existing helper to build the canonical path so formatting is centralized
-const canonicalLink = buildDetailLink(canonicalLocale, canonicalSection, localeEntryMap)
+const canonicalLink = localeLinks[canonicalLocale]
 const canonicalPath = canonicalLink.href
-const alternates = availableLocales.map(lk => ({
-  locale: lk,
-  url: buildDetailLink(lk, canonicalSection, localeEntryMap).href
-}))
-// Prefer defaultLang version for x-default when available, otherwise fall back to canonicalPath
-const defaultLink = buildDetailLink(defaultLang, canonicalSection, localeEntryMap)
-const defaultPath = defaultLink.href || canonicalPath
 
 // Map category to component
 const detailComponentMap = {
@@ -67,11 +41,11 @@ const { pageTitle, pageDescription } = getPageMetadata(entry, t(config.translati
   canonicalPath={canonicalPath}
   alternates={alternates}
   defaultPath={defaultPath}
-  noindex={shouldNoindex}
+  noindex={Boolean(entry.data.draft)}
 />
 
 <BaseLayout pageTitle={pageTitle} description={pageDescription}>
-  <LanguagePicker slot="langpicker" links={links} />
+  <LanguagePicker slot="langpicker" links={localeLinks} />
   {entry.data.draft && (
     <div class="untranslated-notice" role="status">
       <p>{t('post.draft_notice')}</p>

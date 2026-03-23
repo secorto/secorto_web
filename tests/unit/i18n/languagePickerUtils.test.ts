@@ -45,7 +45,7 @@ describe('languagePickerUtils', () => {
       const calls: string[] = []
       const links = buildLanguageLinks(l => {
         calls.push(l)
-        return { href: `/${l}/x`, label: l === 'en' ? 'English' : 'Spanish', isAvailable: true }
+        return { href: `/${l}/x`, label: l === 'en' ? 'English' : 'Spanish', isAvailable: true, locale: l as UILanguages }
       })
 
       expect(calls).toHaveLength(languageKeys.length)
