@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { resolveSeriesCanonicalLocale } from "@domain/translation"
+import { resolveSeriesCanonicalLocale } from '@domain/translation'
 
 describe('resolveSeriesCanonicalLocale', () => {
   it('prefers es when available', () => {
