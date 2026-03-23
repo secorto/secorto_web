@@ -7,7 +7,6 @@ import WorkProjectCommunityView from '@components/WorkProjectCommunityView.astro
 import SEOHeadDetail from '@components/SEOHeadDetail.astro'
 import LanguagePicker from '@components/LanguagePicker.astro'
 import { useTranslations } from '@i18n/utils'
-import { getAvailableLocaleEntries } from '@utils/translationHelpers'
 import { getCanonicalMetadata, getPageMetadata } from '@utils/translationMetadata'
 import { buildAllDetailPaths, type DetailPath } from '@utils/staticPathsBuilder.adapters'
 import { buildDetailLink, buildLanguageLinks } from '@i18n/languagePickerUtils'
@@ -21,10 +20,9 @@ export async function getStaticPaths() {
 }
 
 const { locale, section } = Astro.params as { locale: UILanguages; section: string }
-const { entry, allEntries, config } = Astro.props as DetailPath['props']
+const { entry, localeEntryMap, config } = Astro.props as DetailPath['props']
 const t = useTranslations(locale)
 
-const localeEntryMap = getAvailableLocaleEntries(allEntries, entry.canonicalId)
 const availableLocales = Object.keys(localeEntryMap) as UILanguages[]
 const seriesCanonicalLocale = resolveSeriesCanonicalLocale(availableLocales)
 

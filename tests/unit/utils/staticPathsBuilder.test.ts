@@ -60,7 +60,7 @@ describe('buildAllDetailPathsCore', () => {
       expect(path.params.section).toBeDefined()
       expect(path.params.id).toBeDefined()
       expect(path.props.entry).toBeDefined()
-      expect(path.props.allEntries).toBeDefined()
+      expect(path.props.localeEntryMap).toBeDefined()
       expect(path.props.config).toBeDefined()
     }
   })
