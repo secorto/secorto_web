@@ -1,5 +1,5 @@
 import { test, expect, describe } from 'vitest'
-import { buildTagLocaleMap, getAvailableLocaleEntriesFromMap, buildLocaleEntryMap } from '../../../src/utils/translationHelpers'
+import { buildTagLocaleMap, getAvailableLocaleEntriesFromMap, buildLocaleEntryMap } from '@utils/translationHelpers'
 import type { CollectionKey } from 'astro:content'
 import type { PostEntry } from '@domain/post'
 

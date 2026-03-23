@@ -8,7 +8,7 @@ vi.mock('@domain/section', () => ({
   },
 }))
 
-const { rootMap, findCanonicalSectionKey, resolveLocalized } = await import('../../../src/i18n/rootMap')
+const { rootMap, findCanonicalSectionKey, resolveLocalized } = await import('@i18n/rootMap')
 
 describe('i18n rootMap', () => {
   it('builds rootMap including extraRoutes', () => {

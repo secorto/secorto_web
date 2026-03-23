@@ -69,7 +69,7 @@ export interface DetailPath {
   props: {
     entry: PostEntry<CollectionKey>
     /** Mapa de locales disponibles para este entry, pre-calculado en build time. */
-    localeEntryMap: AvailableLocales
+    availableLocales: AvailableLocales
     config: SectionConfig
   }
 }
@@ -194,7 +194,7 @@ export async function buildAllDetailPathsCore(
       const localeEntryMap = getAvailableLocaleEntriesFromMap(localeEntryMapByCanonical, entry.canonicalId)
       allPaths.push({
         params: { locale, section: config.routes[locale], id: entry.cleanId },
-        props: { entry, localeEntryMap, config }
+        props: { entry, availableLocales: localeEntryMap, config }
       })
     }
   }
