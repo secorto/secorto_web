@@ -17,7 +17,7 @@ import { type SectionConfig } from '@domain/section'
 import { filterByLocale, getUniqueTags, mapEntryId } from './paths'
 import type { AvailableLocales } from '@i18n/languagePickerUtils'
 import { type PostEntry, type ExperienceLikeEntry } from '@domain/post'
-import { buildTagLocaleMap, getAvailableLocaleEntries, parseLocaleFromEntryId } from './translationHelpers'
+import { buildTagLocaleMap, getAvailableLocaleEntriesFromMap, buildLocaleEntryMap } from './translationHelpers'
 import { tagTranslations } from '@domain/tags'
 import type { CollectionEntry, CollectionKey } from 'astro:content'
 
@@ -186,9 +186,12 @@ export async function buildAllDetailPathsCore(
 
   for (const config of sections) {
     const allEntries = mapEntryId(await fetchCollection(config.name))
+
+    const { localeEntryMap: localeEntryMapByCanonical, entryLocaleMap } = buildLocaleEntryMap(allEntries)
+
     for (const entry of allEntries) {
-      const locale = parseLocaleFromEntryId(entry.id)
-      const localeEntryMap = getAvailableLocaleEntries(allEntries, entry.canonicalId)
+      const locale = entryLocaleMap[entry.id]
+      const localeEntryMap = getAvailableLocaleEntriesFromMap(localeEntryMapByCanonical, entry.canonicalId)
       allPaths.push({
         params: { locale, section: config.routes[locale], id: entry.cleanId },
         props: { entry, localeEntryMap, config }

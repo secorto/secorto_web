@@ -27,35 +27,14 @@ export function parseLocaleFromEntryId(id: string): UILanguages {
 }
 
 /**
- * Build a map of available locales for a content entry, including slug and draft status.
- * Used by detail pages to build LanguagePicker links.
- *
- * @param allEntries - Pre-fetched collection entries (caller calls getCollection)
- * @param canonicalId - Canonical ID (postId) used to correlate translations across locales
- * @returns AvailableLocales map: locale -> { slug, draft? }
+ * Lookup helper: devuelve `AvailableLocales` desde un mapa precomputado.
+ * Devuelve un objeto vacío si no existe la clave para mantener compatibilidad.
  */
-export function getAvailableLocaleEntries<C extends CollectionKey = CollectionKey>(
-  allEntries: PostEntry<C>[],
+export function getAvailableLocaleEntriesFromMap(
+  localeEntryMap: Record<string, AvailableLocales>,
   canonicalId: string
 ): AvailableLocales {
-  const result: AvailableLocales = {}
-  // Use `canonicalId` as the single source of truth to correlate translations
-
-  for (const lang of languageKeys) {
-    const prefix = `${lang}/`
-    const entry = allEntries.find(e =>
-      e && typeof e.id === 'string' && e.id.startsWith(prefix) &&
-      e.canonicalId === canonicalId
-    )
-    if (!entry) continue
-    result[lang as keyof AvailableLocales] = {
-      slug: entry.cleanId,
-      draft: Boolean(entry.data?.draft),
-      canonical: Boolean(entry.data?.canonical)
-    }
-  }
-
-  return result
+  return localeEntryMap[canonicalId] ?? {}
 }
 
 /**
@@ -98,4 +77,42 @@ export function buildTagLocaleMap(
         .map(slug => [slug, localeData]),
     ])
   )
+}
+
+/**
+ * Versión expandida que devuelve ambos mapas:
+ * - `localeEntryMap`: canonicalId -> AvailableLocales
+ * - `entryLocaleMap`: entry.id -> locale (UILanguages)
+ *
+ * Esto permite evitar parseos redundantes de `entry.id` cuando el caller
+ * necesita además el locale por entry, por ejemplo en `buildAllDetailPathsCore`.
+ */
+export function buildLocaleEntryMap<C extends CollectionKey = CollectionKey>(
+  allEntries: PostEntry<C>[]
+): { localeEntryMap: Record<string, AvailableLocales>; entryLocaleMap: Record<string, UILanguages> } {
+  const localeEntryMap: Record<string, AvailableLocales> = {}
+  const entryLocaleMap: Record<string, UILanguages> = {}
+
+  // Single-pass build: O(N) over entries. Preserve first-seen locale per canonicalId.
+  for (const e of allEntries) {
+    const lang = parseLocaleFromEntryId(e.id)
+    entryLocaleMap[e.id] = lang
+
+    // Inicializa perezosamente el bucket para este `canonicalId` usando `??=`.
+    const bucket = localeEntryMap[e.canonicalId] ??= {}
+    const existing = bucket[lang as keyof AvailableLocales] as { slug?: string } | undefined
+    if (existing) {
+      throw new Error(
+        `Duplicate entry for canonical "${e.canonicalId}" and locale "${lang}" - existing slug "${existing.slug}" vs "${e.cleanId}" (entry.id: ${e.id})`
+      )
+    }
+
+    bucket[lang as keyof AvailableLocales] = {
+      slug: e.cleanId,
+      draft: Boolean(e.data?.draft),
+      canonical: Boolean(e.data?.canonical)
+    }
+  }
+
+  return { localeEntryMap, entryLocaleMap }
 }
