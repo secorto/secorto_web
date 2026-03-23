@@ -12,15 +12,16 @@ export type AvailableLocales = Partial<Record<UILanguages, {
 /**
  * Decide qué locale usar como canónico para una serie de entradas.
  *
- * Reglas (resumen):
- * 1) La marca `canonical: true` en frontmatter se resuelve durante
- *    el paso de generación de rutas (`getStaticPaths`) y no se re-evalúa
- *    aquí (es demasiado costoso re-leer contenido por página).
- * 2) Si la serie ya tiene un locale preferido en tiempo de ejecución,
- *    se pasará por parámetros o se incluirá en los datos precomputados.
- * 3) Como fallback local sencillo, esta función prioriza el `defaultLocale`
- *    (por defecto `es`) y si no está disponible devuelve el primer locale
- *    disponible.
+ * Comportamiento actual (implementación):
+ * - `available` es un mapa `{ [lang]: { slug, draft?, canonical? } }`.
+ * - Recorre las entradas y, si encuentra una con `canonical: true`, retorna
+ *   inmediatamente ese `lang` (retorna la primera encontrada).
+ * - Si no hay `canonical: true`, prioriza `defaultLocale` si está presente.
+ * - Si tampoco está `defaultLocale`, devuelve el primer locale encontrado
+ *   durante la iteración.
+ * - No realiza validación exhaustiva de inconsistencias (p.ej. múltiples
+ *   entradas por el mismo `canonicalId`+`lang`); esa validación se realiza
+ *   en la fase de agregación/mapeo de entradas.
  */
 export function resolveSeriesCanonicalLocale(
   available: AvailableLocales,
