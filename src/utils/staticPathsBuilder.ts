@@ -74,9 +74,9 @@ export interface DetailPath {
     /** Mapa de locales disponibles para este entry, pre-calculado en build time. */
     availableLocales: AvailableLocales
     canonicalLocale: UILanguages
-      alternates: { locale: UILanguages; url: string }[]
-      defaultPath: string
-    /** Precomputado: mapa locale -> TranslationLink (href, label, availability) */
+    alternates: { locale: UILanguages; url: string }[]
+    defaultPath: string
+    /** Pre-computado: mapa locale -> TranslationLink (href, label, availability) */
     localeLinks: Record<UILanguages, TranslationLink>
     config: SectionConfig
   }
