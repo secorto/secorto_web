@@ -12,16 +12,21 @@ export type AvailableLocales = Partial<Record<UILanguages, {
 /**
  * Decide qué locale usar como canónico para una serie de entradas.
  *
- * Comportamiento actual (implementación):
- * - `available` es un mapa `{ [lang]: { slug, draft?, canonical? } }`.
- * - Recorre las entradas y, si encuentra una con `canonical: true`, retorna
- *   inmediatamente ese `lang` (retorna la primera encontrada).
- * - Si no hay `canonical: true`, prioriza `defaultLocale` si está presente.
- * - Si tampoco está `defaultLocale`, devuelve el primer locale encontrado
- *   durante la iteración.
- * - No realiza validación exhaustiva de inconsistencias (p.ej. múltiples
- *   entradas por el mismo `canonicalId`+`lang`); esa validación se realiza
- *   en la fase de agregación/mapeo de entradas.
+ * Reglas implementadas:
+ * - Solo se consideran las entradas no-draft (entry.draft !== true).
+ * - Si no hay entradas no-draft, devuelve `undefined`.
+ * - Si entre las no-draft existe una con `canonical: true`, devuelve ese locale.
+ * - Si hay más de una entrada no-draft con `canonical: true`, se deja la
+ *   decisión al consumidor (no se lanza error aquí) y se siguen las reglas
+ *   de preferencia descritas más abajo.
+ * - Si no hay `canonical` explícito, se prefiere `defaultLocale` si está
+ *   presente entre las no-draft.
+ * - Si tampoco está `defaultLocale`, se devuelve el primer locale no-draft
+ *   encontrado.
+ *
+ * Nota: la validación de duplicados por `(canonicalId, locale)` se realiza
+ * en la fase de agregación (`buildLocaleEntryMap`) y seguirá lanzando si hay
+ * entradas repetidas para el mismo locale.
  */
 export function resolveSeriesCanonicalLocale(
   available: AvailableLocales,
