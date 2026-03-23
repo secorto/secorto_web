@@ -18,6 +18,8 @@ import { filterByLocale, getUniqueTags, mapEntryId } from './paths'
 import type { AvailableLocales } from '@i18n/languagePickerUtils'
 import { type PostEntry, type ExperienceLikeEntry } from '@domain/post'
 import { buildTagLocaleMap, getAvailableLocaleEntriesFromMap, buildLocaleEntryMap } from './translationHelpers'
+import { buildDetailLink, buildLanguageLinks, type TranslationLink } from '@i18n/languagePickerUtils'
+import { findCanonicalSectionKey } from '@i18n/rootMap'
 import { tagTranslations } from '@domain/tags'
 import type { CollectionEntry, CollectionKey } from 'astro:content'
 
@@ -70,6 +72,8 @@ export interface DetailPath {
     entry: PostEntry<CollectionKey>
     /** Mapa de locales disponibles para este entry, pre-calculado en build time. */
     availableLocales: AvailableLocales
+    /** Precomputado: mapa locale -> TranslationLink (href, label, availability) */
+    localeLinks: Record<UILanguages, TranslationLink>
     config: SectionConfig
   }
 }
@@ -192,9 +196,12 @@ export async function buildAllDetailPathsCore(
     for (const entry of allEntries) {
       const locale = entryLocaleMap[entry.id]
       const localeEntryMap = getAvailableLocaleEntriesFromMap(localeEntryMapByCanonical, entry.canonicalId)
+      const canonicalSection = findCanonicalSectionKey(config.routes[locale], locale)
+      const localeLinks = buildLanguageLinks(l => buildDetailLink(l, canonicalSection, localeEntryMap))
+
       allPaths.push({
         params: { locale, section: config.routes[locale], id: entry.cleanId },
-        props: { entry, availableLocales: localeEntryMap, config }
+        props: { entry, availableLocales: localeEntryMap, localeLinks, config }
       })
     }
   }
