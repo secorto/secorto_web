@@ -19,9 +19,8 @@ const { entry, localeLinks, config, alternates, defaultPath, canonicalLocale } =
 
 const t = useTranslations(locale)
 
-// Use existing helper to build the canonical path so formatting is centralized
-const canonicalLink = localeLinks[canonicalLocale]
-const canonicalPath = canonicalLink.href
+// Get the canonical path from the link of the canonical locale if it exists
+const canonicalPath = canonicalLocale ? localeLinks[canonicalLocale].href : undefined
 
 // Map category to component
 const detailComponentMap = {
