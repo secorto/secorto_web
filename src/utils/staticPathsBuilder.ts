@@ -73,9 +73,9 @@ export interface DetailPath {
     entry: PostEntry<CollectionKey>
     /** Mapa de locales disponibles para este entry, pre-calculado en build time. */
     availableLocales: AvailableLocales
-    canonicalLocale: UILanguages
+    canonicalLocale: UILanguages | undefined
     alternates: { locale: UILanguages; url: string }[]
-    defaultPath: string
+    defaultPath: string | undefined
     /** Pre-computado: mapa locale -> TranslationLink (href, label, availability) */
     localeLinks: Record<UILanguages, TranslationLink>
     config: SectionConfig
@@ -206,7 +206,7 @@ export async function buildAllDetailPathsCore(
 
       const alternates = (Object.entries(localeLinks) as [UILanguages, TranslationLink][])
         .map(([lk, link]) => ({ locale: lk, url: link.href }))
-      const defaultPath = localeLinks[defaultLang].href || (localeLinks[seriesCanonicalLocale]?.href)
+      const defaultPath = localeLinks[defaultLang]?.href
 
       allPaths.push({
         params: { locale, section: config.routes[locale], id: entry.cleanId },

@@ -1,4 +1,4 @@
-import { type UILanguages } from '@i18n/ui'
+import { defaultLang, type UILanguages } from '@i18n/ui'
 
 export type AvailableLocales = Partial<Record<UILanguages, {
   /** Local slug para este entry en el locale (p.ej. 'mi-articulo') */
@@ -25,17 +25,22 @@ export type AvailableLocales = Partial<Record<UILanguages, {
  */
 export function resolveSeriesCanonicalLocale(
   available: AvailableLocales,
-  defaultLocale: UILanguages = 'es'
-): UILanguages {
-  let firstLocale: UILanguages | undefined
-  let hasDefault = false
+  defaultLocale: UILanguages = defaultLang
+): UILanguages | undefined {
+  const nonDraftEntries = Object.entries(available)
+    .filter(([, entry]) => Boolean(entry) && entry!.draft !== true)
+    .map(([loc, entry]) => [loc as UILanguages, entry as NonNullable<AvailableLocales[keyof AvailableLocales]>] as const)
 
-  for (const [loc, entry] of Object.entries(available) as [UILanguages, AvailableLocales[keyof AvailableLocales]][]) {
-    if (!firstLocale) firstLocale = loc
-    if (loc === defaultLocale) hasDefault = true
-    if (entry && entry.canonical) return loc
-  }
+  if (nonDraftEntries.length === 0) return undefined
 
-  if (!hasDefault && firstLocale) return firstLocale
-  return defaultLocale
+  const canonicalLocales = nonDraftEntries
+    .filter(([, entry]) => Boolean(entry.canonical))
+    .map(([loc]) => loc)
+
+  if (canonicalLocales.length === 1) return canonicalLocales[0]
+
+  const hasDefault = nonDraftEntries.some(([loc]) => loc === defaultLocale)
+  if (hasDefault) return defaultLocale
+
+  return nonDraftEntries[0][0]
 }

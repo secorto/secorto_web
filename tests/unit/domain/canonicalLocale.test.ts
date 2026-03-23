@@ -16,4 +16,12 @@ describe('resolveSeriesCanonicalLocale', () => {
     const available = { es: { slug: 'es-slug' }, en: { slug: 'en-slug', canonical: true } }
     expect(resolveSeriesCanonicalLocale(available)).toBe('en')
   })
+
+  it('returns undefined when all entries are draft', () => {
+    const available = {
+      en: { slug: 'en-slug', draft: true },
+      es: { slug: 'es-slug', draft: true }
+    }
+    expect(resolveSeriesCanonicalLocale(available)).toBeUndefined()
+  })
 })
