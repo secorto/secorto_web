@@ -22,13 +22,15 @@ const { posts, basePath, lang } = Astro.props
       url={`/${basePath}/${post.cleanId}`}
       title={post.data.title}
     >
-      <PostDate>
-        <WorkDateRange
-          locale={lang}
-          startDate={post.data.startDate}
-          endDate={post.data.endDate}
-        />
-      </PostDate>
+      {post.data.startDate && (
+        <PostDate>
+          <WorkDateRange
+            locale={lang}
+            startDate={post.data.startDate}
+            endDate={post.data.endDate}
+          />
+        </PostDate>
+      )}
       <p>{post.data.role}</p>
       <p>{post.data.responsibilities}</p>
     </PostItem>
