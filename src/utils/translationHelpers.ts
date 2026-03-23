@@ -13,6 +13,20 @@ import type { TagMap } from '@domain/tags'
 import type { PostEntry } from '@domain/post'
 
 /**
+ * Extrae y valida el locale del id de un entry (`{locale}/slug`).
+ * Lanza un error en build time si el entry no sigue la convención de carpetas.
+ */
+export function parseLocaleFromEntryId(id: string): UILanguages {
+  const prefix = id.split('/')[0]
+  if (!languageKeys.includes(prefix as UILanguages)) {
+    throw new Error(
+      `Entry "${id}" is not under a valid locale folder. Expected one of: ${languageKeys.join(', ')}`
+    )
+  }
+  return prefix as UILanguages
+}
+
+/**
  * Build a map of available locales for a content entry, including slug and draft status.
  * Used by detail pages to build LanguagePicker links.
  *
