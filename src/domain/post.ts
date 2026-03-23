@@ -40,3 +40,24 @@ export interface ExperienceLikeEntry {
     website?: string
   }
 }
+
+/**
+ * Genera el texto de rango de fechas para una entrada de tipo "experience".
+ * Devuelve null si no hay fecha de inicio.
+ *
+ * @param startDate - Fecha de inicio (opcional)
+ * @param endDate - Fecha de fin (opcional; si falta, se usa `todayLabel`)
+ * @param format - Función que convierte una fecha (Date) en string según el locale
+ * @param todayLabel - Texto traducido para "hoy" (cuando no hay endDate)
+ */
+export function formatDateRange(
+  startDate: Date | undefined,
+  endDate: Date | undefined,
+  format: (date: Date) => string,
+  todayLabel: string
+): string | null {
+  if (!startDate) return null
+  const start = format(startDate)
+  const end = endDate ? format(endDate) : todayLabel
+  return `${start} - ${end}`
+}

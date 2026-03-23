@@ -1,6 +1,7 @@
 ---
 import { getMonthYearFormat, useTranslations } from '@i18n/utils'
 import type { UILanguages } from '@i18n/ui'
+import { formatDateRange } from '@domain/post'
 
 interface Props {
   locale: UILanguages
@@ -17,9 +18,7 @@ const { locale, startDate, endDate, showLabels = false } = Astro.props
 const t = useTranslations(locale)
 const dateFormat = getMonthYearFormat(Astro.url)
 
-const formattedStart = startDate ? dateFormat.format(startDate) : null
-const formattedEnd = endDate ? dateFormat.format(endDate) : t('work.today')
-const rangeText = formattedStart ? `${formattedStart} - ${formattedEnd}` : null
+const rangeText = formatDateRange(startDate, endDate, (d) => dateFormat.format(d), t('work.today'))
 ---
 
 {rangeText && (showLabels ? (
