@@ -8,7 +8,7 @@
 import type { CollectionKey } from 'astro:content'
 import type { UILanguages } from '@i18n/ui'
 import { languageKeys } from '@i18n/ui'
-import type { AvailableLocales } from '@i18n/languagePickerUtils'
+import type { AvailableLocales } from '@domain/translation'
 import type { TagMap } from '@domain/tags'
 import type { PostEntry } from '@domain/post'
 

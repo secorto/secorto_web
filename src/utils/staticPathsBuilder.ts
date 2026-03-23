@@ -15,13 +15,13 @@
 import { languageKeys, defaultLang, type UILanguages } from '@i18n/ui'
 import { type SectionConfig } from '@domain/section'
 import { filterByLocale, getUniqueTags, mapEntryId } from './paths'
-import type { AvailableLocales } from '@i18n/languagePickerUtils'
+import type { AvailableLocales } from '@domain/translation'
 import { type PostEntry, type ExperienceLikeEntry } from '@domain/post'
 import { buildTagLocaleMap, getAvailableLocaleEntriesFromMap, buildLocaleEntryMap } from './translationHelpers'
 import { buildDetailLink, buildLanguageLinks, type TranslationLink } from '@i18n/languagePickerUtils'
 import { findCanonicalSectionKey } from '@i18n/rootMap'
 import { tagTranslations } from '@domain/tags'
-import { resolveSeriesCanonicalLocale } from '@i18n/buildTranslationMap'
+import { resolveSeriesCanonicalLocale } from '@domain/translation'
 import type { CollectionEntry, CollectionKey } from 'astro:content'
 
 /** Minimal shape for the injected collection fetcher — easier to mock than the full generic overload. */
@@ -200,8 +200,7 @@ export async function buildAllDetailPathsCore(
     for (const entry of allEntries) {
       const locale = entryLocaleMap[entry.id]
       const localeEntryMap = getAvailableLocaleEntriesFromMap(localeEntryMapByCanonical, entry.canonicalId)
-      const availableLocales = Object.keys(localeEntryMap) as UILanguages[]
-      const seriesCanonicalLocale = resolveSeriesCanonicalLocale(availableLocales)
+      const seriesCanonicalLocale = resolveSeriesCanonicalLocale(localeEntryMap)
       const canonicalSection = findCanonicalSectionKey(config.routes[locale], locale)
       const localeLinks = buildLanguageLinks(l => buildDetailLink(l, canonicalSection, localeEntryMap))
 

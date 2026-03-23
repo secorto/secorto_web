@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { buildTranslationMap, resolveSeriesCanonicalLocale } from '@i18n/buildTranslationMap'
+import { buildTranslationMap } from '@i18n/buildTranslationMap'
 
 vi.mock('astro:content', () => ({
   getCollection: vi.fn()
@@ -51,15 +51,4 @@ describe('buildTranslationMap', () => {
     const map = await buildTranslationMap('blog')
     expect(map['2025-01-01-my-post'].es.slug).toBe('2025-01-01-my-post')
   })
-})
-
-describe('resolveSeriesCanonicalLocale', () => {
-  it('prefers es when available', () => {
-    expect(resolveSeriesCanonicalLocale(['en', 'es'])).toBe('es')
-  })
-
-  it('returns first element when nothing matches', () => {
-    expect(resolveSeriesCanonicalLocale(['en'])).toBe('en')
-  })
-  
 })

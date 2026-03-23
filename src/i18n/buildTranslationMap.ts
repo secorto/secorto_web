@@ -1,5 +1,4 @@
 import { getCollection, type CollectionKey } from "astro:content";
-import { type UILanguages } from "@i18n/ui";
 
 export type TranslationEntry = {
   id: string;
@@ -131,18 +130,4 @@ export async function buildTranslationMap(
   }
 
   return result
-}
-
-/**
- * Resolves the canonical locale for a series given the available locales.
- * Priority: `es` → first available.
- * The `canonical: true` frontmatter flag is resolved at getStaticPaths time
- * (too expensive to re-read per page); for page-level SEO use availableLocales.
- */
-export function resolveSeriesCanonicalLocale(
-  available: UILanguages[],
-  defaultLocale: UILanguages = "es"
-): UILanguages {
-  if (available.includes(defaultLocale)) return defaultLocale
-  return available[0]
 }
