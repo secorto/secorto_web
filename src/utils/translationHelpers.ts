@@ -93,7 +93,7 @@ export function buildLocaleEntryMap<C extends CollectionKey = CollectionKey>(
   const localeEntryMap: Record<string, AvailableLocales> = {}
   const entryLocaleMap: Record<string, UILanguages> = {}
 
-  // Single-pass build: O(N) over entries. Preserve first-seen locale per canonicalId.
+  // Single-pass build: O(N) over entries. Throws on duplicate (canonicalId, locale) pairs to fail fast on inconsistent content.
   for (const e of allEntries) {
     const lang = parseLocaleFromEntryId(e.id)
     entryLocaleMap[e.id] = lang
