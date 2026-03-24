@@ -2,14 +2,7 @@ import type { UILanguages } from './ui'
 import { languages, defaultLang, languageKeys } from './ui'
 import { showDefaultLang } from '@i18n/config'
 import { resolveLocalized, findCanonicalSectionKey, rootMap } from './rootMap'
-export type AvailableLocales = Partial<Record<UILanguages, {
-  /** Local slug para este entry en el locale (p.ej. 'mi-articulo') */
-  slug: string
-  /** Marca si la traducción está en estado draft (no pública) */
-  draft?: boolean
-  /** Indica si esta entrada es la versión canónica dentro de la serie */
-  canonical?: boolean
-}>>
+import type { AvailableLocales } from '@domain/translation'
 
 export interface TranslationLink {
   /** URL destino del link (puede ser string vacío si no está disponible) */

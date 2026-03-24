@@ -10,7 +10,7 @@ interface Props {
   /** Array of alternate language links */
   alternates: Alternative[]
   /** URL for the x-default hreflang (usually default language version) */
-  defaultUrl: string
+  defaultUrl: string | undefined
 }
 
 const { alternates, defaultUrl } = Astro.props
@@ -19,4 +19,5 @@ const { alternates, defaultUrl } = Astro.props
 {alternates.map(({ locale, url }) => (
   <link rel="alternate" hreflang={locale} href={url} />
 ))}
-<link rel="alternate" hreflang="x-default" href={defaultUrl} />
+{defaultUrl && <link rel="alternate" hreflang="x-default" href={defaultUrl} />}
+

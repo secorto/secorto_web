@@ -8,22 +8,21 @@ import AlternateLinks from './AlternateLinks.astro'
 
 interface Props {
   /** Canonical path for this page (relative, e.g. /es/blog/slug) */
-  canonicalPath: string
+  canonicalPath: string | undefined
   /** Array of precomputed absolute alternates { locale, url } */
   alternates: Alternative[]
   /** Default (x-default) path (relative) */
-  defaultPath: string
+  defaultPath: string | undefined
   /** Whether to mark as noindex (for draft/untranslated content) */
   noindex?: boolean
 }
 
 const { canonicalPath, alternates, defaultPath, noindex = false } = Astro.props
 const site = import.meta.env.SITE ?? ''
-const canonicalUrl = `${site}${canonicalPath}`
 const absoluteAlternates = alternates.map(a => ({ locale: a.locale, url: `${site}${a.url}` }))
-const absoluteDefault = `${site}${defaultPath}`
+const absoluteDefault = defaultPath ? `${site}${defaultPath}` : undefined
 ---
 
-<link rel="canonical" href={canonicalUrl} />
+{canonicalPath && <link rel="canonical" href={`${site}${canonicalPath}`} />}
 {noindex && <meta name="robots" content="noindex" />}
 <AlternateLinks alternates={absoluteAlternates} defaultUrl={absoluteDefault} />
