@@ -18,7 +18,7 @@ import { filterByLocale, getUniqueTags, mapEntryId } from './paths'
 import type { AvailableLocales } from '@domain/translation'
 import { type PostEntry, type ExperienceLikeEntry } from '@domain/post'
 import { buildTagLocaleMap, getAvailableLocaleEntriesFromMap, buildLocaleEntryMap } from './translationHelpers'
-import { buildLanguageLinks, buildDetailLink, type TranslationLink } from '@i18n/languagePickerUtils'
+import { buildLanguageLinks, buildDetailLink, buildAlternatesFromLinks, type TranslationLink } from '@i18n/languagePickerUtils'
 import { tagTranslations } from '@domain/tags'
 import { resolveDefaultLocale } from '@domain/translation'
 import type { CollectionEntry, CollectionKey } from 'astro:content'
@@ -201,10 +201,7 @@ export async function buildAllDetailPathsCore(
       const seriesDefaultLocale = resolveDefaultLocale(localeEntryMap)
       const localeLinks = buildLanguageLinks(l => buildDetailLink(l, config.routes[l], localeEntryMap))
 
-      const alternates = languageKeys.map(l => {
-        const link = buildDetailLink(l, config.routes[l], localeEntryMap)
-        return { locale: l, url: link.href }
-      })
+      const alternates = buildAlternatesFromLinks(localeLinks)
 
       const defaultPath = buildDetailLink(seriesDefaultLocale, config.routes[seriesDefaultLocale], localeEntryMap).href
 

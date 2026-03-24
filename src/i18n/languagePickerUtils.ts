@@ -130,3 +130,13 @@ export function buildStaticPageLink(targetLang: UILanguages, url: URL): Translat
 export function buildStaticPageLinks(url: URL): Record<UILanguages, TranslationLink> {
   return buildLanguageLinks(l => buildStaticPageLink(l, url))
 }
+
+/**
+ * Construye `alternates` (lista de objetos `{ locale, url }`) a partir
+ * de un mapa `links` del language picker, filtrando los que no están disponibles.
+ */
+export function buildAlternatesFromLinks<T extends TranslationLink>(links: Record<UILanguages, T>) {
+  return Object.values(links)
+    .filter(l => Boolean(l.isAvailable) && Boolean(l.href))
+    .map(l => ({ locale: l.locale, url: l.href }))
+}
