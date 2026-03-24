@@ -21,12 +21,12 @@ const dateFormat = getFullFormat(Astro.url);
       url={`/${basePath}/${post.cleanId}`}
       title={post.data.title}
     >
-      {post.data.excerpt}
       {post.data.date &&
         <PostDate>
           {dateFormat.format(post.data.date)}
         </PostDate>
       }
+      {post.data.excerpt}
     </PostItem>
   )}
 </PostList>
