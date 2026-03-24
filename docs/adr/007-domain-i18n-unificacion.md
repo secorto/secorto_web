@@ -231,7 +231,7 @@ Estos cambios se implementaron en múltiples archivos y producen una API más es
 
 ## Notas sobre código obsoleto / remanentes
 
-- La función `getCanonicalMetadata` fue eliminada del runtime. Su responsabilidad de construir la descripción SEO fue asumida por el helper de dominio `getSeoDescription` (en `src/domain/post.ts`), que únicamente compone la `description`/`excerpt`. La lógica de `canonical` continúa viviendo en el layout/plantilla que emite la URL canónica (p. ej. `SiteLayout`), y el control de `noindex` se aplica según `draft` en frontmatter (`entry.data.draft`) y se pasa a `SEOHead` o a las plantillas correspondientes. Asegúrese de que todas las entradas incluyan el campo obligatorio `title` en su frontmatter para cumplir el contrato de las collections.
+- La función `getCanonicalMetadata` fue eliminada del runtime. Su responsabilidad de construir la descripción SEO fue asumida por el helper de dominio `getSeoDescription` (en `src/domain/post.ts`), que únicamente compone la `description`/`excerpt` por lo cual es compatible con `getSeoDescription(entry.data)`. La lógica de `canonical` sigue en el layout (ej. `SiteLayout`) y `noindex` se controla desde `entry.data.draft`.
 
 ## Cambios recientes relevantes (resumen por commit)
 

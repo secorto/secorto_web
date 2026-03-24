@@ -112,7 +112,7 @@ accidental y asegurar comportamiento consistente:
   estados de traducción.
 - Tipado: se añadió `draft?: boolean` en el tipo local `BaseEntryData` para
   evitar casteos y reflejar el campo en las páginas que renderizan entradas.
- - Tests: las pruebas unitarias se adaptaron para usar `draft` (`entry.data.draft`) como
+- Tests: las pruebas unitarias se adaptaron para usar `draft` (`entry.data.draft`) como
   fuente de verdad y se eliminó la dependencia en el helper de compatibilidad
   (o se reescribieron para cubrir la nueva interfaz). La suite local pasa
   completamente tras los cambios.
