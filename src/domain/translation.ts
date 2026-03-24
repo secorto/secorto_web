@@ -13,14 +13,18 @@ export type AvailableLocales = Partial<Record<UILanguages, {
  * Decide qué locale usar como canónico para una serie de entradas.
  *
  * Reglas (resumen):
- * - `available` es un array de entradas con la forma { lang, slug, draft?, canonical? }.
+ * - `available` es un mapa (`AvailableLocales`) indexado por `UILanguages`,
+ *   donde cada valor tiene la forma `{ slug, draft?, canonical? }`.
  * - Si `available` está vacío, devuelve `defaultLocale`.
- * - Si más de una entrada tiene `canonical: true`, lanza un `Error` por ambigüedad.
- * - Si exactamente una entrada tiene `canonical: true`, retorna su `lang`.
- * - Si ninguna tiene `canonical: true` y `defaultLocale` está presente en `available`, retorna `defaultLocale`.
- * - Si ninguna de las condiciones anteriores aplica, retorna el primer `lang`
- *   disponible siguiendo el orden preferido en `languageKeys`.
- * - Como último recurso, retorna `available[0].lang`.
+ * - Si alguna entrada tiene `canonical: true`, devuelve el primer locale
+ *   con `canonical: true` encontrado al iterar `Object.entries(available)`
+ *   (siguiendo el orden de inserción de las claves del objeto).
+ * - Si ninguna entrada tiene `canonical: true` pero `defaultLocale` está
+ *   presente en `available`, devuelve `defaultLocale`.
+ * - Si `defaultLocale` no está presente en `available` pero existe al menos
+ *   una entrada, devuelve el primer locale encontrado al iterar
+ *   `Object.entries(available)` (primer locale definido en el mapa).
+ * - Si `available` está vacío, devuelve `defaultLocale`.
  *
  * Nota: la agregación y validación de duplicados (p.ej. múltiples entradas
  * para el mismo `canonicalId`+`lang`) debe hacerse en una fase separada;
