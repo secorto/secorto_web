@@ -200,7 +200,7 @@ export async function buildAllDetailPathsCore(
       const localeEntryMap = getAvailableLocaleEntriesFromMap(localeEntryMapByPostId, entry.postId)
       const seriesDefaultLocale = resolveDefaultLocale(localeEntryMap)
       const localeLinks = buildLanguageLinks(l => buildDetailLink(l, config.routes[l], localeEntryMap))
-      const defaultPath = buildDetailLink(seriesDefaultLocale, config.routes[seriesDefaultLocale], localeEntryMap).href
+      const defaultPath = localeLinks[seriesDefaultLocale].href
 
       allPaths.push({
         params: { locale, section: config.routes[locale], id: entry.cleanId },

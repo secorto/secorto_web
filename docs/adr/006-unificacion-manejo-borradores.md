@@ -32,8 +32,7 @@ borradores. Cambios concretos:
 - El esquema de contenido (`src/content.config.ts`) incluirá `draft?: boolean`.
 - Las funciones que generan listados y paths (`src/utils/paths.ts`) solo
   filtrarán por `data.draft === true` para excluir borradores.
-- La lógica de canonical/noindex y avisos se basará en `draft` (p. ej.
-  `getCanonicalMetadata` recibirá `entryDraft` explícito).
+- La lógica de canonical/noindex y avisos se basará en `draft` y en los helpers del dominio; no se recomienda inferir borradores desde `translation_status`.
 - `translation_status` podrá permanecer como metadata histórica/auxiliar,
   pero ya no se usará para inferir el estado de borrador.
 
@@ -86,7 +85,7 @@ borradores. Cambios concretos:
 
 - `src/content.config.ts` — campo `draft` añadido al schema base
 - `src/utils/paths.ts` — filtrado por `draft`
-- `src/utils/translationMetadata.ts` — `getCanonicalMetadata(entryDraft: boolean)`
+- `src/domain/post.ts` — helpers de dominio (p. ej. `getSeoDescription`) y tipos relacionados; las extracciones simples de metadata también pueden encontrarse inline en las plantillas o centralizadas en estos helpers.
 - `docs/TRANSLATION_WORKFLOW.md` — guía actualizada
 
 ---
@@ -102,17 +101,18 @@ accidental y asegurar comportamiento consistente:
 - `src/utils/paths.ts`: se actualizó el filtrado para excluir entradas con
   `data.draft === true`. Se eliminaron casts inseguros y se usan comprobaciones
   en tiempo de ejecución sobre `Record<string, unknown>` para evitar `any`.
-- `src/utils/translationMetadata.ts`: la función `getCanonicalMetadata` se
-  simplificó para depender únicamente de `entryDraft` (campo explícito).
+- `src/domain/post.ts`: los helpers de dominio (por ejemplo `getSeoDescription`)
+  y la lógica de SEO/canonical/noindex se concentran aquí o se dejan inline en
+  las plantillas. Se simplificó la lógica para depender únicamente de `draft` (frontmatter: `entry.data.draft`) y evitar inferencias desde `translation_status`.
   Se eliminaron inferencias automáticas sobre `translation_status` en el
   flujo principal (la metadata histórica puede permanecer en archivos).
 - `src/pages/[locale]/[section]/[...id].astro`: la plantilla de detalle ahora
-  muestra el aviso de borrador únicamente cuando `entryData.draft` es true;
+  muestra el aviso de borrador únicamente cuando `entry.data.draft` es true;
   se eliminó la lógica condicional que intentaba inferir borradores desde
   estados de traducción.
 - Tipado: se añadió `draft?: boolean` en el tipo local `BaseEntryData` para
   evitar casteos y reflejar el campo en las páginas que renderizan entradas.
-- Tests: las pruebas unitarias se adaptaron para usar `entryDraft` como
+- Tests: las pruebas unitarias se adaptaron para usar `draft` (`entry.data.draft`) como
   fuente de verdad y se eliminó la dependencia en el helper de compatibilidad
   (o se reescribieron para cubrir la nueva interfaz). La suite local pasa
   completamente tras los cambios.

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { formatDateRange } from '@domain/post'
+import { formatDateRange, getSeoDescription } from '@domain/post'
 
 const fmt = (d: Date) => d.toISOString().slice(0, 7) // "YYYY-MM"
 
@@ -23,5 +23,22 @@ describe('formatDateRange', () => {
     const upper = (d: Date) => d.getUTCFullYear().toString()
     const result = formatDateRange(new Date('2019-01-01'), new Date('2021-01-01'), upper, 'hoy')
     expect(result).toBe('2019 - 2021')
+  })
+})
+
+describe('getSeoDescription', () => {
+  test('usa excerpt cuando está presente', () => {
+    const entry = { data: { excerpt: 'resumen', description: 'desc' } }
+    expect(getSeoDescription(entry.data)).toBe('resumen')
+  })
+
+  test('cae a description cuando excerpt es falsy', () => {
+    const entry = { data: { excerpt: '', description: 'desc disponible' } }
+    expect(getSeoDescription(entry.data)).toBe('desc disponible')
+  })
+
+  test('devuelve cadena vacía si no hay datos', () => {
+    const entry = { data: {} }
+    expect(getSeoDescription(entry.data)).toBe('')
   })
 })
