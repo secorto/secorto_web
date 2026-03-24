@@ -1,3 +1,5 @@
+import type { UILanguages } from '@i18n/ui'
+
 /**
  * Campos computados por nuestro dominio a partir de una CollectionEntry de Astro
  */
@@ -9,8 +11,13 @@ export interface ComputedFields {
   cleanId: string
 
   /**
-   * Identificador canónico que agrupa todas las traducciones de una misma pieza.
-   * Puede provenir del frontmatter `postId` cuando se desea forzar la relación.
+  * Identificador que agrupa todas las traducciones de una misma pieza.
+  * Proviene del frontmatter `postId` cuando se desea forzar la relación,
+  * o se deriva del `cleanId` cuando no existe `postId`.
+  */
+  postId: string
+  /**
+   * Locale detectado a partir del `entry.id` (p.ej. 'es' o 'en').
    */
-  canonicalId: string
+  locale: UILanguages
 }

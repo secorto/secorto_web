@@ -12,16 +12,15 @@
  * Production code (Astro pages) imports from adapters.
  */
 
-import { languageKeys, defaultLang, type UILanguages } from '@i18n/ui'
+import { languageKeys, type UILanguages } from '@i18n/ui'
 import { type SectionConfig } from '@domain/section'
 import { filterByLocale, getUniqueTags, mapEntryId } from './paths'
 import type { AvailableLocales } from '@domain/translation'
 import { type PostEntry, type ExperienceLikeEntry } from '@domain/post'
 import { buildTagLocaleMap, getAvailableLocaleEntriesFromMap, buildLocaleEntryMap } from './translationHelpers'
-import { buildDetailLink, buildLanguageLinks, type TranslationLink } from '@i18n/languagePickerUtils'
-import { findCanonicalSectionKey } from '@i18n/rootMap'
+import { buildLanguageLinks, buildDetailLink, buildAlternatesFromLinks, type TranslationLink } from '@i18n/languagePickerUtils'
 import { tagTranslations } from '@domain/tags'
-import { resolveSeriesCanonicalLocale } from '@domain/translation'
+import { resolveDefaultLocale } from '@domain/translation'
 import type { CollectionEntry, CollectionKey } from 'astro:content'
 
 /** Minimal shape for the injected collection fetcher — easier to mock than the full generic overload. */
@@ -73,7 +72,6 @@ export interface DetailPath {
     entry: PostEntry<CollectionKey>
     /** Mapa de locales disponibles para este entry, pre-calculado en build time. */
     availableLocales: AvailableLocales
-    canonicalLocale: UILanguages | undefined
     alternates: { locale: UILanguages; url: string }[]
     defaultPath: string | undefined
     /** Pre-computado: mapa locale -> TranslationLink (href, label, availability) */
@@ -195,22 +193,21 @@ export async function buildAllDetailPathsCore(
   for (const config of sections) {
     const allEntries = mapEntryId(await fetchCollection(config.name))
 
-    const { localeEntryMap: localeEntryMapByCanonical, entryLocaleMap } = buildLocaleEntryMap(allEntries)
+    const localeEntryMapByPostId = buildLocaleEntryMap(allEntries)
 
     for (const entry of allEntries) {
-      const locale = entryLocaleMap[entry.id]
-      const localeEntryMap = getAvailableLocaleEntriesFromMap(localeEntryMapByCanonical, entry.canonicalId)
-      const seriesCanonicalLocale = resolveSeriesCanonicalLocale(localeEntryMap)
-      const canonicalSection = findCanonicalSectionKey(config.routes[locale], locale)
-      const localeLinks = buildLanguageLinks(l => buildDetailLink(l, canonicalSection, localeEntryMap))
+      const locale = entry.locale
+      const localeEntryMap = getAvailableLocaleEntriesFromMap(localeEntryMapByPostId, entry.postId)
+      const seriesDefaultLocale = resolveDefaultLocale(localeEntryMap)
+      const localeLinks = buildLanguageLinks(l => buildDetailLink(l, config.routes[l], localeEntryMap))
 
-      const alternates = (Object.entries(localeLinks) as [UILanguages, TranslationLink][])
-        .map(([lk, link]) => ({ locale: lk, url: link.href }))
-      const defaultPath = localeLinks[defaultLang]?.href
+      const alternates = buildAlternatesFromLinks(localeLinks)
+
+      const defaultPath = buildDetailLink(seriesDefaultLocale, config.routes[seriesDefaultLocale], localeEntryMap).href
 
       allPaths.push({
         params: { locale, section: config.routes[locale], id: entry.cleanId },
-        props: { entry, availableLocales: localeEntryMap, canonicalLocale: seriesCanonicalLocale, alternates, defaultPath, localeLinks, config }
+        props: { entry, availableLocales: localeEntryMap, alternates, defaultPath, localeLinks, config }
       })
     }
   }

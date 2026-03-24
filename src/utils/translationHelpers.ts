@@ -7,24 +7,9 @@
  */
 import type { CollectionKey } from 'astro:content'
 import type { UILanguages } from '@i18n/ui'
-import { languageKeys } from '@i18n/ui'
 import type { AvailableLocales } from '@domain/translation'
 import type { TagMap } from '@domain/tags'
 import type { PostEntry } from '@domain/post'
-
-/**
- * Extrae y valida el locale del id de un entry (`{locale}/slug`).
- * Lanza un error en build time si el entry no sigue la convención de carpetas.
- */
-export function parseLocaleFromEntryId(id: string): UILanguages {
-  const prefix = id.split('/')[0]
-  if (!languageKeys.includes(prefix as UILanguages)) {
-    throw new Error(
-      `Entry "${id}" is not under a valid locale folder. Expected one of: ${languageKeys.join(', ')}`
-    )
-  }
-  return prefix as UILanguages
-}
 
 /**
  * Lookup helper: devuelve `AvailableLocales` desde un mapa precomputado.
@@ -32,9 +17,9 @@ export function parseLocaleFromEntryId(id: string): UILanguages {
  */
 export function getAvailableLocaleEntriesFromMap(
   localeEntryMap: Record<string, AvailableLocales>,
-  canonicalId: string
+  postId: string
 ): AvailableLocales {
-  return localeEntryMap[canonicalId] ?? {}
+  return localeEntryMap[postId] ?? {}
 }
 
 /**
@@ -57,14 +42,13 @@ export function buildTagLocaleMap(
   for (const entry of allEntries) {
     if (entry.data?.draft) continue
     if (!entry.data.tags?.length) continue
-    const lang = parseLocaleFromEntryId(entry.id)
     const tags = entry.data.tags
     for (const tag of tags) {
       const canonical = tagMap
-        ? (Object.entries(tagMap).find(([, locales]) => locales[lang] === tag)?.[0] ?? tag)
+        ? (Object.entries(tagMap).find(([, locales]) => locales[entry.locale] === tag)?.[0] ?? tag)
         : tag
       canonicalMap[canonical] ??= {}
-      canonicalMap[canonical][lang] = tag
+      canonicalMap[canonical][entry.locale] = tag
     }
   }
 
@@ -80,39 +64,40 @@ export function buildTagLocaleMap(
 }
 
 /**
- * Versión expandida que devuelve ambos mapas:
- * - `localeEntryMap`: canonicalId -> AvailableLocales
- * - `entryLocaleMap`: entry.id -> locale (UILanguages)
+ * Construye y devuelve un mapa `postId` -> `AvailableLocales`.
  *
  * Esto permite evitar parseos redundantes de `entry.id` cuando el caller
- * necesita además el locale por entry, por ejemplo en `buildAllDetailPathsCore`.
+ * necesita el conjunto de locales disponibles por `postId`.
+ *
+ * Single-pass build: O(N) sobre las entradas. Lanza si detecta un duplicado
+ * por la combinación `(postId, locale)` para fallar rápido en caso de contenido
+ * inconsistente (es decir, si el mismo `postId` aparece más de una vez para
+ * el mismo `locale`).
+ *
+ * @param allEntries - Entradas de la colección (pre-fetch)
+ * @returns Mapa `postId` → `AvailableLocales`
  */
 export function buildLocaleEntryMap<C extends CollectionKey = CollectionKey>(
   allEntries: PostEntry<C>[]
-): { localeEntryMap: Record<string, AvailableLocales>; entryLocaleMap: Record<string, UILanguages> } {
+): Record<string, AvailableLocales> {
   const localeEntryMap: Record<string, AvailableLocales> = {}
-  const entryLocaleMap: Record<string, UILanguages> = {}
 
-  // Single-pass build: O(N) over entries. Throws on duplicate (canonicalId, locale) pairs to fail fast on inconsistent content.
   for (const e of allEntries) {
-    const lang = parseLocaleFromEntryId(e.id)
-    entryLocaleMap[e.id] = lang
-
-    // Inicializa perezosamente el bucket para este `canonicalId` usando `??=`.
-    const bucket = localeEntryMap[e.canonicalId] ??= {}
-    const existing = bucket[lang as keyof AvailableLocales] as { slug?: string } | undefined
+    // Inicializa perezosamente el bucket para este `postId` usando `??=`.
+    const bucket = localeEntryMap[e.postId] ??= {}
+    const existing = bucket[e.locale as keyof AvailableLocales] as { slug?: string } | undefined
     if (existing) {
       throw new Error(
-        `Duplicate entry for canonical "${e.canonicalId}" and locale "${lang}" - existing slug "${existing.slug}" vs "${e.cleanId}" (entry.id: ${e.id})`
+        `Duplicate entry for postId "${e.postId}" and locale "${e.locale}" - existing slug "${existing.slug}" vs "${e.cleanId}" (entry.id: ${e.id})`
       )
     }
 
-    bucket[lang as keyof AvailableLocales] = {
+    bucket[e.locale as keyof AvailableLocales] = {
       slug: e.cleanId,
       draft: Boolean(e.data?.draft),
       canonical: Boolean(e.data?.canonical)
     }
   }
 
-  return { localeEntryMap, entryLocaleMap }
+  return localeEntryMap
 }

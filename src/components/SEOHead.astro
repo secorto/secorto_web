@@ -1,0 +1,25 @@
+---
+/**
+ * Componente unificado para metadatos SEO.
+ * Recibe rutas relativas y normaliza a URLs absolutas usando `import.meta.env.SITE`.
+ */
+import type { Alternative } from '@domain/pageDetail'
+import AlternateLinks from './AlternateLinks.astro'
+
+interface Props {
+  /** Alternates con `url` relativas (ej. /es/...). Se normalizan internamente */
+  alternates?: Alternative[]
+  /** Ruta por defecto relativa para x-default (ej. /es/) */
+  defaultPath?: string
+  /** Marcar como noindex cuando aplique */
+  noindex?: boolean
+}
+const { alternates = [], defaultPath, noindex = false } = Astro.props
+const site = import.meta.env.SITE ?? ''
+
+const normalizedAlternates = alternates.map(a => ({ locale: a.locale, url: `${site}${a.url}` }))
+const normalizedDefault = defaultPath ? `${site}${defaultPath}` : undefined
+---
+{noindex && <meta name="robots" content="noindex" />}
+{normalizedDefault && <link rel="alternate" hreflang="x-default" href={normalizedDefault} />}
+<AlternateLinks alternates={normalizedAlternates} />

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import type { UILanguages } from '@i18n/ui'
+import type { TranslationLink } from '@i18n/languagePickerUtils'
 
 const mockRootMap: Record<string, Record<string, string>> = {
   about: { en: 'about', es: 'acerca-de' },
@@ -219,6 +220,19 @@ describe('languagePickerUtils', () => {
         expect(link.href).toBe('')
         expect(link.label).toBe(languages[lang])
       }
+    })
+  })
+
+  describe('buildAlternatesFromLinks', () => {
+    it('filters out unavailable links and returns locale/url pairs', async () => {
+      const { buildAlternatesFromLinks } = await import('@i18n/languagePickerUtils')
+      const links: Record<string, TranslationLink> = {
+        en: { href: '/en/', label: 'English', isAvailable: true, locale: 'en' },
+        es: { href: '', label: 'Español', isAvailable: false, disabledReason: 'missing', locale: 'es' }
+      }
+
+      const alternates = buildAlternatesFromLinks(links)
+      expect(alternates).toEqual([{ locale: 'en', url: '/en/' }])
     })
   })
 })

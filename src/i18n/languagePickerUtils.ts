@@ -61,20 +61,17 @@ export function buildTagLink(
 }
 
 /**
- * Construye un link de language picker para páginas de detalle (posts, charlas, proyectos, etc).
- * Verifica si hay traducción disponible para el idioma destino.
- * @param targetLang - Idioma destino para el link
- * @param canonicalSection - Sección canónica (ej: 'blog', 'talk')
- * @param availableLocales - Mapa de traducciones disponibles por idioma para este contenido
- * @returns Link con disponibilidad según traducciones, incluye razón si no está disponible
+ * Construye un link de detalle usando directamente la sección localizada (sin pasar por el mapa canonical→localized).
+ * Útil cuando el caller ya conoce la ruta localizada para cada idioma (por ejemplo desde `config.routes`).
  */
-export function buildDetailLink(targetLang: UILanguages, canonicalSection: string, availableLocales: AvailableLocales): TranslationLink {
+export function buildDetailLink(
+  targetLang: UILanguages,
+  localizedSection: string,
+  availableLocales: AvailableLocales
+): TranslationLink {
   const entry = availableLocales[targetLang]
-  const localizedSection = resolveLocalized(canonicalSection, targetLang)
 
-  if (!entry) {
-    return missingLink(targetLang)
-  }
+  if (!entry) return missingLink(targetLang)
 
   const link = availableLink(`${buildLangPrefix(targetLang)}/${localizedSection}/${entry.slug}`, targetLang)
   if (entry.draft) return { ...link, disabledReason: 'draft' }
@@ -132,4 +129,14 @@ export function buildStaticPageLink(targetLang: UILanguages, url: URL): Translat
 
 export function buildStaticPageLinks(url: URL): Record<UILanguages, TranslationLink> {
   return buildLanguageLinks(l => buildStaticPageLink(l, url))
+}
+
+/**
+ * Construye `alternates` (lista de objetos `{ locale, url }`) a partir
+ * de un mapa `links` del language picker, filtrando los que no están disponibles.
+ */
+export function buildAlternatesFromLinks<T extends TranslationLink>(links: Record<UILanguages, T>) {
+  return Object.values(links)
+    .filter(l => Boolean(l.isAvailable) && Boolean(l.href))
+    .map(l => ({ locale: l.locale, url: l.href }))
 }
