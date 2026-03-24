@@ -1,3 +1,5 @@
+import type { UILanguages } from '@i18n/ui'
+
 /**
  * Campos computados por nuestro dominio a partir de una CollectionEntry de Astro
  */
@@ -13,4 +15,9 @@ export interface ComputedFields {
    * Puede provenir del frontmatter `postId` cuando se desea forzar la relación.
    */
   canonicalId: string
+  /**
+   * Locale detectado a partir del `entry.id` (p.ej. 'es' o 'en').
+   * Opcional: no todas las entradas necesariamente llevan prefijo de locale en el id.
+   */
+  locale?: UILanguages
 }

@@ -8,12 +8,14 @@ import type { PostEntry } from '@domain/post'
  * - No realiza fallbacks agresivos: sólo calcula `cleanId` y `canonicalId` (desde `data.postId` o `cleanId`)
  */
 export function adaptToDomainEntry<C extends CollectionKey = CollectionKey>(entry: CollectionEntry<C>): PostEntry<C> {
-  const cleanId = extractCleanId(entry.id)
+  const extracted = extractCleanId(entry.id)
+  const cleanId = extracted.id
   const canonicalId = entry.data.postId ?? cleanId
 
   const computed: ComputedFields = {
     cleanId,
-    canonicalId
+    canonicalId,
+    locale: extracted.locale
   }
   return {
     ...entry,
