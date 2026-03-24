@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { resolveDefaultLocale } from '@domain/translation'
 
-describe('resolveSeriesCanonicalLocale', () => {
+describe('resolveDefaultLocale', () => {
   it('prefers es when available', () => {
     const available = { en: { slug: '2025-01-01-calendar' }, es: { slug: '2025-01-01-calendario' } }
     expect(resolveDefaultLocale(available)).toBe('es')
