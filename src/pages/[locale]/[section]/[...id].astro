@@ -28,7 +28,7 @@ const DetailComponent = detailComponentMap[config.category]
 const routeSlug = config.routes[locale]
 
 const { Content } = await render(entry)
-const pageDescription = getSeoDescription(entry)
+const pageDescription = getSeoDescription(entry.data)
 ---
 
 <SEOHead

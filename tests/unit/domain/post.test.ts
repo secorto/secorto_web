@@ -29,16 +29,16 @@ describe('formatDateRange', () => {
 describe('getSeoDescription', () => {
   test('usa excerpt cuando está presente', () => {
     const entry = { data: { excerpt: 'resumen', description: 'desc' } }
-    expect(getSeoDescription(entry)).toBe('resumen')
+    expect(getSeoDescription(entry.data)).toBe('resumen')
   })
 
   test('cae a description cuando excerpt es falsy', () => {
     const entry = { data: { excerpt: '', description: 'desc disponible' } }
-    expect(getSeoDescription(entry)).toBe('desc disponible')
+    expect(getSeoDescription(entry.data)).toBe('desc disponible')
   })
 
   test('devuelve cadena vacía si no hay datos', () => {
     const entry = { data: {} }
-    expect(getSeoDescription(entry)).toBe('')
+    expect(getSeoDescription(entry.data)).toBe('')
   })
 })
