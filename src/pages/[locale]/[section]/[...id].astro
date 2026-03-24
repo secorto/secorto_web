@@ -7,7 +7,6 @@ import WorkProjectCommunityView from '@components/WorkProjectCommunityView.astro
 import SEOHead from '@components/SEOHead.astro'
 import LanguagePicker from '@components/LanguagePicker.astro'
 import { useTranslations } from '@i18n/utils'
-import { getPageMetadata } from '@utils/translationMetadata'
 import { buildAllDetailPaths } from '@utils/staticPathsBuilder.adapters'
 
 export async function getStaticPaths() {
@@ -28,7 +27,7 @@ const DetailComponent = detailComponentMap[config.category]
 const routeSlug = config.routes[locale]
 
 const { Content } = await render(entry)
-const { pageTitle, pageDescription } = getPageMetadata(entry, t(config.translationKey))
+const pageDescription = entry.data.excerpt || entry.data.description || ''
 ---
 
 <SEOHead
@@ -38,7 +37,7 @@ const { pageTitle, pageDescription } = getPageMetadata(entry, t(config.translati
   noindex={Boolean(entry.data.draft)}
 />
 
-<BaseLayout pageTitle={pageTitle} description={pageDescription}>
+<BaseLayout pageTitle={entry.data.title} description={pageDescription}>
   <LanguagePicker slot="langpicker" links={localeLinks} />
   {entry.data.draft && (
     <div class="untranslated-notice" role="status">

@@ -32,8 +32,7 @@ borradores. Cambios concretos:
 - El esquema de contenido (`src/content.config.ts`) incluirá `draft?: boolean`.
 - Las funciones que generan listados y paths (`src/utils/paths.ts`) solo
   filtrarán por `data.draft === true` para excluir borradores.
-- La lógica de canonical/noindex y avisos se basará en `draft` (p. ej.
-  `getCanonicalMetadata` recibirá `entryDraft` explícito).
+- La lógica de canonical/noindex y avisos se basará en `draft` y en los helpers del dominio; no se recomienda inferir borradores desde `translation_status`.
 - `translation_status` podrá permanecer como metadata histórica/auxiliar,
   pero ya no se usará para inferir el estado de borrador.
 
@@ -86,7 +85,7 @@ borradores. Cambios concretos:
 
 - `src/content.config.ts` — campo `draft` añadido al schema base
 - `src/utils/paths.ts` — filtrado por `draft`
-- `src/utils/translationMetadata.ts` — `getCanonicalMetadata(entryDraft: boolean)`
+- `src/utils/translationMetadata.ts` — tipos `PageData`/`PageMetadata`; las extracciones simples de metadata ahora se hacen inline en las plantillas (se eliminaron las utilidades `getCanonicalMetadata` y `getPageMetadata`).
 - `docs/TRANSLATION_WORKFLOW.md` — guía actualizada
 
 ---
