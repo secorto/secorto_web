@@ -17,7 +17,7 @@ interface Props {
 const { alternates = [], defaultPath, noindex = false } = Astro.props
 const site = import.meta.env.SITE ?? ''
 
-const normalizedAlternates = alternates.map(a => ({ locale: a.locale, url: a.url.startsWith('http') ? a.url : `${site}${a.url}` }))
+const normalizedAlternates = alternates.map(a => ({ locale: a.locale, url: `${site}${a.url}` }))
 const normalizedDefault = defaultPath ? `${site}${defaultPath}` : undefined
 ---
 {noindex && <meta name="robots" content="noindex" />}
