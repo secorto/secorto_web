@@ -21,7 +21,7 @@ import { buildTagLocaleMap, getAvailableLocaleEntriesFromMap, buildLocaleEntryMa
 import { buildDetailLink, buildLanguageLinks, type TranslationLink } from '@i18n/languagePickerUtils'
 import { findCanonicalSectionKey } from '@i18n/rootMap'
 import { tagTranslations } from '@domain/tags'
-import { resolveSeriesCanonicalLocale } from '@domain/translation'
+import { resolveDefaultLocale } from '@domain/translation'
 import type { CollectionEntry, CollectionKey } from 'astro:content'
 
 /** Minimal shape for the injected collection fetcher — easier to mock than the full generic overload. */
@@ -194,18 +194,18 @@ export async function buildAllDetailPathsCore(
   for (const config of sections) {
     const allEntries = mapEntryId(await fetchCollection(config.name))
 
-    const localeEntryMapByCanonical = buildLocaleEntryMap(allEntries)
+    const localeEntryMapByPostId = buildLocaleEntryMap(allEntries)
 
     for (const entry of allEntries) {
       const locale = entry.locale
-      const localeEntryMap = getAvailableLocaleEntriesFromMap(localeEntryMapByCanonical, entry.canonicalId)
-      const seriesDefaultLocale = resolveSeriesCanonicalLocale(localeEntryMap)
+      const localeEntryMap = getAvailableLocaleEntriesFromMap(localeEntryMapByPostId, entry.postId)
+      const seriesDefaultLocale = resolveDefaultLocale(localeEntryMap)
       const canonicalSection = findCanonicalSectionKey(config.routes[locale], locale)
       const localeLinks = buildLanguageLinks(l => buildDetailLink(l, canonicalSection, localeEntryMap))
 
       const alternates = (Object.entries(localeLinks) as [UILanguages, TranslationLink][])
         .map(([lk, link]) => ({ locale: lk, url: link.href }))
-      const defaultPath = seriesDefaultLocale ? localeLinks[seriesDefaultLocale]?.href : undefined
+      const defaultPath = localeLinks[seriesDefaultLocale]?.href
 
       allPaths.push({
         params: { locale, section: config.routes[locale], id: entry.cleanId },

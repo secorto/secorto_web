@@ -2,12 +2,13 @@ import { test, expect, describe } from 'vitest'
 import { buildTagLocaleMap, getAvailableLocaleEntriesFromMap, buildLocaleEntryMap } from '@utils/translationHelpers'
 import type { CollectionKey } from 'astro:content'
 import type { PostEntry } from '@domain/post'
+import { extractCleanId } from '@utils/ids'
 
 // Minimal helper to build fake entries for testing
-// Require explicit `canonicalId` to reflect real PostEntry usage
-const entry = (id: string, data: Record<string, unknown> = {}, canonicalId: string): PostEntry<CollectionKey> => {
-  const cleanId = id.replace(/^[^/]+\//, '')
-  return ({ id, data, cleanId, canonicalId } as unknown) as PostEntry<CollectionKey>
+// Require explicit `postId` to reflect real PostEntry usage
+const entry = (id: string, data: Record<string, unknown> = {}, postId: string): PostEntry<CollectionKey> => {
+  const { id: cleanId, locale } = extractCleanId(id)
+  return ({ id, data, cleanId, postId, locale } as unknown) as PostEntry<CollectionKey>
 }
 
 // test helper to get the precomputed localeEntryMap quickly
@@ -144,7 +145,7 @@ describe('getAvailableLocaleEntriesFromMap', () => {
       entry('en/2025-01-01-calendar', { title: 'EN' }, 'shared-id'),
     ]
 
-    // entries share canonicalId 'shared-id' so we query by canonicalId 'shared-id'
+    // entries share postId 'shared-id' so we query by postId 'shared-id'
     const map = buildLocaleEntryMap(entries)
     const result = getAvailableLocaleEntriesFromMap(map, 'shared-id')
 
@@ -214,16 +215,15 @@ describe('buildTagLocaleMap', () => {
 })
 
 describe('buildLocaleEntryMap', () => {
-  test('throws on duplicate canonical+locale', () => {
+  test('throws on duplicate postId+locale', () => {
     const entries = [
       entry('es/2025-01-01-a', { title: 'A' }, 'dup-id'),
       entry('es/2025-01-02-b', { title: 'B' }, 'dup-id')
     ]
-
-    expect(() => buildLocaleEntryMap(entries)).toThrow(/Duplicate entry for canonical "dup-id" and locale "es"/)
+    expect(() => buildLocaleEntryMap(entries)).toThrow(/Duplicate entry for postId "dup-id" and locale "es"/)
   })
 
-  test('precomputes map canonicalId -> AvailableLocales', () => {
+  test('precomputes map postId -> AvailableLocales', () => {
     const entries = [
       entry('es/alpha', { title: 'A' }, 'alpha'),
       entry('en/alpha', { title: 'A-en' }, 'alpha'),

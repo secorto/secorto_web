@@ -11,13 +11,13 @@ export interface ComputedFields {
   cleanId: string
 
   /**
-   * Identificador canónico que agrupa todas las traducciones de una misma pieza.
-   * Puede provenir del frontmatter `postId` cuando se desea forzar la relación.
-   */
-  canonicalId: string
+  * Identificador que agrupa todas las traducciones de una misma pieza.
+  * Proviene del frontmatter `postId` cuando se desea forzar la relación,
+  * o se deriva del `cleanId` cuando no existe `postId`.
+  */
+  postId: string
   /**
    * Locale detectado a partir del `entry.id` (p.ej. 'es' o 'en').
-   * Opcional: no todas las entradas necesariamente llevan prefijo de locale en el id.
    */
   locale: UILanguages
 }

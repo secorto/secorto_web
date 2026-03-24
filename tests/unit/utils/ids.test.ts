@@ -21,9 +21,7 @@ describe('extractCleanId', () => {
   })
 
   test('returns same ID if no locale prefix exists and no locale', () => {
-    const result = extractCleanId('2025-01-22-my-post')
-    expect(result.id).toBe('2025-01-22-my-post')
-    expect(result.locale).toBeUndefined()
+    expect(() => extractCleanId('2025-01-22-my-post')).toThrow('Unknown locale prefix')
   })
 
   test('handles simple slug without date prefix', () => {
@@ -34,9 +32,7 @@ describe('extractCleanId', () => {
 
   test('handles entry ID with only locale (edge case)', () => {
     // Current implementation treats 'es' as no-prefix-without-slash
-    const result = extractCleanId('es')
-    expect(result.id).toBe('es')
-    expect(result.locale).toBeUndefined()
+    expect(() => extractCleanId('es')).toThrow('Unknown locale prefix')
   })
 
   test('handles entry ID with multiple locale-like prefixes (only removes first)', () => {
