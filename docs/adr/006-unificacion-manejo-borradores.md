@@ -85,7 +85,7 @@ borradores. Cambios concretos:
 
 - `src/content.config.ts` — campo `draft` añadido al schema base
 - `src/utils/paths.ts` — filtrado por `draft`
- - `src/domain/post.ts` — helpers de dominio (p. ej. `getSeoDescription`) y tipos relacionados; las extracciones simples de metadata también pueden encontrarse inline en las plantillas o centralizadas en estos helpers.
+- `src/domain/post.ts` — helpers de dominio (p. ej. `getSeoDescription`) y tipos relacionados; las extracciones simples de metadata también pueden encontrarse inline en las plantillas o centralizadas en estos helpers.
 - `docs/TRANSLATION_WORKFLOW.md` — guía actualizada
 
 ---
