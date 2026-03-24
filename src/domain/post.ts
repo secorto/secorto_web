@@ -61,12 +61,12 @@ export function formatDateRange(
 }
 
 /**
- * Devuelve la descripción SEO disponible para una entrada.
- * Busca `data.excerpt` primero, luego `data.description`, y finalmente
- * devuelve cadena vacía si no hay ninguna.
+ * Devuelve la descripción SEO a partir de `data`.
  *
- * El tipo genérico permite aceptar cualquier estructura de entry que tenga
- * el campo `data` con las propiedades opcionales `excerpt` y `description`.
+ * @param data - objeto con campos opcionales `excerpt` y `description`
+ * - Si `excerpt` es una cadena no vacía, se devuelve `excerpt`.
+ * - En caso contrario, si `description` es una cadena no vacía, se devuelve `description`.
+ * - Si ninguno existe, devuelve cadena vacía.
  */
 export function getSeoDescription(
   data: { excerpt?: string; description?: string }
