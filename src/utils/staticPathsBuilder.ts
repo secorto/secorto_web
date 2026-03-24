@@ -18,7 +18,8 @@ import { filterByLocale, getUniqueTags, mapEntryId } from './paths'
 import type { AvailableLocales } from '@domain/translation'
 import { type PostEntry, type ExperienceLikeEntry } from '@domain/post'
 import { buildTagLocaleMap, getAvailableLocaleEntriesFromMap, buildLocaleEntryMap } from './translationHelpers'
-import { buildLanguageLinks, buildDetailLink, buildAlternatesFromLinks, type TranslationLink } from '@i18n/languagePickerUtils'
+import { buildLanguageLinks, buildDetailLink } from '@i18n/languagePickerUtils'
+import type { TranslationLink } from '@domain/translationLink'
 import { tagTranslations } from '@domain/tags'
 import { resolveDefaultLocale } from '@domain/translation'
 import type { CollectionEntry, CollectionKey } from 'astro:content'
@@ -72,7 +73,6 @@ export interface DetailPath {
     entry: PostEntry<CollectionKey>
     /** Mapa de locales disponibles para este entry, pre-calculado en build time. */
     availableLocales: AvailableLocales
-    alternates: { locale: UILanguages; url: string }[]
     defaultPath: string | undefined
     /** Pre-computado: mapa locale -> TranslationLink (href, label, availability) */
     localeLinks: Record<UILanguages, TranslationLink>
@@ -200,14 +200,11 @@ export async function buildAllDetailPathsCore(
       const localeEntryMap = getAvailableLocaleEntriesFromMap(localeEntryMapByPostId, entry.postId)
       const seriesDefaultLocale = resolveDefaultLocale(localeEntryMap)
       const localeLinks = buildLanguageLinks(l => buildDetailLink(l, config.routes[l], localeEntryMap))
-
-      const alternates = buildAlternatesFromLinks(localeLinks)
-
       const defaultPath = buildDetailLink(seriesDefaultLocale, config.routes[seriesDefaultLocale], localeEntryMap).href
 
       allPaths.push({
         params: { locale, section: config.routes[locale], id: entry.cleanId },
-        props: { entry, availableLocales: localeEntryMap, alternates, defaultPath, localeLinks, config }
+        props: { entry, availableLocales: localeEntryMap, defaultPath, localeLinks, config }
       })
     }
   }
