@@ -18,8 +18,7 @@ import { filterByLocale, getUniqueTags, mapEntryId } from './paths'
 import type { AvailableLocales } from '@domain/translation'
 import { type PostEntry, type ExperienceLikeEntry } from '@domain/post'
 import { buildTagLocaleMap, getAvailableLocaleEntriesFromMap, buildLocaleEntryMap } from './translationHelpers'
-import { buildDetailLink, buildLanguageLinks, type TranslationLink } from '@i18n/languagePickerUtils'
-import { findCanonicalSectionKey } from '@i18n/rootMap'
+import { buildLanguageLinks, buildDetailLink, type TranslationLink } from '@i18n/languagePickerUtils'
 import { tagTranslations } from '@domain/tags'
 import { resolveDefaultLocale } from '@domain/translation'
 import type { CollectionEntry, CollectionKey } from 'astro:content'
@@ -200,12 +199,14 @@ export async function buildAllDetailPathsCore(
       const locale = entry.locale
       const localeEntryMap = getAvailableLocaleEntriesFromMap(localeEntryMapByPostId, entry.postId)
       const seriesDefaultLocale = resolveDefaultLocale(localeEntryMap)
-      const canonicalSection = findCanonicalSectionKey(config.routes[locale], locale)
-      const localeLinks = buildLanguageLinks(l => buildDetailLink(l, canonicalSection, localeEntryMap))
+      const localeLinks = buildLanguageLinks(l => buildDetailLink(l, config.routes[l], localeEntryMap))
 
-      const alternates = (Object.entries(localeLinks) as [UILanguages, TranslationLink][])
-        .map(([lk, link]) => ({ locale: lk, url: link.href }))
-      const defaultPath = localeLinks[seriesDefaultLocale]?.href
+      const alternates = languageKeys.map(l => {
+        const link = buildDetailLink(l, config.routes[l], localeEntryMap)
+        return { locale: l, url: link.href }
+      })
+
+      const defaultPath = buildDetailLink(seriesDefaultLocale, config.routes[seriesDefaultLocale], localeEntryMap).href
 
       allPaths.push({
         params: { locale, section: config.routes[locale], id: entry.cleanId },
