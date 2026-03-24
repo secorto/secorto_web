@@ -68,13 +68,20 @@ export function buildTagLocaleMap(
  *
  * Esto permite evitar parseos redundantes de `entry.id` cuando el caller
  * necesita el conjunto de locales disponibles por `postId`.
+ *
+ * Single-pass build: O(N) sobre las entradas. Lanza si detecta un duplicado
+ * por la combinación `(postId, locale)` para fallar rápido en caso de contenido
+ * inconsistente (es decir, si el mismo `postId` aparece más de una vez para
+ * el mismo `locale`).
+ *
+ * @param allEntries - Entradas de la colección (pre-fetch)
+ * @returns Mapa `postId` → `AvailableLocales`
  */
 export function buildLocaleEntryMap<C extends CollectionKey = CollectionKey>(
   allEntries: PostEntry<C>[]
 ): Record<string, AvailableLocales> {
   const localeEntryMap: Record<string, AvailableLocales> = {}
 
-  // Single-pass build: O(N) over entries. Throws on duplicate (canonicalId, locale) pairs to fail fast on inconsistent content.
   for (const e of allEntries) {
     // Inicializa perezosamente el bucket para este `postId` usando `??=`.
     const bucket = localeEntryMap[e.postId] ??= {}
