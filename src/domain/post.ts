@@ -59,3 +59,22 @@ export function formatDateRange(
   const end = endDate ? format(endDate) : todayLabel
   return `${start} - ${end}`
 }
+
+/**
+ * Devuelve la descripción SEO disponible para una entrada.
+ * Busca `data.excerpt` primero, luego `data.description`, y finalmente
+ * devuelve cadena vacía si no hay ninguna.
+ *
+ * El tipo genérico permite aceptar cualquier estructura de entry que tenga
+ * el campo `data` con las propiedades opcionales `excerpt` y `description`.
+ */
+export function getSeoDescription<E extends { data?: { excerpt?: string; description?: string } }>(
+  entry: E
+): string {
+  const data = entry?.data
+  const excerpt = typeof data?.excerpt === 'string' ? data.excerpt : undefined
+  const description = typeof data?.description === 'string' ? data.description : undefined
+  if (excerpt && excerpt.length > 0) return excerpt
+  if (description && description.length > 0) return description
+  return ''
+}

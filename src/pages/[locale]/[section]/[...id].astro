@@ -8,6 +8,7 @@ import SEOHead from '@components/SEOHead.astro'
 import LanguagePicker from '@components/LanguagePicker.astro'
 import { useTranslations } from '@i18n/utils'
 import { buildAllDetailPaths } from '@utils/staticPathsBuilder.adapters'
+import { getSeoDescription } from '@domain/post'
 
 export async function getStaticPaths() {
   return await buildAllDetailPaths(getCollection)
@@ -27,7 +28,7 @@ const DetailComponent = detailComponentMap[config.category]
 const routeSlug = config.routes[locale]
 
 const { Content } = await render(entry)
-const pageDescription = entry.data.excerpt || entry.data.description || ''
+const pageDescription = getSeoDescription(entry)
 ---
 
 <SEOHead
