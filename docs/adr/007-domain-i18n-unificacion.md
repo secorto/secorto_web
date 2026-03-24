@@ -1,10 +1,8 @@
----
 # ADR 007: Unificación de dominio e i18n — `postId`, mapas de locales y SEO centralizado
 
 > **Estado:** Aceptada
 > **Fecha:** 2026-03-24
 > **Categoría:** Arquitectura / i18n / Dominio
----
 
 ## Contexto
 
@@ -34,7 +32,9 @@ referenciados: #108, #107, #106, #105, #104 (ver sección Referencias).
     de una misma entrada a través de locales.
 
 2. Hacer que la extracción de id sea explícita y con locale: `extractCleanId`
-  devuelve `{ id, locale? }` y será estricta (lanza en inputs inválidos).
+  devuelve `{ id: string, locale: UILanguages }` — el `locale` es obligatorio;
+  la función es estricta y lanza si el `id` no contiene un prefijo de locale
+  válido.
 
 3. `entryAdapter` debe normalizar entradas y asignar `computed.postId` y
   `computed.locale` para uso downstream.
@@ -43,8 +43,10 @@ referenciados: #108, #107, #106, #105, #104 (ver sección Referencias).
   (map por `postId`) para evitar doble-mapeos y parseos repetidos.
 
 5. Construir enlaces de idioma para detalle usando rutas ya localizadas
-  (p. ej. `config.routes[locale]`) con `buildDetailLinkFromLocalizedSection` —
-  esto elimina la dependencia a `findCanonicalSectionKey` en el builder de paths.
+  (p. ej. `config.routes[locale]`) con `buildDetailLink(targetLang, localizedSection, availableLocales)`
+  (helper actual en `src/i18n/languagePickerUtils.ts`, renombrado desde
+  `buildDetailLinkFromLocalizedSection`) — esto elimina la dependencia a
+  `findCanonicalSectionKey` en el builder de paths.
 
 6. Unificar componentes de SEO en un solo `SEOHead` (presentacional) y que
   `SiteLayout` sea la única fuente de `canonical` y emita `x-default`.
@@ -120,7 +122,8 @@ Estos commits ya están reflejados en la implementación de la rama `domain-new`
   - Qué cambió: ajustes en `AlternateLinks.astro`, `SEOHeadDetail.astro`, `src/i18n/*`, `staticPathsBuilder` y `translationHelpers`; añadido `src/domain/translation.ts`
   - Impacto: introduce/normaliza cómo se decide el locale canónico de una serie; confirmar que `resolveDefaultLocale` (o su equivalente) aplica la misma política que el ADR (ignorar draft cuando se decide el canonical o no, según la política elegida).
 
-- **StaticPathDetails simplificados loops (#106)**n+   - Qué cambió: añadido `src/domain/entryComputed.ts`, `src/utils/entryAdapter.ts`, `src/domain/pageDetail.ts` y simplificaciones en `staticPathsBuilder` y `translationHelpers`
+- **StaticPathDetails simplificados loops (#106)**
+  - Qué cambió: añadido `src/domain/entryComputed.ts`, `src/utils/entryAdapter.ts`, `src/domain/pageDetail.ts` y simplificaciones en `staticPathsBuilder` y `translationHelpers`
   - Impacto: refactor que respalda la estrategia de computar `postId` y `locale` una sola vez (en `entryAdapter`) y luego usar buckets por `postId`; esto reduce parseos y simplifica bucles en la generación de paths.
 
 - **List date experience when available (#105)**
@@ -155,9 +158,9 @@ Además de lo documentado arriba, se han añadido mejoras y refactors en PRs pos
 
 Ver `src/i18n/languagePickerUtils.ts`, `src/components/SEOHead.astro`, `src/layouts/MarkdownLayout.astro`, `src/utils/staticPathsBuilder.ts` y `src/domain/translationLink.ts` para detalles de implementación.
 
-Notas de migración adicionales:
+- Notas de migración adicionales:
 
-- `getCanonicalMetadata` en `src/utils/translationMetadata.ts` queda como remanente cubierto por tests; evaluar si eliminar o marcar como deuda técnica.
+ - `getCanonicalMetadata` fue eliminado del runtime; sus responsabilidades se cubren ahora mediante helpers de dominio (p. ej. `getSeoDescription` en `src/domain/post.ts`) que están más enfocados en construir descripciones/metadata para SEO. Además, el campo `title` es obligatorio en todas las colecciones y debe presentarse en el frontmatter de las entradas.
 - Incluir en la PR de migración instrucciones de validación: `npm run test`, `npm run build`, y chequeos de contenido para duplicados `(postId, locale)`.
 
 Firmado: Equipo de arquitectura — secorto_web
@@ -207,7 +210,7 @@ Estos cambios se implementaron en múltiples archivos y producen una API más es
 
 - Cambios localizados en ~11 archivos (refactor y adiciones), con riesgo moderado y fácil revisión por PR.
 - Necesidad de mantener sincronía entre `rootMap` y `buildStaticPageLink` para rutas estáticas.
-- Posible eliminación o relegado de utilidades antiguas (ej. `getCanonicalMetadata`) — ver notas abajo.
+- Eliminación o relegado de utilidades antiguas (ej. `getCanonicalMetadata`) — ver notas abajo.
 
 ## Archivos clave cambiados
 
@@ -227,7 +230,7 @@ Estos cambios se implementaron en múltiples archivos y producen una API más es
 
 ## Notas sobre código obsoleto / remanentes
 
-- La función `getCanonicalMetadata` en `src/utils/translationMetadata.ts` fue eliminada del runtime y sus responsabilidades se delegaron a la política de `draft` y a los helpers del dominio. Las pruebas que la cubrían se adaptaron o eliminaron. Si se precisa una utilidad similar en el futuro, crearla explícitamente con contrato claro y documentado.
+ - La función `getCanonicalMetadata` fue eliminada del runtime. Sus responsabilidades se delegaron al helper de dominio `getSeoDescription` (en `src/domain/post.ts`) y a la lógica centralizada de SEO; este helper está diseñado específicamente para generar descripciones y metadatos. Asegúrese de que todas las entradas incluyan el campo obligatorio `title` en su frontmatter para cumplir el contrato de las collections.
 
 ## Cambios recientes relevantes (resumen por commit)
 

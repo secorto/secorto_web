@@ -1,6 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { formatDateRange } from '@domain/post'
-import { getSeoDescription } from '@domain/post'
+import { formatDateRange, getSeoDescription } from '@domain/post'
 
 const fmt = (d: Date) => d.toISOString().slice(0, 7) // "YYYY-MM"
 

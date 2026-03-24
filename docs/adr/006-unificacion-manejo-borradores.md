@@ -85,7 +85,7 @@ borradores. Cambios concretos:
 
 - `src/content.config.ts` — campo `draft` añadido al schema base
 - `src/utils/paths.ts` — filtrado por `draft`
-- `src/utils/translationMetadata.ts` — tipos `PageData`/`PageMetadata`; las extracciones simples de metadata ahora se hacen inline en las plantillas (se eliminaron las utilidades `getCanonicalMetadata` y `getPageMetadata`).
+ - `src/domain/post.ts` — helpers de dominio (p. ej. `getSeoDescription`) y tipos relacionados; las extracciones simples de metadata también pueden encontrarse inline en las plantillas o centralizadas en estos helpers.
 - `docs/TRANSLATION_WORKFLOW.md` — guía actualizada
 
 ---
@@ -101,8 +101,10 @@ accidental y asegurar comportamiento consistente:
 - `src/utils/paths.ts`: se actualizó el filtrado para excluir entradas con
   `data.draft === true`. Se eliminaron casts inseguros y se usan comprobaciones
   en tiempo de ejecución sobre `Record<string, unknown>` para evitar `any`.
-- `src/utils/translationMetadata.ts`: la función `getCanonicalMetadata` se
-  simplificó para depender únicamente de `entryDraft` (campo explícito).
+- `src/domain/post.ts`: los helpers de dominio (por ejemplo `getSeoDescription`)
+  y la lógica de SEO/canonical/noindex se concentran aquí o se dejan inline en
+  las plantillas. Se simplificó la lógica para depender únicamente de `entryDraft`
+  (campo explícito) y evitar inferencias desde `translation_status`.
   Se eliminaron inferencias automáticas sobre `translation_status` en el
   flujo principal (la metadata histórica puede permanecer en archivos).
 - `src/pages/[locale]/[section]/[...id].astro`: la plantilla de detalle ahora
