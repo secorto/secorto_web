@@ -68,12 +68,12 @@ export function formatDateRange(
  * El tipo genérico permite aceptar cualquier estructura de entry que tenga
  * el campo `data` con las propiedades opcionales `excerpt` y `description`.
  */
-export function getSeoDescription<E extends { data?: { excerpt?: string; description?: string } }>(
+export function getSeoDescription<E extends { data: { excerpt?: string; description?: string } }>(
   entry: E
 ): string {
-  const data = entry?.data
-  const excerpt = typeof data?.excerpt === 'string' ? data.excerpt : undefined
-  const description = typeof data?.description === 'string' ? data.description : undefined
+  const data = entry.data
+  const excerpt = typeof data.excerpt === 'string' ? data.excerpt : undefined
+  const description = typeof data.description === 'string' ? data.description : undefined
   if (excerpt && excerpt.length > 0) return excerpt
   if (description && description.length > 0) return description
   return ''

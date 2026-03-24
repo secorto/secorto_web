@@ -38,9 +38,7 @@ describe('getSeoDescription', () => {
   })
 
   test('devuelve cadena vacía si no hay datos', () => {
-    const entry1 = { data: {} }
-    const entry2 = {}
-    expect(getSeoDescription(entry1)).toBe('')
-    expect(getSeoDescription(entry2)).toBe('')
+    const entry = { data: {} }
+    expect(getSeoDescription(entry)).toBe('')
   })
 })
