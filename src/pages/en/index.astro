@@ -5,15 +5,14 @@ import intro from '@assets/img/intro.inline.svg?raw'
 import Footer from '@components/Footer.astro';
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import LanguagePicker from '@components/LanguagePicker.astro'
-import { buildHomeLink, buildLanguageLinks, buildAlternatesFromLinks } from '@i18n/languagePickerUtils'
+import { buildHomeLink, buildLanguageLinks } from '@i18n/languagePickerUtils'
 import { defaultLang } from "@i18n/ui";
 
 const pageTitle = "Homepage";
 const links = buildLanguageLinks(l => buildHomeLink(l))
-const alternates = buildAlternatesFromLinks(links)
 ---
 
-<SEOHead slot="seo-head" defaultPath={buildHomeLink(defaultLang).href} alternates={alternates} />
+<SEOHead slot="seo-head" defaultPath={buildHomeLink(defaultLang).href} links={links} />
 
 <SiteLayout pageTitle={pageTitle}>
   <LanguagePicker slot="langpicker" links={links} />

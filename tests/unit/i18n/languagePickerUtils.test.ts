@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import type { UILanguages } from '@i18n/ui'
-import type { TranslationLink } from '@i18n/languagePickerUtils'
+import type { TranslationLink } from '@domain/translationLink'
 
 const mockRootMap: Record<string, Record<string, string>> = {
   about: { en: 'about', es: 'acerca-de' },

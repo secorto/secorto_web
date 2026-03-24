@@ -15,7 +15,7 @@ export async function getStaticPaths() {
 }
 
 const { locale } = Astro.params
-const { entry, localeLinks, config, alternates, defaultPath } = Astro.props
+const { entry, localeLinks, config, defaultPath } = Astro.props
 
 const t = useTranslations(locale)
 // Map category to component
@@ -33,7 +33,7 @@ const { pageTitle, pageDescription } = getPageMetadata(entry, t(config.translati
 
 <SEOHead
   slot="seo-head"
-  alternates={alternates}
+  links={localeLinks}
   defaultPath={defaultPath}
   noindex={Boolean(entry.data.draft)}
 />
