@@ -1,13 +1,15 @@
 import { defaultLang, type UILanguages } from '@i18n/ui'
 
-export type AvailableLocales = Partial<Record<UILanguages, {
+export type AvailableLocaleEntry = {
   /** Local slug para este entry en el locale (p.ej. 'mi-articulo') */
   slug: string
   /** Marca si la traducción está en estado draft (no pública) */
   draft?: boolean
   /** Indica si esta entrada es la versión canónica dentro de la serie */
   canonical?: boolean
-}>>
+}
+
+export type AvailableLocales = Partial<Record<UILanguages, AvailableLocaleEntry>>
 
 /**
  * Decide qué locale usar como canónico para una serie de entradas.
