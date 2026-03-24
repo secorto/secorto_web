@@ -20,8 +20,8 @@ describe('extractCleanId', () => {
     expect(result.locale).toBe('es')
   })
 
-  test('returns same ID if no locale prefix exists and no locale', () => {
-    expect(() => extractCleanId('2025-01-22-my-post')).toThrow('Unknown locale prefix')
+  test('throws when no locale prefix exists', () => {
+    expect(() => extractCleanId('2025-01-22-my-post')).toThrow('Unknown locale prefix in entryId "2025-01-22-my-post"')
   })
 
   test('handles simple slug without date prefix', () => {
@@ -30,20 +30,18 @@ describe('extractCleanId', () => {
     expect(result.locale).toBe('es')
   })
 
-  test('handles entry ID with only locale (edge case)', () => {
-    // Current implementation treats 'es' as no-prefix-without-slash
-    expect(() => extractCleanId('es')).toThrow('Unknown locale prefix')
+  test('throws when entry ID has only locale', () => {
+    expect(() => extractCleanId('es')).toThrow('Unknown locale prefix in entryId "es"')
   })
 
   test('handles entry ID with multiple locale-like prefixes (only removes first)', () => {
-    // Edge case: if an entry is named "en/es/something", only first locale is removed
     const result = extractCleanId('es/en/something')
     expect(result.id).toBe('en/something')
     expect(result.locale).toBe('es')
   })
 
   test('throws when unknown locale prefix is present', () => {
-    expect(() => extractCleanId('fr/2025-01-22-my-post' as string)).toThrow('Unknown locale prefix')
+    expect(() => extractCleanId('fr/2025-01-22-my-post' as string)).toThrow('Unknown locale prefix "fr" in entryId "fr/2025-01-22-my-post"')
   })
 
   test('throws on empty string', () => {
@@ -51,7 +49,7 @@ describe('extractCleanId', () => {
   })
 
   test('throws on locale from middle of path', () => {
-    expect(() => extractCleanId('category/es/2025-01-22-post')).toThrow('Unknown locale prefix')
+    expect(() => extractCleanId('category/es/2025-01-22-post')).toThrow('Unknown locale prefix "category" in entryId "category/es/2025-01-22-post"')
   })
 
   test('handles locale prefix with trailing content', () => {
