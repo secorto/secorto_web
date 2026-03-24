@@ -54,10 +54,8 @@ describe('extractCleanId', () => {
     expect(() => extractCleanId('')).toThrow('entryId cannot be empty')
   })
 
-  test('does not remove locale from middle of path', () => {
-    const result = extractCleanId('category/es/2025-01-22-post')
-    expect(result.id).toBe('category/es/2025-01-22-post')
-    expect(result.locale).toBeUndefined()
+  test('throws on locale from middle of path', () => {
+    expect(() => extractCleanId('category/es/2025-01-22-post')).toThrow('Unknown locale prefix')
   })
 
   test('handles locale prefix with trailing content', () => {

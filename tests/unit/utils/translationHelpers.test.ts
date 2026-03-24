@@ -11,7 +11,7 @@ const entry = (id: string, data: Record<string, unknown> = {}, canonicalId: stri
 }
 
 // test helper to get the precomputed localeEntryMap quickly
-const localeMap = (entries: PostEntry<CollectionKey>[]) => buildLocaleEntryMap(entries).localeEntryMap
+const localeMap = (entries: PostEntry<CollectionKey>[]) => buildLocaleEntryMap(entries)
 
 describe('getAvailableLocaleEntriesFromMap', () => {
   test('returns both locales when entry exists in es and en', () => {
@@ -20,7 +20,7 @@ describe('getAvailableLocaleEntriesFromMap', () => {
       entry('en/2025-01-22-my-post', { title: 'My Post' }, '2025-01-22-my-post'),
     ]
 
-    const { localeEntryMap: map } = buildLocaleEntryMap(entries)
+    const map = buildLocaleEntryMap(entries)
     const result = getAvailableLocaleEntriesFromMap(map, '2025-01-22-my-post')
 
     expect(Object.keys(result)).toHaveLength(2)
@@ -49,7 +49,7 @@ describe('getAvailableLocaleEntriesFromMap', () => {
       expected: ['en'],
     },
   ])('returns only expected locales: $name', ({ entries, query, expected }) => {
-    const { localeEntryMap: map } = buildLocaleEntryMap(entries)
+    const map = buildLocaleEntryMap(entries)
     const result = getAvailableLocaleEntriesFromMap(map, query)
     const keys = Object.keys(result)
     expect(keys).toHaveLength(expected.length)
@@ -71,7 +71,7 @@ describe('getAvailableLocaleEntriesFromMap', () => {
       query: 'any-post',
     },
   ])('returns empty object: $name', ({ entries, query }) => {
-    const { localeEntryMap: map } = buildLocaleEntryMap(entries)
+    const map = buildLocaleEntryMap(entries)
     const result = getAvailableLocaleEntriesFromMap(map, query)
     expect(Object.keys(result)).toHaveLength(0)
   })
@@ -82,7 +82,7 @@ describe('getAvailableLocaleEntriesFromMap', () => {
       entry('en/talks/2023-09-27-devcontainers', { title: 'DevContainers' }, 'talks/2023-09-27-devcontainers'),
     ]
 
-    const { localeEntryMap: map } = buildLocaleEntryMap(entries)
+    const map = buildLocaleEntryMap(entries)
     const result = getAvailableLocaleEntriesFromMap(map, 'talks/2023-09-27-devcontainers')
 
     expect(Object.keys(result)).toHaveLength(2)
@@ -96,7 +96,7 @@ describe('getAvailableLocaleEntriesFromMap', () => {
       entry('en/simple-slug', { title: 'Simple Slug' }, 'simple-slug'),
     ]
 
-    const { localeEntryMap: map } = buildLocaleEntryMap(entries)
+    const map = buildLocaleEntryMap(entries)
     const result = getAvailableLocaleEntriesFromMap(map, 'simple-slug')
 
     expect(Object.keys(result)).toHaveLength(2)
@@ -110,7 +110,7 @@ describe('getAvailableLocaleEntriesFromMap', () => {
       entry('en/my-work', { title: 'My Work' }, 'my-work'),
     ]
 
-    const { localeEntryMap: map } = buildLocaleEntryMap(entries)
+    const map = buildLocaleEntryMap(entries)
     const result = getAvailableLocaleEntriesFromMap(map, 'my-work')
 
     expect(Object.keys(result)).toHaveLength(2)
@@ -124,7 +124,7 @@ describe('getAvailableLocaleEntriesFromMap', () => {
       entry('en/2025-01-22-my-post', { draft: false }, '2025-01-22-my-post'),
     ]
 
-    const { localeEntryMap: map } = buildLocaleEntryMap(entries)
+    const map = buildLocaleEntryMap(entries)
     const result = getAvailableLocaleEntriesFromMap(map, '2025-01-22-my-post')
 
     expect(result['es']?.draft).toBe(true)
@@ -145,7 +145,7 @@ describe('getAvailableLocaleEntriesFromMap', () => {
     ]
 
     // entries share canonicalId 'shared-id' so we query by canonicalId 'shared-id'
-    const { localeEntryMap: map } = buildLocaleEntryMap(entries)
+    const map = buildLocaleEntryMap(entries)
     const result = getAvailableLocaleEntriesFromMap(map, 'shared-id')
 
     expect(Object.keys(result)).toHaveLength(2)
@@ -229,17 +229,12 @@ describe('buildLocaleEntryMap', () => {
       entry('en/alpha', { title: 'A-en' }, 'alpha'),
       entry('es/beta', { title: 'B' }, 'beta')
     ]
-    const { localeEntryMap: result, entryLocaleMap } = buildLocaleEntryMap(entries)
+    const result = buildLocaleEntryMap(entries)
 
     expect(result.alpha).toBeDefined()
     expect(result.alpha.es?.slug).toBe('alpha')
     expect(result.alpha.en?.slug).toBe('alpha')
     expect(result.beta.es?.slug).toBe('beta')
     expect(result.beta.en).toBeUndefined()
-
-    // Verify entry.id -> locale mapping
-    expect(entryLocaleMap['es/alpha']).toBe('es')
-    expect(entryLocaleMap['en/alpha']).toBe('en')
-    expect(entryLocaleMap['es/beta']).toBe('es')
   })
 })

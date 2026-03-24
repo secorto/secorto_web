@@ -194,10 +194,10 @@ export async function buildAllDetailPathsCore(
   for (const config of sections) {
     const allEntries = mapEntryId(await fetchCollection(config.name))
 
-    const { localeEntryMap: localeEntryMapByCanonical, entryLocaleMap } = buildLocaleEntryMap(allEntries)
+    const localeEntryMapByCanonical = buildLocaleEntryMap(allEntries)
 
     for (const entry of allEntries) {
-      const locale = entryLocaleMap[entry.id]
+      const locale = entry.locale
       const localeEntryMap = getAvailableLocaleEntriesFromMap(localeEntryMapByCanonical, entry.canonicalId)
       const seriesDefaultLocale = resolveSeriesCanonicalLocale(localeEntryMap)
       const canonicalSection = findCanonicalSectionKey(config.routes[locale], locale)

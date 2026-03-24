@@ -80,23 +80,19 @@ export function buildTagLocaleMap(
 }
 
 /**
- * Versión expandida que devuelve ambos mapas:
- * - `localeEntryMap`: canonicalId -> AvailableLocales
- * - `entryLocaleMap`: entry.id -> locale (UILanguages)
+ * Construye y devuelve un mapa canonicalId -> AvailableLocales.
  *
  * Esto permite evitar parseos redundantes de `entry.id` cuando el caller
- * necesita además el locale por entry, por ejemplo en `buildAllDetailPathsCore`.
+ * necesita el conjunto de locales disponibles por canonicalId.
  */
 export function buildLocaleEntryMap<C extends CollectionKey = CollectionKey>(
   allEntries: PostEntry<C>[]
-): { localeEntryMap: Record<string, AvailableLocales>; entryLocaleMap: Record<string, UILanguages> } {
+): Record<string, AvailableLocales> {
   const localeEntryMap: Record<string, AvailableLocales> = {}
-  const entryLocaleMap: Record<string, UILanguages> = {}
 
   // Single-pass build: O(N) over entries. Throws on duplicate (canonicalId, locale) pairs to fail fast on inconsistent content.
   for (const e of allEntries) {
     const lang = parseLocaleFromEntryId(e.id)
-    entryLocaleMap[e.id] = lang
 
     // Inicializa perezosamente el bucket para este `canonicalId` usando `??=`.
     const bucket = localeEntryMap[e.canonicalId] ??= {}
@@ -114,5 +110,5 @@ export function buildLocaleEntryMap<C extends CollectionKey = CollectionKey>(
     }
   }
 
-  return { localeEntryMap, entryLocaleMap }
+  return localeEntryMap
 }

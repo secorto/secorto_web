@@ -19,5 +19,5 @@ export interface ComputedFields {
    * Locale detectado a partir del `entry.id` (p.ej. 'es' o 'en').
    * Opcional: no todas las entradas necesariamente llevan prefijo de locale en el id.
    */
-  locale?: UILanguages
+  locale: UILanguages
 }

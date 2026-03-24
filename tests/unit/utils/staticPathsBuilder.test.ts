@@ -83,7 +83,7 @@ describe('buildAllDetailPathsCore', () => {
     const mockSections = createMockSectionsArray(['blog'])
 
     await expect(buildAllDetailPathsCore(mockSections, mockGetCollection))
-      .rejects.toThrow('Entry "orphan/my-post" is not under a valid locale folder')
+      .rejects.toThrow('Unknown locale prefix "orphan" in entryId "orphan/my-post"')
   })
 })
 
