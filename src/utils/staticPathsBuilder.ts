@@ -12,7 +12,7 @@
  * Production code (Astro pages) imports from adapters.
  */
 
-import { languageKeys, defaultLang, type UILanguages } from '@i18n/ui'
+import { languageKeys, type UILanguages } from '@i18n/ui'
 import { type SectionConfig } from '@domain/section'
 import { filterByLocale, getUniqueTags, mapEntryId } from './paths'
 import type { AvailableLocales } from '@domain/translation'
@@ -73,7 +73,6 @@ export interface DetailPath {
     entry: PostEntry<CollectionKey>
     /** Mapa de locales disponibles para este entry, pre-calculado en build time. */
     availableLocales: AvailableLocales
-    canonicalLocale: UILanguages | undefined
     alternates: { locale: UILanguages; url: string }[]
     defaultPath: string | undefined
     /** Pre-computado: mapa locale -> TranslationLink (href, label, availability) */
@@ -200,17 +199,17 @@ export async function buildAllDetailPathsCore(
     for (const entry of allEntries) {
       const locale = entryLocaleMap[entry.id]
       const localeEntryMap = getAvailableLocaleEntriesFromMap(localeEntryMapByCanonical, entry.canonicalId)
-      const seriesCanonicalLocale = resolveSeriesCanonicalLocale(localeEntryMap)
+      const seriesDefaultLocale = resolveSeriesCanonicalLocale(localeEntryMap)
       const canonicalSection = findCanonicalSectionKey(config.routes[locale], locale)
       const localeLinks = buildLanguageLinks(l => buildDetailLink(l, canonicalSection, localeEntryMap))
 
       const alternates = (Object.entries(localeLinks) as [UILanguages, TranslationLink][])
         .map(([lk, link]) => ({ locale: lk, url: link.href }))
-      const defaultPath = localeLinks[defaultLang]?.href
+      const defaultPath = seriesDefaultLocale ? localeLinks[seriesDefaultLocale]?.href : undefined
 
       allPaths.push({
         params: { locale, section: config.routes[locale], id: entry.cleanId },
-        props: { entry, availableLocales: localeEntryMap, canonicalLocale: seriesCanonicalLocale, alternates, defaultPath, localeLinks, config }
+        props: { entry, availableLocales: localeEntryMap, alternates, defaultPath, localeLinks, config }
       })
     }
   }
