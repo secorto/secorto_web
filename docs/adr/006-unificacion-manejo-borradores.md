@@ -103,17 +103,16 @@ accidental y asegurar comportamiento consistente:
   en tiempo de ejecución sobre `Record<string, unknown>` para evitar `any`.
 - `src/domain/post.ts`: los helpers de dominio (por ejemplo `getSeoDescription`)
   y la lógica de SEO/canonical/noindex se concentran aquí o se dejan inline en
-  las plantillas. Se simplificó la lógica para depender únicamente de `entryDraft`
-  (campo explícito) y evitar inferencias desde `translation_status`.
+  las plantillas. Se simplificó la lógica para depender únicamente de `draft` (frontmatter: `entry.data.draft`) y evitar inferencias desde `translation_status`.
   Se eliminaron inferencias automáticas sobre `translation_status` en el
   flujo principal (la metadata histórica puede permanecer en archivos).
 - `src/pages/[locale]/[section]/[...id].astro`: la plantilla de detalle ahora
-  muestra el aviso de borrador únicamente cuando `entryData.draft` es true;
+  muestra el aviso de borrador únicamente cuando `entry.data.draft` es true;
   se eliminó la lógica condicional que intentaba inferir borradores desde
   estados de traducción.
 - Tipado: se añadió `draft?: boolean` en el tipo local `BaseEntryData` para
   evitar casteos y reflejar el campo en las páginas que renderizan entradas.
-- Tests: las pruebas unitarias se adaptaron para usar `entryDraft` como
+ - Tests: las pruebas unitarias se adaptaron para usar `draft` (`entry.data.draft`) como
   fuente de verdad y se eliminó la dependencia en el helper de compatibilidad
   (o se reescribieron para cubrir la nueva interfaz). La suite local pasa
   completamente tras los cambios.

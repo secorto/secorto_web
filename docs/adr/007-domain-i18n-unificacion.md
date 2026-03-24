@@ -161,6 +161,7 @@ Ver `src/i18n/languagePickerUtils.ts`, `src/components/SEOHead.astro`, `src/layo
 - Notas de migración adicionales:
 
  - `getCanonicalMetadata` fue eliminado del runtime; sus responsabilidades se cubren ahora mediante helpers de dominio (p. ej. `getSeoDescription` en `src/domain/post.ts`) que están más enfocados en construir descripciones/metadata para SEO. Además, el campo `title` es obligatorio en todas las colecciones y debe presentarse en el frontmatter de las entradas.
+ - `getCanonicalMetadata` fue eliminado del runtime; la generación de la descripción SEO queda cubierta por el helper `getSeoDescription` (en `src/domain/post.ts`), que se centra únicamente en construir la `description`/`excerpt` para metadatos. La responsabilidad de emitir el `canonical` recae en el layout principal (por ejemplo `SiteLayout`, que suele usar `Astro.url` o el mecanismo de layout correspondiente) y la aplicación de `noindex` se controla desde el frontmatter `draft` (ej. `entry.data.draft`) y se transmite a `SEOHead` o a las plantillas que lo consumen. Además, el campo `title` es obligatorio en todas las colecciones y debe presentarse en el frontmatter de las entradas.
 - Incluir en la PR de migración instrucciones de validación: `npm run test`, `npm run build`, y chequeos de contenido para duplicados `(postId, locale)`.
 
 Firmado: Equipo de arquitectura — secorto_web
@@ -230,7 +231,7 @@ Estos cambios se implementaron en múltiples archivos y producen una API más es
 
 ## Notas sobre código obsoleto / remanentes
 
- - La función `getCanonicalMetadata` fue eliminada del runtime. Sus responsabilidades se delegaron al helper de dominio `getSeoDescription` (en `src/domain/post.ts`) y a la lógica centralizada de SEO; este helper está diseñado específicamente para generar descripciones y metadatos. Asegúrese de que todas las entradas incluyan el campo obligatorio `title` en su frontmatter para cumplir el contrato de las collections.
+ - La función `getCanonicalMetadata` fue eliminada del runtime. Su responsabilidad de construir la descripción SEO fue asumida por el helper de dominio `getSeoDescription` (en `src/domain/post.ts`), que únicamente compone la `description`/`excerpt`. La lógica de `canonical` continúa viviendo en el layout/plantilla que emite la URL canónica (p. ej. `SiteLayout`), y el control de `noindex` se aplica según `draft` en frontmatter (`entry.data.draft`) y se pasa a `SEOHead` o a las plantillas correspondientes. Asegúrese de que todas las entradas incluyan el campo obligatorio `title` en su frontmatter para cumplir el contrato de las collections.
 
 ## Cambios recientes relevantes (resumen por commit)
 
