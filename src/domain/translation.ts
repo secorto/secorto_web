@@ -1,4 +1,4 @@
-import { type UILanguages } from '@i18n/ui'
+import { defaultLang, type UILanguages } from '@i18n/ui'
 
 export type AvailableLocales = Partial<Record<UILanguages, {
   /** Local slug para este entry en el locale (p.ej. 'mi-articulo') */
@@ -29,7 +29,7 @@ export type AvailableLocales = Partial<Record<UILanguages, {
  */
 export function resolveDefaultLocale(
   available: AvailableLocales,
-  defaultLocale: UILanguages = 'es'
+  defaultLocale: UILanguages = defaultLang
 ): UILanguages {
   let firstLocale: UILanguages | undefined
   let hasDefault = false
