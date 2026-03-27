@@ -11,6 +11,7 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "check": "astro check",
     "test": "cypress run",
     "test:e2e": "npx playwright test",
     "test:e2e:env": "npx env-cmd -f .env npx playwright test",
