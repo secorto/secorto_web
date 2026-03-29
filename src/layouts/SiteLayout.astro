@@ -42,6 +42,21 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta property="twitter:url" content={canonicalURL} />
     <meta property="twitter:title" content={pageTitle} />
     <meta property="twitter:description" content={siteDescription} />
+    <script is:inline>
+      const theme = (() => {
+        if (typeof localStorage !== 'undefined') {
+          const storageTheme = localStorage.getItem('theme');
+          if (typeof storageTheme === 'string')
+            return storageTheme
+        }
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          return 'dark';
+        }
+        return 'light';
+      })();
+      document.documentElement.classList.add(theme);
+      window.localStorage.setItem('theme', theme);
+    </script>
   </head>
   <body>
     <Hamburger />
