@@ -13,6 +13,7 @@
     "astro": "astro",
     "test": "cypress run",
     "test:e2e": "npx playwright test",
+    "test:smoke": "npx playwright test --config=tests/smoke/playwright.config.ts --quiet",
     "test:e2e:env": "npx env-cmd -f .env npx playwright test",
     "test:unit": "vitest",
     "test:unit:watch": "vitest --watch",
