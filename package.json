@@ -1,7 +1,7 @@
 {
   "name": "secorto-website",
   "type": "module",
-  "version": "5.2.1",
+  "version": "5.3.1",
   "engines": {
     "node": ">=24"
   },
@@ -22,9 +22,9 @@
   },
   "dependencies": {
     "@astrojs/check": "^0.9.8",
-    "@astrojs/rss": "^4.0.17",
-    "@astrojs/sitemap": "^3.7.1",
-    "astro": "^6.0.8",
+    "@astrojs/rss": "^4.0.18",
+    "@astrojs/sitemap": "^3.7.2",
+    "astro": "^6.1.2",
     "astro-expressive-code": "0.41.7",
     "photoswipe": "^5.4.4",
     "typescript": "^5.9.3",
