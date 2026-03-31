@@ -251,7 +251,7 @@ Sidebar
   height: 1.5rem;
 }
 
-.hamburger-lines div {
+.hamburger-lines span {
   width: 1.5rem;
   height: 0.25rem;
   background: var(--colors-primary);
@@ -283,7 +283,7 @@ Sidebar
     transform: translateX(3px)  rotate(-45deg);
 }
 
-.sidebar-open.hamburger .hamburger-lines div {
+.sidebar-open.hamburger .hamburger-lines span {
   background: var(--bg-color-light);
 }
 

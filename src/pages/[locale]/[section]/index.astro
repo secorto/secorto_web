@@ -27,9 +27,8 @@ const links = buildLanguageLinks(l => buildCollectionLink(l, canonicalSection))
 const defaultPath = links[defaultLang].href
 ---
 
-<SEOHead slot="seo-head" defaultPath={defaultPath} links={links} />
-
 <BaseLayout pageTitle={pageTitle}>
+  <SEOHead slot="seo-head" defaultPath={defaultPath} links={links} />
   <LanguagePicker slot="langpicker" links={links} />
   {tags.length > 0 && (
     <Tags route={`/${locale}/${section}/tags/`} tags={tags} />

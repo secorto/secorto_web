@@ -31,14 +31,13 @@ const { Content } = await render(entry)
 const pageDescription = getSeoDescription(entry.data)
 ---
 
-<SEOHead
-  slot="seo-head"
-  links={localeLinks}
-  defaultPath={defaultPath}
-  noindex={Boolean(entry.data.draft)}
-/>
-
 <BaseLayout pageTitle={entry.data.title} description={pageDescription}>
+  <SEOHead
+    slot="seo-head"
+    links={localeLinks}
+    defaultPath={defaultPath}
+    noindex={Boolean(entry.data.draft)}
+  />
   <LanguagePicker slot="langpicker" links={localeLinks} />
   {entry.data.draft && (
     <div class="untranslated-notice" role="status">

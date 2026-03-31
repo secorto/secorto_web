@@ -16,14 +16,14 @@ const { title, draft } = frontmatter;
 const links = buildStaticPageLinks(Astro.url)
 const defaultPath = links[defaultLang]?.href
 ---
-<SEOHead
-  slot="seo-head"
-  links={links}
-  defaultPath={defaultPath}
-  noindex={Boolean(draft)}
-/>
 
 <BaseLayout pageTitle={title}>
   <LanguagePicker slot="langpicker" links={links} />
+  <SEOHead
+    slot="seo-head"
+    links={links}
+    defaultPath={defaultPath}
+    noindex={Boolean(draft)}
+  />
   <slot/>
 </BaseLayout>
