@@ -1,11 +1,12 @@
-import { z, defineCollection } from 'astro:content';
-import { glob } from 'astro/loaders';
+import { defineCollection, type ImageFunction } from 'astro:content'
+import { z } from 'astro/zod'
+import { glob } from 'astro/loaders'
 
 /**
  * Schema base para todos los posts
  * Contiene campos comunes: título, imagen, traducción, cambios
  */
-const createBasePostSchema = (imageHelper: () => z.ZodTypeAny) => z.object({
+const createBasePostSchema = (imageHelper: ImageFunction) => z.object({
   title: z.string(),
   image: imageHelper().optional(),
   excerpt: z.string().optional(),
@@ -32,7 +33,7 @@ const blogCollection = defineCollection({
     date: z.date(),
     tags: z.array(z.string()).optional(),
   }),
-});
+})
 
 /**
  * Talk: Presentaciones con comunidad, enlaces y fecha
@@ -47,7 +48,7 @@ const talkCollection = defineCollection({
     video: z.string().optional(),
     slide: z.string()
   }),
-});
+})
 
 /**
  * Work: Experiencia laboral con galería
@@ -62,13 +63,13 @@ const workCollection = defineCollection({
     responsibilities: z.string(),
     startDate: z.date(),
     endDate: z.date().optional(),
-    website: z.string().url(),
+    website: z.url(),
     gallery: z.array(z.object({
       image: image(),
       alt: z.string()
     })).optional(),
   }),
-});
+})
 
 /**
  * Projects: Proyectos personales con galería
@@ -81,13 +82,13 @@ const projectsCollection = defineCollection({
     image: image(),
     role: z.string(),
     responsibilities: z.string(),
-    website: z.string().url().optional(),
+    website: z.url().optional(),
     gallery: z.array(z.object({
       image: image(),
       alt: z.string()
     })).optional(),
   }),
-});
+})
 
 /**
  * Community: Participación en comunidades con galería
@@ -100,13 +101,13 @@ const communityCollection = defineCollection({
     image: image(),
     role: z.string(),
     responsibilities: z.string(),
-    website: z.string().url().optional(),
+    website: z.url().optional(),
     gallery: z.array(z.object({
       image: image(),
       alt: z.string()
     })).optional(),
   }),
-});
+})
 
 export const collections = {
   'blog': blogCollection,
@@ -114,4 +115,4 @@ export const collections = {
   'projects': projectsCollection,
   'community': communityCollection,
   "talk": talkCollection
-};
+}
