@@ -16,6 +16,17 @@ test('smoke: homepage (es) carga y sidebar muestra logo/imagen', async ({ page }
 
   const avatar = page.locator('img[data-testid="footer-avatar"]')
   await expect(avatar, 'Footer avatar').toHaveCount(1)
-  const naturalWidth = await avatar.evaluate((img: HTMLImageElement) => img.naturalWidth ?? 0)
-  await expect(naturalWidth, 'Footer avatar image').toBeGreaterThan(0)
+
+  await expect
+    .poll(
+      async () =>
+        avatar.evaluate((img: HTMLImageElement) =>
+          img.complete && img.naturalWidth > 0 ? img.naturalWidth : 0
+        ),
+      {
+        message: 'Footer avatar image should be loaded',
+        timeout: 10000,
+      }
+    )
+    .toBeGreaterThan(0)
 })
