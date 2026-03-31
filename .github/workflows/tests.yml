@@ -21,7 +21,7 @@ on:
       real_third_party:
         description: "Run tests against real third-party services"
         required: false
-        default: 'false'
+        default: false
         type: boolean
 jobs:
   unit-tests:
@@ -71,7 +71,11 @@ jobs:
       run: |
         # use the tiny runner which conditionally invokes the module when executed
         node .github/scripts/wait-netlify-runner.js
-
+    - name: Run smoke tests
+      env:
+        NETLIFY_PREVIEW_URL: ${{ env.NETLIFY_PREVIEW_URL }}
+        BASE_URL: ${{ github.event.inputs.base_url }}
+      run: npm run test:smoke
     - name: Run Playwright tests (use Netlify preview if available)
       env:
         NETLIFY_PREVIEW_URL: ${{ env.NETLIFY_PREVIEW_URL }}
