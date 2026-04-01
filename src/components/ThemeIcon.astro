@@ -93,9 +93,6 @@ const { duration = '500ms' } = Astro.props;
 </style>
 
 <script>
-  // Use module import for giscus helpers; attach the click listener immediately.
-  import { handleToggleClick, initThemeToggle } from '@utils/themeToggle'
-
-  // Attach handler immediately to the button if present
+  import { initThemeToggle } from '@utils/themeToggle'
   initThemeToggle(document.getElementById('themeToggle'))
 </script>

@@ -16,6 +16,9 @@
 - Keep code modular and readable
 - Use descriptive variable and function names
 - Add comments for complex logic or non-obvious code
+ - No usar bloques `try/catch` vacíos; siempre manejar o registrar la excepción,
+   o justificar temporalmente con el patrón de deuda técnica:
+   `// TODO(debt): <razón breve> — owner: @usuario — until: YYYY-MM-DD`
 
 ## Astro Specific
 - Use `.astro` components for UI and layout

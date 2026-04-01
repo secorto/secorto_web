@@ -5,7 +5,7 @@ test('smoke: homepage (es) carga y sidebar muestra logo/imagen', async ({ page }
   await page.waitForLoadState('domcontentloaded')
 
   const lang = await page.getAttribute('html', 'lang')
-  await expect(lang, 'HTML lang attribute').toBe('es')
+  expect(lang, 'HTML lang attribute').toBe('es')
 
   const titleLocator = page.locator('[data-testid="sidebar-title"]')
   await expect(titleLocator, 'Sidebar title').toHaveCount(1)
