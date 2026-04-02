@@ -15,7 +15,7 @@
  * @param origin Origen objetivo para `postMessage` (por defecto: 'https://giscus.app')
  */
 export function sendMessage(message: unknown, origin = 'https://giscus.app'): void {
-  const iframe = document.querySelector('iframe.giscus-frame') as HTMLIFrameElement | null
+  const iframe = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame')
   if (!iframe) return
   iframe.contentWindow?.postMessage({ giscus: message }, origin)
 }

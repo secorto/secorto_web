@@ -14,7 +14,7 @@ Como consecuencia de esta decisión se reorganizó el código cliente:
 se creó `src/client/` y se extrajeron responsabilidades (por ejemplo
 `themeToggle`, `giscus` y la lógica del sidebar) desde los layouts hacia
 módulos dedicados; el script inline en el layout se redujo y se añadieron
-tests unitarios (`tests/unit/themeToggle.test.ts`, `tests/unit/sidebar.test.ts`)
+tests unitarios (`tests/unit/client/themeToggle.test.ts`, `tests/unit/client/sidebar.test.ts`)
 que cubren escenarios de `localStorage`, inicialización y preferencias
 del sistema. Concretamente, parte de la lógica previa ubicada en
 `src/scripts/menu.js` fue migrada a `src/client/sidebar.ts` y la
@@ -74,7 +74,7 @@ externos (p. ej. giscus) en pruebas integradas.
   integrales y contratos con terceros.
 - Código más modular y reusable (`src/client/themeToggle.ts`,
   `src/client/sidebar.ts`).
- - Cobertura añadida para `sidebar` vía `tests/unit/sidebar.test.ts`,
+ - Cobertura añadida para `sidebar` vía `tests/unit/client/sidebar.test.ts`,
    permitiendo validar `openSidebar`, `closeSidebar`, `toggleSidebar` e
    `initSidebar` en `jsdom`.
 
