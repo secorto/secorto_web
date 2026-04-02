@@ -14,6 +14,7 @@ export default defineConfig({
       '@i18n': resolve(PROJECT_ROOT, 'src/i18n'),
       '@layouts': resolve(PROJECT_ROOT, 'src/layouts'),
       '@utils': resolve(PROJECT_ROOT, 'src/utils'),
+      '@client': resolve(PROJECT_ROOT, 'src/client'),
       '@tests': resolve(PROJECT_ROOT, 'tests'),
       '@github': resolve(PROJECT_ROOT, '.github'),
     }

@@ -26,6 +26,7 @@
     "@astrojs/sitemap": "^3.7.0",
     "astro": "^5.18.0",
     "astro-expressive-code": "0.41.7",
+    "jsdom": "^29.0.1",
     "photoswipe": "^5.4.4",
     "typescript": "^5.9.3",
     "yaml": "^2.8.2"
