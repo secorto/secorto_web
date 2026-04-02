@@ -47,7 +47,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       <slot />
     </div>
     <script>
-      import "../scripts/menu.js";
+      import { initSidebar } from "../client/sidebar.ts";
+      initSidebar(document.querySelector('.hamburger'));
     </script>
   </body>
 </html>

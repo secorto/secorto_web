@@ -1,4 +1,5 @@
 import { sendMessage } from '@client/giscus'
+import { closeSidebar } from './sidebar'
 
 /**
  * Objeto con los nombres de los temas soportados.
@@ -22,15 +23,6 @@ const THEME_CLASSES = Object.values(THEMES) satisfies Theme[]
  */
 export function setGiscusTheme(theme: Theme): void {
   sendMessage({ setConfig: { theme } })
-}
-
-/**
- * Cierra la barra lateral removiendo la clase `sidebar-open` de los toggles.
- * @param doc Documento en el que operar (útil para tests)
- */
-export function closeSidebar(doc: Document = document): void {
-  doc.querySelectorAll('.sidebar-toggle, .hamburger')
-    .forEach(el => el.classList.remove('sidebar-open'))
 }
 
 /**
