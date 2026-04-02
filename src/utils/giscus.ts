@@ -1,11 +1,5 @@
-export function sendMessage(message: { setConfig: { theme: string } }) {
+export function sendMessage(message: unknown, origin = 'https://giscus.app'): void {
   const iframe = document.querySelector('iframe.giscus-frame') as HTMLIFrameElement | null
   if (!iframe) return
-  iframe.contentWindow?.postMessage({ giscus: message }, 'https://giscus.app')
+  iframe.contentWindow?.postMessage({ giscus: message }, origin)
 }
-
-export function setGiscusTheme(theme: string) {
-  sendMessage({ setConfig: { theme } })
-}
-
-export default setGiscusTheme
