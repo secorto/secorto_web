@@ -2,14 +2,8 @@
  * @vitest-environment jsdom
  */
 
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { sendMessage } from '@client/giscus'
-
-declare global {
-  interface Window {
-    __last?: { msg: unknown; origin: string }
-  }
-}
 
 describe('giscus utils', () => {
   beforeEach(() => {
@@ -19,18 +13,16 @@ describe('giscus utils', () => {
   it('posts message to iframe contentWindow when iframe present', () => {
     const iframe = document.createElement('iframe')
     iframe.className = 'giscus-frame'
-    const fakeWindow: { postMessage: (msg: unknown, origin: string) => void } = {
-      postMessage: (msg, origin) => { window.__last = { msg, origin } }
-    }
-    Object.defineProperty(iframe, 'contentWindow', { value: fakeWindow, configurable: true })
+    const postMessage = vi.fn()
+    Object.defineProperty(iframe, 'contentWindow', { value: { postMessage }, configurable: true })
     document.body.appendChild(iframe)
 
     sendMessage({ setConfig: { theme: 'dark' } })
 
-    const last = window.__last!
-    expect(last).toBeDefined()
-    expect(last.msg).toEqual({ giscus: { setConfig: { theme: 'dark' } } })
-    expect(last.origin).toBe('https://giscus.app')
+    expect(postMessage).toHaveBeenCalledWith(
+      { giscus: { setConfig: { theme: 'dark' } } },
+      'https://giscus.app'
+    )
   })
 
   it('does not throw when iframe missing', () => {
