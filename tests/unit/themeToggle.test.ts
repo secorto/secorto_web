@@ -4,16 +4,15 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 vi.mock('@utils/giscus', () => ({ sendMessage: vi.fn() }))
+import { sendMessage } from '@utils/giscus'
 import * as themeToggle from '@utils/themeToggle'
 import { getDocumentTheme, applyTheme } from '@utils/themeToggle'
 
-const { handleToggleClick, initThemeToggle } = themeToggle
-let setGiscusSpy: ReturnType<typeof vi.spyOn>
+
 
 beforeEach(() => {
   document.documentElement.className = 'light'
   localStorage.clear()
-  setGiscusSpy = vi.spyOn(themeToggle, 'setGiscusTheme')
   vi.clearAllMocks()
 })
 
@@ -51,28 +50,32 @@ describe('applyTheme', () => {
 })
 
 describe('handleToggleClick', () => {
-  it("switches to 'dark' from 'light', calls setGiscusTheme and closeSidebar", () => {
-    const closeSpy = vi.spyOn(themeToggle, 'closeSidebar')
-    handleToggleClick()
+  it("switches to 'dark' from 'light', calls setGiscusTheme and closes sidebar elements", () => {
+    // preparar un elemento que represente un toggle abierto
+    const sidebarBtn = document.createElement('button')
+    sidebarBtn.className = 'sidebar-toggle sidebar-open'
+    document.body.appendChild(sidebarBtn)
+    themeToggle.handleToggleClick()
 
     expect(document.documentElement.classList.contains('dark')).toBe(true)
     expect(localStorage.getItem('theme')).toBe('dark')
-    expect(setGiscusSpy).toHaveBeenCalledWith('dark')
-    expect(closeSpy).toHaveBeenCalled()
+    expect(sendMessage).toHaveBeenCalledWith({ setConfig: { theme: 'dark' } })
+    expect(sidebarBtn.classList.contains('sidebar-open')).toBe(false)
+    sidebarBtn.remove()
   })
 
   it("switches to 'light' from 'dark'", () => {
     document.documentElement.className = 'dark'
-    handleToggleClick()
+    themeToggle.handleToggleClick()
 
     expect(document.documentElement.classList.contains('light')).toBe(true)
     expect(localStorage.getItem('theme')).toBe('light')
-    expect(setGiscusSpy).toHaveBeenCalledWith('light')
+    expect(sendMessage).toHaveBeenCalledWith({ setConfig: { theme: 'light' } })
   })
 
   it("defaults to 'dark' when no theme class is set", () => {
     document.documentElement.className = ''
-    handleToggleClick()
+    themeToggle.handleToggleClick()
     expect(document.documentElement.classList.contains('dark')).toBe(true)
   })
 })
@@ -81,19 +84,30 @@ describe('initThemeToggle', () => {
   it('attaches click listener to button', () => {
     const btn = document.createElement('button')
     const addSpy = vi.spyOn(btn, 'addEventListener')
-    initThemeToggle(btn)
+    themeToggle.initThemeToggle(btn)
     expect(addSpy).toHaveBeenCalledWith('click', expect.any(Function))
   })
 
-  it('returns a teardown that removes the listener', () => {
+  it('does not return a teardown (void) and does not call removeEventListener', () => {
     const btn = document.createElement('button')
     const removeSpy = vi.spyOn(btn, 'removeEventListener')
-    const teardown = initThemeToggle(btn)
-    teardown()
-    expect(removeSpy).toHaveBeenCalledWith('click', expect.any(Function))
+    const res = themeToggle.initThemeToggle(btn)
+    expect(res).toBeUndefined()
+    expect(removeSpy).not.toHaveBeenCalled()
+  })
+
+  it('click on button triggers the toggle handler and applies theme', () => {
+    const btn = document.createElement('button')
+    document.body.appendChild(btn)
+    themeToggle.initThemeToggle(btn)
+    btn.click()
+    expect(document.documentElement.classList.contains('dark')).toBe(true)
+    expect(localStorage.getItem('theme')).toBe('dark')
+    expect(sendMessage).toHaveBeenCalledWith({ setConfig: { theme: 'dark' } })
+    btn.remove()
   })
 
   it('does not throw when button is null', () => {
-    expect(() => initThemeToggle(null)).not.toThrow()
+    expect(() => themeToggle.initThemeToggle(null)).not.toThrow()
   })
 })

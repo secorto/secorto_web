@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest'
-import { setGiscusTheme } from '@utils/giscus'
+import { sendMessage } from '@utils/giscus'
 
 declare global {
   interface Window {
@@ -25,7 +25,7 @@ describe('giscus utils', () => {
     Object.defineProperty(iframe, 'contentWindow', { value: fakeWindow, configurable: true })
     document.body.appendChild(iframe)
 
-    setGiscusTheme('dark')
+    sendMessage({ setConfig: { theme: 'dark' } })
 
     const last = window.__last!
     expect(last).toBeDefined()
@@ -34,6 +34,6 @@ describe('giscus utils', () => {
   })
 
   it('does not throw when iframe missing', () => {
-    expect(() => setGiscusTheme('light')).not.toThrow()
+    expect(() => sendMessage({ setConfig: { theme: 'light' } })).not.toThrow()
   })
 })
