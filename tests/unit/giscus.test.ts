@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest'
-import { sendMessage } from '@utils/giscus'
+import { sendMessage } from '@client/giscus'
 
 declare global {
   interface Window {

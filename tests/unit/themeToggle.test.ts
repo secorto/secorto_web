@@ -3,10 +3,10 @@
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-vi.mock('@utils/giscus', () => ({ sendMessage: vi.fn() }))
-import { sendMessage } from '@utils/giscus'
-import * as themeToggle from '@utils/themeToggle'
-import { getDocumentTheme, applyTheme } from '@utils/themeToggle'
+vi.mock('@client/giscus', () => ({ sendMessage: vi.fn() }))
+import { sendMessage } from '@client/giscus'
+import * as themeToggle from '@client/themeToggle'
+import { getDocumentTheme, applyTheme } from '@client/themeToggle'
 
 
 

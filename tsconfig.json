@@ -10,6 +10,7 @@
       "@i18n/*": ["src/i18n/*"],
       "@layouts/*": ["src/layouts/*"],
       "@utils/*": ["src/utils/*"],
+      "@client/*": ["src/client/*"],
       "@domain/*": ["src/domain/*"],
       "@tests/*": ["tests/*"],
       "@github/*": [".github/*"]

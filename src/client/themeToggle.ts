@@ -1,4 +1,4 @@
-import { sendMessage } from '@utils/giscus'
+import { sendMessage } from '@client/giscus'
 
 /**
  * Objeto con los nombres de los temas soportados.
