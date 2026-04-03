@@ -12,7 +12,6 @@ vi.mock('@i18n/rootMap', () => ({
   findSectionMap: (raw: string, lang: string) => {
     return Object.entries(mockRootMap).find(([, langs]) => langs[lang] === raw)?.[1]
   },
-  resolveLocalized: (canonical: string, lang: string) => mockRootMap[canonical]?.[lang] ?? canonical,
 }))
 
 vi.mock('@i18n/config', () => ({ showDefaultLang: true }))
@@ -53,61 +52,6 @@ describe('languagePickerUtils', () => {
         expect(links[k].href).toBe(`/${k}/x`)
         expect(links[k].isAvailable).toBe(true)
       }
-    })
-  })
-
-  describe('buildTagLink', () => {
-    it('returns available link when locale has a slug', async () => {
-      vi.resetModules()
-      vi.doMock('@i18n/config', () => ({ showDefaultLang: true }))
-      vi.doMock('@i18n/rootMap', () => ({
-        get rootMap() { return mockRootMap },
-        resolveLocalized: (canonical: string, lang: string) => mockRootMap[canonical]?.[lang] ?? canonical,
-      }))
-      const { buildTagLink } = await import('@i18n/languagePickerUtils')
-      const link = buildTagLink('en', 'blog', { en: 'tools', es: 'herramientas' })
-      expect(link.isAvailable).toBe(true)
-      expect(link.href).toBe('/en/blog/tags/tools')
-    })
-
-    it('returns missing when locale has no slug', async () => {
-      vi.resetModules()
-      vi.doMock('@i18n/config', () => ({ showDefaultLang: true }))
-      vi.doMock('@i18n/rootMap', () => ({
-        get rootMap() { return mockRootMap },
-        resolveLocalized: (canonical: string, lang: string) => mockRootMap[canonical]?.[lang] ?? canonical,
-      }))
-      const { buildTagLink } = await import('@i18n/languagePickerUtils')
-      const link = buildTagLink('en', 'blog', { es: 'herramientas' })
-      expect(link.isAvailable).toBe(false)
-      expect(link.disabledReason).toBe('missing')
-    })
-
-    it('uses translated section route per locale', async () => {
-      vi.resetModules()
-      vi.doMock('@i18n/config', () => ({ showDefaultLang: true }))
-      vi.doMock('@i18n/rootMap', () => ({
-        get rootMap() { return mockRootMap },
-        resolveLocalized: (_canonical: string, lang: string) => lang === 'es' ? 'charla' : 'talk',
-      }))
-      const { buildTagLink } = await import('@i18n/languagePickerUtils')
-      const link = buildTagLink('es', 'talk', { es: 'testing', en: 'testing' })
-      expect(link.href).toBe('/es/charla/tags/testing')
-    })
-  })
-
-  describe('buildCollectionLink', () => {
-    it('returns localized href for the section', async () => {
-      vi.resetModules()
-      vi.doMock('@i18n/config', () => ({ showDefaultLang: true }))
-      vi.doMock('@i18n/rootMap', () => ({
-        get rootMap() { return mockRootMap },
-        resolveLocalized: (canonical: string, lang: string) => mockRootMap[canonical]?.[lang] ?? canonical,
-      }))
-      const { buildCollectionLink } = await import('@i18n/languagePickerUtils')
-      expect(buildCollectionLink('en', 'about').href).toBe('/en/about')
-      expect(buildCollectionLink('es', 'about').href).toBe('/es/acerca-de')
-      expect(buildCollectionLink('en', 'about').isAvailable).toBe(true)
     })
   })
 

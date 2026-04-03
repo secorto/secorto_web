@@ -3,7 +3,8 @@ import BaseLayout from '@layouts/BaseLayout.astro'
 import LanguagePicker from '@components/LanguagePicker.astro'
 import { type UILanguages } from '@i18n/ui'
 import { useTranslations } from '@i18n/utils'
-import { buildCollectionLink, buildLanguageLinks } from '@i18n/languagePickerUtils'
+import { buildCollectionLinkFromRoutes, buildLanguageLinks } from '@i18n/languagePickerUtils'
+import { rootMap } from '@i18n/rootMap'
 import { sectionsConfig, type SectionType } from '@domain/section'
 import { buildGlobalTagGroups, type TagGroup, type TagGroupSectionInput } from '@domain/tags'
 import { filterByLocale } from '@utils/paths'
@@ -17,7 +18,7 @@ const { locale } = Astro.params as { locale: UILanguages }
 const { allSectionEntries } = Astro.props as TagIndexPath['props']
 const t = useTranslations(locale)
 const pageTitle = t('tags.index_title')
-const links = buildLanguageLinks(l => buildCollectionLink(l, 'tags'))
+const links = buildLanguageLinks(l => buildCollectionLinkFromRoutes(l, rootMap['tags']))
 
 // Construir sectionInputs a partir de datos cacheados (sin fetch)
 const sectionInputs: TagGroupSectionInput[] = []

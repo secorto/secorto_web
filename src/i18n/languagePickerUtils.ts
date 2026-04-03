@@ -2,7 +2,7 @@ import type { UILanguages } from './ui'
 import type { TranslationLink } from '@domain/translationLink'
 import { languages, defaultLang, languageKeys } from './ui'
 import { showDefaultLang } from '@i18n/config'
-import { resolveLocalized, findSectionMap } from './rootMap'
+import { findSectionMap } from './rootMap'
 import type { AvailableLocales } from '@domain/translation'
 
 
@@ -28,28 +28,6 @@ export function buildHomeLink(targetLang: UILanguages): TranslationLink {
 }
 
 /**
- * Construye un link de language picker para páginas de tags.
- * @param targetLang - Idioma destino para el link
- * @param canonicalSection - Sección canónica (ej: 'blog', 'talk')
- * @param localeSlugs - Mapa locale → slug del tag en ese idioma (de buildTagLocaleMap)
- * @returns Link disponible si el locale tiene un slug, missing si no
- */
-export function buildTagLink(
-  targetLang: UILanguages,
-  canonicalSection: string,
-  localeSlugs: Partial<Record<UILanguages, string>>
-): TranslationLink {
-  const slug = localeSlugs[targetLang]
-  if (!slug) {
-    return missingLink(targetLang)
-  }
-  const localizedSection = resolveLocalized(canonicalSection, targetLang)
-  return {
-    ...availableLink(`${buildLangPrefix(targetLang)}/${localizedSection}/tags/${slug}`, targetLang)
-  }
-}
-
-/**
  * Construye un link de detalle usando directamente la sección localizada (sin pasar por el mapa canonical→localized).
  * Útil cuando el caller ya conoce la ruta localizada para cada idioma (por ejemplo desde `config.routes`).
  */
@@ -68,20 +46,8 @@ export function buildDetailLink(
 }
 
 /**
- * Construye un link de language picker para índices de colecciones o páginas estáticas.
- * @param targetLang - Idioma destino para el link
- * @param canonicalSection - Sección canónica (ej: 'blog', 'about')
- * @returns Link disponible al índice de esa sección en ese idioma
- */
-export function buildCollectionLink(targetLang: UILanguages, canonicalSection: string): TranslationLink {
-  const localizedSection = resolveLocalized(canonicalSection, targetLang)
-  return availableLink(`${buildLangPrefix(targetLang)}/${localizedSection}`, targetLang)
-}
-
-/**
- * Variante de buildCollectionLink que acepta directamente el mapa de rutas
- * (config.routes) en lugar de la clave canónica. Evita el roundtrip
- * canonical → resolveLocalized → rootMap cuando el caller ya tiene las rutas.
+ * Construye un link de language picker para índices de colecciones.
+ * Acepta directamente el mapa de rutas (config.routes o rootMap[key]).
  */
 export function buildCollectionLinkFromRoutes(
   targetLang: UILanguages,
@@ -91,8 +57,8 @@ export function buildCollectionLinkFromRoutes(
 }
 
 /**
- * Variante de buildTagLink que acepta directamente el mapa de rutas (config.routes)
- * en lugar de la clave canónica. Evita el roundtrip canonical → resolveLocalized.
+ * Construye un link de language picker para páginas de tags.
+ * Acepta directamente el mapa de rutas (config.routes o rootMap[key]) y el mapa locale → slug.
  */
 export function buildTagLinkFromRoutes(
   targetLang: UILanguages,
