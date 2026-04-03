@@ -121,23 +121,6 @@ export function buildMissingLanguageLinks(): Record<UILanguages, TranslationLink
 }
 
 /**
- * Build a single language link for a static (non-collection) page.
- * Accepts `targetLang` to match the signature of other `build*Link` helpers.
- */
-export function buildStaticPageLink(targetLang: UILanguages, url: URL): TranslationLink {
-  const [, maybeLocale, rawSegment] = url.pathname.split('/')
-  if (!(languageKeys as string[]).includes(maybeLocale)) return missingLink(targetLang)
-
-  const currentLocale = maybeLocale as UILanguages
-  const localized = findSectionMap(rawSegment, currentLocale)?.[targetLang]
-  if (localized) return availableLink(`${buildLangPrefix(targetLang)}/${localized}`, targetLang)
-
-  if (targetLang === currentLocale) return availableLink(`${buildLangPrefix(targetLang)}/${rawSegment}`, targetLang)
-
-  return missingLink(targetLang)
-}
-
-/**
  * Builds links for all languages from a URL.
  * Hoists URL parsing and rootMap scan outside the per-language loop.
  */
