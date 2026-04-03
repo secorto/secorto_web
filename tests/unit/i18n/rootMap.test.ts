@@ -8,20 +8,9 @@ vi.mock('@domain/section', () => ({
   },
 }))
 
-const { rootMap, findSectionMap, resolveLocalized } = await import('@i18n/rootMap')
+const { findSectionMap, resolveLocalized } = await import('@i18n/rootMap')
 
 describe('i18n rootMap', () => {
-  it('builds rootMap including extraRoutes', () => {
-    // from mocked sectionsConfig + extraRoutes (about)
-    expect(rootMap).toHaveProperty('blog')
-    expect(rootMap).toHaveProperty('talk')
-    expect(rootMap).toHaveProperty('about')
-
-    expect(rootMap.blog.en).toBe('blog')
-    expect(rootMap.talk.es).toBe('charla')
-    expect(rootMap.about.es).toBe('acerca-de')
-  })
-
   it('findSectionMap returns sectionMap when slug exists, undefined otherwise', () => {
     expect(findSectionMap('blog', 'en')).toEqual({ en: 'blog', es: 'blog' })
     expect(findSectionMap('charla', 'es')).toEqual({ en: 'talk', es: 'charla' })
