@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro'
+import SEOHead from '@components/SEOHead.astro'
 import Tags from '@components/Tags.astro'
 import ListPost from '@components/ListPost.astro'
 import LanguagePicker from '@components/LanguagePicker.astro'
@@ -27,13 +28,8 @@ const localeSlugs = tagLocaleMap[tag] ?? { [locale]: tag } as Partial<Record<UIL
 const links = buildLanguageLinks(l => buildTagLinkFromRoutes(l, config.routes, localeSlugs))
 ---
 
-<head>
-  <meta charset="utf-8" />
-  <title>{pageTitle}</title>
-  <meta name="description" content={metaDescription} />
-</head>
-
-<BaseLayout pageTitle={pageTitle}>
+<BaseLayout pageTitle={pageTitle} description={metaDescription}>
+  <SEOHead slot="seo-head" links={links} />
   <LanguagePicker slot="langpicker" links={links} />
   <Tags route={`/${locale}/${section}/tags/`} tags={tags} current={tag} />
   {config.taggedKey && <p>{t(config.taggedKey)} {tag}</p>}
