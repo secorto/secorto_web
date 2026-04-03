@@ -40,3 +40,22 @@ Cómo usar
 Notas
 - Este archivo es la fuente de verdad para deuda técnica. Evitar crear issues
   por cada excepción para mantener el backlog limpio.
+
+---
+
+## Deuda registrada
+
+- **id**: debt-001
+  **archivo**: `src/utils/staticPathsBuilder.ts`
+  **contexto**: `buildSectionIndexPathsCore`, `buildTagPathsCore`, `buildTagIndexPathsCore`
+  **razón**: Los links del language picker (`Record<UILanguages, TranslationLink>`) se calculan en
+  render time de cada página `.astro` mediante `buildLanguageLinks(...)`. Dado que todos los
+  ingredientes (`config.routes`, `tagLocaleMap`, `rootMap['tags']`) están disponibles dentro de
+  cada builder en build time, deberían precalcularse como prop `links` (igual que en
+  `buildAllDetailPathsCore` con `localeLinks`). Esto eliminaría la iteración N×M en render y
+  convertiría los componentes `.astro` de índice y tags en templates puramente declarativos.
+  El scope afecta los tipos `SectionPath`, `TagPath`, `TagIndexPath` y sus cuatro páginas
+  consumidoras — se pospone para un PR dedicado.
+  **owner**: @scot3004
+  **until**: 2026-07-01
+  **estado**: open
