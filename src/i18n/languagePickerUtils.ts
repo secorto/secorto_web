@@ -2,7 +2,7 @@ import type { UILanguages } from './ui'
 import type { TranslationLink } from '@domain/translationLink'
 import { languages, defaultLang, languageKeys } from './ui'
 import { showDefaultLang } from '@i18n/config'
-import { resolveLocalized, findCanonicalSectionKey, rootMap } from './rootMap'
+import { resolveLocalized, findSectionMap } from './rootMap'
 import type { AvailableLocales } from '@domain/translation'
 
 
@@ -79,6 +79,32 @@ export function buildCollectionLink(targetLang: UILanguages, canonicalSection: s
 }
 
 /**
+ * Variante de buildCollectionLink que acepta directamente el mapa de rutas
+ * (config.routes) en lugar de la clave canónica. Evita el roundtrip
+ * canonical → resolveLocalized → rootMap cuando el caller ya tiene las rutas.
+ */
+export function buildCollectionLinkFromRoutes(
+  targetLang: UILanguages,
+  routes: Record<UILanguages, string>
+): TranslationLink {
+  return availableLink(`${buildLangPrefix(targetLang)}/${routes[targetLang]}`, targetLang)
+}
+
+/**
+ * Variante de buildTagLink que acepta directamente el mapa de rutas (config.routes)
+ * en lugar de la clave canónica. Evita el roundtrip canonical → resolveLocalized.
+ */
+export function buildTagLinkFromRoutes(
+  targetLang: UILanguages,
+  routes: Record<UILanguages, string>,
+  localeSlugs: Partial<Record<UILanguages, string>>
+): TranslationLink {
+  const slug = localeSlugs[targetLang]
+  if (!slug) return missingLink(targetLang)
+  return availableLink(`${buildLangPrefix(targetLang)}/${routes[targetLang]}/tags/${slug}`, targetLang)
+}
+
+/**
  * Helper to build a full `Record<UILanguages, T>` of links using a builder callback.
  * Reduces repetition when creating language maps for the LanguagePicker.
  */
@@ -100,15 +126,10 @@ export function buildMissingLanguageLinks(): Record<UILanguages, TranslationLink
  */
 export function buildStaticPageLink(targetLang: UILanguages, url: URL): TranslationLink {
   const [, maybeLocale, rawSegment] = url.pathname.split('/')
-  const isLocalePrefixed = (languageKeys as string[]).includes(maybeLocale)
+  if (!(languageKeys as string[]).includes(maybeLocale)) return missingLink(targetLang)
 
-  if (!isLocalePrefixed) return missingLink(targetLang)
-
-  const currentLocale: UILanguages = maybeLocale as UILanguages
-  const sectionKey = findCanonicalSectionKey(rawSegment, currentLocale)
-  const sectionMap = rootMap[sectionKey]
-
-  const localized = sectionMap && sectionMap[targetLang]
+  const currentLocale = maybeLocale as UILanguages
+  const localized = findSectionMap(rawSegment, currentLocale)?.[targetLang]
   if (localized) return availableLink(`${buildLangPrefix(targetLang)}/${localized}`, targetLang)
 
   if (targetLang === currentLocale) return availableLink(`${buildLangPrefix(targetLang)}/${rawSegment}`, targetLang)
@@ -116,8 +137,23 @@ export function buildStaticPageLink(targetLang: UILanguages, url: URL): Translat
   return missingLink(targetLang)
 }
 
+/**
+ * Builds links for all languages from a URL.
+ * Hoists URL parsing and rootMap scan outside the per-language loop.
+ */
 export function buildStaticPageLinks(url: URL): Record<UILanguages, TranslationLink> {
-  return buildLanguageLinks(l => buildStaticPageLink(l, url))
+  const [, maybeLocale, rawSegment] = url.pathname.split('/')
+  if (!(languageKeys as string[]).includes(maybeLocale)) return buildMissingLanguageLinks()
+
+  const currentLocale = maybeLocale as UILanguages
+  const sectionMap = findSectionMap(rawSegment, currentLocale)
+
+  return buildLanguageLinks(targetLang => {
+    const localized = sectionMap?.[targetLang]
+    if (localized) return availableLink(`${buildLangPrefix(targetLang)}/${localized}`, targetLang)
+    if (targetLang === currentLocale) return availableLink(`${buildLangPrefix(targetLang)}/${rawSegment}`, targetLang)
+    return missingLink(targetLang)
+  })
 }
 
 /**

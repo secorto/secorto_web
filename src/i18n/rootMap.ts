@@ -20,6 +20,15 @@ export function findCanonicalSectionKey(raw: string, lang: UILanguages): string 
   return entry ? entry[0] : raw
 }
 
+/**
+ * Devuelve el mapa de locales para el segmento dado sin el doble paso
+ * findCanonicalSectionKey + rootMap[key]. Útil cuando solo se necesita
+ * el mapa de slugs por idioma, no la clave canónica.
+ */
+export function findSectionMap(raw: string, lang: UILanguages): Record<UILanguages, string> | undefined {
+  return Object.entries(rootMap).find(([, langs]) => langs[lang] === raw)?.[1]
+}
+
 export function resolveLocalized(canonical: string, lang: UILanguages): string {
   const map = rootMap[canonical]
   return map ? map[lang] : canonical // fallback: canonical si no está en el mapa

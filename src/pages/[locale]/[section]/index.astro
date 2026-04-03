@@ -8,8 +8,7 @@ import LanguagePicker from '@components/LanguagePicker.astro'
 import { useTranslations } from '@i18n/utils'
 import { defaultLang, type UILanguages } from '@i18n/ui'
 import { buildSectionIndexPaths, type SectionPath } from '@utils/staticPathsBuilder.adapters'
-import { buildCollectionLink, buildLanguageLinks } from '@i18n/languagePickerUtils'
-import { findCanonicalSectionKey } from '@i18n/rootMap'
+import { buildCollectionLinkFromRoutes, buildLanguageLinks } from '@i18n/languagePickerUtils'
 
 export async function getStaticPaths() {
   return await buildSectionIndexPaths()
@@ -22,8 +21,7 @@ const tags = sectionProps.tags
 const t = useTranslations(locale)
 const pageTitle = t(config.translationKey)
 
-const canonicalSection = findCanonicalSectionKey(section, locale)
-const links = buildLanguageLinks(l => buildCollectionLink(l, canonicalSection))
+const links = buildLanguageLinks(l => buildCollectionLinkFromRoutes(l, config.routes))
 const defaultPath = links[defaultLang].href
 ---
 
