@@ -15,18 +15,15 @@ export const rootMap: Record<string, Record<UILanguages, string>> = Object.fromE
     .concat(Object.entries(extraRoutes))
 ) as Record<string, Record<UILanguages, string>>
 
-export function findCanonicalSectionKey(raw: string, lang: UILanguages): string {
-  const entry = Object.entries(rootMap).find(([, langs]) => langs[lang] === raw)
-  return entry ? entry[0] : raw
-}
-
 /**
- * Devuelve el mapa de locales para el segmento dado sin el doble paso
- * findCanonicalSectionKey + rootMap[key]. Útil cuando solo se necesita
- * el mapa de slugs por idioma, no la clave canónica.
+ * Devuelve el mapa de locales para el segmento dado en el idioma dado,
+ * o `undefined` si el segmento no pertenece a ninguna sección conocida.
  */
 export function findSectionMap(raw: string, lang: UILanguages): Record<UILanguages, string> | undefined {
-  return Object.entries(rootMap).find(([, langs]) => langs[lang] === raw)?.[1]
+  const entry = Object.entries(rootMap).find(([, langs]) => langs[lang] === raw)
+  if (!entry) return undefined
+  const [, sectionMap] = entry
+  return sectionMap
 }
 
 export function resolveLocalized(canonical: string, lang: UILanguages): string {

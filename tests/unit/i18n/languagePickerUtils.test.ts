@@ -9,10 +9,6 @@ const mockRootMap: Record<string, Record<string, string>> = {
 
 vi.mock('@i18n/rootMap', () => ({
   get rootMap() { return mockRootMap },
-  findCanonicalSectionKey: (raw: string, lang: string) => {
-    const entry = Object.entries(mockRootMap).find(([, langs]) => langs[lang] === raw)
-    return entry ? entry[0] : raw
-  },
   findSectionMap: (raw: string, lang: string) => {
     return Object.entries(mockRootMap).find(([, langs]) => langs[lang] === raw)?.[1]
   },
@@ -164,10 +160,6 @@ describe('languagePickerUtils', () => {
       vi.doMock('@i18n/config', () => ({ showDefaultLang: true }))
       vi.doMock('@i18n/rootMap', () => ({
         get rootMap() { return mockRootMap },
-        findCanonicalSectionKey: (raw: string, lang: string) => {
-          const entry = Object.entries(mockRootMap).find(([, langs]) => langs[lang] === raw)
-          return entry ? entry[0] : raw
-        },
         findSectionMap: (raw: string, lang: string) => {
           return Object.entries(mockRootMap).find(([, langs]) => langs[lang] === raw)?.[1]
         },
