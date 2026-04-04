@@ -18,11 +18,13 @@ import { filterByLocale, getUniqueTags, mapEntryId } from './paths'
 import type { AvailableLocales } from '@domain/translation'
 import { type PostEntry, type ExperienceLikeEntry } from '@domain/post'
 import { buildTagLocaleMap, getAvailableLocaleEntriesFromMap, buildLocaleEntryMap } from './translationHelpers'
-import { buildLanguageLinks, buildDetailLink } from '@i18n/languagePickerUtils'
+import { buildDetailLinks } from '@i18n/languagePickerUtils'
+import { availableLink, missingLink } from '@domain/translationLink'
+import { buildLangPrefix } from '@i18n/languagePickerUtils'
 import type { TranslationLink } from '@domain/translationLink'
 import { tagTranslations } from '@domain/tags'
-import { resolveDefaultLocale } from '@domain/translation'
 import type { CollectionEntry, CollectionKey } from 'astro:content'
+import { rootMap } from '@i18n/rootMap'
 
 /** Minimal shape for the injected collection fetcher — easier to mock than the full generic overload. */
 export type FetchCollection = (collection: CollectionKey) => Promise<CollectionEntry<CollectionKey>[]>
@@ -31,12 +33,14 @@ type SectionPathPostProps = {
   config: SectionConfig & { category: 'post' }
   posts: PostEntry<CollectionKey>[]
   tags: string[]
+  links: TranslationLink[]
 }
 
 type SectionPathExperienceProps = {
   config: SectionConfig & { category: 'experience' }
   posts: ExperienceLikeEntry[]
   tags: string[]
+  links: TranslationLink[]
 }
 
 export type SectionPathProps = SectionPathPostProps | SectionPathExperienceProps
@@ -56,10 +60,9 @@ export interface TagPath {
     tag: string
   }
   props: {
-    tag: string
     allEntries: PostEntry<CollectionKey>[]
     config: SectionConfig
-    tagLocaleMap: Record<string, Partial<Record<UILanguages, string>>>
+    links: TranslationLink[]
   }
 }
 
@@ -73,9 +76,8 @@ export interface DetailPath {
     entry: PostEntry<CollectionKey>
     /** Mapa de locales disponibles para este entry, pre-calculado en build time. */
     availableLocales: AvailableLocales
-    defaultPath: string | undefined
-    /** Pre-computado: mapa locale -> TranslationLink (href, label, availability) */
-    localeLinks: Record<UILanguages, TranslationLink>
+    /** Pre-computado: array de TranslationLink (href, availability, locale) */
+    links: TranslationLink[]
     config: SectionConfig
   }
 }
@@ -90,6 +92,7 @@ export interface TagIndexPath {
   }
   props: {
     allSectionEntries: Record<string, PostEntry<CollectionKey>[]>
+    links: TranslationLink[]
   }
 }
 
@@ -103,6 +106,10 @@ export function buildLocalePathsForSection(
   config: SectionConfig,
   allEntries: PostEntry<CollectionKey>[]
 ): SectionPath[] {
+  const links = languageKeys.map(l =>
+    availableLink(`${buildLangPrefix(l)}/${config.routes[l]}`, l)
+  )
+
   return languageKeys.map(locale => {
     const posts = filterByLocale(allEntries, locale)
     const tags = getUniqueTags(posts)
@@ -110,7 +117,7 @@ export function buildLocalePathsForSection(
     if (config.category === 'post') {
       return {
         params: { locale, section: config.routes[locale] },
-        props: { config: config as SectionConfig & { category: 'post' }, posts, tags }
+        props: { config: config as SectionConfig & { category: 'post' }, posts, tags, links }
       }
     }
 
@@ -118,7 +125,7 @@ export function buildLocalePathsForSection(
       params: { locale, section: config.routes[locale] },
       // posts viene de FetchCollection (CollectionKey genérico); el cast es seguro porque
       // work/projects/community satisfacen ExperienceLikeEntry estructuralmente en runtime.
-      props: { config: config as SectionConfig & { category: 'experience' }, posts: posts as ExperienceLikeEntry[], tags }
+      props: { config: config as SectionConfig & { category: 'experience' }, posts: posts as ExperienceLikeEntry[], tags, links }
     }
   })
 }
@@ -130,8 +137,6 @@ export function buildLocalePathsForSection(
  * @param fetchCollection - Función para obtener colecciones
  * @returns Array de paths para getStaticPaths
  */
-// TODO(debt): pre-calcular links={ buildCollectionLinkFromRoutes × config.routes } como prop en SectionPath
-// para eliminar buildLanguageLinks en render time de [section]/index.astro — owner: @scot3004 — until: 2026-07-01
 export async function buildSectionIndexPathsCore(
   sections: SectionConfig[],
   fetchCollection: FetchCollection
@@ -168,11 +173,15 @@ export async function buildTagPathsCore(
       const tags = getUniqueTags(localePosts)
 
       for (const tag of tags) {
-        // TODO(debt): pre-calcular links como prop (mismo patrón que buildAllDetailPathsCore)
-        // para eliminar buildLanguageLinks en render time de [tag].astro — owner: @scot3004 — until: 2026-07-01
+        const links = languageKeys.map(l => {
+          const tagSlug = tagLocaleMap[tag]?.[l]
+          return tagSlug
+            ? availableLink(`${buildLangPrefix(l)}/${config.routes[l]}/tags/${tagSlug}`, l)
+            : missingLink(l)
+        })
         paths.push({
           params: { locale, section: config.routes[locale], tag },
-          props: { tag, allEntries, config, tagLocaleMap }
+          props: { allEntries, config, links }
         })
       }
     }
@@ -202,13 +211,11 @@ export async function buildAllDetailPathsCore(
     for (const entry of allEntries) {
       const locale = entry.locale
       const localeEntryMap = getAvailableLocaleEntriesFromMap(localeEntryMapByPostId, entry.postId)
-      const seriesDefaultLocale = resolveDefaultLocale(localeEntryMap)
-      const localeLinks = buildLanguageLinks(l => buildDetailLink(l, config.routes[l], localeEntryMap))
-      const defaultPath = localeLinks[seriesDefaultLocale].href
+      const links = buildDetailLinks(config.routes, localeEntryMap)
 
       allPaths.push({
         params: { locale, section: config.routes[locale], id: entry.cleanId },
-        props: { entry, availableLocales: localeEntryMap, defaultPath, localeLinks, config }
+        props: { entry, availableLocales: localeEntryMap, links, config }
       })
     }
   }
@@ -229,7 +236,6 @@ export async function buildTagIndexPathsCore(
   sections: SectionConfig[],
   fetchCollection: FetchCollection
 ): Promise<TagIndexPath[]> {
-  // Fetch todas las colecciones UNA sola vez (no por locale)
   const allSectionEntries: Record<string, PostEntry<CollectionKey>[]> = {}
 
   for (const config of sections) {
@@ -237,11 +243,13 @@ export async function buildTagIndexPathsCore(
     allSectionEntries[config.name] = mapEntryId(entries)
   }
 
-  // Generar rutas compartiendo los datos de colecciones cacheados
-  // TODO(debt): pre-calcular links={ buildCollectionLinkFromRoutes × rootMap['tags'] } como prop
-  // para eliminar buildStaticPageLinks(Astro.url) en render time de tags.astro — owner: @scot3004 — until: 2026-07-01
-  return languageKeys.map((locale) => ({
-    params: { locale },
-    props: { allSectionEntries }
-  }))
+  const globalTagsLinks = languageKeys.map(l =>
+    availableLink(`${buildLangPrefix(l)}/${rootMap['tags'][l]}`, l)
+  )
+  return languageKeys.map((locale) => {
+    return {
+      params: { locale },
+      props: { allSectionEntries, links: globalTagsLinks }
+    }
+  })
 }

@@ -6,9 +6,8 @@ import ListWork from '@components/ListWork.astro'
 import Tags from '@components/Tags.astro'
 import LanguagePicker from '@components/LanguagePicker.astro'
 import { useTranslations } from '@i18n/utils'
-import { defaultLang, type UILanguages } from '@i18n/ui'
+import { type UILanguages } from '@i18n/ui'
 import { buildSectionIndexPaths, type SectionPath } from '@utils/staticPathsBuilder.adapters'
-import { buildCollectionLinkFromRoutes, buildLanguageLinks } from '@i18n/languagePickerUtils'
 
 export async function getStaticPaths() {
   return await buildSectionIndexPaths()
@@ -18,15 +17,13 @@ const { locale, section } = Astro.params as { locale: UILanguages; section: stri
 const sectionProps = Astro.props as SectionPath['props']
 const config = sectionProps.config
 const tags = sectionProps.tags
+const links = sectionProps.links
 const t = useTranslations(locale)
 const pageTitle = t(config.translationKey)
-
-const links = buildLanguageLinks(l => buildCollectionLinkFromRoutes(l, config.routes))
-const defaultPath = links[defaultLang].href
 ---
 
 <BaseLayout pageTitle={pageTitle}>
-  <SEOHead slot="seo-head" defaultPath={defaultPath} links={links} />
+  <SEOHead slot="seo-head" links={links} />
   <LanguagePicker slot="langpicker" links={links} />
   {tags.length > 0 && (
     <Tags route={`/${locale}/${section}/tags/`} tags={tags} />

@@ -48,14 +48,7 @@ Notas
 - **id**: debt-001
   **archivo**: `src/utils/staticPathsBuilder.ts`
   **contexto**: `buildSectionIndexPathsCore`, `buildTagPathsCore`, `buildTagIndexPathsCore`
-  **razón**: Los links del language picker (`Record<UILanguages, TranslationLink>`) se calculan en
-  render time de cada página `.astro` mediante `buildLanguageLinks(...)`. Dado que todos los
-  ingredientes (`config.routes`, `tagLocaleMap`, `rootMap['tags']`) están disponibles dentro de
-  cada builder en build time, deberían precalcularse como prop `links` (igual que en
-  `buildAllDetailPathsCore` con `localeLinks`). Esto eliminaría la iteración N×M en render y
-  convertiría los componentes `.astro` de índice y tags en templates puramente declarativos.
-  El scope afecta los tipos `SectionPath`, `TagPath`, `TagIndexPath` y sus cuatro páginas
-  consumidoras — se pospone para un PR dedicado.
+  **razón**: Los links del language picker se precalculan como prop `links` en todos los builders (arrays en lugar de Records). Funciones `buildHomeLinks()`, `buildDetailLinks()`, `buildMissingLanguageLinks()`, `buildStaticPageLinks()` retornan arrays directamente. `buildLanguageLinks()` eliminada. Componentes `.astro` usan arrays pre-computados en build time.
   **owner**: @scot3004
   **until**: 2026-07-01
-  **estado**: open
+  **estado**: closed
