@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import {buildLangPrefix } from '@i18n/languagePickerUtils'
+import { buildLangPrefix } from '@i18n/languagePickerUtils'
 
 vi.mock('@i18n/config', () => ({
   showDefaultLang: false
