@@ -30,11 +30,10 @@ const items = adaptLanguageLinks(links)
       <a
         href={item.href}
         title={item.title}
-        aria-label={item.label}
+        aria-label={item.title ? `${item.title}: ${item.label}` : item.label}
         data-testid={`lang-${item.locale}`}
       >
         {item.text}
-        {item.title ? <span class="sr-only">{item.title}</span> : null}
       </a>
     )
   })}

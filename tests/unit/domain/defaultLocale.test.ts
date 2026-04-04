@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { availableLink, draftLink, missingLink, resolveDefaultAccessibleLink as resolveDefaultAccessibleLink } from '@domain/translationLink'
+import { availableLink, draftLink, missingLink, resolveDefaultAccessibleLink } from '@domain/translationLink'
 
 describe('resolveDefaultLocaleFromLinks', () => {
   it('prefers es when available (defaultLang)', () => {
