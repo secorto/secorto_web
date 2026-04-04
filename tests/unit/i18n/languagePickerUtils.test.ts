@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import type { TranslationLink } from '@domain/translationLink'
+import { availableLink, isAccessible, isAvailable, isDraft, isMissing, missingLink } from '@domain/translationLink'
 import { buildHomeLinks, buildDetailLink, buildDetailLinks, buildStaticPageLinks, buildMissingLanguageLinks, buildAlternatesFromLinks } from '@i18n/languagePickerUtils'
 import { languageKeys } from '@i18n/ui'
 
@@ -9,7 +9,8 @@ describe('languagePickerUtils', () => {
       const links = buildHomeLinks()
 
       expect(links).toHaveLength(languageKeys.length)
-      expect(links.every(l => l.isAvailable)).toBe(true)
+      expect(links.every(l => isAccessible(l))).toBe(true)
+      expect(links.every(l => isAvailable(l))).toBe(true)
     })
 
     it('includes proper prefixes for each language', () => {
@@ -25,22 +26,25 @@ describe('languagePickerUtils', () => {
   describe('buildDetailLink', () => {
     it('returns available link for existing translation', () => {
       const link = buildDetailLink('en', 'blog', { en: { slug: 'en-slug' } })
-      expect(link.isAvailable).toBe(true)
+      expect(isAccessible(link)).toBe(true)
+      expect(isAvailable(link)).toBe(true)
       expect(link.href).toContain('blog/en-slug')
-      expect(link.disabledReason).toBeUndefined()
+      expect(isDraft(link)).toBe(false)
     })
 
-    it('marks draft translation with disabledReason draft', () => {
+    it('marks draft translation', () => {
       const link = buildDetailLink('en', 'blog', { en: { slug: 'en-slug', draft: true } })
-      expect(link.isAvailable).toBe(true)
-      expect(link.disabledReason).toBe('draft')
+      expect(isAccessible(link)).toBe(true)
+      expect(isAvailable(link)).toBe(false)
+      expect(isDraft(link)).toBe(true)
       expect(link.href).toContain('blog/en-slug')
     })
 
     it('returns missing link when translation does not exist', () => {
       const link = buildDetailLink('en', 'blog', {})
-      expect(link.isAvailable).toBe(false)
-      expect(link.disabledReason).toBe('missing')
+      expect(isAccessible(link)).toBe(false)
+      expect(isAvailable(link)).toBe(false)
+      expect(isMissing(link)).toBe(true)
     })
   })
 
@@ -49,7 +53,7 @@ describe('languagePickerUtils', () => {
       const links = buildDetailLinks({ en: 'blog', es: 'blog' }, { en: { slug: 'en-slug' }, es: { slug: 'es-slug' } })
 
       expect(links).toHaveLength(languageKeys.length)
-      expect(links.every(l => l.isAvailable)).toBe(true)
+      expect(links.every(l => isAccessible(l))).toBe(true)
     })
 
     it('marks draft translations correctly', () => {
@@ -57,8 +61,10 @@ describe('languagePickerUtils', () => {
 
       const enLink = links.find(l => l.locale === 'en')
       const esLink = links.find(l => l.locale === 'es')
-      expect(enLink?.disabledReason).toBe('draft')
-      expect(esLink?.disabledReason).toBeUndefined()
+      expect(enLink).toBeDefined()
+      expect(esLink).toBeDefined()
+      expect(isDraft(enLink!)).toBe(true)
+      expect(isDraft(esLink!)).toBe(false)
     })
 
     it('includes missing translations in array', () => {
@@ -66,9 +72,13 @@ describe('languagePickerUtils', () => {
 
       const enLink = links.find(l => l.locale === 'en')
       const esLink = links.find(l => l.locale === 'es')
-      expect(enLink?.isAvailable).toBe(true)
-      expect(esLink?.isAvailable).toBe(false)
-      expect(esLink?.disabledReason).toBe('missing')
+      expect(enLink).toBeDefined()
+      expect(esLink).toBeDefined()
+      expect(isAccessible(enLink!)).toBe(true)
+      expect(isAvailable(enLink!)).toBe(true)
+      expect(isAccessible(esLink!)).toBe(false)
+      expect(isAvailable(esLink!)).toBe(false)
+      expect(isMissing(esLink!)).toBe(true)
     })
 
     it('uses correct localized route for each language', () => {
@@ -91,27 +101,32 @@ describe('languagePickerUtils', () => {
   describe('buildStaticPageLinks', () => {
     it('returns missing links when URL has no locale prefix', () => {
       const links = buildStaticPageLinks(new URL('http://x/cosito'))
-      expect(links.every(l => !l.isAvailable && l.disabledReason === 'missing')).toBe(true)
+      expect(links.every(l => !isAccessible(l) && isMissing(l))).toBe(true)
     })
 
     it('uses rootMap for localized section slugs', () => {
-      // about: { en: 'about', es: 'acerca-de' }
       const links = buildStaticPageLinks(new URL('http://x/es/acerca-de'))
-      const es = links.find(l => l.locale === 'es')
-      const en = links.find(l => l.locale === 'en')
-      expect(es?.isAvailable).toBe(true)
-      expect(es?.href).toContain('acerca-de')
-      expect(en?.isAvailable).toBe(true)
-      expect(en?.href).toContain('about')
+      expect(links.map(l => l.locale)).toEqual(expect.arrayContaining(['es', 'en']))
+      const relevant = links.filter(l => ['es', 'en'].includes(l.locale))
+      expect(relevant.every(l => isAccessible(l) && isAvailable(l))).toBe(true)
+      const hrefByLocale = Object.fromEntries(links.map(l => [l.locale, l.href]))
+      expect(hrefByLocale).toMatchObject({
+        es: expect.stringContaining('acerca-de'),
+        en: expect.stringContaining('about')
+      })
     })
 
     it('handles unmapped sections gracefully', () => {
       const links = buildStaticPageLinks(new URL('http://x/es/custom-section'))
       const es = links.find(l => l.locale === 'es')
       const en = links.find(l => l.locale === 'en')
-      expect(es?.isAvailable).toBe(true)
+      expect(es).toBeDefined()
+      expect(en).toBeDefined()
+      expect(isAccessible(es!)).toBe(true)
+      expect(isAvailable(es!)).toBe(true)
       expect(es?.href).toContain('custom-section')
-      expect(en?.isAvailable).toBe(false)
+      expect(isAccessible(en!)).toBe(false)
+      expect(isAvailable(en!)).toBe(false)
     })
   })
 
@@ -119,17 +134,13 @@ describe('languagePickerUtils', () => {
     it('returns all locales as unavailable', () => {
       const links = buildMissingLanguageLinks()
       expect(links).toHaveLength(languageKeys.length)
-      expect(links.every(l => !l.isAvailable && l.disabledReason === 'missing')).toBe(true)
+      expect(links.every(l => !isAccessible(l) && isMissing(l))).toBe(true)
     })
   })
 
   describe('buildAlternatesFromLinks', () => {
     it('filters out unavailable links and returns locale/url pairs', () => {
-      const links: TranslationLink[] = [
-        { href: '/en/', isAvailable: true, locale: 'en' },
-        { href: '', isAvailable: false, disabledReason: 'missing', locale: 'es' }
-      ]
-
+      const links = [availableLink('/en/', 'en'), missingLink('es')]
       const alternates = buildAlternatesFromLinks(links)
       expect(alternates).toEqual([{ locale: 'en', url: '/en/' }])
     })

@@ -1,16 +1,16 @@
 import { describe, it, expect } from 'vitest'
-import { availableLink, missingLink } from '@domain/translationLink'
+import { availableLink, missingLink, isAvailable } from '@domain/translationLink'
 
 describe('availableLink', () => {
-  it('crea un TranslationLink disponible con href, isAvailable true, y locale correcto', () => {
+  it('crea un TranslationLink disponible con href y locale correcto', () => {
     const result = availableLink('/blog', 'en')
 
     expect(result).toEqual({
+      type: 'available',
       href: '/blog',
-      isAvailable: true,
       locale: 'en'
     })
-    expect(result.disabledReason).toBeUndefined()
+    expect(isAvailable(result)).toBe(true)
   })
 
   it('preserva href exactamente como se proporciona', () => {
@@ -28,20 +28,13 @@ describe('availableLink', () => {
 })
 
 describe('missingLink', () => {
-  it('crea un TranslationLink no disponible con disabledReason missing y href vacío', () => {
+  it('crea un TranslationLink no disponible de tipo missing', () => {
     const result = missingLink('en')
-
     expect(result).toEqual({
-      href: '',
-      isAvailable: false,
-      disabledReason: 'missing',
+      type: 'missing',
+      href: null,
       locale: 'en'
     })
-  })
-
-  it('href siempre es string vacío para cualquier idioma', () => {
-    expect(missingLink('en').href).toBe('')
-    expect(missingLink('es').href).toBe('')
   })
 
   it('asigna locale para múltiples idiomas', () => {

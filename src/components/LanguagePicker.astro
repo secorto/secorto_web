@@ -1,52 +1,39 @@
 ---
-import { languages, icons as uiIcons, ui as uiStrings } from "@i18n/ui"
 import type { TranslationLink } from "@domain/translationLink"
+import { adaptLanguageLinks } from "@i18n/languagePickerAdapter"
 
 interface Props {
   links: TranslationLink[]
 }
 
 const { links } = Astro.props
-
-const reasonMeta = {
-  missing: { marker: uiIcons.missing, titleKey: 'translation.disabled.missing' as const },
-  draft:   { marker: uiIcons.draft,   titleKey: 'translation.disabled.draft' as const },
-}
+const items = adaptLanguageLinks(links)
 ---
 
 <div class="language-picker">
-  {links.map((link) => {
-    const label = languages[link.locale]
-    const meta = link.disabledReason && reasonMeta[link.disabledReason]
-    const text = meta ? `${label} ${meta.marker}` : label
-    const title = meta && uiStrings[link.locale][meta.titleKey]
-    const reasonId = meta ? `lang-${link.locale}-reason` : undefined
-
-    if (!link.isAvailable) return (
+  {items.map((item) => {
+    if (!item.accessible) return (
       <span
         class="disabled"
         role="link"
         aria-disabled="true"
         tabindex="-1"
-        aria-label={title ? `${title}: ${label}` : undefined}
-        title={title}
-        data-disabled-reason={link.disabledReason ?? ''}
-        data-testid={`lang-${link.locale}`}
+        aria-label={`${item.title}: ${item.label}`}
+        title={item.title}
+        data-testid={`lang-${item.locale}`}
       >
-        {text}
+        {item.text}
       </span>
     )
 
     return (
       <a
-        href={link.href}
-        title={title}
-        aria-label={label}
-        aria-describedby={reasonId}
-        data-testid={`lang-${link.locale}`}
+        href={item.href}
+        title={item.title}
+        aria-label={item.title ? `${item.title}: ${item.label}` : item.label}
+        data-testid={`lang-${item.locale}`}
       >
-        {text}
-        {meta && title ? <span id={reasonId} class="sr-only">{title}</span> : null}
+        {item.text}
       </a>
     )
   })}
