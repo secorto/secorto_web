@@ -5,6 +5,7 @@ export type MissingLink = { type: 'missing'; href: null; locale: UILanguages }
 export type DraftLink = { type: 'draft'; href: string; locale: UILanguages }
 
 export type TranslationLink = AvailableLink | MissingLink | DraftLink
+export type AccessibleTranslationLink = AvailableLink | DraftLink
 
 /** Construye un TranslationLink disponible con href. */
 export function availableLink(href: string, lang: UILanguages): AvailableLink {
@@ -47,15 +48,16 @@ export function isMissing(link: TranslationLink): link is MissingLink {
  * 4) Si no hay `available` ni `draft`, devolver `undefined` (no se debe
  *    devolver un `missing` como valor canónico porque su `href` es `null`).
  *
- * @returns El `TranslationLink` seleccionado o `undefined` si no existe uno
+ * @returns El `AccessibleTranslationLink` seleccionado o `undefined` si no existe uno
  *          accesible (available/draft). Esto evita que consumidores usen
  *          inadvertidamente un `href` nulo (p.ej. al emitir `x-default`).
  */
-export function resolveDefaultLocaleFromLinks(links: TranslationLink[]): TranslationLink | undefined {
+export function resolveDefaultLocaleFromLinks(links: TranslationLink[]): AccessibleTranslationLink | undefined {
   if (!links || links.length === 0) throw new Error('resolveDefaultLocaleFromLinks: unexpected empty links array')
 
   const defaultAvailable = links.find(l => isAvailable(l) && l.locale === defaultLang)
-  if (defaultAvailable) return defaultAvailable
+  // Cast necesario: `find` no estrecha el tipo con el type guard `isAvailable`.
+  if (defaultAvailable) return defaultAvailable as AvailableLink
 
   const firstAvailable = links.find(isAvailable)
   if (firstAvailable) return firstAvailable

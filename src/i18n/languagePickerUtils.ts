@@ -84,7 +84,11 @@ export function buildStaticPageLinks(url: URL): TranslationLink[] {
 
 /**
  * Construye `alternates` (lista de objetos `{ locale, url }`) a partir
- * de un array de `links`, filtrando los que no están disponibles.
+ * de un array de `links`, filtrando los que no son accesibles.
+ *
+ * Nota: el filtro usa `isAccessible`, por lo que se incluyen tanto
+ * `available` como `draft` por diseño — `alternates` representa enlaces
+ * que pueden montarse en la UI aunque algunos sean borradores.
  */
 export function buildAlternatesFromLinks<T extends TranslationLink>(links: T[]) {
   return links
