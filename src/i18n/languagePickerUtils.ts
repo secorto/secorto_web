@@ -1,9 +1,20 @@
 import type { UILanguages } from './ui'
+import { defaultLang } from './ui'
 import type { TranslationLink } from '@domain/translationLink'
-import { availableLink, missingLink, buildLangPrefix } from '@domain/translationLink'
+import { availableLink, missingLink } from '@domain/translationLink'
 import { languageKeys } from './ui'
 import { findSectionMap } from './rootMap'
 import type { AvailableLocales } from '@domain/translation'
+import { showDefaultLang } from '@i18n/config'
+
+/**
+ * Calcula el prefijo de ruta localizado según el idioma.
+ * Si `showDefaultLang` es false y el idioma es el por defecto, devuelve string vacío.
+ * En caso contrario, devuelve `/{lang}`.
+ */
+export function buildLangPrefix(targetLang: UILanguages): string {
+  return targetLang === defaultLang && !showDefaultLang ? '' : `/${targetLang}`
+}
 
 /**
  * Construye links de language picker para la página de inicio (todos los idiomas).

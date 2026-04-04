@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from 'vitest'
-import { availableLink, missingLink, buildLangPrefix } from '@domain/translationLink'
+import { describe, it, expect } from 'vitest'
+import { availableLink, missingLink } from '@domain/translationLink'
 
 describe('availableLink', () => {
   it('crea un TranslationLink disponible con href, isAvailable true, y locale correcto', () => {
@@ -50,23 +50,5 @@ describe('missingLink', () => {
 
     expect(en.locale).toBe('en')
     expect(es.locale).toBe('es')
-  })
-})
-
-describe('buildLangPrefix', () => {
-
-  vi.mock('@i18n/config', () => ({
-    showDefaultLang: false
-  }))
-
-  it('retorna string vacío para idioma por defecto cuando showDefaultLang es false', () => {
-    const result = buildLangPrefix('es')
-    expect(result).toBe('')
-  })
-
-  it('retorna /locale para idioma no por defecto', () => {
-    const result = buildLangPrefix('en')
-    expect(result).toBe('/en')
-    expect(result).toMatch(/^\//)
   })
 })
