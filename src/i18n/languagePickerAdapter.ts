@@ -19,8 +19,6 @@ const reasonMeta = {
   draft: { marker: uiIcons.draft, titleKey: 'translation.disabled.draft' as const },
 }
 
-type Reason = keyof typeof reasonMeta
-
 function buildLanguagePickerMeta(l: TranslationLink) {
   const label = languages[l.locale]
 
@@ -28,7 +26,7 @@ function buildLanguagePickerMeta(l: TranslationLink) {
     return { label, reason: '' as const, meta: undefined, text: label, title: undefined, reasonId: undefined }
   }
 
-  const reason = l.type as Reason
+  const reason = l.type
   const meta = reasonMeta[reason]
   const text = `${label} ${meta.marker}`
   const title = uiStrings[l.locale][meta.titleKey]

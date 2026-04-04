@@ -20,10 +20,10 @@ describe('resolveDefaultLocaleFromLinks', () => {
     expect(result?.locale).toBe('en')
   })
 
-  it('falls back to defaultLang link when no available nor draft', () => {
+  it('returns undefined when all the items are missing', () => {
     const links = [missingLink('en'), missingLink('es')]
     const result = resolveDefaultLocaleFromLinks(links)
-    expect(result?.locale).toBe('es')
+    expect(result).toBeUndefined()
   })
 
   it('throws error when links array is empty', () => {

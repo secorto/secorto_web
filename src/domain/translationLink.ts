@@ -40,11 +40,15 @@ export function isMissing(link: TranslationLink): link is { type: 'missing'; hre
  * Selecciona el `TranslationLink` canónico a partir de un arreglo de `links`.
  *
  * Reglas:
- * a) Si existe un `available` para `defaultLang`, devolverlo
- * b) Si no, devolver el primer `available` en el orden recibido
- * c) Si no hay `available`, devolver el primer `draft` en el orden recibido
- * d) Si no hay `available` ni `draft`, devolver el `TranslationLink` cuyo
- *    `locale === defaultLang` (cualquier tipo) si existe, o `undefined`
+ * 1) Si existe un `available` para `defaultLang`, devolverlo
+ * 2) Si no, devolver el primer `available` en el orden recibido
+ * 3) Si no hay `available`, devolver el primer `draft` en el orden recibido
+ * 4) Si no hay `available` ni `draft`, devolver `undefined` (no se debe
+ *    devolver un `missing` como valor canónico porque su `href` es `null`).
+ *
+ * @returns El `TranslationLink` seleccionado o `undefined` si no existe uno
+ *          accesible (available/draft). Esto evita que consumidores usen
+ *          inadvertidamente un `href` nulo (p.ej. al emitir `x-default`).
  */
 export function resolveDefaultLocaleFromLinks(links: TranslationLink[]): TranslationLink | undefined {
   if (!links || links.length === 0) throw new Error('resolveDefaultLocaleFromLinks: unexpected empty links array')
@@ -58,6 +62,5 @@ export function resolveDefaultLocaleFromLinks(links: TranslationLink[]): Transla
   const firstDraft = links.find(isDraft)
   if (firstDraft) return firstDraft
 
-  const defaultAny = links.find(l => l.locale === defaultLang)
-  return defaultAny
+  return undefined
 }
