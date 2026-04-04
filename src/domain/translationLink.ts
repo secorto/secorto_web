@@ -39,28 +39,31 @@ export function isMissing(link: TranslationLink): link is MissingLink {
 }
 
 /**
- * Selecciona el `TranslationLink` canónico a partir de un arreglo de `links`.
+ * Selecciona el enlace canónico accesible (`available`|`draft`) a partir de
+ * un arreglo de `links`.
  *
- * Reglas:
- * 1) Si existe un `available` para `defaultLang`, devolverlo
- * 2) Si no, devolver el primer `available` en el orden recibido
- * 3) Si no hay `available`, devolver el primer `draft` en el orden recibido
- * 4) Si no hay `available` ni `draft`, devolver `undefined` (no se debe
- *    devolver un `missing` como valor canónico porque su `href` es `null`).
+ * Preferencia (en orden):
+ * 1) `available` para `defaultLang`
+ * 2) primer `available` cualquiera
+ * 3) `draft` para `defaultLang` si existe
+ * 4) primer `draft` cualquiera
+ * 5) Si no hay `available` ni `draft` accesibles, devolver `undefined` — no
+ *    se debe devolver un `missing` como valor canónico porque su `href` es
+ *    `null`.
  *
- * @returns El `AccessibleTranslationLink` seleccionado o `undefined` si no existe uno
- *          accesible (available/draft). Esto evita que consumidores usen
- *          inadvertidamente un `href` nulo (p.ej. al emitir `x-default`).
+ * @returns El `AccessibleTranslationLink` seleccionado o `undefined` si no
+ *          existe un enlace accesible.
  */
 export function resolveDefaultLocaleFromLinks(links: TranslationLink[]): AccessibleTranslationLink | undefined {
   if (!links || links.length === 0) throw new Error('resolveDefaultLocaleFromLinks: unexpected empty links array')
 
-  const defaultAvailable = links.find(l => isAvailable(l) && l.locale === defaultLang)
-  // Cast necesario: `find` no estrecha el tipo con el type guard `isAvailable`.
-  if (defaultAvailable) return defaultAvailable as AvailableLink
+  const defaultAny = links.find(l => l.locale === defaultLang)
+  if (defaultAny && isAvailable(defaultAny)) return defaultAny
 
   const firstAvailable = links.find(isAvailable)
   if (firstAvailable) return firstAvailable
+
+  if (defaultAny && isDraft(defaultAny)) return defaultAny
 
   const firstDraft = links.find(isDraft)
   if (firstDraft) return firstDraft

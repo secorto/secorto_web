@@ -14,8 +14,14 @@ describe('resolveDefaultLocaleFromLinks', () => {
     expect(result?.locale).toBe('en')
   })
 
-  it('selects first draft when no available present (order preserved)', () => {
+  it('prefers draft for defaultLang when present', () => {
     const links = [draftLink('/en/en-slug', 'en'), draftLink('/es/es-slug', 'es')]
+    const result = resolveDefaultLocaleFromLinks(links)
+    expect(result?.locale).toBe('es')
+  })
+
+  it('selects first draft when defaultLang draft not present', () => {
+    const links = [draftLink('/en/en-slug', 'en'), missingLink('es')]
     const result = resolveDefaultLocaleFromLinks(links)
     expect(result?.locale).toBe('en')
   })
