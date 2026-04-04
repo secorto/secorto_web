@@ -54,8 +54,8 @@ export function isMissing(link: TranslationLink): link is MissingLink {
  * @returns El `AccessibleTranslationLink` seleccionado o `undefined` si no
  *          existe un enlace accesible.
  */
-export function resolveDefaultLocaleFromLinks(links: TranslationLink[]): AccessibleTranslationLink | undefined {
-  if (!links || links.length === 0) throw new Error('resolveDefaultLocaleFromLinks: unexpected empty links array')
+export function resolveDefaultAccessibleLink(links: TranslationLink[]): AccessibleTranslationLink | undefined {
+  if (!links || links.length === 0) throw new Error('resolveDefaultAccessibleLink: unexpected empty links array')
 
   const defaultAny = links.find(l => l.locale === defaultLang)
   if (defaultAny && isAvailable(defaultAny)) return defaultAny

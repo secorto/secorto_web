@@ -3,7 +3,7 @@
  * Componente unificado para metadatos SEO.
  * Recibe rutas relativas y normaliza a URLs absolutas usando `import.meta.env.SITE`.
  */
-import { resolveDefaultLocaleFromLinks, type TranslationLink } from '@domain/translationLink'
+import { resolveDefaultAccessibleLink, type TranslationLink } from '@domain/translationLink'
 import { buildAlternatesFromLinks } from '@i18n/languagePickerUtils'
 import AlternateLinks from './AlternateLinks.astro'
 
@@ -18,7 +18,7 @@ const site = import.meta.env.SITE
 
 const alternates = buildAlternatesFromLinks(links)
 const normalizedAlternates = alternates.map(a => ({ locale: a.locale, url: `${site}${a.url}` }))
-const defaultLink = resolveDefaultLocaleFromLinks(links)
+const defaultLink = resolveDefaultAccessibleLink(links)
 const normalizedDefault = defaultLink ? `${site}${defaultLink.href}` : undefined
 ---
 {noindex && <meta name="robots" content="noindex" />}
