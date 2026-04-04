@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { availableLink, missingLink } from '@domain/translationLink'
+import { availableLink, draftLink, missingLink } from '@domain/translationLink'
 
 describe('availableLink', () => {
   it('crea un TranslationLink disponible con href, isAvailable true, y locale correcto', () => {
@@ -47,6 +47,32 @@ describe('missingLink', () => {
   it('asigna locale para múltiples idiomas', () => {
     const en = missingLink('en')
     const es = missingLink('es')
+
+    expect(en.locale).toBe('en')
+    expect(es.locale).toBe('es')
+  })
+})
+
+describe('draftLink', () => {
+  it('crea un TranslationLink disponible con disabledReason draft y href proporcionado', () => {
+    const result = draftLink('/es/blog/mi-articulo', 'es')
+
+    expect(result).toEqual({
+      href: '/es/blog/mi-articulo',
+      isAvailable: true,
+      disabledReason: 'draft',
+      locale: 'es'
+    })
+  })
+
+  it('preserva href exactamente como se proporciona', () => {
+    const result = draftLink('/en/blog/my-article', 'en')
+    expect(result.href).toBe('/en/blog/my-article')
+  })
+
+  it('asigna locale para múltiples idiomas', () => {
+    const en = draftLink('/en/blog/draft', 'en')
+    const es = draftLink('/es/blog/borrador', 'es')
 
     expect(en.locale).toBe('en')
     expect(es.locale).toBe('es')

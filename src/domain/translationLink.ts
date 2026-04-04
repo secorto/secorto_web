@@ -24,3 +24,11 @@ export function availableLink(href: string, lang: UILanguages): TranslationLink 
 export function missingLink(lang: UILanguages): TranslationLink {
   return { href: '', isAvailable: false, disabledReason: 'missing', locale: lang }
 }
+
+/**
+ * Construye un TranslationLink disponible pero marcado como borrador (draft).
+ * El link es navegable (isAvailable true) pero la UI puede indicar que el contenido no es definitivo.
+ */
+export function draftLink(href: string, lang: UILanguages): TranslationLink {
+  return { href, isAvailable: true, disabledReason: 'draft', locale: lang }
+}
