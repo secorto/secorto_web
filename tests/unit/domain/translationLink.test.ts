@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { availableLink, missingLink, isAvailable } from '@domain/translationLink'
 
 describe('availableLink', () => {
-  it('crea un TranslationLink disponible con href, isAvailable true, y locale correcto', () => {
+  it('crea un TranslationLink disponible con href y locale correcto', () => {
     const result = availableLink('/blog', 'en')
 
     expect(result).toEqual({

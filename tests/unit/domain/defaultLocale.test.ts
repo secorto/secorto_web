@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { availableLink, draftLink, missingLink, resolveDefaultAccessibleLink } from '@domain/translationLink'
 
-describe('resolveDefaultLocaleFromLinks', () => {
+describe('resolveDefaultAccessibleLink', () => {
   it('prefers es when available (defaultLang)', () => {
     const links = [availableLink('/en/2025-01-01-calendar', 'en'), availableLink('/es/2025-01-01-calendario', 'es')]
     const result = resolveDefaultAccessibleLink(links)
