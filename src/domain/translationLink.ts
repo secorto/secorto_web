@@ -1,4 +1,4 @@
-import type { UILanguages } from '@i18n/ui'
+import { type UILanguages, defaultLang } from '@i18n/ui'
 
 export type TranslationLink =
   | { type: 'available'; href: string; locale: UILanguages }
@@ -34,4 +34,30 @@ export function isDraft(link: TranslationLink): link is { type: 'draft'; href: s
 
 export function isMissing(link: TranslationLink): link is { type: 'missing'; href: null; locale: UILanguages } {
   return link.type === 'missing'
+}
+
+/**
+ * Selecciona el `TranslationLink` canónico a partir de un arreglo de `links`.
+ *
+ * Reglas:
+ * a) Si existe un `available` para `defaultLang`, devolverlo
+ * b) Si no, devolver el primer `available` en el orden recibido
+ * c) Si no hay `available`, devolver el primer `draft` en el orden recibido
+ * d) Si no hay `available` ni `draft`, devolver el `TranslationLink` cuyo
+ *    `locale === defaultLang` (cualquier tipo) si existe, o `undefined`
+ */
+export function resolveDefaultLocaleFromLinks(links: TranslationLink[]): TranslationLink | undefined {
+  if (!links || links.length === 0) throw new Error('resolveDefaultLocaleFromLinks: unexpected empty links array')
+
+  const defaultAvailable = links.find(l => isAvailable(l) && l.locale === defaultLang)
+  if (defaultAvailable) return defaultAvailable
+
+  const firstAvailable = links.find(isAvailable)
+  if (firstAvailable) return firstAvailable
+
+  const firstDraft = links.find(isDraft)
+  if (firstDraft) return firstDraft
+
+  const defaultAny = links.find(l => l.locale === defaultLang)
+  return defaultAny
 }

@@ -1,27 +1,32 @@
 import { describe, it, expect } from 'vitest'
-import { resolveDefaultLocale } from '@domain/translation'
+import { availableLink, draftLink, missingLink, resolveDefaultLocaleFromLinks } from '@domain/translationLink'
 
-describe('resolveDefaultLocale', () => {
-  it('prefers es when available', () => {
-    const available = { en: { slug: '2025-01-01-calendar' }, es: { slug: '2025-01-01-calendario' } }
-    expect(resolveDefaultLocale(available)).toBe('es')
+describe('resolveDefaultLocaleFromLinks', () => {
+  it('prefers es when available (defaultLang)', () => {
+    const links = [availableLink('/en/2025-01-01-calendar', 'en'), availableLink('/es/2025-01-01-calendario', 'es')]
+    const result = resolveDefaultLocaleFromLinks(links)
+    expect(result?.locale).toBe('es')
   })
 
-  it('returns first element when nothing matches', () => {
-    const available = { en: { slug: '2025-01-01-calendar' } }
-    expect(resolveDefaultLocale(available)).toBe('en')
+  it('returns first available when only one exists', () => {
+    const links = [missingLink('es'), availableLink('/en/2025-01-01-calendar', 'en')]
+    const result = resolveDefaultLocaleFromLinks(links)
+    expect(result?.locale).toBe('en')
   })
 
-  it('respects explicit canonical flag when present', () => {
-    const available = { es: { slug: 'es-slug' }, en: { slug: 'en-slug', canonical: true } }
-    expect(resolveDefaultLocale(available)).toBe('en')
+  it('selects first draft when no available present (order preserved)', () => {
+    const links = [draftLink('/en/en-slug', 'en'), draftLink('/es/es-slug', 'es')]
+    const result = resolveDefaultLocaleFromLinks(links)
+    expect(result?.locale).toBe('en')
   })
 
-  it('returns default locale when all entries are draft', () => {
-    const available = {
-      en: { slug: 'en-slug', draft: true },
-      es: { slug: 'es-slug', draft: true }
-    }
-    expect(resolveDefaultLocale(available)).toBe('es')
+  it('falls back to defaultLang link when no available nor draft', () => {
+    const links = [missingLink('en'), missingLink('es')]
+    const result = resolveDefaultLocaleFromLinks(links)
+    expect(result?.locale).toBe('es')
+  })
+
+  it('throws error when links array is empty', () => {
+    expect(() => resolveDefaultLocaleFromLinks([])).toThrow('resolveDefaultLocaleFromLinks: unexpected empty links array')
   })
 })
