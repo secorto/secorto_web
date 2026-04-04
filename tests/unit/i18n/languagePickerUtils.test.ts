@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import type { TranslationLink } from '@domain/translationLink'
-import { isAccessible, isAvailable, isDraft, isMissing } from '@domain/translationLink'
+import { availableLink, isAccessible, isAvailable, isDraft, isMissing, missingLink } from '@domain/translationLink'
 import { buildHomeLinks, buildDetailLink, buildDetailLinks, buildStaticPageLinks, buildMissingLanguageLinks, buildAlternatesFromLinks } from '@i18n/languagePickerUtils'
 import { languageKeys } from '@i18n/ui'
 
@@ -106,18 +105,15 @@ describe('languagePickerUtils', () => {
     })
 
     it('uses rootMap for localized section slugs', () => {
-      // about: { en: 'about', es: 'acerca-de' }
       const links = buildStaticPageLinks(new URL('http://x/es/acerca-de'))
-      const es = links.find(l => l.locale === 'es')
-      const en = links.find(l => l.locale === 'en')
-      expect(es).toBeDefined()
-      expect(en).toBeDefined()
-      expect(isAccessible(es!)).toBe(true)
-      expect(isAvailable(es!)).toBe(true)
-      expect(es?.href).toContain('acerca-de')
-      expect(isAccessible(en!)).toBe(true)
-      expect(isAvailable(en!)).toBe(true)
-      expect(en?.href).toContain('about')
+      expect(links.map(l => l.locale)).toEqual(expect.arrayContaining(['es', 'en']))
+      const relevant = links.filter(l => ['es', 'en'].includes(l.locale))
+      expect(relevant.every(l => isAccessible(l) && isAvailable(l))).toBe(true)
+      const hrefByLocale = Object.fromEntries(links.map(l => [l.locale, l.href]))
+      expect(hrefByLocale).toMatchObject({
+        es: expect.stringContaining('acerca-de'),
+        en: expect.stringContaining('about')
+      })
     })
 
     it('handles unmapped sections gracefully', () => {
@@ -144,11 +140,7 @@ describe('languagePickerUtils', () => {
 
   describe('buildAlternatesFromLinks', () => {
     it('filters out unavailable links and returns locale/url pairs', () => {
-      const links: TranslationLink[] = [
-        { type: 'available', href: '/en/', locale: 'en' },
-        { type: 'missing', href: null, locale: 'es' }
-      ]
-
+      const links = [availableLink('/en/', 'en'), missingLink('es')]
       const alternates = buildAlternatesFromLinks(links)
       expect(alternates).toEqual([{ locale: 'en', url: '/en/' }])
     })
