@@ -130,6 +130,8 @@ export function buildLocalePathsForSection(
  * @param fetchCollection - Función para obtener colecciones
  * @returns Array de paths para getStaticPaths
  */
+// TODO(debt): pre-calcular links={ buildCollectionLinkFromRoutes × config.routes } como prop en SectionPath
+// para eliminar buildLanguageLinks en render time de [section]/index.astro — owner: @scot3004 — until: 2026-07-01
 export async function buildSectionIndexPathsCore(
   sections: SectionConfig[],
   fetchCollection: FetchCollection
@@ -166,6 +168,8 @@ export async function buildTagPathsCore(
       const tags = getUniqueTags(localePosts)
 
       for (const tag of tags) {
+        // TODO(debt): pre-calcular links como prop (mismo patrón que buildAllDetailPathsCore)
+        // para eliminar buildLanguageLinks en render time de [tag].astro — owner: @scot3004 — until: 2026-07-01
         paths.push({
           params: { locale, section: config.routes[locale], tag },
           props: { tag, allEntries, config, tagLocaleMap }
@@ -234,6 +238,8 @@ export async function buildTagIndexPathsCore(
   }
 
   // Generar rutas compartiendo los datos de colecciones cacheados
+  // TODO(debt): pre-calcular links={ buildCollectionLinkFromRoutes × rootMap['tags'] } como prop
+  // para eliminar buildStaticPageLinks(Astro.url) en render time de tags.astro — owner: @scot3004 — until: 2026-07-01
   return languageKeys.map((locale) => ({
     params: { locale },
     props: { allSectionEntries }
