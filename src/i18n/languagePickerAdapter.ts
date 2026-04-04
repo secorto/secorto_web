@@ -1,53 +1,82 @@
 import type { TranslationLink } from '@domain/translationLink'
-import { isAccessible, isAvailable } from '@domain/translationLink'
 import { languages, icons as uiIcons, ui as uiStrings } from '@i18n/ui'
 import type { UILanguages } from '@i18n/ui'
 
-export type LanguagePickerItem = {
-  locale: UILanguages
-  label: string
-  text: string
-  title?: string
-  reason: 'missing' | 'draft' | ''
-  reasonId?: string
-  href: string | null
-  accessible: boolean
-}
+export type LanguagePickerItem =
+  | {
+      locale: UILanguages
+      label: string
+      text: string
+      title: undefined,
+      reason: ''
+      href: string
+      accessible: true
+    }
+  | {
+      locale: UILanguages
+      label: string
+      text: string
+      title: string
+      reason: 'draft'
+      href: string
+      accessible: true
+    }
+  | {
+      locale: UILanguages
+      label: string
+      text: string
+      title: string
+      reason: 'missing'
+      href: null
+      accessible: false
+    }
 
 const reasonMeta = {
   missing: { marker: uiIcons.missing, titleKey: 'translation.disabled.missing' as const },
   draft: { marker: uiIcons.draft, titleKey: 'translation.disabled.draft' as const },
 }
 
-function buildLanguagePickerMeta(l: TranslationLink) {
+function buildLanguagePickerMeta(l: TranslationLink): LanguagePickerItem {
   const label = languages[l.locale]
 
-  if (isAvailable(l)) {
-    return { label, reason: '' as const, meta: undefined, text: label, title: undefined, reasonId: undefined }
+  if (l.type === 'available') {
+    return {
+      locale: l.locale,
+      label,
+      text: label,
+      title: undefined,
+      reason: '',
+      href: l.href,
+      accessible: true,
+    }
   }
 
-  const reason = l.type
-  const meta = reasonMeta[reason]
+  const meta = reasonMeta[l.type]
   const text = `${label} ${meta.marker}`
   const title = uiStrings[l.locale][meta.titleKey]
-  const reasonId = `lang-${l.locale}-reason`
-
-  return { label, reason, meta, text, title, reasonId }
-}
-
-export function adaptLanguageLinks(links: TranslationLink[]): LanguagePickerItem[] {
-  return links.map((l) => {
-    const { label, reason, text, title, reasonId } = buildLanguagePickerMeta(l)
-
+  if (l.type === 'draft') {
     return {
       locale: l.locale,
       label,
       text,
       title,
-      reason,
-      reasonId,
+      reason: 'draft',
       href: l.href,
-      accessible: isAccessible(l),
+      accessible: true,
     }
-  })
+  }
+
+  return {
+    locale: l.locale,
+    label,
+    text,
+    title,
+    reason: 'missing',
+    href: null,
+    accessible: false,
+  }
+}
+
+export function adaptLanguageLinks(links: TranslationLink[]): LanguagePickerItem[] {
+  return links.map((l) => buildLanguagePickerMeta(l))
 }

@@ -33,6 +33,6 @@ describe('resolveDefaultLocaleFromLinks', () => {
   })
 
   it('throws error when links array is empty', () => {
-    expect(() => resolveDefaultAccessibleLink([])).toThrow('resolveDefaultLocaleFromLinks: unexpected empty links array')
+    expect(() => resolveDefaultAccessibleLink([])).toThrow('resolveDefaultAccessibleLink: unexpected empty links array')
   })
 })

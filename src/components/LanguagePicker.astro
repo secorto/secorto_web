@@ -18,9 +18,8 @@ const items = adaptLanguageLinks(links)
         role="link"
         aria-disabled="true"
         tabindex="-1"
-        aria-label={item.title ? `${item.title}: ${item.label}` : undefined}
+        aria-label={`${item.title}: ${item.label}`}
         title={item.title}
-        data-disabled-reason={item.reason}
         data-testid={`lang-${item.locale}`}
       >
         {item.text}
@@ -32,11 +31,10 @@ const items = adaptLanguageLinks(links)
         href={item.href}
         title={item.title}
         aria-label={item.label}
-        aria-describedby={item.reasonId}
         data-testid={`lang-${item.locale}`}
       >
         {item.text}
-        {item.title ? <span id={item.reasonId} class="sr-only">{item.title}</span> : null}
+        {item.title ? <span class="sr-only">{item.title}</span> : null}
       </a>
     )
   })}
