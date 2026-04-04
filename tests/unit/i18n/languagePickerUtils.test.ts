@@ -7,12 +7,14 @@ const mockRootMap: Record<string, Record<string, string>> = {
   blog: { en: 'blog', es: 'blog' },
 }
 
-vi.mock('@i18n/rootMap', () => ({
+const mockRootMapModule = {
   get rootMap() { return mockRootMap },
-  findSectionMap: (raw: string, lang: string) => {
-    return Object.entries(mockRootMap).find(([, langs]) => langs[lang] === raw)?.[1]
-  },
-}))
+  findSectionMap: (raw: string, lang: string) =>
+    Object.entries(mockRootMap).find(([, langs]) => langs[lang] === raw)?.[1],
+  resolveLocalized: (canonical: string, lang: string) => mockRootMap[canonical]?.[lang] ?? canonical,
+}
+
+vi.mock('@i18n/rootMap', () => mockRootMapModule)
 
 vi.mock('@i18n/config', () => ({ showDefaultLang: true }))
 
@@ -59,10 +61,7 @@ describe('languagePickerUtils', () => {
     it('returns available link for existing translation', async () => {
       vi.resetModules()
       vi.doMock('@i18n/config', () => ({ showDefaultLang: true }))
-      vi.doMock('@i18n/rootMap', () => ({
-        get rootMap() { return mockRootMap },
-        resolveLocalized: (canonical: string, lang: string) => mockRootMap[canonical]?.[lang] ?? canonical,
-      }))
+      vi.doMock('@i18n/rootMap', () => mockRootMapModule)
       const { buildDetailLink } = await import('@i18n/languagePickerUtils')
       const link = buildDetailLink('en', 'blog', { en: { slug: 'en-slug' } })
       expect(link.isAvailable).toBe(true)
@@ -73,10 +72,7 @@ describe('languagePickerUtils', () => {
     it('marks draft translation as available with disabledReason draft', async () => {
       vi.resetModules()
       vi.doMock('@i18n/config', () => ({ showDefaultLang: true }))
-      vi.doMock('@i18n/rootMap', () => ({
-        get rootMap() { return mockRootMap },
-        resolveLocalized: (canonical: string, lang: string) => mockRootMap[canonical]?.[lang] ?? canonical,
-      }))
+      vi.doMock('@i18n/rootMap', () => mockRootMapModule)
       const { buildDetailLink } = await import('@i18n/languagePickerUtils')
       const link = buildDetailLink('en', 'blog', { en: { slug: 'en-slug', draft: true } })
       expect(link.isAvailable).toBe(true)
@@ -87,10 +83,7 @@ describe('languagePickerUtils', () => {
     it('marks missing translation', async () => {
       vi.resetModules()
       vi.doMock('@i18n/config', () => ({ showDefaultLang: true }))
-      vi.doMock('@i18n/rootMap', () => ({
-        get rootMap() { return mockRootMap },
-        resolveLocalized: (canonical: string, lang: string) => mockRootMap[canonical]?.[lang] ?? canonical,
-      }))
+      vi.doMock('@i18n/rootMap', () => mockRootMapModule)
       const { buildDetailLink } = await import('@i18n/languagePickerUtils')
       const link = buildDetailLink('en', 'blog', {})
       expect(link.isAvailable).toBe(false)
@@ -102,13 +95,7 @@ describe('languagePickerUtils', () => {
     beforeEach(() => {
       vi.resetModules()
       vi.doMock('@i18n/config', () => ({ showDefaultLang: true }))
-      vi.doMock('@i18n/rootMap', () => ({
-        get rootMap() { return mockRootMap },
-        findSectionMap: (raw: string, lang: string) => {
-          return Object.entries(mockRootMap).find(([, langs]) => langs[lang] === raw)?.[1]
-        },
-        resolveLocalized: (canonical: string, lang: string) => mockRootMap[canonical]?.[lang] ?? canonical,
-      }))
+      vi.doMock('@i18n/rootMap', () => mockRootMapModule)
     })
 
     it('no locale prefix → all links missing', async () => {
