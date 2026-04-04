@@ -45,12 +45,14 @@ export function buildDetailLink(
 /**
  * Construye links de detalle para todos los idiomas.
  * Útil para obtener los links de traducción disponibles de un post/entry específico.
+ * @param sectionRoutes - Mapa de rutas localizadas por idioma (ej: { es: 'charla', en: 'talk' })
+ * @param availableLocales - Mapa de traducciones disponibles por idioma
  */
 export function buildDetailLinks(
-  localizedSection: string,
+  sectionRoutes: Record<UILanguages, string>,
   availableLocales: AvailableLocales
 ): TranslationLink[] {
-  return languageKeys.map(l => buildDetailLink(l, localizedSection, availableLocales))
+  return languageKeys.map(l => buildDetailLink(l, sectionRoutes[l], availableLocales))
 }
 
 /**

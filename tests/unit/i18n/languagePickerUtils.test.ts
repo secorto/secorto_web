@@ -46,14 +46,14 @@ describe('languagePickerUtils', () => {
 
   describe('buildDetailLinks', () => {
     it('returns array of links for all languages', () => {
-      const links = buildDetailLinks('blog', { en: { slug: 'en-slug' }, es: { slug: 'es-slug' } })
+      const links = buildDetailLinks({ en: 'blog', es: 'blog' }, { en: { slug: 'en-slug' }, es: { slug: 'es-slug' } })
 
       expect(links).toHaveLength(languageKeys.length)
       expect(links.every(l => l.isAvailable)).toBe(true)
     })
 
     it('marks draft translations correctly', () => {
-      const links = buildDetailLinks('blog', { en: { slug: 'en-slug', draft: true }, es: { slug: 'es-slug' } })
+      const links = buildDetailLinks({ en: 'blog', es: 'blog' }, { en: { slug: 'en-slug', draft: true }, es: { slug: 'es-slug' } })
 
       const enLink = links.find(l => l.locale === 'en')
       const esLink = links.find(l => l.locale === 'es')
@@ -62,13 +62,29 @@ describe('languagePickerUtils', () => {
     })
 
     it('includes missing translations in array', () => {
-      const links = buildDetailLinks('blog', { en: { slug: 'en-slug' } })
+      const links = buildDetailLinks({ en: 'blog', es: 'blog' }, { en: { slug: 'en-slug' } })
 
       const enLink = links.find(l => l.locale === 'en')
       const esLink = links.find(l => l.locale === 'es')
       expect(enLink?.isAvailable).toBe(true)
       expect(esLink?.isAvailable).toBe(false)
       expect(esLink?.disabledReason).toBe('missing')
+    })
+
+    it('uses correct localized route for each language', () => {
+      // This test validates the fix for the bug where sectionRoutes differed per language
+      // (e.g., 'talk' in en, 'charla' in es)
+      const links = buildDetailLinks(
+        { en: 'talk', es: 'charla' },
+        { en: { slug: 'en-talk-slug' }, es: { slug: 'es-charla-slug' } }
+      )
+
+      const enLink = links.find(l => l.locale === 'en')
+      const esLink = links.find(l => l.locale === 'es')
+
+      // Each link must use its own localized section route, not the one from the current entry's locale
+      expect(enLink?.href).toContain('/en/talk/en-talk-slug')
+      expect(esLink?.href).toContain('/es/charla/es-charla-slug')
     })
   })
 

@@ -211,7 +211,7 @@ export async function buildAllDetailPathsCore(
     for (const entry of allEntries) {
       const locale = entry.locale
       const localeEntryMap = getAvailableLocaleEntriesFromMap(localeEntryMapByPostId, entry.postId)
-      const links = buildDetailLinks(config.routes[locale], localeEntryMap)
+      const links = buildDetailLinks(config.routes, localeEntryMap)
 
       allPaths.push({
         params: { locale, section: config.routes[locale], id: entry.cleanId },
