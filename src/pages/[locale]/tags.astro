@@ -2,9 +2,8 @@
 import BaseLayout from '@layouts/BaseLayout.astro'
 import SEOHead from '@components/SEOHead.astro'
 import LanguagePicker from '@components/LanguagePicker.astro'
-import { type UILanguages, defaultLang } from '@i18n/ui'
+import { type UILanguages } from '@i18n/ui'
 import { useTranslations } from '@i18n/utils'
-import { buildStaticPageLinks } from '@i18n/languagePickerUtils'
 import { sectionsConfig, type SectionType } from '@domain/section'
 import { buildGlobalTagGroups, type TagGroup, type TagGroupSectionInput } from '@domain/tags'
 import { filterByLocale } from '@utils/paths'
@@ -15,10 +14,9 @@ export async function getStaticPaths() {
 }
 
 const { locale } = Astro.params as { locale: UILanguages }
-const { allSectionEntries } = Astro.props as TagIndexPath['props']
+const { allSectionEntries, links } = Astro.props as TagIndexPath['props']
 const t = useTranslations(locale)
 const pageTitle = t('tags.index_title')
-const links = buildStaticPageLinks(Astro.url)
 
 // Construir sectionInputs a partir de datos cacheados (sin fetch)
 const sectionInputs: TagGroupSectionInput[] = []
@@ -38,7 +36,7 @@ const tagGroups: TagGroup[] = buildGlobalTagGroups(locale, sectionInputs)
 ---
 
 <BaseLayout pageTitle={pageTitle} description={t('tags.index_description')}>
-  <SEOHead slot="seo-head" links={links} defaultPath={links[defaultLang].href} />
+  <SEOHead slot="seo-head" links={links} />
   <LanguagePicker slot="langpicker" links={links} />
 
   <section>

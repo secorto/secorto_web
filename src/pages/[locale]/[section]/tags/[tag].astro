@@ -7,7 +7,6 @@ import LanguagePicker from '@components/LanguagePicker.astro'
 import { useTranslations } from '@i18n/utils'
 import { buildTagPaths, type TagPath } from '@utils/staticPathsBuilder.adapters'
 import { filterByLocale, getUniqueTags } from '@utils/paths'
-import { buildTagLinkFromRoutes, buildLanguageLinks } from '@i18n/languagePickerUtils'
 import type { UILanguages } from '@i18n/ui'
 
 export async function getStaticPaths() {
@@ -15,7 +14,7 @@ export async function getStaticPaths() {
 }
 
 const { locale, section, tag } = Astro.params as { locale: UILanguages; section: string; tag: string }
-const { allEntries, config, tagLocaleMap } = Astro.props as TagPath['props']
+const { allEntries, config, links } = Astro.props as TagPath['props']
 const t = useTranslations(locale)
 
 const localePosts = filterByLocale(allEntries, locale)
@@ -23,9 +22,6 @@ const posts = localePosts.filter((post) => post.data.tags?.includes(tag))
 const tags = getUniqueTags(localePosts)
 const pageTitle = `${t(config.translationKey)} - ${tag}`
 const metaDescription = `${config.taggedKey ? t(config.taggedKey) : t(config.translationKey)} ${tag}`
-
-const localeSlugs = tagLocaleMap[tag] ?? { [locale]: tag } as Partial<Record<UILanguages, string>>
-const links = buildLanguageLinks(l => buildTagLinkFromRoutes(l, config.routes, localeSlugs))
 ---
 
 <BaseLayout pageTitle={pageTitle} description={metaDescription}>

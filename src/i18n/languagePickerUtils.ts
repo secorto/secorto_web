@@ -1,30 +1,16 @@
 import type { UILanguages } from './ui'
 import type { TranslationLink } from '@domain/translationLink'
-import { languages, defaultLang, languageKeys } from './ui'
-import { showDefaultLang } from '@i18n/config'
+import { availableLink, missingLink, buildLangPrefix } from '@domain/translationLink'
+import { languageKeys } from './ui'
 import { findSectionMap } from './rootMap'
 import type { AvailableLocales } from '@domain/translation'
 
-
-function availableLink(href: string, lang: UILanguages): TranslationLink {
-  return { href, label: languages[lang], isAvailable: true, locale: lang }
-}
-
-function missingLink(lang: UILanguages): TranslationLink {
-  return { href: '', label: languages[lang], isAvailable: false, disabledReason: 'missing', locale: lang }
-}
-
-function buildLangPrefix(targetLang: UILanguages): string {
-  return targetLang === defaultLang && !showDefaultLang ? "" : `/${targetLang}`
-}
-
 /**
- * Construye un link de language picker para la página de inicio.
- * @param targetLang - Idioma destino para el link
- * @returns Link disponible apuntando a la raíz del sitio en ese idioma
+ * Construye links de language picker para la página de inicio (todos los idiomas).
+ * @returns Array de links disponibles para cada idioma apuntando a la raíz del sitio
  */
-export function buildHomeLink(targetLang: UILanguages): TranslationLink {
-  return availableLink(`${buildLangPrefix(targetLang)}/`, targetLang)
+export function buildHomeLinks(): TranslationLink[] {
+  return languageKeys.map(l => availableLink(`${buildLangPrefix(l)}/`, l))
 }
 
 /**
@@ -46,58 +32,36 @@ export function buildDetailLink(
 }
 
 /**
- * Construye un link de language picker para índices de colecciones.
- * Acepta directamente el mapa de rutas (config.routes o rootMap[key]).
+ * Construye links de detalle para todos los idiomas.
+ * Útil para obtener los links de traducción disponibles de un post/entry específico.
  */
-export function buildCollectionLinkFromRoutes(
-  targetLang: UILanguages,
-  routes: Record<UILanguages, string>
-): TranslationLink {
-  return availableLink(`${buildLangPrefix(targetLang)}/${routes[targetLang]}`, targetLang)
-}
-
-/**
- * Construye un link de language picker para páginas de tags.
- * Acepta directamente el mapa de rutas (config.routes o rootMap[key]) y el mapa locale → slug.
- */
-export function buildTagLinkFromRoutes(
-  targetLang: UILanguages,
-  routes: Record<UILanguages, string>,
-  localeSlugs: Partial<Record<UILanguages, string>>
-): TranslationLink {
-  const slug = localeSlugs[targetLang]
-  if (!slug) return missingLink(targetLang)
-  return availableLink(`${buildLangPrefix(targetLang)}/${routes[targetLang]}/tags/${slug}`, targetLang)
-}
-
-/**
- * Helper to build a full `Record<UILanguages, T>` of links using a builder callback.
- * Reduces repetition when creating language maps for the LanguagePicker.
- */
-export function buildLanguageLinks<T extends TranslationLink>(builder: (l: UILanguages) => T): Record<UILanguages, T> {
-  return Object.fromEntries(languageKeys.map(l => [l, builder(l)])) as Record<UILanguages, T>
+export function buildDetailLinks(
+  localizedSection: string,
+  availableLocales: AvailableLocales
+): TranslationLink[] {
+  return languageKeys.map(l => buildDetailLink(l, localizedSection, availableLocales))
 }
 
 /**
  * Build language links where every locale is intentionally unavailable.
  * Useful for routes that should show locked translation states (e.g. 404 pages).
  */
-export function buildMissingLanguageLinks(): Record<UILanguages, TranslationLink> {
-  return buildLanguageLinks(l => missingLink(l))
+export function buildMissingLanguageLinks(): TranslationLink[] {
+  return languageKeys.map(l => missingLink(l))
 }
 
 /**
  * Builds links for all languages from a URL.
  * Hoists URL parsing and rootMap scan outside the per-language loop.
  */
-export function buildStaticPageLinks(url: URL): Record<UILanguages, TranslationLink> {
+export function buildStaticPageLinks(url: URL): TranslationLink[] {
   const [, maybeLocale, rawSegment] = url.pathname.split('/')
   if (!(languageKeys as string[]).includes(maybeLocale)) return buildMissingLanguageLinks()
 
   const currentLocale = maybeLocale as UILanguages
   const sectionMap = findSectionMap(rawSegment, currentLocale)
 
-  return buildLanguageLinks(targetLang => {
+  return languageKeys.map(targetLang => {
     const localized = sectionMap?.[targetLang]
     if (localized) return availableLink(`${buildLangPrefix(targetLang)}/${localized}`, targetLang)
     if (targetLang === currentLocale) return availableLink(`${buildLangPrefix(targetLang)}/${rawSegment}`, targetLang)
@@ -107,10 +71,10 @@ export function buildStaticPageLinks(url: URL): Record<UILanguages, TranslationL
 
 /**
  * Construye `alternates` (lista de objetos `{ locale, url }`) a partir
- * de un mapa `links` del language picker, filtrando los que no están disponibles.
+ * de un array de `links`, filtrando los que no están disponibles.
  */
-export function buildAlternatesFromLinks<T extends TranslationLink>(links: Record<UILanguages, T>) {
-  return Object.values(links)
+export function buildAlternatesFromLinks<T extends TranslationLink>(links: T[]) {
+  return links
     .filter(l => Boolean(l.isAvailable) && Boolean(l.href))
     .map(l => ({ locale: l.locale, url: l.href }))
 }

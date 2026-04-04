@@ -1,10 +1,9 @@
 ---
-import { languageKeys, icons as uiIcons, ui as uiStrings } from "@i18n/ui"
-import type { UILanguages } from "@i18n/ui"
+import { languages, icons as uiIcons, ui as uiStrings } from "@i18n/ui"
 import type { TranslationLink } from "@domain/translationLink"
 
 interface Props {
-  links: Record<UILanguages, TranslationLink>
+  links: TranslationLink[]
 }
 
 const { links } = Astro.props
@@ -16,12 +15,12 @@ const reasonMeta = {
 ---
 
 <div class="language-picker">
-  {languageKeys.map((targetLang) => {
-    const link = links[targetLang]
+  {links.map((link) => {
+    const label = languages[link.locale]
     const meta = link.disabledReason && reasonMeta[link.disabledReason]
-    const text = meta ? `${link.label} ${meta.marker}` : link.label
-    const title = meta && uiStrings[targetLang][meta.titleKey]
-    const reasonId = meta ? `lang-${targetLang}-reason` : undefined
+    const text = meta ? `${label} ${meta.marker}` : label
+    const title = meta && uiStrings[link.locale][meta.titleKey]
+    const reasonId = meta ? `lang-${link.locale}-reason` : undefined
 
     if (!link.isAvailable) return (
       <span
@@ -29,10 +28,10 @@ const reasonMeta = {
         role="link"
         aria-disabled="true"
         tabindex="-1"
-        aria-label={title ? `${title}: ${link.label}` : undefined}
+        aria-label={title ? `${title}: ${label}` : undefined}
         title={title}
         data-disabled-reason={link.disabledReason ?? ''}
-        data-testid={`lang-${targetLang}`}
+        data-testid={`lang-${link.locale}`}
       >
         {text}
       </span>
@@ -42,9 +41,9 @@ const reasonMeta = {
       <a
         href={link.href}
         title={title}
-        aria-label={link.label}
+        aria-label={label}
         aria-describedby={reasonId}
-        data-testid={`lang-${targetLang}`}
+        data-testid={`lang-${link.locale}`}
       >
         {text}
         {meta && title ? <span id={reasonId} class="sr-only">{title}</span> : null}
