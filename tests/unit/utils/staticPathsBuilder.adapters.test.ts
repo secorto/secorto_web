@@ -90,7 +90,6 @@ describe('staticPathsBuilder.adapters', () => {
       expect(mockGetCollection).toHaveBeenCalled()
       for (const path of result) {
         expect(path.params.tag).toBeDefined()
-        expect(path.props.tagLocaleMap).toBeDefined()
       }
     })
   })

@@ -59,10 +59,8 @@ export interface TagPath {
     tag: string
   }
   props: {
-    tag: string
     allEntries: PostEntry<CollectionKey>[]
     config: SectionConfig
-    tagLocaleMap: Record<string, Partial<Record<UILanguages, string>>>
     links: TranslationLink[]
   }
 }
@@ -182,7 +180,7 @@ export async function buildTagPathsCore(
         })
         paths.push({
           params: { locale, section: config.routes[locale], tag },
-          props: { tag, allEntries, config, tagLocaleMap, links }
+          props: { allEntries, config, links }
         })
       }
     }

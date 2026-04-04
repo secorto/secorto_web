@@ -216,7 +216,7 @@ describe('buildTagPathsCore', () => {
     expect(result.length).toBeGreaterThan(0)
   })
 
-  test('includes tag in both params and props', async () => {
+  test('includes tag in params', async () => {
     const mockGetCollection: FetchCollection = vi.fn(async () => [
       createMockEntries('blog', 1, { tags: ['typescript'] })[0]
     ])
@@ -226,8 +226,6 @@ describe('buildTagPathsCore', () => {
 
     for (const path of result) {
       expect(path.params.tag).toBeDefined()
-      expect(path.props.tag).toBeDefined()
-      expect(path.params.tag).toBe(path.props.tag)
     }
   })
 
@@ -243,7 +241,6 @@ describe('buildTagPathsCore', () => {
     for (const path of result) {
       expect(Array.isArray(path.props.allEntries)).toBe(true)
       expect(path.props.config).toBeDefined()
-      expect(path.props.tagLocaleMap).toBeDefined()
     }
   })
 
