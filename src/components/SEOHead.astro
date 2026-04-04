@@ -5,6 +5,7 @@
  */
 import { defaultLang } from '@i18n/ui'
 import type { TranslationLink } from '@domain/translationLink'
+import { isAccessible } from '@domain/translationLink'
 import { buildAlternatesFromLinks } from '@i18n/languagePickerUtils'
 import AlternateLinks from './AlternateLinks.astro'
 
@@ -19,7 +20,7 @@ const site = import.meta.env.SITE
 
 const alternates = buildAlternatesFromLinks(links)
 const normalizedAlternates = alternates.map(a => ({ locale: a.locale, url: `${site}${a.url}` }))
-const defaultLink = links.find(l => l.locale === defaultLang && l.isAvailable)
+const defaultLink = links.find(l => l.locale === defaultLang && isAccessible(l))
 const normalizedDefault = defaultLink ? `${site}${defaultLink.href}` : undefined
 ---
 {noindex && <meta name="robots" content="noindex" />}

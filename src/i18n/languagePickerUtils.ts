@@ -1,7 +1,7 @@
 import type { UILanguages } from './ui'
 import { defaultLang } from './ui'
 import type { TranslationLink } from '@domain/translationLink'
-import { availableLink, missingLink } from '@domain/translationLink'
+import { availableLink, missingLink, draftLink, isAccessible } from '@domain/translationLink'
 import { languageKeys } from './ui'
 import { findSectionMap } from './rootMap'
 import type { AvailableLocales } from '@domain/translation'
@@ -37,9 +37,9 @@ export function buildDetailLink(
 
   if (!entry) return missingLink(targetLang)
 
-  const link = availableLink(`${buildLangPrefix(targetLang)}/${localizedSection}/${entry.slug}`, targetLang)
-  if (entry.draft) return { ...link, disabledReason: 'draft' }
-  return link
+  const href = `${buildLangPrefix(targetLang)}/${localizedSection}/${entry.slug}`
+  if (entry.draft) return draftLink(href, targetLang)
+  return availableLink(href, targetLang)
 }
 
 /**
@@ -88,6 +88,6 @@ export function buildStaticPageLinks(url: URL): TranslationLink[] {
  */
 export function buildAlternatesFromLinks<T extends TranslationLink>(links: T[]) {
   return links
-    .filter(l => Boolean(l.isAvailable) && Boolean(l.href))
+    .filter(isAccessible)
     .map(l => ({ locale: l.locale, url: l.href }))
 }
