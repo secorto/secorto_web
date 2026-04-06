@@ -7,6 +7,7 @@ Estructura relevante:
 - `CONTRIBUTING.md` — Guía de contribución
 - `DETAIL_VIEW_ARCHITECTURE.md`, `TESTING_STRATEGY.md`, `TRANSLATION_WORKFLOW.md` — Documentos técnicos y de proceso
 - `images/` — Imágenes referenciadas por los documentos (por ejemplo, capturas usadas en `CONTRIBUTING.md`)
+- `USING_AI.md` — Guía de uso de inteligencia artificial
 
 Notas:
 
