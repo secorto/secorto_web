@@ -20,10 +20,12 @@ async function globalSetup() {
     await check();
     console.log(`✅ URL alcanzable. Arrancando suites...\n`);
   } catch (error) {
-    console.error(`\n❌ FAlLO CRÍTICO: La URL ${baseUrl} no responde.`);
-    console.error(`Error: ${(error as Error).message}`);
-    console.error(`Asegúrate de que el despliegue terminó o el servidor local está activo.\n`);
-    process.exit(1); // Detiene todo antes de que Playwright intente correr tests
+    console.error(
+      `❌ FALLO CRÍTICO: La URL ${baseUrl} no responde.\n` +
+      `Error: ${(error as Error).message}\n` +
+      'Asegúrate de que el despliegue terminó o el servidor local está activo.\n'
+    )
+    process.exit(1)
   }
 }
 
