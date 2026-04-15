@@ -3,17 +3,19 @@
   "include": [".astro/types.d.ts", "**/*"],
   "exclude": ["dist", "coverage", "node_modules", "playwright-report"],
   "compilerOptions": {
-    "baseUrl": ".",
     "paths": {
-      "@assets/*": ["src/assets/*"],
-      "@components/*": ["src/components/*"],
-      "@i18n/*": ["src/i18n/*"],
-      "@layouts/*": ["src/layouts/*"],
-      "@utils/*": ["src/utils/*"],
-      "@client/*": ["src/client/*"],
-      "@domain/*": ["src/domain/*"],
-      "@tests/*": ["tests/*"],
-      "@github/*": [".github/*"]
-    }
+      "@assets/*": ["./src/assets/*"],
+      "@components/*": ["./src/components/*"],
+      "@i18n/*": ["./src/i18n/*"],
+      "@layouts/*": ["./src/layouts/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@client/*": ["./src/client/*"],
+      "@domain/*": ["./src/domain/*"],
+      "@tests/*": ["./tests/*"],
+      "@github/*": ["./.github/*"]
+    },
+    "types": [
+      "node"
+    ]
   }
 }
