@@ -1,11 +1,12 @@
 import { defineConfig, devices } from '@playwright/test'
+import { getBaseUrl } from './src/config/baseUrl'
 
 
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
-const baseUrl = process.env.NETLIFY_PREVIEW_URL || process.env.BASE_URL || 'http://localhost:4321'
+const baseUrl = getBaseUrl()
 
 /**
  * See https://playwright.dev/docs/test-configuration.
