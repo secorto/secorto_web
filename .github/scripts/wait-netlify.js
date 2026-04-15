@@ -57,15 +57,6 @@ function ensureEnv() {
 }
 
 /**
- * Ensure a global `fetch` implementation is available.
- * @throws {Error} when `fetch` is not available
- */
-function ensureFetch() {
-  if (typeof fetch === 'function') return
-  throw new Error('Global fetch not available (requires Node 18+)')
-}
-
-/**
  * Resolve the expected commit SHA to match against Netlify deploys.
  * The workflow should provide `COMMIT_ID` (PR head sha or push sha).
  * Accepted format: hex-like string, between 7 and 40 hex characters (prefix or full sha).
@@ -107,7 +98,6 @@ function writePreviewUrl(url) {
  */
 export async function main() {
   ensureEnv()
-  ensureFetch()
 
   const expectedSha = resolveExpectedSha()
 
@@ -185,4 +175,4 @@ export async function pollForPreview({
 }
 
 // export helper for tests
-export { resolveEnvBranch, ensureEnv, ensureFetch, printError, writePreviewUrl, resolveExpectedSha, runAndExit }
+export { resolveEnvBranch, ensureEnv, printError, writePreviewUrl, resolveExpectedSha, runAndExit }
