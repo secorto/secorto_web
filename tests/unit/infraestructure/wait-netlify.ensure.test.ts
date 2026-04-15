@@ -16,7 +16,7 @@ describe('wait-netlify helpers (env & write)', () => {
     process.env.NETLIFY_SITE_ID = 's'
     process.env.PR_BRANCH = 'feat'
     process.env.GITHUB_ENV = '/tmp/some_env_file'
-    const mod = await import('@github/scripts/wait-netlify.js')
+    const mod = await import('@github/scripts/wait-netlify')
     expect(() => mod.ensureEnv()).not.toThrow()
   })
 
@@ -26,7 +26,7 @@ describe('wait-netlify helpers (env & write)', () => {
     delete process.env.PR_BRANCH
     delete process.env.GITHUB_REF_NAME
     delete process.env.GITHUB_REF
-    const mod = await import('@github/scripts/wait-netlify.js')
+    const mod = await import('@github/scripts/wait-netlify')
     expect(() => mod.ensureEnv()).toThrow(/Missing env:/)
   })
 
@@ -51,7 +51,7 @@ describe('wait-netlify helpers (env & write)', () => {
     process.env.NETLIFY_SITE_ID = 's'
     process.env.PR_BRANCH = 'feat'
     delete process.env.GITHUB_ENV
-    const mod = await import('../../../.github/scripts/wait-netlify.js')
+    const mod = await import('../../../.github/scripts/wait-netlify')
     expect(() => mod.ensureEnv()).toThrow(/Missing env:/)
   })
 })

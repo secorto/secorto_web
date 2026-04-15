@@ -2,12 +2,12 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
 describe('runAndExit helper', () => {
   const OLD_ENV = { ...process.env }
-  type RunAndExit = typeof import('@github/scripts/wait-netlify.js')['runAndExit']
+  type RunAndExit = typeof import('@github/scripts/wait-netlify')['runAndExit']
   let runAndExit: RunAndExit
   let exitCode: number | undefined
   beforeEach(async () => {
     vi.resetModules()
-    const mod = await import('@github/scripts/wait-netlify.js')
+    const mod = await import('@github/scripts/wait-netlify')
     runAndExit = mod.runAndExit
     vi.spyOn(process, 'exit').mockImplementation(((code?: number) => { exitCode = code; }) as typeof process.exit)
   })

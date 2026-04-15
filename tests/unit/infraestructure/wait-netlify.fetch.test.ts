@@ -9,7 +9,7 @@ describe('wait-netlify fetch guard', () => {
   it('ensureFetch throws when global fetch is missing', async () => {
     // @ts-expect-error - test simulates environment where fetch is unavailable
     globalThis.fetch = undefined
-    const mod = await import('@github/scripts/wait-netlify.js')
+    const mod = await import('@github/scripts/wait-netlify')
 
     expect(() => mod.ensureFetch()).toThrow('Global fetch not available')
   })
