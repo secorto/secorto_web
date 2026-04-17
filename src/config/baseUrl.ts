@@ -1,13 +1,18 @@
 /**
- * Devuelve la URL base tal cual viene del entorno.
+ * Devuelve la URL base tal como se interpreta desde las variables de
+ * entorno.
  *
  * Precedencia:
  * 1. NETLIFY_PREVIEW_URL
  * 2. BASE_URL
  *
- * No realiza normalización ni trim; puede devolver la cadena exacta
- * (incluyendo la posibilidad de una cadena vacía) o `undefined` si no
- * existe ninguna variable establecida.
+ * Comportamiento:
+ * - Se aplica `trim()` a los valores obtenidos de las variables de
+ *   entorno.
+ * - Las cadenas vacías o que contienen solo whitespace se consideran
+ *   "unset" y no se usan como valor efectivo.
+ * - Devuelve la versión trimmed (`string`) si existe un valor efectivo,
+ *   o `undefined` si no hay ninguna variable con valor válido.
  */
 export function getBaseUrlEnv(): string | undefined {
   const netlify = process.env.NETLIFY_PREVIEW_URL
