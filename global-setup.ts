@@ -10,13 +10,14 @@ async function globalSetup() {
     await res.arrayBuffer()
     if (!res.ok) throw new Error(`Status: ${res.status}`)
     console.log(`✅ URL alcanzable. Arrancando suites...\n`)
-  } catch (error) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error)
     console.error(
       `❌ FALLO CRÍTICO: La URL ${baseUrl} no responde.\n` +
-      `Error: ${(error as Error).message}\n` +
+      `Error: ${message}\n` +
       'Asegúrate de que el despliegue terminó o el servidor local está activo.'
     )
-    throw new Error(`Health-check failed for ${baseUrl}: ${(error as Error).message}`)
+    throw new Error(`Health-check failed for ${baseUrl}: ${message}`)
   }
 }
 
