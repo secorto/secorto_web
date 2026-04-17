@@ -4,7 +4,6 @@ async function globalSetup() {
   const baseUrl = getBaseUrl()
 
   console.log(`🩺 Iniciando Health Check: ${baseUrl}`)
-
   try {
     const res = await fetch(baseUrl, { method: 'GET', signal: AbortSignal.timeout(5000) })
     // Consumir el body asegura que no queden streams abiertos
@@ -17,7 +16,7 @@ async function globalSetup() {
       `Error: ${(error as Error).message}\n` +
       'Asegúrate de que el despliegue terminó o el servidor local está activo.'
     )
-    process.exit(1)
+    throw new Error(`Health-check failed for ${baseUrl}: ${(error as Error).message}`)
   }
 }
 
