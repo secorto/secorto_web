@@ -35,7 +35,29 @@ describe('getBaseUrl', () => {
 
   it('treats empty env var as unset (falls back to localhost)', () => {
     process.env.NETLIFY_PREVIEW_URL = ''
-    expect(getBaseUrlEnv()).toBe('')
+    delete process.env.BASE_URL
+    expect(getBaseUrlEnv()).toBe(undefined)
+    expect(getBaseUrl()).toBe('http://localhost:4321')
+  })
+
+  it('empty NETLIFY_PREVIEW_URL + BASE_URL set → fall back to BASE_URL', () => {
+    process.env.NETLIFY_PREVIEW_URL = ''
+    process.env.BASE_URL = 'https://base.example.com'
+    expect(getBaseUrlEnv()).toBe('https://base.example.com')
+    expect(getBaseUrl()).toBe('https://base.example.com')
+  })
+
+  it('treats whitespace-only NETLIFY_PREVIEW_URL as unset and uses BASE_URL', () => {
+    process.env.NETLIFY_PREVIEW_URL = '   '
+    process.env.BASE_URL = 'https://base.example.com'
+    expect(getBaseUrlEnv()).toBe('https://base.example.com')
+    expect(getBaseUrl()).toBe('https://base.example.com')
+  })
+
+  it('treats empty BASE_URL as unset and falls back to localhost', () => {
+    delete process.env.NETLIFY_PREVIEW_URL
+    process.env.BASE_URL = ''
+    expect(getBaseUrlEnv()).toBe(undefined)
     expect(getBaseUrl()).toBe('http://localhost:4321')
   })
 })

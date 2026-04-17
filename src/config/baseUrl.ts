@@ -10,10 +10,20 @@
  * existe ninguna variable establecida.
  */
 export function getBaseUrlEnv(): string | undefined {
-  return (
-    process.env.NETLIFY_PREVIEW_URL
-    ?? process.env.BASE_URL
-  )
+  const netlify = process.env.NETLIFY_PREVIEW_URL
+  const base = process.env.BASE_URL
+
+  if (netlify != null) {
+    const trimmed = netlify.trim()
+    if (trimmed !== '') return trimmed
+  }
+
+  if (base != null) {
+    const trimmed = base.trim()
+    if (trimmed !== '') return trimmed
+  }
+
+  return undefined
 }
 
 /**
