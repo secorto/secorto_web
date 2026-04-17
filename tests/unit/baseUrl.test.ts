@@ -2,14 +2,14 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { getBaseUrl, getBaseUrlEnv } from '../../src/config/baseUrl'
 
 describe('getBaseUrl', () => {
-  const OLD_ENV = process.env
+  const OLD_ENV = { ...process.env }
 
   beforeEach(() => {
     process.env = { ...OLD_ENV }
   })
 
   afterEach(() => {
-    process.env = OLD_ENV
+    process.env = { ...OLD_ENV }
   })
 
   it('prefers NETLIFY_PREVIEW_URL when set', () => {
@@ -33,7 +33,7 @@ describe('getBaseUrl', () => {
     expect(getBaseUrl()).toBe('http://localhost:4321')
   })
 
-  it('returns empty string if env var is set to empty string', () => {
+  it('treats empty env var as unset (falls back to localhost)', () => {
     process.env.NETLIFY_PREVIEW_URL = ''
     expect(getBaseUrlEnv()).toBe('')
     expect(getBaseUrl()).toBe('http://localhost:4321')
