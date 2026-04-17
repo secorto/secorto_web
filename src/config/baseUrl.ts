@@ -1,21 +1,28 @@
 /**
- * Devuelve la URL base canónica para pruebas E2E y configuraciones.
+ * Devuelve la URL base tal cual viene del entorno.
  *
- * Precedencia de variables de entorno:
- * 1. `NETLIFY_PREVIEW_URL`
- * 2. `BASE_URL`
- * 3. valor por defecto `http://localhost:4321`
+ * Precedencia:
+ * 1. NETLIFY_PREVIEW_URL
+ * 2. BASE_URL
  *
- * @returns {string} URL base para usar en Playwright y globalSetup
- * @example
- * const baseUrl = getBaseUrl()
+ * No realiza normalización ni trim; puede devolver la cadena exacta
+ * (incluyendo la posibilidad de una cadena vacía) o `undefined` si no
+ * existe ninguna variable establecida.
  */
-export function getBaseUrl(): string {
+export function getBaseUrlEnv(): string|undefined {
   return (
     process.env.NETLIFY_PREVIEW_URL
     ?? process.env.BASE_URL
-    ?? 'http://localhost:4321'
   )
 }
 
-export default getBaseUrl
+/**
+ * Devuelve la URL base a usar por herramientas y tests.
+ *
+ * Retorna el valor de `getBaseUrlEnv()` o el fallback
+ * `'http://localhost:4321'` cuando no hay valor en el entorno.
+ */
+export function getBaseUrl(): string {
+  return getBaseUrlEnv() || 'http://localhost:4321'
+}
+

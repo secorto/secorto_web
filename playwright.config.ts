@@ -1,11 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
-import { getBaseUrl } from './src/config/baseUrl'
+import { getBaseUrl, getBaseUrlEnv } from './src/config/baseUrl'
 
-
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
+const baseUrlEnv = getBaseUrlEnv()
 const baseUrl = getBaseUrl()
 
 /**
@@ -56,9 +52,9 @@ export default defineConfig({
   ],
 
   /* Run your local dev server before starting the tests */
-  webServer: !process.env.CI ? {
+  webServer: !baseUrlEnv ? {
     command: 'npm run start',
-    url: 'http://localhost:4321',
+    url: baseUrl,
     reuseExistingServer: !process.env.CI,
   }: undefined,
 });
