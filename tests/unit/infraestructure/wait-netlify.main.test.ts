@@ -18,6 +18,7 @@ describe('wait-netlify main (cover main)', () => {
   })
 
   afterEach(() => {
+    fs.rmSync(process.env.GITHUB_ENV!)
     process.env = { ...OLD_ENV }
     vi.resetModules()
   })
@@ -34,6 +35,5 @@ describe('wait-netlify main (cover main)', () => {
     expect(code).toBe(0)
     const content = fs.readFileSync(process.env.GITHUB_ENV!, 'utf8')
     expect(content).toContain('NETLIFY_PREVIEW_URL=https://p.netlify.app')
-    fs.rmSync(process.env.GITHUB_ENV!)
   })
 })
