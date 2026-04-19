@@ -18,7 +18,9 @@ describe('wait-netlify main (cover main)', () => {
   })
 
   afterEach(() => {
-    fs.rmSync(process.env.GITHUB_ENV!)
+    if (process.env.GITHUB_ENV && fs.existsSync(process.env.GITHUB_ENV)) {
+      fs.rmSync(process.env.GITHUB_ENV)
+    }
     process.env = { ...OLD_ENV }
     vi.resetModules()
   })
