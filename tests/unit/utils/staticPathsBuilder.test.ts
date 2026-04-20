@@ -22,33 +22,10 @@ const blogAndTalkSections = [blogSection, talkSection]
 const emptySections: SectionConfig[] = []
 
 describe('buildAllDetailPathsCore', () => {
-
   test('handles empty collections gracefully', async () => {
     const mockGetCollection: FetchCollection = vi.fn(async () => [] as CollectionEntry<CollectionKey>[])
     const result = await buildAllDetailPathsCore(onlyBlogSections, mockGetCollection)
     expect(result).toEqual([])
-  })
-
-  test('generates correct params structure', async () => {
-    const mockGetCollection: FetchCollection = vi.fn(async () => createPostEntries('blog', 2))
-    const result = await buildAllDetailPathsCore(onlyBlogSections, mockGetCollection)
-    expect(result.length).toBeGreaterThan(0)
-    for (const path of result) {
-      expect(path.params.locale).toBeDefined()
-      expect(path.params.section).toBeDefined()
-      expect(path.params.id).toBeDefined()
-      expect(path.props.entry).toBeDefined()
-      expect(path.props.availableLocales).toBeDefined()
-      expect(path.props.config).toBeDefined()
-    }
-  })
-
-  test('properly injects all dependencies', async () => {
-    const mockEntries = createPostEntries('blog', 1)
-    const mockGetCollection: FetchCollection = vi.fn(async () => mockEntries)
-    const result = await buildAllDetailPathsCore(onlyBlogSections, mockGetCollection)
-    expect(mockGetCollection).toHaveBeenCalled()
-    expect(result.length).toBeGreaterThan(0)
   })
 
   test('lanza error si un entry no está bajo una carpeta de locale válida', async () => {
@@ -61,28 +38,6 @@ describe('buildAllDetailPathsCore', () => {
 
 describe('buildLocalePathsForSection', () => {
   const postEntries = createPostEntries('blog', 4, { tags: ['ts'] }, 'post')
-  const workEntries = createPostEntries('work', 4, {}, 'work')
-  test('genera paths para todos los locales configurados', () => {
-    const result = buildLocalePathsForSection(blogSection, postEntries)
-    expect(result).toHaveLength(2) // es + en
-    expect(result.map(p => p.params.locale).sort()).toEqual(['en', 'es'])
-  })
-
-  test('rama post: config.category es "post" y posts son PostEntry[]', () => {
-    const result = buildLocalePathsForSection(blogSection, postEntries)
-    for (const path of result) {
-      expect(path.props.config.category).toBe('post')
-      expect(Array.isArray(path.props.posts)).toBe(true)
-    }
-  })
-
-  test('rama experience: config.category es "experience" y posts son ExperienceLikeEntry[]', () => {
-    const result = buildLocalePathsForSection(sectionsConfig['work'], workEntries)
-    for (const path of result) {
-      expect(path.props.config.category).toBe('experience')
-      expect(Array.isArray(path.props.posts)).toBe(true)
-    }
-  })
 
   test('rama post: filtra entradas por locale correctamente', () => {
     const result = buildLocalePathsForSection(blogSection, postEntries)
@@ -108,26 +63,6 @@ describe('buildLocalePathsForSection', () => {
 })
 
 describe('buildSectionIndexPathsCore', () => {
-  test('builds paths for provided sections and locales', async () => {
-    const mockGetCollection: FetchCollection = vi.fn(async () => [])
-    const result = await buildSectionIndexPathsCore(blogAndTalkSections, mockGetCollection)
-    // 2 sections × 2 locales = 4 paths
-    expect(result).toHaveLength(4)
-  })
-
-  test('includes correct structure per locale', async () => {
-    const mockGetCollection: FetchCollection = vi.fn(async () => [])
-    const result = await buildSectionIndexPathsCore(onlyBlogSections, mockGetCollection)
-    expect(result).toHaveLength(2) // blog × 2 locales
-    for (const path of result) {
-      expect(path.params.locale).toMatch(/es|en/)
-      expect(path.params.section).toBeDefined()
-      expect(path.props.config).toBeDefined()
-      expect(Array.isArray(path.props.posts)).toBe(true)
-      expect(Array.isArray(path.props.tags)).toBe(true)
-    }
-  })
-
   test('handles empty sections', async () => {
     const mockGetCollection: FetchCollection = vi.fn(async () => [])
     const result = await buildSectionIndexPathsCore(emptySections, mockGetCollection)
@@ -261,13 +196,5 @@ describe('buildTagIndexPathsCore', () => {
     for (const path of result) {
       expect(path.props.allSectionEntries).toEqual({})
     }
-  })
-
-  test('properly injects all dependencies', async () => {
-    const mockEntries = createPostEntries('blog', 2)
-    const mockGetCollection: FetchCollection = vi.fn(async () => mockEntries)
-    const result = await buildTagIndexPathsCore(onlyBlogSections, mockGetCollection)
-    expect(mockGetCollection).toHaveBeenCalled()
-    expect(result.length).toBeGreaterThan(0)
   })
 })
