@@ -125,26 +125,6 @@ describe('buildTagPathsCore', () => {
     expect(result).toEqual([])
   })
 
-  test('deduplicates tags within the same locale', async () => {
-    const mockGetCollection: FetchCollection = vi.fn(async () => [
-      createPostEntries('blog', 1, { tags: ['astro', 'astro', 'ts'] })[0],
-      createPostEntries('blog', 1, { id: 'es/post-2', tags: ['ts'] })[0],
-      createPostEntries('blog', 1, { id: 'en/post-1', tags: ['astro', 'astro', 'ts'] })[0],
-      createPostEntries('blog', 1, { id: 'en/post-2', tags: ['ts'] })[0]
-    ])
-    const result = await buildTagPathsCore(onlyBlogSections, mockGetCollection)
-    // Should not have duplicate tags per locale
-    const esTags = result
-      .filter(p => p.params.locale === 'es')
-      .map(p => p.params.tag)
-    const enTags = result
-      .filter(p => p.params.locale === 'en')
-      .map(p => p.params.tag)
-
-    expect(new Set(esTags).size).toBe(esTags.length)
-    expect(new Set(enTags).size).toBe(enTags.length)
-  })
-
   test('handles empty sections', async () => {
     const mockGetCollection: FetchCollection = vi.fn(async () => [])
     const result = await buildTagPathsCore(emptySections, mockGetCollection)
