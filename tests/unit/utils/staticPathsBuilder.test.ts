@@ -8,31 +8,30 @@ import {
   type FetchCollection
 } from '@utils/staticPathsBuilder'
 import type { CollectionEntry, CollectionKey } from 'astro:content'
-import type { SectionConfig } from '@domain/section'
+import { sectionsConfig, type SectionConfig } from '@domain/section'
 import {
   collectionMocks,
   createPostEntries,
   createCollectionEntry,
-  createMockSectionConfig,
-  createMockSectionsArray
 } from './staticPathsBuilder.fixtures'
+
+const blogSection = sectionsConfig['blog']
+const talkSection = sectionsConfig['talk']
 
 describe('buildAllDetailPathsCore', () => {
 
   test('handles empty collections gracefully', async () => {
     const mockGetCollection: FetchCollection = vi.fn(async () => [] as CollectionEntry<CollectionKey>[])
-    const mockSections = createMockSectionsArray(['blog'])
 
-    const result = await buildAllDetailPathsCore(mockSections, mockGetCollection)
+    const result = await buildAllDetailPathsCore([blogSection], mockGetCollection)
 
     expect(result).toEqual([])
   })
 
   test('generates correct params structure', async () => {
     const mockGetCollection: FetchCollection = vi.fn(async () => createPostEntries('blog', 2))
-    const mockSections = createMockSectionsArray(['blog'])
 
-    const result = await buildAllDetailPathsCore(mockSections, mockGetCollection)
+    const result = await buildAllDetailPathsCore([blogSection], mockGetCollection)
 
     expect(result.length).toBeGreaterThan(0)
     for (const path of result) {
@@ -48,9 +47,8 @@ describe('buildAllDetailPathsCore', () => {
   test('properly injects all dependencies', async () => {
     const mockEntries = createPostEntries('blog', 1)
     const mockGetCollection: FetchCollection = vi.fn(async () => mockEntries)
-    const mockSections = createMockSectionsArray(['blog'])
 
-    const result = await buildAllDetailPathsCore(mockSections, mockGetCollection)
+    const result = await buildAllDetailPathsCore([blogSection], mockGetCollection)
 
     expect(mockGetCollection).toHaveBeenCalled()
     expect(result.length).toBeGreaterThan(0)
@@ -59,9 +57,8 @@ describe('buildAllDetailPathsCore', () => {
   test('lanza error si un entry no está bajo una carpeta de locale válida', async () => {
     const invalidEntry = createCollectionEntry('blog', { id: 'orphan/my-post' })
     const mockGetCollection: FetchCollection = vi.fn(async () => [invalidEntry])
-    const mockSections = createMockSectionsArray(['blog'])
 
-    await expect(buildAllDetailPathsCore(mockSections, mockGetCollection))
+    await expect(buildAllDetailPathsCore([blogSection], mockGetCollection))
       .rejects.toThrow('Unknown locale prefix "orphan" in entryId "orphan/my-post"')
   })
 })
@@ -71,16 +68,14 @@ describe('buildLocalePathsForSection', () => {
   const workEntries = createPostEntries('work', 4, {}, 'work')
 
   test('genera paths para todos los locales configurados', () => {
-    const config = createMockSectionConfig('blog')
-    const result = buildLocalePathsForSection(config, postEntries)
+    const result = buildLocalePathsForSection(blogSection, postEntries)
 
     expect(result).toHaveLength(2) // es + en
     expect(result.map(p => p.params.locale).sort()).toEqual(['en', 'es'])
   })
 
   test('rama post: config.category es "post" y posts son PostEntry[]', () => {
-    const config = createMockSectionConfig('blog') // category: 'post' por defecto
-    const result = buildLocalePathsForSection(config, postEntries)
+    const result = buildLocalePathsForSection(blogSection, postEntries)
 
     for (const path of result) {
       expect(path.props.config.category).toBe('post')
@@ -89,8 +84,7 @@ describe('buildLocalePathsForSection', () => {
   })
 
   test('rama experience: config.category es "experience" y posts son ExperienceLikeEntry[]', () => {
-    const config = createMockSectionConfig('work', { category: 'experience' })
-    const result = buildLocalePathsForSection(config, workEntries)
+    const result = buildLocalePathsForSection(sectionsConfig['work'], workEntries)
 
     for (const path of result) {
       expect(path.props.config.category).toBe('experience')
@@ -99,8 +93,7 @@ describe('buildLocalePathsForSection', () => {
   })
 
   test('rama post: filtra entradas por locale correctamente', () => {
-    const config = createMockSectionConfig('blog')
-    const result = buildLocalePathsForSection(config, postEntries)
+    const result = buildLocalePathsForSection(blogSection, postEntries)
 
     const esPath = result.find(p => p.params.locale === 'es')
     const enPath = result.find(p => p.params.locale === 'en')
@@ -111,16 +104,14 @@ describe('buildLocalePathsForSection', () => {
   })
 
   test('extrae tags desde los posts del locale correspondiente', () => {
-    const config = createMockSectionConfig('blog')
-    const result = buildLocalePathsForSection(config, postEntries)
+    const result = buildLocalePathsForSection(blogSection, postEntries)
 
     const esPath = result.find(p => p.params.locale === 'es')
     expect(esPath?.props.tags).toContain('ts')
   })
 
   test('collection vacía produce arrays de posts y tags vacíos', () => {
-    const config = createMockSectionConfig('blog')
-    const result = buildLocalePathsForSection(config, [])
+    const result = buildLocalePathsForSection(blogSection, [])
 
     for (const path of result) {
       expect(path.props.posts).toHaveLength(0)
@@ -132,7 +123,7 @@ describe('buildLocalePathsForSection', () => {
 describe('buildSectionIndexPathsCore', () => {
   test('builds paths for provided sections and locales', async () => {
     const mockGetCollection: FetchCollection = vi.fn(async () => [])
-    const mockSections = createMockSectionsArray(['blog', 'talk'])
+    const mockSections = [blogSection, talkSection]
 
     const result = await buildSectionIndexPathsCore(mockSections, mockGetCollection)
 
@@ -142,7 +133,7 @@ describe('buildSectionIndexPathsCore', () => {
 
   test('includes correct structure per locale', async () => {
     const mockGetCollection: FetchCollection = vi.fn(async () => [])
-    const mockSections = createMockSectionsArray(['blog'])
+    const mockSections = [blogSection]
 
     const result = await buildSectionIndexPathsCore(mockSections, mockGetCollection)
 
@@ -171,7 +162,7 @@ describe('buildSectionIndexPathsCore', () => {
       createPostEntries('blog', 1, { tags: ['typescript', 'testing'] })[0],
       createPostEntries('blog', 1, { id: 'en/post-2', tags: ['testing'] })[0]
     ])
-    const mockSections = createMockSectionsArray(['blog'])
+    const mockSections = [blogSection]
 
     const result = await buildSectionIndexPathsCore(mockSections, mockGetCollection)
 
@@ -187,7 +178,7 @@ describe('buildTagPathsCore', () => {
       createPostEntries('blog', 1, { tags: ['typescript', 'astro'] })[0],
       createPostEntries('blog', 1, { id: 'en/post-1', tags: ['testing'] })[0]
     ])
-    const mockSections = createMockSectionsArray(['blog', 'talk'])
+    const mockSections = [blogSection, talkSection]
 
     const result = await buildTagPathsCore(mockSections, mockGetCollection)
 
@@ -199,7 +190,7 @@ describe('buildTagPathsCore', () => {
     const mockGetCollection: FetchCollection = vi.fn(async () => [
       createPostEntries('blog', 1, { tags: ['typescript'] })[0]
     ])
-    const mockSections = createMockSectionsArray(['blog'])
+    const mockSections = [blogSection]
 
     const result = await buildTagPathsCore(mockSections, mockGetCollection)
 
@@ -212,7 +203,7 @@ describe('buildTagPathsCore', () => {
     const mockGetCollection: FetchCollection = vi.fn(async () => [
       createPostEntries('blog', 1, { tags: ['typescript'] })[0]
     ])
-    const mockSections = createMockSectionsArray(['blog'])
+    const mockSections = [blogSection]
 
     const result = await buildTagPathsCore(mockSections, mockGetCollection)
 
@@ -227,7 +218,7 @@ describe('buildTagPathsCore', () => {
     const mockGetCollection: FetchCollection = vi.fn(async () => [
       createPostEntries('blog', 1, { tags: [] })[0]
     ])
-    const mockSections = createMockSectionsArray(['blog'])
+    const mockSections = [sectionsConfig['blog']]
 
     const result = await buildTagPathsCore(mockSections, mockGetCollection)
 
@@ -241,7 +232,7 @@ describe('buildTagPathsCore', () => {
       createPostEntries('blog', 1, { id: 'en/post-1', tags: ['astro', 'astro', 'ts'] })[0],
       createPostEntries('blog', 1, { id: 'en/post-2', tags: ['ts'] })[0]
     ])
-    const mockSections = createMockSectionsArray(['blog'])
+    const mockSections = [sectionsConfig['blog']]
 
     const result = await buildTagPathsCore(mockSections, mockGetCollection)
 
@@ -270,7 +261,7 @@ describe('buildTagPathsCore', () => {
 describe('buildTagIndexPathsCore', () => {
   test('generates one path per locale', async () => {
     const mockGetCollection: FetchCollection = vi.fn(async () => createPostEntries('blog', 1))
-    const mockSections = createMockSectionsArray(['blog'])
+    const mockSections = [sectionsConfig['blog']]
 
     const result = await buildTagIndexPathsCore(mockSections, mockGetCollection)
 
@@ -279,7 +270,7 @@ describe('buildTagIndexPathsCore', () => {
 
   test('includes correct structure with allSectionEntries', async () => {
     const mockGetCollection: FetchCollection = vi.fn(async () => createPostEntries('blog', 1))
-    const mockSections = createMockSectionsArray(['blog'])
+    const mockSections = [sectionsConfig['blog']]
 
     const result = await buildTagIndexPathsCore(mockSections, mockGetCollection)
 
@@ -299,7 +290,7 @@ describe('buildTagIndexPathsCore', () => {
       }
       return collections[collection] || []
     })
-    const mockSections = createMockSectionsArray(['blog', 'talk'])
+    const mockSections = [sectionsConfig['blog'], sectionsConfig['talk']]
 
     const result = await buildTagIndexPathsCore(mockSections, mockGetCollection)
 
@@ -330,9 +321,8 @@ describe('buildTagIndexPathsCore', () => {
   test('properly injects all dependencies', async () => {
     const mockEntries = createPostEntries('blog', 2)
     const mockGetCollection: FetchCollection = vi.fn(async () => mockEntries)
-    const mockSections = createMockSectionsArray(['blog'])
 
-    const result = await buildTagIndexPathsCore(mockSections, mockGetCollection)
+    const result = await buildTagIndexPathsCore([blogSection], mockGetCollection)
 
     expect(mockGetCollection).toHaveBeenCalled()
     expect(result.length).toBeGreaterThan(0)

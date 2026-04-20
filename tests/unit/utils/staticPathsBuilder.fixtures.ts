@@ -1,7 +1,6 @@
 import type { CollectionEntry, CollectionKey } from 'astro:content'
 import type { PostEntry } from '@domain/post'
 import { adaptToDomainEntry } from '@utils/entryAdapter'
-import type { SectionConfig, SectionType } from '@domain/section'
 
 /**
  * Crea un PostEntry (domain type) directamente para tests.
@@ -96,33 +95,4 @@ export const collectionMocks = {
 
   community: (): PostEntry<CollectionKey>[] =>
     createPostEntries('community', 0)
-}
-
-/**
- * Crea una SectionConfig mock mínima para testing.
- * Útil para pasar como parte de mock sections array.
- */
-export function createMockSectionConfig(
-  key: SectionType,
-  overrides: Partial<SectionConfig> = {}
-): SectionConfig {
-  return {
-    name: key,
-    category: 'post',
-    translationKey: 'nav.blog',
-    routes: { es: key, en: key },
-    showFeaturedImage: true,
-    ...overrides
-  }
-}
-
-/**
- * Crea un array de mock sections para testing.
- * Permite crear configuraciones mínimas sin depender de sectionsConfig global.
- */
-export function createMockSectionsArray(
-  sectionKeys: SectionType[],
-  baseOverrides: Partial<SectionConfig> = {}
-): SectionConfig[] {
-  return sectionKeys.map(key => createMockSectionConfig(key, baseOverrides))
 }
