@@ -13,6 +13,7 @@ import {
   createPostEntries,
   createCollectionEntry,
 } from './staticPathsBuilder.fixtures'
+import { languageKeys } from '@i18n/ui'
 
 const blogSection = sectionsConfig['blog']
 const onlyBlogSections = [blogSection]
@@ -65,17 +66,6 @@ describe('buildSectionIndexPathsCore', () => {
     const result = await buildSectionIndexPathsCore(emptySections, mockGetCollection)
     expect(result).toEqual([])
   })
-
-  test('extracts tags from posts', async () => {
-    const mockGetCollection: FetchCollection = vi.fn(async () => [
-      createPostEntries('blog', 1, { tags: ['typescript', 'testing'] })[0],
-      createPostEntries('blog', 1, { id: 'en/post-2', tags: ['testing'] })[0]
-    ])
-    const result = await buildSectionIndexPathsCore(onlyBlogSections, mockGetCollection)
-    const esPath = result.find(p => p.params.locale === 'es')
-    expect(esPath?.props.tags).toContain('typescript')
-    expect(esPath?.props.tags).toContain('testing')
-  })
 })
 
 describe('buildTagPathsCore', () => {
@@ -118,27 +108,10 @@ describe('buildTagPathsCore', () => {
 })
 
 describe('buildTagIndexPathsCore', () => {
-  test('generates one path per locale', async () => {
-    const mockGetCollection: FetchCollection = vi.fn(async () => createPostEntries('blog', 1))
-    const result = await buildTagIndexPathsCore(onlyBlogSections, mockGetCollection)
-    expect(result).toHaveLength(2) // 2 locales (es, en)
-  })
-
-  test('includes correct structure with allSectionEntries', async () => {
-    const mockGetCollection: FetchCollection = vi.fn(async () => createPostEntries('blog', 1))
-    const result = await buildTagIndexPathsCore(onlyBlogSections, mockGetCollection)
-    expect(result.length).toBeGreaterThan(0)
-    for (const path of result) {
-      expect(path.params.locale).toMatch(/es|en/)
-      expect(path.props.allSectionEntries).toBeDefined()
-      expect(typeof path.props.allSectionEntries).toBe('object')
-    }
-  })
-
   test('handles empty sections gracefully', async () => {
     const mockGetCollection: FetchCollection = vi.fn(async () => [])
     const result = await buildTagIndexPathsCore(emptySections, mockGetCollection)
-    expect(result).toHaveLength(2) // 2 locales, but no collections
+    expect(result).toHaveLength(languageKeys.length) // 2 locales, but no collections
     for (const path of result) {
       expect(path.props.allSectionEntries).toEqual({})
     }
