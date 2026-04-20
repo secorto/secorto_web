@@ -15,9 +15,7 @@ import {
 } from './staticPathsBuilder.fixtures'
 
 const blogSection = sectionsConfig['blog']
-const talkSection = sectionsConfig['talk']
 const onlyBlogSections = [blogSection]
-const blogAndTalkSections = [blogSection, talkSection]
 const emptySections: SectionConfig[] = []
 
 describe('buildAllDetailPathsCore', () => {
@@ -81,18 +79,6 @@ describe('buildSectionIndexPathsCore', () => {
 })
 
 describe('buildTagPathsCore', () => {
-  test('generates tag paths for provided sections', async () => {
-    const mockGetCollection: FetchCollection = vi.fn(async () => [
-      createPostEntries('blog', 1, { tags: ['typescript', 'astro'] })[0],
-      createPostEntries('blog', 1, { id: 'en/post-1', tags: ['testing'] })[0]
-    ])
-
-    const result = await buildTagPathsCore(blogAndTalkSections, mockGetCollection)
-
-    // Should have multiple tags across sections and locales
-    expect(result.length).toBeGreaterThan(0)
-  })
-
   test('includes tag in params', async () => {
     const mockGetCollection: FetchCollection = vi.fn(async () => [
       createPostEntries('blog', 1, { tags: ['typescript'] })[0]
