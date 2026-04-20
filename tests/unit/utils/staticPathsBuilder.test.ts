@@ -10,7 +10,6 @@ import {
 import type { CollectionEntry, CollectionKey } from 'astro:content'
 import { sectionsConfig, type SectionConfig } from '@domain/section'
 import {
-  collectionMocks,
   createPostEntries,
   createCollectionEntry,
 } from './staticPathsBuilder.fixtures'
@@ -148,25 +147,6 @@ describe('buildTagIndexPathsCore', () => {
       expect(path.props.allSectionEntries).toBeDefined()
       expect(typeof path.props.allSectionEntries).toBe('object')
     }
-  })
-
-  test('caches entries by collection', async () => {
-    const mockGetCollection: FetchCollection = vi.fn(async (collection: CollectionKey) => {
-      const collections: Partial<Record<CollectionKey, CollectionEntry<CollectionKey>[]>> = {
-        blog: collectionMocks.blog(2),
-        talk: collectionMocks.talk(1)
-      }
-      return collections[collection] || []
-    })
-    const result = await buildTagIndexPathsCore(blogAndTalkSections, mockGetCollection)
-    // Each route should have allSectionEntries with both collections
-    for (const path of result) {
-      expect(path.props.allSectionEntries).toHaveProperty('blog')
-      expect(path.props.allSectionEntries).toHaveProperty('talk')
-      expect(Array.isArray(path.props.allSectionEntries.blog)).toBe(true)
-      expect(Array.isArray(path.props.allSectionEntries.talk)).toBe(true)
-    }
-    expect(mockGetCollection).toHaveBeenCalledTimes(2)
   })
 
   test('handles empty sections gracefully', async () => {

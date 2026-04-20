@@ -74,25 +74,3 @@ export function createCollectionEntry(
     render: async () => ({ Content: () => null, headings: [], remarkPluginFrontmatter: {} })
   } as unknown as CollectionEntry<CollectionKey>
 }
-
-/**
- * Factory para crear mocks de colecciones completas por tipo.
- * Facilita crear escenarios realistas en los tests.
- * Cada factory especifica explícitamente su collection.
- */
-export const collectionMocks = {
-  blog: (count = 2): PostEntry<CollectionKey>[] =>
-    createPostEntries('blog', count, { title: 'Blog Post' }, 'blog-post'),
-
-  talk: (count = 2): PostEntry<CollectionKey>[] =>
-    createPostEntries('talk', count, { title: 'Talk' }, 'talk'),
-
-  work: (count = 2): PostEntry<CollectionKey>[] =>
-    createPostEntries('work', count, { title: 'Work' }, 'work'),
-
-  projects: (count = 2): PostEntry<CollectionKey>[] =>
-    createPostEntries('projects', count, { title: 'Project' }, 'project'),
-
-  community: (): PostEntry<CollectionKey>[] =>
-    createPostEntries('community', 0)
-}
