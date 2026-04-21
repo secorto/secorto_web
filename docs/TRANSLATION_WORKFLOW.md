@@ -1,121 +1,29 @@
-# Flujo de traducción
+# Flujo de traducción (resumen)
 
-> Nota: recomendamos usar un campo booleano explícito `draft: true` en el frontmatter para marcar borradores (incluidas traducciones en progreso). La detección de borrador en plantillas y listados se basa en `draft`.
+Usa `draft: true` en el frontmatter para marcar traducciones en progreso; las plantillas y listados del sitio respetan este flag para mostrar banners y `noindex` cuando corresponda.
 
-Este proyecto usa un flujo de traducción pragmático:
+Organización y reglas mínimas
 
-- El contenido se organiza por idioma en `src/content/<collection>/<locale>/`.
-- Si quieres comenzar una traducción pero mantenerla como borrador, crea el archivo en la carpeta del idioma destino y añade `draft: true` en el frontmatter y `translation_origin` apuntando al original.
+- Carpeta por idioma: `src/content/<collection>/<locale>/`
+- Para la mayoría de casos no necesitas metadata adicional: si el fichero traducido mantiene el mismo `id`/slug que el original, no añadas nada más
+- Solo cuando el slug/id difiera entre origen y destino (por ejemplo `why-npm` vs `por-que-npm`) añade `postId` en la traducción para apuntar al identificador canónico del original (nombre de fichero sin `.md`, incluir prefijo de fecha si aplica)
 
-Crear borrador (manual):
-
-1. Copia el archivo original desde `src/content/<collection>/<localeFrom>/<id>.md` a `src/content/<collection>/<targetLocale>/<id>.md`
-2. En el frontmatter del nuevo archivo añade:
+Ejemplo (usar `postId` solo si es necesario):
 
 ```yaml
+title: "Mi traducción"
+date: 2025-12-26
 draft: true
-translation_origin:
-  locale: '<localeFrom>'
-  id: '<id>'
+# postId: '2025-12-25-por-que-uso-npm'  # opcional, solo si slug difiere
 ```
 
-El nuevo archivo quedará marcado como borrador de traducción y la web lo tratará como tal.
+Comportamiento del sitio
 
-Comportamiento de la interfaz
-- Las traducciones marcadas con `draft: true` muestran un banner y se marcan como `noindex`.
-- La etiqueta `canonical` apunta al original (si `translation_origin` está presente).
+- Traducciones con `draft: true` muestran un banner y se sirven con `noindex` hasta que se publique
 
-Cuando completes la traducción, elimina `draft: true` (o cámbialo a `false`).
 
-Esto hará que desaparezcan los banners/noindex y la página en el idioma destino se convierta en la versión activa y canónica (si no sobreescribes `canonical`).
+Notas finales
 
-Rationale — por qué este enfoque
----------------------------------
+- `postId` (próximamente `translationKey` https://github.com/secorto/secorto_web/issues/134) es una clave libre de agrupación/translationKey que habitualmente se infiere del `cleanId` (el identificador del fichero sin prefijo de idioma). No es una referencia obligatoria a otra entrada, y puede omitirse cuando el `slug` coincide entre original y traducción.
+- Mantén la guía simple: `draft` para estado, `postId` solo para desambiguar slugs. Evita campos redundantes en contenido nuevo.
 
-Este flujo busca equilibrio entre dos necesidades frecuentes en proyectos personales y pequeños blogs:
-
-- Minimizar fricción: publicar contenido no debe obligarte a traducirlo inmediatamente. Crear y mantener traducciones es costoso en tiempo.
-- Mantener buenas prácticas SEO: evitar que borradores o traducciones incompletas sean indexadas o compitan con el original.
-
-En vez de forzar una decisión binaria (traducir ahora / no traducir nunca), el enfoque permite expresar el estado (draft/partial/pending) con el mínimo overhead: una copia de archivo por idioma y un par de campos opcionales en el frontmatter.
-
-Ventajas
---------
-
-- Transparencia: desde el propio repo y desde la UI ves qué posts están en proceso de traducción.
-- Baja fricción: crear un borrador es una acción simple (copiar el archivo y añadir frontmatter) y no bloquea la publicación original.
-- Seguridad SEO: los borradores se marcan `noindex` y la canonical apunta al original, evitando contenido duplicado o indexación prematura.
-- Evolutivo: si en el futuro necesitas un flujo editorial más complejo (colaboradores, asignaciones, deadlines), ya hay metadata para evolucionarlo.
-
-Costes / trade-offs
--------------------
-
-- Añade un pequeño campo adicional en frontmatter por post en caso de borrador.
-- Requiere crear la copia y añadir/editar frontmatter manualmente cuando empiezas una traducción.
-- Existe el riesgo de desincronización entre la metadata y el contenido real si no se actualiza cuando la traducción termina — mitigable con checks en build o con simples inspecciones periódicas.
-
-Cuándo usarlo
---------------
-
-- Te lo recomiendo si:
-  - Publicas con cierta regularidad y quieres traducir algunos posts en el futuro
-  - Quieres un control sencillo sobre qué está pendiente sin entrar en procesos pesados
-
-- Considera no usarlo si:
-  - Publicas muy raramente (1–2 posts por año) y no te importa una nota manual en el contenido
-  - No te preocupa la indexación temporal de borradores
-
-Flujo práctico (pasos rápidos)
---------------------------------
-
-1. Para crear un borrador de traducción desde el original (manualmente):
-
-  - Copia el archivo original desde `src/content/<collection>/<localeFrom>/<id>.md` a `src/content/<collection>/<targetLocale>/<id>.md`
-  - Añade en el frontmatter del nuevo archivo:
-
-  ```yaml
-  draft: true
-  translation_origin:
-    locale: '<localeFrom>'
-    id: '<id>'
-  ```
-
-2. Edita el archivo en `en/` y trabaja en la traducción. Puedes dejar contenido en el idioma original temporalmente — la web mostrará que es un borrador.
-
-3. Mientras el post está `draft`:
-   - La página en `en/` será accesible pero estará marcada como `noindex` y mostrará un banner indicando que es una traducción en borrador.
-   - El selector de idioma (LanguagePicker) mostrará un marcador (✏️) para indicar el estado.
-
-4. Cuando completes la traducción, elimina `draft: true` (o cámbialo a `false`).
-
-Replicabilidad en otros proyectos
----------------------------------
-
-El patrón es genérico: cualquier sitio estático que se organice por carpetas por idioma puede adoptar el mismo enfoque. Las piezas claves son:
-
-- Archivar traducciones por carpeta de idioma (`/en/`, `/es/`).
-- Metadata opcional en frontmatter para estado y origen.
-- Template que respete `draft` y `translation_origin` (banner, noindex, canonical).
-
-Detección de inconsistencias
----------------------------
-
-Cuando trabajas con contenido en varias carpetas por idioma es fácil que se produzcan incongruencias (por ejemplo: existe una versión en otro idioma pero falta `translation_origin`, o hay declaraciones contradictorias entre archivos). Aquí tienes cómo detectarlas y tratarlas.
-
-Ejemplos mínimos de frontmatter (solo campos relevantes aquí):
-
-```yaml
-title: "Mi post"
-date: 2022-07-11
-draft: true
-translation_origin:
-  locale: 'es'
-  id: 'mi-post'
-```
-
-Notas importantes:
-
-- La metadata siempre describe el archivo donde está escrito (es un atributo por archivo). El archivo que es la traducción debe llevar `translation_origin` apuntando al original.
-- Para posts creados primero en inglés aplica la misma convención: las traducciones deben usar `translation_origin.locale: 'en'` para indicar el origen.
-
-Con esto tienes una solución pragmática, de bajo coste y fácil de transferir a otros repos.
