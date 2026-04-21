@@ -5,10 +5,6 @@ tags:
   - tools
 excerpt: npm is a solid ally for frontend development; in this update I explain why I use it and how it compares to Yarn and pnpm
 date: 2025-12-26
-translation_status: 'translated'
-translation_origin:
-  locale: 'es'
-  id: 'por-que-uso-npm-2025'
 ---
 
 This is an analysis of why this blog uses npm and why, for this specific project, it remains the most practical choice.
