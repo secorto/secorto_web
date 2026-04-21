@@ -5,13 +5,13 @@ Este documento define las reglas y pasos a seguir al crear, actualizar o re-publ
 ## Resumen corto
 - Nombre de fichero de post: `YYYY-MM-DD-<slug>.md` (ej: `2025-12-25-por-que-uso-npm.md`).
 - Si re-publicas una entrada reescrita y quieres que aparezca como nueva: crea un nuevo fichero con la fecha nueva y deja el antiguo; añade una redirección 301 desde el URL antiguo al nuevo.
-- Siempre actualizar/añadir metadata relevante: `updated` (si solo es revisión), `canonical` (solo si forzas canonical distinto). Usa `draft: true` para marcar borradores. Para enlaces entre traducciones y originales, usa `postId` en frontmatter cuando corresponda (ver sección i18n).
+- Siempre actualizar/añadir metadata relevante: `updated` (si solo es revisión). Usa `draft: true` para marcar borradores. Para enlaces entre traducciones y originales, usa `postId` en frontmatter cuando corresponda (ver sección i18n).
 
 ## Convención de nombres (slug de fichero)
 
 - Formato: `YYYY-MM-DD-<slug>.md` para todas las entradas en `src/content/<collection>/<locale>/`.
 - El `slug` debe ser en minúsculas, solo letras, números, guiones y sin extensión. Evita duplicados.
- - Para traducciones, los slugs pueden y deberían usar el idioma objetivo (p. ej. `2025-12-25-why-i-use-npm.md` para inglés). Para mapear traducciones a su original, preferimos `postId` en frontmatter.
+- Para traducciones, los slugs pueden y deberían usar el idioma objetivo (p. ej. `2025-12-25-why-i-use-npm.md` para inglés). Para mapear traducciones a su original, preferimos `postId` en frontmatter.
 
 Racional: mantener la fecha en el nombre facilita listar por orden cronológico, mantener historial y seguir convenciones comunes en sitios estáticos.
 
@@ -26,7 +26,7 @@ Racional: mantener la fecha en el nombre facilita listar por orden cronológico,
    - Añadir redirect 301 desde la URL antigua al nuevo slug (ver sección "Redirecciones")
    - Actualizar enlaces internos destacados para apuntar al nuevo slug
    - Si existe una versión traducida antigua y no corresponde al nuevo contenido, decide si:
-     - Mantener la versión antigua y dejar la 301 (la traducción no cambia de idioma, evita redirigir hacia otro idioma), o
+   - Mantener la versión antigua y dejar la 301 (la traducción no cambia de idioma, evita redirigir hacia otro idioma), o
    - Crear/actualizar la traducción y usar `postId` en la traducción para apuntar al identificador canónico de la nueva entrada (o crear borradores nuevos según tu workflow)
 
 3. Si decides actualizar in-place:

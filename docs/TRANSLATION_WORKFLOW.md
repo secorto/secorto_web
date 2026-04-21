@@ -20,14 +20,10 @@ draft: true
 Comportamiento del sitio
 
 - Traducciones con `draft: true` muestran un banner y se sirven con `noindex` hasta que se publique
-- Controla la etiqueta `canonical` cuando una traducción pasa a ser la versión principal
 
-Detección y consistencia
-
-- Ejecuta checks automáticos para detectar `postId` que apunten a identificadores inexistentes o traducciones publicadas que aún tengan `draft: true`
-- No es necesario migrar metadata legacy inmediatamente; las entradas históricas pueden convivir hasta una migración planificada
 
 Notas finales
 
+- `postId` (próximamente `translationKey` https://github.com/secorto/secorto_web/issues/134) es una clave libre de agrupación/translationKey que habitualmente se infiere del `cleanId` (el identificador del fichero sin prefijo de idioma). No es una referencia obligatoria a otra entrada, y puede omitirse cuando el `slug` coincide entre original y traducción.
 - Mantén la guía simple: `draft` para estado, `postId` solo para desambiguar slugs. Evita campos redundantes en contenido nuevo.
 
