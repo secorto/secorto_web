@@ -100,12 +100,12 @@ postId: '2025-12-25-por-que-uso-npm'
   Never use `as any` or broad `any` aliases. If an exceptional case genuinely cannot be typed (extraordinary legacy interop), create a short issue in the repo tracking the exception and reference it in the code comment.
 
 - **`@ts-ignore` and variant comments**: `@ts-ignore`, `// @ts-expect-error`, `// @ts-nocheck` are highly restricted. Prefer fixing types instead of silencing the checker. If an ignore is unavoidable:
-  - use `// @ts-expect-error` only with a one-line description of why and a link to an issue (minimum 10 characters), and
-  - avoid `// @ts-ignore`; if used, it must be converted to an issue and justified in the comment as above.
+- use `// @ts-expect-error` only with a one-line description of why and a link to an issue (minimum 10 characters), and
+- avoid `// @ts-ignore`; if used, it must be converted to an issue and justified in the comment as above.
 
 - **Triple-slash references**: triple-slash references are allowed in `.d.ts` declaration files where necessary (for example to consume generated `.astro` types). Prefer adding an ESLint override for `*.d.ts` instead of inline disables.
 
- - Default site language: Spanish (`es`). When the language is not explicitly specified, prefer Spanish for authoring content and suggested slugs. Contributors should prefer `postId` to associate translations only when slugs/ids differ; otherwise no manual mapping is required.
+- Default site language: Spanish (`es`). When the language is not explicitly specified, prefer Spanish for authoring content and suggested slugs. Contributors should prefer `postId` to associate translations only when slugs/ids differ; otherwise no manual mapping is required.
 
 ---
 
