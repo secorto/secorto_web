@@ -27,7 +27,7 @@ describe('frontmatter util', () => {
   })
 
   it('parses arrays and nested maps', () => {
-    const raw = `---\ntags:\n  - a\n  - b\nchangelog:\n  summary: 'a change'\n  date: '2022-01-01'\n---\n`
+    const raw = `---\ntags:\n  - a\n  - b\nchange_log:\n  summary: 'a change'\n  date: '2022-01-01'\n---\n`
     const fm = parseFrontmatter(raw)
     expect(typeof fm).toBe('object')
     expect(fm).not.toBeNull()
@@ -35,8 +35,8 @@ describe('frontmatter util', () => {
     const obj = fm as Record<string, unknown>
     expect(obj).toHaveProperty('tags')
     expect((obj.tags as string[])).toEqual(['a', 'b'])
-    expect(obj).toHaveProperty('changelog.summary', 'a change')
-    expect(obj).toHaveProperty('changelog.date', '2022-01-01')
+    expect(obj).toHaveProperty('change_log.summary', 'a change')
+    expect(obj).toHaveProperty('change_log.date', '2022-01-01')
   })
 
   it('ignores files without frontmatter', () => {
