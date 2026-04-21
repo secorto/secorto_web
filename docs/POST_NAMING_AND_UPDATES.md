@@ -88,7 +88,7 @@ updated: 2025-12-25
 1. ¿Filename sigue convención `YYYY-MM-DD-slug.md`? (sí/no)
 2. ¿Frontmatter completo: title, date, tags, excerpt? (sí/no)
 3. Si es re-publicación: ¿existe redirect 301 desde la URL antigua al nuevo slug? (sí/no)
-4. Si hay traducciones: ¿las traducciones apuntan al original mediante `postId`? (sí/no)
+4. Si hay traducciones: ¿usar `postId` solo para desambiguar slugs cuando sea necesario? (sí/no)
 5. ¿Se actualizaron enlaces internos relevantes? (sí/no)
 6. Ejecutar comprobaciones de metadata y consistencia (localmente o con tus herramientas preferidas)
 

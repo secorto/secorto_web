@@ -85,7 +85,7 @@
 - Post filename: always use `YYYY-MM-DD-slug.md` for new or republished posts. This applies to `src/content/<collection>/<locale>/`.
 - Minimum frontmatter to avoid build errors: `title`, `date`, `tags`, `excerpt`.
 - Use `draft: true` to mark drafts — the build/UI considers `draft` the source of truth for draft state.
- - For translation workflows, prefer using a canonical `postId` in frontmatter to link translations to their original post when it is necessary to disambiguate slugs. The `postId` value, when present, should be the filename without `.md` (including date prefix if applicable). Ejemplo:
+- For translation workflows, prefer using a canonical `postId` in frontmatter to link translations to their original post when it is necessary to disambiguate slugs. The `postId` value, when present, should be the filename without `.md` (including date prefix if applicable). Ejemplo:
 
 ```yaml
 postId: '2025-12-25-por-que-uso-npm'
