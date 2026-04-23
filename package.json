@@ -46,6 +46,7 @@
     "eslint-plugin-astro": "^1.7.0",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
+    "markdownlint": "^0.40.0",
     "vitest": "^4.1.4"
   }
 }

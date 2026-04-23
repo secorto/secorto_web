@@ -1,0 +1,10 @@
+{
+  "MD013": {
+    // Number of characters
+    "line_length": 2000
+  },
+  "MD033": {
+    // Allowed elements
+    "allowed_elements": ["a", "img"]
+  }
+}
