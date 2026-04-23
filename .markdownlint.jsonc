@@ -3,7 +3,7 @@
     // Temporarily extend line length
     "line_length": 2000
   },
-  "MD025": false, // Temporarily disable multiple top level headers in the same file
+  //"MD025": false, // Temporarily disable multiple top level headers in the same file
   "MD033": {
     // Allowed elements for inline HTML in content, that's expected in content
     "allowed_elements": ["a", "img"]

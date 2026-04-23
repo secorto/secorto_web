@@ -11,11 +11,11 @@ In this [Gist hosted on GitHub](https://gist.github.com/Scot3004/c5a562df9ca6509
 
 <a href="https://colab.research.google.com/gist/Scot3004/c5a562df9ca6509820f6320b5e4c6900/introducci-n-a-python.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
-# Greeting
+## Greeting
 
 Hello! Today we are going to learn how to program in **Python** using **Jupyter Notebook**, this way we go straight to the code without worrying about how we install Python locally. In the world of data science it is very common to use this tool to make test scripts and share notes about what is being developed.
 
-## Adding new blocks
+### Adding new blocks
 
 In Jupyter there are 2 types of blocks, text and code.
 
@@ -25,15 +25,15 @@ When we select **Text**, we can add Markdown for editing.
 
 When we select **Code**, we can add a snippet of code.
 
-# What is Python
+## What is Python
 
 Python is an interpreted programming language created by Guido Van Rossum around the 1990s, which stands out for its ease of reading and writing. Python can be used for the web, as well as for automating repetitive tasks (yes, testing falls into this category), and also as a tool for processing massive data.
 
-## Programming paradigms in Python
+### Programming paradigms in Python
 
 A paradigm can also be called a method for solving some problems or performing some tasks. A programming paradigm is an approach to solving the problem using some programming language, or we can also say that it is a method to solve a problem using tools and techniques that are available to us following some approach.
 
-# Hello World
+## Hello World
 
 As a good introduction to any programming language, learning how to print a message to the screen is one of the first things we learn, plus it serves to confirm that the tool was installed successfully. We are going to start with one of my favorite programs "Hello World", for which we will rely on the `print` function which prints to the console what we write between quotes.
 
@@ -47,7 +47,7 @@ print("hello")
 hello
 ```
 
-# Variables
+## Variables
 
 In Python we can define variables that allow us to represent the values we need in our scripts.
 
@@ -62,13 +62,13 @@ print("Hello " + name)
 Hello Sergio
 ```
 
-## Data Types
+### Data Types
 
 Python is a strongly typed language with dynamic typing, this means we can create variables with any data type without worrying about explicitly declaring the type.
 
 > Python has a mechanism ([Type hints](https://peps.python.org/pep-0484/)) with which you can define the types you are going to use, something like what you do with TypeScript.
 
-## Strings
+### Strings
 
 In the previous examples we have been using strings to print our name to the screen, these strings in Python have the data type `str`.
 
@@ -80,7 +80,7 @@ type(name)
 str
 ```
 
-### Format
+#### Format
 
 Personally, to concatenate strings I recommend using the format function instead of the `+` operator, this allows us to even define formatting for the output of the variables.
 
