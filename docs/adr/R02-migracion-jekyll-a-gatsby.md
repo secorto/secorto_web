@@ -70,7 +70,7 @@ contenido, y Jest + Cypress como frameworks de testing.
 
 ### Arquitectura de la aplicación
 
-```
+```bash
 src/
 ├── assets/          → Recursos estáticos (avatar, logo, iconos)
 ├── blocks/          → Contenido MDX como bloques (about.mdx)

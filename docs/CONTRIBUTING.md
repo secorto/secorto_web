@@ -92,7 +92,6 @@ npm run dev
 
 El cual nos iniciara un servidor de desarrollo donde podemos ir viendo como afectan al sitio web los cambios que estamos haciendo y por defecto se ejecutará en [http://localhost:4321](http://localhost:4321)!
 
-
 ## Pruebas
 
 Las pruebas son parte clave de cualquier proceso de desarrollo, en lo personal soy muy apasionado por este tema y considero que ayudan a poder dormir tranquilo sabiendo que hicimos un trabajo bien hecho.
@@ -108,6 +107,7 @@ npm test
 Estas pruebas dan un feedback de la aplicación real aunque son lentas y tediosas de mantener considero que el valor que aporta se da para querer tener unas pocas de estas muy bien enfocadas, para este proyecto en particular decidí usar [cypress](https://www.cypress.io/)
 
 Puedes ejecutar la ui de cypress con el siguiente comando
+
 ```sh
 npx cypress open
 ```

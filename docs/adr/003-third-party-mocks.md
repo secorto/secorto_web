@@ -52,7 +52,7 @@ estructura esperada por el DOM sin descargar recursos reales.
 
 ## Arquitectura de los mocks
 
-```
+```bash
 tests/e2e/helpers/
 ├── whenMocked.ts       ← Decorador condicional (REAL_THIRD_PARTY)
 ├── mockGiscus.ts       ← Intercepta giscus.app/client.js
@@ -63,7 +63,7 @@ tests/e2e/helpers/
 
 ### Flujo
 
-```
+```ts
 test.beforeEach(async ({ page }) => {
   await mockThirdParty(page)        // registra rutas interceptadas
   await page.goto('/es/charlas/..') // navega; requests a terceros → mock
@@ -149,7 +149,7 @@ Pruebas ejecutadas: 12 tests en `charla.a11y.spec.ts`, `charla.spec.ts` y
 
 La suite E2E está organizada en tres categorías:
 
-```
+```bash
 tests/e2e/
 ├── a11y/         ← Tests de accesibilidad (axe-core)
 │   └── charla.a11y.spec.ts

@@ -28,30 +28,31 @@ referenciados: #108, #107, #106, #105, #104 (ver sección Referencias).
 ## Decisión
 
 1. Normalizar la identidad canónica de una serie/entrada usando `postId`.
-  - `postId` será la clave única usada para agrupar traducciones/variantes
+
+- `postId` será la clave única usada para agrupar traducciones/variantes
     de una misma entrada a través de locales.
 
-2. Hacer que la extracción de id sea explícita y con locale: `extractCleanId`
+1. Hacer que la extracción de id sea explícita y con locale: `extractCleanId`
   devuelve `{ id: string, locale: UILanguages }` — el `locale` es obligatorio;
   la función es estricta y lanza si el `id` no contiene un prefijo de locale
   válido.
 
-3. `entryAdapter` debe normalizar entradas y asignar `computed.postId` y
+2. `entryAdapter` debe normalizar entradas y asignar `computed.postId` y
   `computed.locale` para uso downstream.
 
-4. `buildLocaleEntryMap(allEntries)` devolverá un único `Record<postId, AvailableLocales>`
+3. `buildLocaleEntryMap(allEntries)` devolverá un único `Record<postId, AvailableLocales>`
   (map por `postId`) para evitar doble-mapeos y parseos repetidos.
 
-5. Construir enlaces de idioma para detalle usando rutas ya localizadas
+4. Construir enlaces de idioma para detalle usando rutas ya localizadas
   (p. ej. `config.routes[locale]`) con `buildDetailLink(targetLang, localizedSection, availableLocales)`
   (helper actual en `src/i18n/languagePickerUtils.ts`, renombrado desde
   `buildDetailLinkFromLocalizedSection`) — esto elimina la dependencia a
   `findCanonicalSectionKey` en el builder de paths.
 
-6. Unificar componentes de SEO en un solo `SEOHead` (presentacional) y que
+5. Unificar componentes de SEO en un solo `SEOHead` (presentacional) y que
   `SiteLayout` sea la única fuente de `canonical` y emita `x-default`.
 
-7. Fallar rápido ante inconsistencias críticas: duplicados de `(postId, locale)`
+6. Fallar rápido ante inconsistencias críticas: duplicados de `(postId, locale)`
   lanzan error en build time para forzar corrección de contenido.
 
 ## Razonamiento
@@ -65,12 +66,12 @@ referenciados: #108, #107, #106, #105, #104 (ver sección Referencias).
 
 ## Trade-offs
 
-- + Seguridad: invariantes fuertes (no silencioso). Falla en lugar de degradar.
-- - Rigidez: obliga a corregir contenido/legacy antes del build; mayor coste
+- Seguridad: invariantes fuertes (no silencioso). Falla en lugar de degradar.
+- Rigidez: obliga a corregir contenido/legacy antes del build; mayor coste
   inicial en migración.
-- + Simplicidad para consumidores: API única (`postId` → `AvailableLocales`).
-- - Migración: call-sites que esperaban la forma antigua deben actualizarse.
-- + Mejor rendimiento y claridad en `staticPathsBuilder` y helpers i18n.
+- Simplicidad para consumidores: API única (`postId` → `AvailableLocales`).
+- Migración: call-sites que esperaban la forma antigua deben actualizarse.
+- Mejor rendimiento y claridad en `staticPathsBuilder` y helpers i18n.
 
 ## Consecuencias
 
@@ -250,5 +251,3 @@ Ver los commits en la rama feature/translation-link-domain para detalles.
 ---
 
 Firmado: Equipo de arquitectura — secorto_web
-
-

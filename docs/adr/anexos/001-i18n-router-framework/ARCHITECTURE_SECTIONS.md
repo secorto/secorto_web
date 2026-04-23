@@ -5,6 +5,7 @@ Arquitectura de la solución para internacionalización basado en secciones
 ## Problema Resuelto
 
 **Antes**: Duplicación significativa en archivos como:
+
 - `src/pages/[locale]/blog/index.astro`
 - `src/pages/[locale]/charla/index.astro`
 - `src/pages/[locale]/trabajo/index.astro`
@@ -16,6 +17,7 @@ Cada uno tenía lógica similar pero con valores hardcodeados específicos a la 
 ## Componentes Principales
 
 ### 1. **`src/config/sections.ts`** - Configuración Centralizada
+
 Define el contrato de cada sección (colección, rutas, traducciones, componentes).
 
 ```typescript
@@ -41,11 +43,13 @@ export const sectionsConfig: Record<SectionType, SectionConfig> = {
 ```
 
 **Ventajas**:
+
 - Aliasing multiidioma: `charla` (es) → `talk` (en)
 - Cambios en un solo lugar
 - Type-safe: TypeScript valida todas las claves
 
 ### 2. **`src/utils/sectionLoader.ts`** - Cargador de Datos
+
 Centraliza la lógica de carga de posts y tags.
 
 ```typescript
@@ -64,6 +68,7 @@ export async function loadSectionByRoute(
 Sin `if` eternos ni duplicación.
 
 ### 3. **`src/components/SectionRenderer.astro`** - Renderizado Polimórfico
+
 Renderiza dinámicamente según la configuración:
 
 ```astro
@@ -77,10 +82,12 @@ Renderiza dinámicamente según la configuración:
 ```
 
 Si agregamos un nuevo componente, simplemente:
+
 1. Agregamos el tipo en `SectionConfig`
 2. Agregamos la rama en `SectionRenderer`
 
 ### 4. **`src/pages/[locale]/[section]/index.astro`** - Router Universal
+
 Una única plantilla que maneja todas las rutas:
 
 ```astro
@@ -101,6 +108,7 @@ export async function getStaticPaths() {
 ```
 
 Genera automáticamente:
+
 - `/es/blog`, `/en/blog`
 - `/es/charla`, `/en/talk`
 - `/es/trabajo`, `/en/work`
@@ -109,7 +117,7 @@ Genera automáticamente:
 ## Beneficios
 
 | Aspecto | Antes | Después |
-|---------|-------|---------|
+| --------- | ------- | --------- |
 | **Duplicación** | ~100 líneas duplicadas | 0 líneas duplicadas |
 | **Agregar sección** | Crear 2-3 archivos nuevos | Agregar entrada en `sections.ts` |
 | **Cambiar alias** | Múltiples archivos | Un lugar |
@@ -118,7 +126,7 @@ Genera automáticamente:
 
 ## Patrón de Diseño: Strategy + Composition
 
-```
+```text
 ┌─────────────────────┐
 │  sections.ts        │ ← Configuration (meta-data)
 │  (SectionConfig)    │
@@ -137,6 +145,7 @@ Genera automáticamente:
 ### Agregar Nueva Sección
 
 **Paso 1**: Agregar en `sections.ts`:
+
 ```typescript
 export const sectionsConfig = {
   // ... secciones existentes
@@ -159,15 +168,16 @@ Las rutas se generan automáticamente:
   /en/newsletter
 
 Sin tocar:
-  - [section]/index.astro
-  - sectionLoader.ts
-  - SectionRenderer.astro
+
+- [section]/index.astro
+- sectionLoader.ts
+- SectionRenderer.astro
 
 Este es el poder del polimorfismo ✨
 
 ## Patrones Implementados
 
-```
+```text
 ┌───────────────────────────────────────────────┐
 │ Configuration Pattern                          │
 │ (Toda la lógica guiada por datos)             │

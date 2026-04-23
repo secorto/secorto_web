@@ -21,9 +21,7 @@ Comportamiento del sitio
 
 - Traducciones con `draft: true` muestran un banner y se sirven con `noindex` hasta que se publique
 
-
 Notas finales
 
-- `postId` (próximamente `translationKey` https://github.com/secorto/secorto_web/issues/134) es una clave libre de agrupación/translationKey que habitualmente se infiere del `cleanId` (el identificador del fichero sin prefijo de idioma). No es una referencia obligatoria a otra entrada, y puede omitirse cuando el `slug` coincide entre original y traducción.
+- `postId` (próximamente `translationKey` <https://github.com/secorto/secorto_web/issues/134>) es una clave libre de agrupación/translationKey que habitualmente se infiere del `cleanId` (el identificador del fichero sin prefijo de idioma). No es una referencia obligatoria a otra entrada, y puede omitirse cuando el `slug` coincide entre original y traducción.
 - Mantén la guía simple: `draft` para estado, `postId` solo para desambiguar slugs. Evita campos redundantes en contenido nuevo.
-

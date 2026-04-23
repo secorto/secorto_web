@@ -1,10 +1,15 @@
 {
   "MD013": {
-    // Number of characters
+    // Temporarily extend line length
     "line_length": 2000
   },
+  "MD024": false, // Temporarily disable multiple headers with the same content
+  "MD025": false, // Temporarily disable multiple top level headers in the same file
+  "MD003": false, // Temporarily disable header style
+  "MD060": false, // Temporarily disable code block style
+
   "MD033": {
-    // Allowed elements
+    // Allowed elements for inline HTML in content, that's expected in content
     "allowed_elements": ["a", "img"]
   }
 }

@@ -1,4 +1,3 @@
-````markdown
 # 📑 Índice de Documentación
 
 Resumen y guía rápida de los documentos relacionados con la ADR-001 (Refactorización i18n). Aquí se listan índices y rutas de lectura.
@@ -6,7 +5,9 @@ Resumen y guía rápida de los documentos relacionados con la ADR-001 (Refactori
 ## 🎯 Comienza Aquí
 
 ### **[SOLUTION_SUMMARY.md](SOLUTION_SUMMARY.md)** ⭐ START HERE
-**Resumen ejecutivo en 5 minutos**
+
+**Resumen ejecutivo en 5 minutos**:
+
 - Problema resuelto
 - Solución entregada
 - Resultados clave
@@ -19,7 +20,9 @@ Resumen y guía rápida de los documentos relacionados con la ADR-001 (Refactori
 ## 📚 Documentación Técnica
 
 ### 1. [SOLUTION_README.md](SOLUTION_README.md)
-**Guía de lectura por rol y referencias rápidas**
+
+**Guía de lectura por rol y referencias rápidas**:
+
 - Lectura recomendada por rol (gerente, dev, arquitecto)
 - Tablas de referencia
 - Preguntas frecuentes
@@ -27,7 +30,9 @@ Resumen y guía rápida de los documentos relacionados con la ADR-001 (Refactori
 - **Público**: Todos
 
 ### 2. [ARCHITECTURE_SECTIONS.md](ARCHITECTURE_SECTIONS.md)
-**Documentación técnica detallada**
+
+**Documentación técnica detallada**:
+
 - Descripción de cada componente
 - Flujo de datos
 - Patrones de diseño (Strategy, Composition, Factory)
@@ -37,7 +42,9 @@ Resumen y guía rápida de los documentos relacionados con la ADR-001 (Refactori
 - **Público**: Desarrolladores
 
 ### 3. [ARCHITECTURE_DIAGRAM.md](ARCHITECTURE_DIAGRAM.md)
-**Visualización gráfica de la arquitectura**
+
+**Visualización gráfica de la arquitectura**:
+
 - Flujo completo de solicitud
 - Diagramas ASCII
 - Generación automática de rutas
@@ -51,7 +58,9 @@ Resumen y guía rápida de los documentos relacionados con la ADR-001 (Refactori
 ## 📊 Análisis y Comparación
 
 ### 4. [BEFORE_AFTER_COMPARISON.md](BEFORE_AFTER_COMPARISON.md)
-**Análisis visual detallado del cambio**
+
+**Análisis visual detallado del cambio**:
+
 - Código anterior vs nuevo
 - Estructura de carpetas
 - Línea por línea comparación
@@ -62,7 +71,9 @@ Resumen y guía rápida de los documentos relacionados con la ADR-001 (Refactori
 - **Público**: Todos (especialmente developers y architects)
 
 ### 5. [SCALABILITY_ANALYSIS.md](SCALABILITY_ANALYSIS.md)
-**Proyección de crecimiento y análisis O(n) vs O(1)**
+
+**Proyección de crecimiento y análisis O(n) vs O(1)**:
+
 - Iteraciones de crecimiento (3 → 8 → 11 secciones)
 - Tabla comparativa de escalabilidad
 - Complejidad O(n) vs O(1)
@@ -76,7 +87,9 @@ Resumen y guía rápida de los documentos relacionados con la ADR-001 (Refactori
 ## 🚀 Implementación y Operación
 
 ### 6. [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md)
-**Pasos prácticos para implementar los cambios**
+
+**Pasos prácticos para implementar los cambios**:
+
 - Estado actual vs deseado
 - Opciones de migración (A: Eliminar rutas, B: Mantener rutas)
 - Pasos de implementación
@@ -86,7 +99,9 @@ Resumen y guía rápida de los documentos relacionados con la ADR-001 (Refactori
 - **Público**: DevOps, Tech Leads
 
 ### 7. [EXTENSION_EXAMPLES.md](EXTENSION_EXAMPLES.md)
-**9 ejemplos prácticos de extensión**
+
+**9 ejemplos prácticos de extensión**:
+
 1. Agregar nueva sección
 2. Agregar traducción
 3. Crear nuevo componente
@@ -101,7 +116,9 @@ Resumen y guía rápida de los documentos relacionados con la ADR-001 (Refactori
 - **Público**: Desarrolladores
 
 ### 8. [MAINTENANCE_CHECKLIST.md](MAINTENANCE_CHECKLIST.md)
-**Checklists de operación y mantenimiento**
+
+**Checklists de operación y mantenimiento**:
+
 - Checklist diario/semanal
 - Checklist mensual
 - Problemas comunes y soluciones
@@ -112,26 +129,11 @@ Resumen y guía rápida de los documentos relacionados con la ADR-001 (Refactori
 
 ---
 
-## 🛠️ Herramientas
-
-### 9. [validate-architecture.sh](validate-architecture.sh)
-**Script bash para validar la arquitectura**
-```bash
-chmod +x validate-architecture.sh
-./validate-architecture.sh
-```
-- Verifica que archivos existen
-- Valida configuración
-- Valida estructura
-- Retorna reporte con colores
-- **Público**: Desarrolladores, DevOps
-
----
-
 ## 📈 Archivos de Código
 
 ### Código Implementado
-```
+
+```text
 src/config/sections.ts                    (63 líneas)
 src/utils/sectionLoader.ts                (42 líneas)
 src/components/SectionRenderer.astro      (28 líneas)
@@ -144,7 +146,8 @@ tsconfig.json                             (actualizado)
 ## 🗺️ Mapa Mental de Lectura
 
 ### Para Gerentes/Líderes (30 minutos)
-```
+
+```text
 1. SOLUTION_SUMMARY.md          (5 min)
 2. BEFORE_AFTER_COMPARISON.md   (15 min - ver gráficos)
 3. SCALABILITY_ANALYSIS.md      (10 min - ver proyecciones)
@@ -152,7 +155,8 @@ tsconfig.json                             (actualizado)
 ```
 
 ### Para Desarrolladores (90 minutos)
-```
+
+```text
 1. SOLUTION_SUMMARY.md          (5 min)
 2. SOLUTION_README.md           (10 min)
 3. ARCHITECTURE_SECTIONS.md     (20 min)
@@ -164,7 +168,8 @@ tsconfig.json                             (actualizado)
 ```
 
 ### Para Arquitectos (60 minutos)
-```
+
+```text
 1. SOLUTION_SUMMARY.md          (5 min)
 2. ARCHITECTURE_SECTIONS.md     (20 min - enfoque patterns)
 3. BEFORE_AFTER_COMPARISON.md   (15 min - análisis completo)
@@ -174,7 +179,8 @@ tsconfig.json                             (actualizado)
 ```
 
 ### Para DevOps (30 minutos)
-```
+
+```text
 1. SOLUTION_SUMMARY.md          (5 min)
 2. MIGRATION_GUIDE.md           (15 min)
 3. MAINTENANCE_CHECKLIST.md     (10 min)
@@ -202,7 +208,7 @@ tsconfig.json                             (actualizado)
 
 ## 📊 Estadísticas de Documentación
 
-```
+```text
 Total de documentos: 10
 Total de líneas: ~3,500
 Total de ejemplos: 20+
@@ -218,22 +224,25 @@ Cobertura: 100% del sistema
 ## ✅ Checklist de Lectura
 
 ### Lectura Mínima (Obligatorio)
+
 - [ ] SOLUTION_SUMMARY.md
 - [ ] ARCHITECTURE_SECTIONS.md
 - [ ] EXTENSION_EXAMPLES.md
 
 ### Lectura Recomendada (Importante)
+
 - [ ] ARCHITECTURE_DIAGRAM.md
 - [ ] BEFORE_AFTER_COMPARISON.md
 - [ ] MIGRATION_GUIDE.md
 
 ### Lectura Complementaria (Referencia)
+
 - [ ] SCALABILITY_ANALYSIS.md
 - [ ] MAINTENANCE_CHECKLIST.md
 - [ ] SOLUTION_README.md
 
 ### Validación
-- [ ] Ejecutar `./validate-architecture.sh`
+
 - [ ] Ejecutar `npm run build`
 - [ ] Ejecutar `npm run preview`
 
@@ -255,5 +264,3 @@ Después de leer esta guía:
 **Proyecto**: secorto_web
 **Branch**: i18n-en
 **Estado**: ✅ Completo
-
-````

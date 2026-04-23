@@ -87,7 +87,7 @@ estática** — no existían tests unitarios:
 
 Pipeline CI (Travis CI):
 
-```
+```bash
 gem install bundler → bundle install → npm install
 → jekyll build → npm run test (= lint:js + lint:css + lint:html + lint:md)
 ```

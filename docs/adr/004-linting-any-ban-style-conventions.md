@@ -51,7 +51,7 @@ contenga nuevos `any` y que cualquier excepción sea explícita y justificada.
 Se reemplazaron muchos `any` del código fuente con tipos explícitos:
 
 | Patrón eliminado | Reemplazo |
-|---|---|
+| --- | --- |
 | `any` en parámetros | Interfaces dedicadas (`PageData`, `PostEntry`, etc.) |
 | `as unknown as any` | Genéricos (`DetailPageContext<T>`) |
 | `any` en retornos | Tipos de colección de Astro (`CollectionEntry<CollectionKey>`) |
@@ -190,7 +190,7 @@ revisión manual.
 
 ## Diagrama del estado actual
 
-```
+```text
 ┌──────────────────────────────────────────────────────────┐
 │ ESLint (flat config, v9)                                 │
 │                                                          │
@@ -233,7 +233,7 @@ revisión manual.
   generado por `playwright codegen` necesita limpieza manual.
 - Reglas de estilo (quotes, trailing commas, etc.) sin definir.
 - Decisión Prettier vs Stylistic pendiente.
- - `no-explicit-any` ahora es `error`; revisar fallos en CI y agregar
+- `no-explicit-any` ahora es `error`; revisar fallos en CI y agregar
    excepciones justificadas si aparecen casos legítimos.
 - Configuración de ESLint podría consolidarse mejor (algunas reglas
   sueltas).

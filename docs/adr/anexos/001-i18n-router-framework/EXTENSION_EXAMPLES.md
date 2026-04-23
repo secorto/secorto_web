@@ -27,6 +27,7 @@ export const sectionsConfig = {
   }
 }
 ```
+
 Resultado automático:
 ✅ /es/eventos → carga desde collection: 'events'
 ✅ /en/events → misma lógica, diferente idioma
@@ -100,7 +101,6 @@ portfolio: {
 
 ## EJEMPLO 4: Crear nuevo tipo de renderizador (SectionRendererAdvanced)
 
-
 Si necesitas más flexibilidad, puedes:
 src/components/SectionRendererAdvanced.astro
 
@@ -125,7 +125,6 @@ const { config, locale, posts, tags, customRenderer: CustomRenderer } = Astro.pr
   <SectionRenderer config={config} locale={locale} posts={posts} tags={tags} />
 )}
 ```
-
 
 ## EJEMPLO 5: Agregar metadatos avanzados en configuración
 
@@ -162,6 +161,7 @@ Metadatos nuevos
 ```
 
 Luego usar en:
+
 - Generador de sitemap
 - Menú de navegación dinámico
 - Estilos condicionales
@@ -188,6 +188,7 @@ const blogFeatured = createSection('blog', {
   hasTags: false  // Sin tags
 })
 ```
+
 ## EJEMPLO 7: Utilidad para generar menú automáticamente
 
 ```ts
@@ -209,6 +210,7 @@ export function getNavigationItems(locale: UILanguages) {
 ```
 
 Uso en Header.astro:
+
 ```astro
 <nav>
   {getNavigationItems(locale).map(item => (
@@ -291,6 +293,7 @@ if (import.meta.env.PROD) {
 ## EJEMPLO 9: Cambios multi-idioma simplificados
 
 ANTES: Cambiar "talks" → "charlas" requería:
+
 1. Editar /es/charla/index.astro
 2. Editar /en/talk/index.astro
 3. Editar Header.astro

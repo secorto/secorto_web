@@ -6,6 +6,7 @@ repositorio. No se crean issues por cada excepción: los comentarios inline
 en esta lista cuando requieren seguimiento.
 
 Formato de entrada
+
 - **id**: identificador corto (p. ej. `debt-001`)
 - **archivo**: ruta al archivo donde aparece
 - **línea / contexto**: resumen breve del lugar
@@ -25,19 +26,21 @@ Ejemplo
   estado: open
 
 Cómo usar
+
 1. Añadir el comentario inline en el código con el formato:
 
 ```ts
 // TODO(debt): <razón breve> — owner: @usuario — until: YYYY-MM-DD
 ```
 
-2. Añadir o actualizar la entrada correspondiente en este archivo con detalles
+1. Añadir o actualizar la entrada correspondiente en este archivo con detalles
    adicionales si el ítem requiere seguimiento.
 
-3. En la revisión de sprint o cada mes, revisar las entradas `open` y moverlas
+2. En la revisión de sprint o cada mes, revisar las entradas `open` y moverlas
    a `in-progress` o `closed` según corresponda.
 
 Notas
+
 - Este archivo es la fuente de verdad para deuda técnica. Evitar crear issues
   por cada excepción para mantener el backlog limpio.
 

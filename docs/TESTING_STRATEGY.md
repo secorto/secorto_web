@@ -50,12 +50,12 @@ Este documento explica el objetivo de las pruebas unitarias y E2E en este reposi
   - Mockear dependencias externas con `vi.mock()` y usar `vi.resetModules()` cuando importes módulos dinámicamente
   - Evitar `any`; preferir datos fuertemente tipados y factories para crear fixtures
 
- - E2E
+- E2E
   - Page Object Model (POM) con una restricción importante: los Page Objects deben *exponer únicamente* `Locator`s y selectores, **no** contener acciones complejas.
-    - Responsabilidad de los `pages/*`: ofrecer locators y helpers de acceso (p. ej. `loginForm.username()` devuelve `Locator`) ubicados en `tests/e2e/pages/`.
-    - Para operaciones muy simples es perfectamente válido usar directamente los locators en los tests (p. ej. `page.locator('[data-e2e=btn]').click()` o `somePage.elLocator().fill('valor')`).
-    - Las `actions` ubicadas en `tests/actions/` se recomiendan solo cuando hay composiciones reutilizables o flujos complejos: por ejemplo, cuando una secuencia genera un código, maneja iframes, activa callbacks externos o coordina pasos que no se resuelven con una sola llamada a un locator. En esos casos, las `actions` encapsulan la lógica y mantienen los tests legibles.
-      - Preferible: definir las operaciones relacionadas en el `Page` (por ejemplo `loginPage.login()` que use los locators) y envolver su ejecución en `test.step` desde el test. De este modo el Page mantiene locators y helpers cohesivos, y `test.step` agrupa esas operaciones en el reporte del runner como un bloque expandible. Ejemplo:
+  - Responsabilidad de los `pages/*`: ofrecer locators y helpers de acceso (p. ej. `loginForm.username()` devuelve `Locator`) ubicados en `tests/e2e/pages/`.
+  - Para operaciones muy simples es perfectamente válido usar directamente los locators en los tests (p. ej. `page.locator('[data-e2e=btn]').click()` o `somePage.elLocator().fill('valor')`).
+  - Las `actions` ubicadas en `tests/actions/` se recomiendan solo cuando hay composiciones reutilizables o flujos complejos: por ejemplo, cuando una secuencia genera un código, maneja iframes, activa callbacks externos o coordina pasos que no se resuelven con una sola llamada a un locator. En esos casos, las `actions` encapsulan la lógica y mantienen los tests legibles.
+  - Preferible: definir las operaciones relacionadas en el `Page` (por ejemplo `loginPage.login()` que use los locators) y envolver su ejecución en `test.step` desde el test. De este modo el Page mantiene locators y helpers cohesivos, y `test.step` agrupa esas operaciones en el reporte del runner como un bloque expandible. Ejemplo:
 
   ```ts
   // tests/e2e/pages/ContentPage.ts
@@ -84,10 +84,11 @@ Este documento explica el objetivo de las pruebas unitarias y E2E en este reposi
     })
   })
   ```
-  - Beneficios: mantiene la separación entre estructura del DOM (Pages) y comportamiento (Tasks/Interactions), mejora la reutilización y facilita cambios en el DOM sin mover la lógica de negocio de los tests.
-  - Localizadores estables: preferir selectores accesibles soportados por Playwright (p. ej. `getByRole` / selectores ARIA). Si no es práctico, usar `data-testid` como atributo estable. Evitar selectores frágiles (clases que cambian)
-  - Mockear recursos externos con `page.route()` o proveedores locales en CI para mantener tests deterministas
-  - Timeouts razonables y checks por visibilidad/atributos en vez de sleeps
+
+- Beneficios: mantiene la separación entre estructura del DOM (Pages) y comportamiento (Tasks/Interactions), mejora la reutilización y facilita cambios en el DOM sin mover la lógica de negocio de los tests.
+- Localizadores estables: preferir selectores accesibles soportados por Playwright (p. ej. `getByRole` / selectores ARIA). Si no es práctico, usar `data-testid` como atributo estable. Evitar selectores frágiles (clases que cambian)
+- Mockear recursos externos con `page.route()` o proveedores locales en CI para mantener tests deterministas
+- Timeouts razonables y checks por visibilidad/atributos en vez de sleeps
 
 ## Convenciones de ejecución
 

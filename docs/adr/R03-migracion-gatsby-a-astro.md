@@ -155,7 +155,7 @@ ausencia de tests unitarios. Documentado en
 
 ### Estrategia de calidad — evolución completa
 
-```
+```text
 Jekyll (2016)    → Linters + html-proofer (validación estática)
 Gatsby (2021)    → Jest snapshots + Cypress a11y (tests básicos)
 Astro pre-i18n   → Cypress E2E (continuidad)
@@ -221,7 +221,7 @@ Astro post-i18n  → Playwright E2E + Vitest unitarios (cobertura completa)
 
 ## Línea temporal completa del proyecto
 
-```
+```bash
 2016-03  ┌─ Lektor (Python) — 2 semanas, descartado
 2016-04  ├─ Jekyll — R01
          │  ├─ Gulp + Bootstrap + Bower

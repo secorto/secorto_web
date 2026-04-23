@@ -13,5 +13,4 @@ excerpt: Esta presentación muestra el uso de gatsby para la creación de una pa
 
 Esta presentación muestra el uso de gatsby para la creación de una pagina web estática desde cero, y da multiples ejemplos de sitios hechos con gatsby
 
-
 [Presentación](https://gatsby-node-decks.secorto.com/)

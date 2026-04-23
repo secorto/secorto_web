@@ -3,6 +3,7 @@
 Este documento define las reglas y pasos a seguir al crear, actualizar o re-publicar entradas en el blog, con especial atención a i18n (traducciones), redirecciones y metadata. Su objetivo es evitar inconsistencias en el repositorio y facilitar operaciones repetibles.
 
 ## Resumen corto
+
 - Nombre de fichero de post: `YYYY-MM-DD-<slug>.md` (ej: `2025-12-25-por-que-uso-npm.md`).
 - Si re-publicas una entrada reescrita y quieres que aparezca como nueva: crea un nuevo fichero con la fecha nueva y deja el antiguo; añade una redirección 301 desde el URL antiguo al nuevo.
 - Siempre actualizar/añadir metadata relevante: `updated` (si solo es revisión). Usa `draft: true` para marcar borradores. Para enlaces entre traducciones y originales, usa `postId` en frontmatter cuando corresponda (ver sección i18n).
@@ -17,28 +18,30 @@ Racional: mantener la fecha en el nombre facilita listar por orden cronológico,
 
 ## ¿Crear nuevo post o actualizar el existente? — Hoja de ruta
 
-1. Evaluación inicial:
-- Si los cambios son correctivos o pequeñas ampliaciones → actualizar in-place y añadir `updated: YYYY-MM-DD` en frontmatter.
-- Si la pieza es reescrita sustancialmente (nuevo enfoque, estructura, longitud) y quieres que aparezca como nueva → crear nueva entrada con fecha actual (ver pasos abajo).
+- . Evaluación inicial:
 
-2. Si decides crear nueva entrada (re-publicar):
-- Crear archivo nuevo con fecha en el nombre: `YYYY-MM-DD-<slug>.md` y frontmatter mínimo (title, date, tags, excerpt). Metadata histórica no es necesaria en contenido nuevo.
-- Añadir redirect 301 desde la URL antigua al nuevo slug (ver sección "Redirecciones")
-- Actualizar enlaces internos destacados para apuntar al nuevo slug
-- Si existe una versión traducida antigua y no corresponde al nuevo contenido, decide si:
-- Mantener la versión antigua y dejar la 301 (la traducción no cambia de idioma, evita redirigir hacia otro idioma), o
-- Crear/actualizar la traducción y usar `postId` en la traducción para apuntar al identificador canónico de la nueva entrada (o crear borradores nuevos según tu workflow)
+  - Si los cambios son correctivos o pequeñas ampliaciones → actualizar in-place y añadir `updated: YYYY-MM-DD` en frontmatter.
+  - Si la pieza es reescrita sustancialmente (nuevo enfoque, estructura, longitud) y quieres que aparezca como nueva → crear nueva entrada con fecha actual (ver pasos abajo).
 
-3. Si decides actualizar in-place:
-- Mantén `date` original si quieres preservar historial, y añade `updated: YYYY-MM-DD` en frontmatter
-- Si quieres que la entrada suba en listados/feeds, crea nueva entrada en su lugar (ver punto 2)
+- . Si decides crear nueva entrada (re-publicar):
 
-4. Documentar la decisión en el commit/PR: incluir el rationale (por qué es nueva vs actualización) para el historial del repo.
+  - Crear archivo nuevo con fecha en el nombre: `YYYY-MM-DD-<slug>.md` y frontmatter mínimo (title, date, tags, excerpt). Metadata histórica no es necesaria en contenido nuevo.
+  - Añadir redirect 301 desde la URL antigua al nuevo slug (ver sección "Redirecciones")
+  - Actualizar enlaces internos destacados para apuntar al nuevo slug
+  - Si existe una versión traducida antigua y no corresponde al nuevo contenido, decide si:
+  - Mantener la versión antigua y dejar la 301 (la traducción no cambia de idioma, evita redirigir hacia otro idioma), o
+  - Crear/actualizar la traducción y usar `postId` en la traducción para apuntar al identificador canónico de la nueva entrada (o crear borradores nuevos según tu workflow)
+
+- . Si decides actualizar in-place:
+
+  - Mantén `date` original si quieres preservar historial, y añade `updated: YYYY-MM-DD` en frontmatter
+  - Si quieres que la entrada suba en listados/feeds, crea nueva entrada en su lugar (ver punto 2)
+
+- Documentar la decisión en el commit/PR: incluir el rationale (por qué es nueva vs actualización) para el historial del repo.
 
 ## i18n — qué tener en cuenta
 
 - Nota: los casos legacy relacionados con traducciones están documentados en el ADR correspondiente; usa `postId` para enlazar traducciones con su original solo cuando sea necesario, y sigue usando `draft: true` para marcar borradores.
-
 - Si un frontmatter contiene `postId`, este debe referirse al identificador canónico del original (por ejemplo el nombre de fichero sin `.md`, con prefijo de fecha si aplica). Usa `postId` principalmente cuando el slug difiere entre idiomas (por ejemplo `why-npm` vs `por-que-npm`):
 
 ```yaml

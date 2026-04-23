@@ -4,8 +4,9 @@ Comparación entre los ficheros antes y después de implementar i18n
 
 ## 🔴 ANTES: Duplicación Masiva
 
-### Estructura de Carpetas
-```
+### Estructura de Carpetas Anterior
+
+```bash
 src/pages/[locale]/
 ├── blog/
 │   ├── index.astro                    ← 23 líneas
@@ -25,6 +26,7 @@ Duplicación: ~95% del código
 ```
 
 ### blog/index.astro
+
 ```astro
 ---
 import BaseLayout from '@layouts/BaseLayout.astro'
@@ -52,6 +54,7 @@ const pageTitle = t('nav.blog');  // ← hardcoded
 ```
 
 ### charla/index.astro
+
 ```astro
 ---
 import BaseLayout from '@layouts/BaseLayout.astro'
@@ -79,6 +82,7 @@ const pageTitle = t('nav.talks');  // ← solo cambio
 ```
 
 ### trabajo/index.astro
+
 ```astro
 ---
 import ListWork from '@components/ListWork.astro';
@@ -104,7 +108,7 @@ const allPosts = await getPostsByLocale('work', locale);  // ← solo cambio
 
 ### Problemas Identificados
 
-```
+```text
 ❌ PROBLEMA 1: Duplicación de Imports
     Cada archivo importa lo mismo:
     - BaseLayout, Tags, ListPost/ListWork
@@ -140,8 +144,9 @@ const allPosts = await getPostsByLocale('work', locale);  // ← solo cambio
 
 ## 🟢 DESPUÉS: Arquitectura Polimórfica
 
-### Estructura de Carpetas
-```
+### Estructura de Carpetas Nueva
+
+```bash
 src/
 ├── config/
 │   └── sections.ts                    ← 63 líneas (configuración)

@@ -42,6 +42,7 @@ Below we have an example of code, try placing your name inside the quotes and pr
 ```python title="greeting.py"
 print("hello")
 ```
+
 ```bash title="Output greeting.py"
 hello
 ```
@@ -56,6 +57,7 @@ For example, we can define a variable called name and then print our name to the
 name = "Sergio"
 print("Hello " + name)
 ```
+
 ```bash title="Output greeting_name.py"
 Hello Sergio
 ```
@@ -73,6 +75,7 @@ In the previous examples we have been using strings to print our name to the scr
 ```python title="type.py"
 type(name)
 ```
+
 ```bash title="Output type.py"
 str
 ```

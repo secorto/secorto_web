@@ -118,6 +118,7 @@ accidental y asegurar comportamiento consistente:
   completamente tras los cambios.
 
 Notas importantes:
+
 - Se priorizó eliminar compatibilidad retro en el runtime para evitar
   lógica dispersa y ambigua. Si se necesita, se puede crear un script de
   migración que proponga `draft: true` en archivos con
@@ -126,7 +127,6 @@ Notas importantes:
   plantillas) para mejorar la seguridad de tipos y la mantenibilidad.
 - Resultado: comportamiento determinista — solo `draft: true` controla la
   visibilidad y SEO (noindex/canonical) en la web.
-
 
 ---
 
