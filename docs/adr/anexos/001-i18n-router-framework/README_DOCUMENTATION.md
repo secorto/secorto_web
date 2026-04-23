@@ -192,7 +192,7 @@ tsconfig.json                             (actualizado)
 ## 🔍 Referencia Rápida por Pregunta
 
 | Pregunta | Ir a... | Sección |
-|----------|---------|---------|
+| ---------- | --------- | --------- |
 | ¿Qué se hizo? | SOLUTION_SUMMARY.md | Todo |
 | ¿Por qué funciona? | ARCHITECTURE_SECTIONS.md | "Beneficios" |
 | ¿Cómo está estructurado? | ARCHITECTURE_DIAGRAM.md | "Flujo de Datos" |

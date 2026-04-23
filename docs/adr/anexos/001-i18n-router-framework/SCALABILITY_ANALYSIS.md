@@ -67,7 +67,7 @@ const massiveConfig = {
 ### Resumen comparativo
 
 | Escenario | Archivos (antes → después) | Líneas (antes → después) |
-|---|---:|---:|
+| --- | ---: | ---: |
 | 3 secciones | 3 → 1 | 69 → 60 |
 | 8 secciones | 8 → 1 | 184 → 45 |
 | 11 secciones | 11 → 1 | 253 → 60 |

@@ -78,7 +78,7 @@ El comando `npm test` ejecutaba exclusivamente **linters y validación
 estática** — no existían tests unitarios:
 
 | Herramienta | Tipo | Alcance |
-|---|---|---|
+| --- | --- | --- |
 | **html-proofer** | Validación HTML post-build | Enlaces rotos, alt vacíos, HTML válido |
 | **ESLint** | Linter JS | `.eslintrc.yaml` con 207 líneas de reglas, complejidad máx 6 |
 | **scss-lint** | Linter SCSS | `_sass/**/*.scss` |
@@ -108,7 +108,7 @@ nativo en C), que era problemático de compilar en diferentes entornos.
 ## Alternativas consideradas
 
 | Alternativa | Razón de descarte |
-|---|---|
+| --- | --- |
 | **Lektor** (Python) | Ecosistema limitado, poca documentación, comunidad pequeña |
 | **WordPress** | Requiere hosting dinámico, no alineado con práctica de front-end |
 | **HTML estático** | No escala para blog con múltiples posts |
@@ -139,7 +139,7 @@ nativo en C), que era problemático de compilar en diferentes entornos.
 ### Métricas del repositorio
 
 | Métrica | Valor |
-|---|---|
+| --- | --- |
 | Commits totales | 423 |
 | Período activo | 2016-04 a 2020-03 (~4 años) |
 | Tags de versión | v1.2.1, v1.2.2, v1.3.1, v1.3.2, v2.0.0 |

@@ -133,7 +133,7 @@ La configuración actual tiene reglas funcionales pero hay áreas pendientes
 de organizar:
 
 | Área | Estado | Nota |
-|---|---|---|
+| --- | --- | --- |
 | `no-explicit-any` | ✅ Activa (`error`) | Elevada a `error`; monitorizar en CI y tests |
 | `no-unused-vars` | ✅ Activa (`error`) | Con ignore para `_` prefixed |
 | `import/no-unresolved` | ✅ Activa | Con módulos core de Astro configurados |

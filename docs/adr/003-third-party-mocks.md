@@ -12,7 +12,7 @@ El sitio **secorto\_web** integra varios servicios externos que se cargan en
 páginas de detalle y de blog:
 
 | Servicio | Uso | Recurso que carga |
-|---|---|---|
+| --- | --- | --- |
 | **YouTube** | Videos embebidos en charlas | `youtube.com/embed/*` |
 | **OneDrive / Google Slides / SlideShare / Speaker Deck / Slides.com** | Presentaciones embebidas en charlas | Visor iframe del proveedor |
 | **Giscus** | Sección de comentarios (posts y charlas) | `giscus.app/client.js` + iframe |
@@ -90,7 +90,7 @@ export const mockYouTube = whenMocked(async (page: Page) => {
 ### Variable de entorno
 
 | Variable | Valor | Efecto |
-|---|---|---|
+| --- | --- | --- |
 | `REAL_THIRD_PARTY` | *(no definida)* | Se aplican todos los mocks |
 | `REAL_THIRD_PARTY` | `true` | Los mocks se omiten; se usan los servicios reales |
 
@@ -112,7 +112,7 @@ Pruebas ejecutadas: 12 tests en `charla.a11y.spec.ts`, `charla.spec.ts` y
 ### Resultados
 
 | Test | Con mocks | Sin mocks | Ahorro |
-|---|--:|--:|--:|
+| --- | --: | --: | --: |
 | charla detail a11y (es) | 2.5 s | 6.2 s | **3.7 s (60 %)** |
 | charla detail a11y (en) | 2.4 s | 5.7 s | **3.3 s (58 %)** |
 | charla list a11y (es) | 1.6 s | 1.5 s | -0.1 s |

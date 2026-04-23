@@ -15,7 +15,7 @@ anteriores (`secorto.com_jekyll`, `web2021`). Documentan la evolución
 completa del proyecto a través de tres reescrituras en diferentes frameworks.
 
 | # | Título | Estado | Fecha original |
-|---|--------|--------|----------------|
+| --- | -------- | -------- | ---------------- |
 | [R01](R01-fundacion-sitio-jekyll.md) | Fundación del sitio personal con Jekyll | Reemplazada → R02 | 2016-04 |
 | [R02](R02-migracion-jekyll-a-gatsby.md) | Migración de Jekyll a Gatsby | Reemplazada → R03 | 2021-03 |
 | [R03](R03-migracion-gatsby-a-astro.md) | Migración de Gatsby a Astro | Aceptada | 2024-05 |
@@ -23,7 +23,7 @@ completa del proyecto a través de tres reescrituras en diferentes frameworks.
 ### ADRs del proyecto actual
 
 | # | Título | Estado | Fecha |
-|---|--------|--------|-------|
+| --- | -------- | -------- | ------- |
 | [001](001-i18n-router-framework.md) | Framework i18n y router polimórfico de secciones | Aceptada | 2025-06 |
 | [002](002-testing-framework-migration.md) | Migración de Cypress a Playwright + Vitest | Aceptada | 2025-07 |
 | [003](003-third-party-mocks.md) | Mocks de servicios de terceros en tests E2E | Aceptada | 2025-07 |

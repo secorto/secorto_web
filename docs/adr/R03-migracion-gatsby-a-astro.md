@@ -70,7 +70,7 @@ enrutamiento basado en archivos.
 ### ¿Por qué Astro?
 
 | Criterio | Gatsby | Astro |
-|---|---|---|
+| --- | --- | --- |
 | JS en cliente | React hydration completo | Zero JS por defecto |
 | Datos | GraphQL obligatorio | Content Collections tipadas |
 | Build speed | ~3 min (GraphQL + webpack) | ~30 s (Vite + esbuild) |
@@ -92,7 +92,7 @@ creó la estructura base y se migraron los posts del blog Jekyll/Gatsby.
 Se expandieron las colecciones de contenido más allá de blog y portafolio:
 
 | Colección | Descripción |
-|---|---|
+| --- | --- |
 | `blog` | Posts del blog (migrados desde Jekyll/Gatsby) |
 | `talk` | Charlas y conferencias |
 | `work` | Experiencia laboral |
@@ -137,7 +137,7 @@ ausencia de tests unitarios. Documentado en
 ### Stack final
 
 | Capa | Tecnología | Reemplaza a |
-|---|---|---|
+| --- | --- | --- |
 | SSG | Astro 5 | Gatsby 5 |
 | Lenguaje | TypeScript (strict, zero `any`) | TypeScript parcial |
 | Contenido | Content Collections + Markdown | MDX + GraphQL |
@@ -167,7 +167,7 @@ Astro post-i18n  → Playwright E2E + Vitest unitarios (cobertura completa)
 ## Alternativas consideradas
 
 | Alternativa | Razón de descarte |
-|---|---|
+| --- | --- |
 | **Next.js** | SSR/ISR innecesario para sitio estático; mayor complejidad |
 | **Eleventy** | Sin tipado nativo, sin Content Collections |
 | **SvelteKit** | Curva de aprendizaje de Svelte, ecosistema menos maduro para blogs |
@@ -207,7 +207,7 @@ Astro post-i18n  → Playwright E2E + Vitest unitarios (cobertura completa)
 ### Métricas del repositorio
 
 | Métrica | Valor |
-|---|---|
+| --- | --- |
 | Commits totales | 502+ |
 | Período activo | 2024-05 a presente |
 | Colecciones de contenido | 5 (blog, talk, work, projects, community) |

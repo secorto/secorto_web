@@ -127,7 +127,7 @@ sectionsConfig.community.detailComponent = 'WorkProjectCommunityView'
 ## Tabla de Features por Componente
 
 | Feature | BlogTalkPostView | WorkProjectCommunityView |
-|---------|------------------|--------------------------|
+| --------- | ------------------ | -------------------------- |
 | **Tags** | ✅ Sí | ❌ No |
 | **Date (publicación)** | ✅ Sí | ❌ No |
 | **Period (startDate-endDate)** | ❌ No | ✅ Sí (work) |

@@ -27,32 +27,31 @@ referenciados: #108, #107, #106, #105, #104 (ver sección Referencias).
 
 ## Decisión
 
-1. Normalizar la identidad canónica de una serie/entrada usando `postId`.
-
-- `postId` será la clave única usada para agrupar traducciones/variantes
+1. Normalizar la identidad canónica de una serie/entrada usando `postId`
+  a. `postId` será la clave única usada para agrupar traducciones/variantes
     de una misma entrada a través de locales.
 
-1. Hacer que la extracción de id sea explícita y con locale: `extractCleanId`
+2. Hacer que la extracción de id sea explícita y con locale: `extractCleanId`
   devuelve `{ id: string, locale: UILanguages }` — el `locale` es obligatorio;
   la función es estricta y lanza si el `id` no contiene un prefijo de locale
   válido.
 
-2. `entryAdapter` debe normalizar entradas y asignar `computed.postId` y
+3. `entryAdapter` debe normalizar entradas y asignar `computed.postId` y
   `computed.locale` para uso downstream.
 
-3. `buildLocaleEntryMap(allEntries)` devolverá un único `Record<postId, AvailableLocales>`
+4. `buildLocaleEntryMap(allEntries)` devolverá un único `Record<postId, AvailableLocales>`
   (map por `postId`) para evitar doble-mapeos y parseos repetidos.
 
-4. Construir enlaces de idioma para detalle usando rutas ya localizadas
+5. Construir enlaces de idioma para detalle usando rutas ya localizadas
   (p. ej. `config.routes[locale]`) con `buildDetailLink(targetLang, localizedSection, availableLocales)`
   (helper actual en `src/i18n/languagePickerUtils.ts`, renombrado desde
   `buildDetailLinkFromLocalizedSection`) — esto elimina la dependencia a
   `findCanonicalSectionKey` en el builder de paths.
 
-5. Unificar componentes de SEO en un solo `SEOHead` (presentacional) y que
+6. Unificar componentes de SEO en un solo `SEOHead` (presentacional) y que
   `SiteLayout` sea la única fuente de `canonical` y emita `x-default`.
 
-6. Fallar rápido ante inconsistencias críticas: duplicados de `(postId, locale)`
+7. Fallar rápido ante inconsistencias críticas: duplicados de `(postId, locale)`
   lanzan error en build time para forzar corrección de contenido.
 
 ## Razonamiento
@@ -165,6 +164,7 @@ Ver `src/i18n/languagePickerUtils.ts`, `src/components/SEOHead.astro`, `src/layo
 - Incluir en la PR de migración instrucciones de validación: `npm run test`, `npm run build`, y chequeos de contenido para duplicados `(postId, locale)`.
 
 Firmado: Equipo de arquitectura — secorto_web
+
 ---
 
 ## Resumen
