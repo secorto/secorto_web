@@ -83,10 +83,6 @@ const projectsCollection = defineCollection({
     role: z.string(),
     responsibilities: z.string(),
     website: z.url().optional(),
-    gallery: z.array(z.object({
-      image: image(),
-      alt: z.string()
-    })).optional(),
   }),
 })
 
@@ -102,10 +98,6 @@ const communityCollection = defineCollection({
     role: z.string(),
     responsibilities: z.string(),
     website: z.url().optional(),
-    gallery: z.array(z.object({
-      image: image(),
-      alt: z.string()
-    })).optional(),
   }),
 })
 
