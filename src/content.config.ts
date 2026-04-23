@@ -14,6 +14,10 @@ const createBasePostSchema = (imageHelper: ImageFunction) => z.object({
   postId: z.string().optional(),
   canonical: z.boolean().optional(),
   draft: z.boolean().optional(),
+  gallery: z.array(z.object({
+    image: imageHelper(),
+    alt: z.string()
+  })).optional(),
   change_log: z.array(z.object({
     date: z.date().optional(),
     author: z.string().optional(),
@@ -64,10 +68,6 @@ const workCollection = defineCollection({
     startDate: z.date(),
     endDate: z.date().optional(),
     website: z.url(),
-    gallery: z.array(z.object({
-      image: image(),
-      alt: z.string()
-    })).optional(),
   }),
 })
 
