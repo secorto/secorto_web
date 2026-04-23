@@ -13,11 +13,13 @@ gallery:
 draft: true
 ---
 
-Este es un borrador para describir cómo uso Linux hoy, comparado con mis primeros experimentos.
+Este es un borrador para describir cómo uso Linux hoy,
+comparado con mis primeros experimentos.
 
 ## Qué uso ahora
 
-- Distribuciones: (p. ej. Debian stable en portátil principal, una rolling para pruebas)
+- Distribuciones: (p. ej. Debian stable en portátil principal,
+una rolling para pruebas)
 - Entorno de escritorio/ventanas: (p. ej. GNOME/KDE/i3/tiling)
 - Hardware y configuración clave: (notas sobre GPU, drivers, gestores de paquetes)
 
@@ -36,4 +38,5 @@ Este es un borrador para describir cómo uso Linux hoy, comparado con mis primer
 - Consejos para quienes empiezan ahora
 - Cosas que sigo usando y por qué
 
-Para detalles históricos y los posts originales, ver la entrada resumen: /es/blog/2026-04-23-mis-primeros-pasos-en-linux (original en español)
+Para detalles históricos y los posts originales,
+ver la entrada resumen: /es/blog/2026-04-23-mis-primeros-pasos-en-linux (original en español)
