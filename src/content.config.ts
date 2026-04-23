@@ -14,6 +14,7 @@ const createBasePostSchema = (imageHelper: ImageFunction) => z.object({
   postId: z.string().optional(),
   canonical: z.boolean().optional(),
   draft: z.boolean().optional(),
+  tags: z.array(z.string()).optional(),
   gallery: z.array(z.object({
     image: imageHelper(),
     alt: z.string()
@@ -35,7 +36,6 @@ const blogCollection = defineCollection({
   loader: glob({ pattern: '**\/[^_]*.md', base: "./src/content/blog" }),
   schema: ({ image }) => createBasePostSchema(image).extend({
     date: z.date(),
-    tags: z.array(z.string()).optional(),
   }),
 })
 
@@ -46,8 +46,6 @@ const talkCollection = defineCollection({
   loader: glob({ pattern: '**\/[^_]*.md', base: "./src/content/talk" }),
   schema: ({ image }) => createBasePostSchema(image).extend({
     date: z.date(),
-    tags: z.array(z.string()).optional(),
-    image: image(),
     comunidad: z.string(),
     video: z.string().optional(),
     slide: z.string()
@@ -60,9 +58,6 @@ const talkCollection = defineCollection({
 const workCollection = defineCollection({
   loader: glob({ pattern: '**\/[^_]*.md', base: "./src/content/work" }),
   schema: ({ image }) => createBasePostSchema(image).extend({
-    tags: z.array(z.string()).optional(),
-    excerpt: z.string(),
-    image: image(),
     role: z.string(),
     responsibilities: z.string(),
     startDate: z.date(),
@@ -77,9 +72,6 @@ const workCollection = defineCollection({
 const projectsCollection = defineCollection({
   loader: glob({ pattern: '**\/[^_]*.md', base: "./src/content/projects" }),
   schema: ({ image }) => createBasePostSchema(image).extend({
-    tags: z.array(z.string()).optional(),
-    excerpt: z.string(),
-    image: image(),
     role: z.string(),
     responsibilities: z.string(),
     website: z.url().optional(),
@@ -92,9 +84,6 @@ const projectsCollection = defineCollection({
 const communityCollection = defineCollection({
   loader: glob({ pattern: '**\/[^_]*.md', base: "./src/content/community" }),
   schema: ({ image }) => createBasePostSchema(image).extend({
-    tags: z.array(z.string()).optional(),
-    excerpt: z.string(),
-    image: image(),
     role: z.string(),
     responsibilities: z.string(),
     website: z.url().optional(),
