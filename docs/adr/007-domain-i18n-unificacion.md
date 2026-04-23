@@ -17,6 +17,15 @@ surgen de la necesidad de:
 Los cambios agrupados en esta decisión están relacionados con los PR/issues
 referenciados: #108, #107, #106, #105, #104 (ver sección Referencias).
 
+Había duplicación y lógica dispersa para construir enlaces localizados y metas SEO. Los cambios recientes buscan:
+
+- Unificar la representación de un enlace de idioma (href, label, disponibilidad, motivo)
+- Centralizar la construcción de `localeLinks` y alternates/`x-default`
+- Permitir páginas Markdown fuera de collections con `title`, `draft` y plantilla compartida
+- Reducir parseos/transformaciones repetidas durante build time
+
+Estos cambios se implementaron en múltiples archivos y producen una API más estable y testeable para i18n.
+
 ## Problemas detectados
 
 - Re-parseo frecuente de `entry.id` en distintos puntos del código
@@ -146,108 +155,3 @@ Estos commits ya están reflejados en la implementación de la rama `domain-new`
 - Añadir un breve snippet en la PR de migración explicando los puntos de ruptura: renombrado `canonicalId`→`postId`, firma de `buildLocaleEntryMap`, y `extractCleanId` más estricto.
 
 ---
-
-## Actualización (2026-03-24): i18n + domain — resumen de cambios recientes
-
-Además de lo documentado arriba, se han añadido mejoras y refactors en PRs posteriores que conviene dejar registrados:
-
-- `TranslationLink` (POJO) y centralización de builders en `languagePickerUtils` para devolver objetos homogéneos que consumen `LanguagePicker` y `SEOHead`
-- `SEOHead` unificado para generar `alternates` y `x-default` desde `TranslationLink`
-- `MarkdownLayout` ahora inserta `SEOHead` y respeta `draft` en frontmatter para aplicar `noindex` en páginas Markdown fuera de collections
-- `staticPathsBuilder` precomputa `localeLinks` y `defaultPath` y los pasa a templates, reduciendo lógica en templates
-
-Ver `src/i18n/languagePickerUtils.ts`, `src/components/SEOHead.astro`, `src/layouts/MarkdownLayout.astro`, `src/utils/staticPathsBuilder.ts` y `src/domain/translationLink.ts` para detalles de implementación.
-
-- Notas de migración adicionales:
-
-- `getCanonicalMetadata` fue eliminado del runtime; la generación de la descripción SEO queda cubierta por el helper `getSeoDescription` (en `src/domain/post.ts`), que se centra únicamente en construir la `description`/`excerpt` para metadatos. La responsabilidad de emitir el `canonical` recae en el layout principal (por ejemplo `SiteLayout`, que suele usar `Astro.url` o el mecanismo de layout correspondiente) y la aplicación de `noindex` se controla desde el frontmatter `draft` (ej. `entry.data.draft`) y se transmite a `SEOHead` o a las plantillas que lo consumen. Además, el campo `title` es obligatorio en todas las colecciones y debe presentarse en el frontmatter de las entradas.
-- Incluir en la PR de migración instrucciones de validación: `npm run test`, `npm run build`, y chequeos de contenido para duplicados `(postId, locale)`.
-
-Firmado: Equipo de arquitectura — secorto_web
-
----
-
-## Resumen
-
-Esta versión actualiza la ADR original para reflejar los cambios recientes en la rama de i18n/domain: se introduce un pequeño objeto de dominio para representar enlaces de traducción (`TranslationLink`), se centralizan los builders de links en `languagePickerUtils`, se unifica la generación de metas/alternates en `SEOHead` y se añade soporte SEO para páginas Markdown fuera de colecciones mediante `MarkdownLayout`. Además se adaptó `staticPathsBuilder` para precomputar `localeLinks` y `defaultPath` por entrada.
-
-La actualización documenta los commits más recientes y las implicaciones de migración.
-
-## Contexto
-
-Había duplicación y lógica dispersa para construir enlaces localizados y metas SEO. Los cambios recientes buscan:
-
-- Unificar la representación de un enlace de idioma (href, label, disponibilidad, motivo)
-- Centralizar la construcción de `localeLinks` y alternates/`x-default`
-- Permitir páginas Markdown fuera de collections con `title`, `draft` y plantilla compartida
-- Reducir parseos/transformaciones repetidas durante build time
-
-Estos cambios se implementaron en múltiples archivos y producen una API más estable y testeable para i18n.
-
-## Problemas abordados
-
-- Lógica repetida para construir enlaces y alternates en diversas plantillas
-- Falta de un objeto de dominio que describa un enlace de traducción
-- Ausencia de control consistente de `noindex` para páginas markdown fuera de collections
-- Repetidos parseos de identificadores y locales en la generación de rutas
-
-## Decisión tomada
-
-1. Añadir `TranslationLink` como objeto de dominio (POJO) para representar enlaces de idioma y su disponibilidad. (nuevo: [src/domain/translationLink.ts](../../src/domain/translationLink.ts))
-2. Exponer helpers en `languagePickerUtils` que devuelven `TranslationLink` para casos: `home`, `collection`, `tag`, `detail`, `static page` y `alternates`. (actualizado: [src/i18n/languagePickerUtils.ts](../../src/i18n/languagePickerUtils.ts))
-3. Actualizar `SEOHead` para recibir `links` y `defaultPath` y generar `alternates`/metas desde `TranslationLink`. (actualizado: [src/components/SEOHead.astro](../../src/components/SEOHead.astro))
-4. Modificar `MarkdownLayout` para renderizar `SEOHead` usando `buildStaticPageLinks(Astro.url)` y respetar `draft` en frontmatter para `noindex`. (actualizado: [src/layouts/MarkdownLayout.astro](../../src/layouts/MarkdownLayout.astro))
-5. Precomputar `localeLinks` y `defaultPath` en la generación de rutas (`staticPathsBuilder`) usando `buildLanguageLinks` + `buildDetailLink`, y exponerlos a los templates. (actualizado: [src/utils/staticPathsBuilder.ts](../../src/utils/staticPathsBuilder.ts))
-6. Mantener tests unitarios que cubren los builders y metadata helpers; adaptar donde haga falta.
-
-## Razonamiento
-
-- Un `TranslationLink` evita decisiones ad-hoc y reduce código repetido en templates y layouts.
-- Centralizar `SEOHead` garantiza coherencia en alternates y canonical/default path, además de simplificar call-sites.
-- `MarkdownLayout` con `SEOHead` permite crear páginas fuera de collections con soporte para `title` y `draft` sin duplicar lógica.
-- Precomputar `localeLinks` en build time mejora rendimiento y simplifica templates.
-
-## Consecuencias
-
-- Cambios localizados en ~11 archivos (refactor y adiciones), con riesgo moderado y fácil revisión por PR.
-- Necesidad de mantener sincronía entre `rootMap` y `buildStaticPageLink` para rutas estáticas.
-- Eliminación o relegado de utilidades antiguas (ej. `getCanonicalMetadata`) — ver notas abajo.
-
-## Archivos clave cambiados
-
-- [src/domain/translationLink.ts](../../src/domain/translationLink.ts) (nuevo)
-- [src/i18n/languagePickerUtils.ts](../../src/i18n/languagePickerUtils.ts) (refactor / builders)
-- [src/components/SEOHead.astro](../../src/components/SEOHead.astro) (consume `TranslationLink`)
-- [src/layouts/MarkdownLayout.astro](../../src/layouts/MarkdownLayout.astro) (inserta `SEOHead`, respeta `draft`)
-- [src/utils/staticPathsBuilder.ts](../../src/utils/staticPathsBuilder.ts) (precomputo `localeLinks` y `defaultPath`)
-- Tests: [tests/unit/i18n/languagePickerUtils.test.ts](../../tests/unit/i18n/languagePickerUtils.test.ts)
-
-## Migración y pasos recomendados
-
-1. Actualizar call-sites que consumen `buildDetailLink`/`buildLanguageLinks` si cambió la firma.
-2. Verificar que `MarkdownLayout` se usa para páginas markdown fuera de colecciones (añadir frontmatter `layout`, `title`, `draft`).
-3. Revisar `src/content/*` para detectar entradas que violen invariantes `(postId, locale)` duplicado antes del merge.
-4. Ejecutar tests unitarios y build: `npm run test` / `npm run build`.
-
-## Cambios recientes relevantes (resumen por commit)
-
-- **TranslationLink + languagePicker refactor**: introduce `TranslationLink` y centraliza builders. Impacto directo en `SEOHead` y `LanguagePicker`.
-- **MarkdownLayout: SEO + draft**: añade `SEOHead` y `noindex` para drafts; permite páginas fuera de colecciones con layout compartido.
-- **staticPathsBuilder: precomputo localeLinks**: `localeLinks` y `defaultPath` ahora se calculan en build y se pasan a templates.
-
-Ver los commits en la rama feature/translation-link-domain para detalles.
-
-## Riesgos y mitigaciones
-
-- Riesgo: inconsistencias entre `rootMap` y `buildStaticPageLink` → mitigación: tests para rutas estáticas y documentación del contract de `rootMap`.
-- Riesgo: remanentes de utilidades antiguas (p. ej. `getCanonicalMetadata`) → mitigación: decidir en PR si eliminar o marcar como deuda técnica.
-
-## Recomendaciones finales
-
-- Exponer `TranslationLink` desde `@domain` para evitar duplicación de tipos en consumidores.
-- Añadir una entrada en `docs/tech-debt.md` si `getCanonicalMetadata` se deja como reserva.
-- Incluir en el PR de migración un snippet con los puntos de ruptura y comandos sugeridos para validar (`npm run test`, `npm run build`).
-
----
-
-Firmado: Equipo de arquitectura — secorto_web
