@@ -90,26 +90,14 @@ from = "/es/charlas/*"
 to = "/es/charla/:splat"
 status = 301
 
+# Posts movidos
+
 [[redirects]]
 from = "/es/blog/2016-06-18-por-que-uso-npm"
 to = "/es/blog/2025-12-25-por-que-uso-npm"
 status = 301
 
-# RSS feed legacy redirect (was /rss.xml, now per-locale)
-[[redirects]]
-from = "/rss.xml"
-to = "/es/rss.xml"
-status = 301
-
-[[redirects]]
-from = "/rss-es.xml"
-to = "/es/rss.xml"
-status = 301
-
-[[redirects]]
-from = "/rss-en.xml"
-to = "/en/rss.xml"
-status = 301
+# Post unificados
 
 [[redirects]]
 from = "/es/blog/2010-08-12-slitaz-gnulinux-acer-aspire-one"
@@ -130,6 +118,24 @@ status = 301
 from = "/es/blog/2011-06-05-kde-46-netbook"
 to = "/es/blog/2026-04-23-mis-primeros-pasos-en-linux"
 status = 301
+
+# RSS feed legacy redirect (was /rss.xml, now per-locale)
+[[redirects]]
+from = "/rss.xml"
+to = "/es/rss.xml"
+status = 301
+
+[[redirects]]
+from = "/rss-es.xml"
+to = "/es/rss.xml"
+status = 301
+
+[[redirects]]
+from = "/rss-en.xml"
+to = "/en/rss.xml"
+status = 301
+
+# 404 Errors
 
 [[redirects]]
 from = "/es/*"
