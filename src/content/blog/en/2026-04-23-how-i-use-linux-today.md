@@ -38,4 +38,4 @@ This is a draft to describe how I use Linux today, compared to my early experime
 
 References and original posts (original in Spanish)
 
-- See the historical summary: /es/blog/2026-04-23-mis-primeros-pasos-en-linux (original in Spanish)
+- See the historical summary: /es/blog/2026-04-25-mis-primeros-pasos-en-linux (original in Spanish)

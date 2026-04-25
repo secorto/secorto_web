@@ -39,4 +39,4 @@ una rolling para pruebas)
 - Cosas que sigo usando y por qué
 
 Para detalles históricos y los posts originales,
-ver la entrada resumen: /es/blog/2026-04-23-mis-primeros-pasos-en-linux (original en español)
+ver la entrada resumen: /es/blog/2026-04-25-mis-primeros-pasos-en-linux (original en español)
