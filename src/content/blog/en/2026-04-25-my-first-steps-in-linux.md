@@ -1,12 +1,11 @@
 ---
 title: My first steps in Linux
-date: 2026-04-23
+date: 2026-04-25
 tags:
   - linux
   - summary
   - experiences
 excerpt: A concise personal roundup of lessons learned using several distributions and desktop environments.
-postId: '2026-04-23-mis-primeros-pasos-en-linux'
 gallery:
   - image: "@assets/img/post/chakra/openbox.png"
     alt: "Openbox — screenshot"
@@ -14,6 +13,7 @@ gallery:
     alt: "LXDE — screenshot"
   - image: "@assets/img/post/chakra/kde.png"
     alt: "KDE — screenshot"
+postId: 'mis-primeros-pasos-en-linux'
 ---
 
 Over the years I wrote tutorials and notes about different distributions and desktop environments. This post gathers those experiences into practical lessons and reflections: what worked, what frustrated me, and what I still use.
