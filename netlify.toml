@@ -14,34 +14,15 @@ package = "netlify-plugin-cypress"
   [plugins.inputs]
   record = true
 
-# Posts movidos
+[[redirects]]
+from = "/es/*"
+to = "/es/404"
+status = 404
 
 [[redirects]]
-from = "/es/blog/2016-06-18-por-que-uso-npm"
-to = "/es/blog/2025-12-25-por-que-uso-npm"
-status = 301
-
-# Post unificados
-
-[[redirects]]
-from = "/es/blog/2010-08-12-slitaz-gnulinux-acer-aspire-one"
-to = "/es/blog/2026-04-23-mis-primeros-pasos-en-linux"
-status = 301
-
-[[redirects]]
-from = "/es/blog/2011-02-28-openbox"
-to = "/es/blog/2026-04-23-mis-primeros-pasos-en-linux"
-status = 301
-
-[[redirects]]
-from = "/es/blog/2011-03-03-screenshoots-chakra"
-to = "/es/blog/2026-04-23-mis-primeros-pasos-en-linux"
-status = 301
-
-[[redirects]]
-from = "/es/blog/2011-06-05-kde-46-netbook"
-to = "/es/blog/2026-04-23-mis-primeros-pasos-en-linux"
-status = 301
+from = "/en/*"
+to = "/en/404"
+status = 404
 
 [[redirects]]
 from = "/"
@@ -119,6 +100,11 @@ from = "/es/charlas/*"
 to = "/es/charla/:splat"
 status = 301
 
+[[redirects]]
+from = "/es/blog/2016-06-18-por-que-uso-npm"
+to = "/es/blog/2025-12-25-por-que-uso-npm"
+status = 301
+
 # RSS feed legacy redirect (was /rss.xml, now per-locale)
 [[redirects]]
 from = "/rss.xml"
@@ -134,15 +120,3 @@ status = 301
 from = "/rss-en.xml"
 to = "/en/rss.xml"
 status = 301
-
-# 404 Errors
-
-[[redirects]]
-from = "/es/*"
-to = "/es/404"
-status = 404
-
-[[redirects]]
-from = "/en/*"
-to = "/en/404"
-status = 404
