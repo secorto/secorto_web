@@ -15,16 +15,6 @@ package = "netlify-plugin-cypress"
   record = true
 
 [[redirects]]
-from = "/es/*"
-to = "/es/404"
-status = 404
-
-[[redirects]]
-from = "/en/*"
-to = "/en/404"
-status = 404
-
-[[redirects]]
 from = "/"
 to = "/es"
 
@@ -140,3 +130,13 @@ status = 301
 from = "/es/blog/2011-06-05-kde-46-netbook"
 to = "/es/blog/2026-04-23-mis-primeros-pasos-en-linux"
 status = 301
+
+[[redirects]]
+from = "/es/*"
+to = "/es/404"
+status = 404
+
+[[redirects]]
+from = "/en/*"
+to = "/en/404"
+status = 404
