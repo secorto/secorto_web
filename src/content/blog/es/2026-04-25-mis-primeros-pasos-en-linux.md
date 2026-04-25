@@ -48,5 +48,5 @@ A lo largo de varios años escribí tutoriales y notas sobre distintas distribuc
 - Slitaz en Acer Aspire One — <http://scot3004.blogspot.com/2010/08/slitaz-gnulinux-acer-aspire-one.html>
 - Windows o Linux — <http://scot3004.blogspot.com/2010/10/windows-o-linux.html>
 - Openbox — <http://scot3004.blogspot.com/2011/02/openbox.html>
-- Screenshoots de mi Chakra — <http://scot3004.blogspot.com/2011/03/screenshoots-de-mi-chakra-bueno-en.html>
+- Screenshots de mi Chakra — <http://scot3004.blogspot.com/2011/03/screenshoots-de-mi-chakra-bueno-en.html>
 - KDE 4.6 netbook (Chakra) — <http://scot3004.blogspot.com/2011/06/kde-46-netbook.html>
