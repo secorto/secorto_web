@@ -5,10 +5,10 @@ import type { PostEntry } from '@domain/post'
 import { extractCleanId } from '@utils/ids'
 
 // Minimal helper to build fake entries for testing
-// Require explicit `postId` to reflect real PostEntry usage
-const entry = (id: string, data: Record<string, unknown> = {}, postId: string): PostEntry<CollectionKey> => {
+// Require explicit `translationKey` to reflect real PostEntry usage (no fallbacks)
+const entry = (id: string, data: Record<string, unknown> = {}, translationKey: string): PostEntry<CollectionKey> => {
   const { id: cleanId, locale } = extractCleanId(id)
-  return ({ id, data, cleanId, postId, locale } as unknown) as PostEntry<CollectionKey>
+  return ({ id, data, cleanId, translationKey, locale } as unknown) as PostEntry<CollectionKey>
 }
 
 // test helper to get the precomputed localeEntryMap quickly
@@ -139,13 +139,11 @@ describe('getAvailableLocaleEntriesFromMap', () => {
     expect(Object.keys(result)).toHaveLength(0)
   })
 
-  test('matches entries sharing postId when cleanIds differ across locales', () => {
+  test('matches entries sharing translationKey when cleanIds differ across locales', () => {
     const entries = [
       entry('es/2025-01-01-calendario', { title: 'ES' }, 'shared-id'),
       entry('en/2025-01-01-calendar', { title: 'EN' }, 'shared-id'),
     ]
-
-    // entries share postId 'shared-id' so we query by postId 'shared-id'
     const map = buildLocaleEntryMap(entries)
     const result = getAvailableLocaleEntriesFromMap(map, 'shared-id')
 
@@ -215,15 +213,15 @@ describe('buildTagLocaleMap', () => {
 })
 
 describe('buildLocaleEntryMap', () => {
-  test('throws on duplicate postId+locale', () => {
+  test('throws on duplicate translationKey+locale', () => {
     const entries = [
       entry('es/2025-01-01-a', { title: 'A' }, 'dup-id'),
       entry('es/2025-01-02-b', { title: 'B' }, 'dup-id')
     ]
-    expect(() => buildLocaleEntryMap(entries)).toThrow(/Duplicate entry for postId "dup-id" and locale "es"/)
+    expect(() => buildLocaleEntryMap(entries)).toThrow(/Duplicate entry for translationKey "dup-id" and locale "es"/)
   })
 
-  test('precomputes map postId -> AvailableLocales', () => {
+  test('precomputes map translationKey -> AvailableLocales', () => {
     const entries = [
       entry('es/alpha', { title: 'A' }, 'alpha'),
       entry('en/alpha', { title: 'A-en' }, 'alpha'),

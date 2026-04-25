@@ -13,7 +13,7 @@ gallery:
     alt: "LXDE — screenshot"
   - image: "@assets/img/post/chakra/kde.png"
     alt: "KDE — screenshot"
-postId: 'mis-primeros-pasos-en-linux'
+translationKey: 'mis-primeros-pasos-en-linux'
 ---
 
 Over the years I wrote tutorials and notes about different distributions and desktop environments. This post gathers those experiences into practical lessons and reflections: what worked, what frustrated me, and what I still use.

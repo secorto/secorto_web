@@ -88,7 +88,7 @@
 - For translation workflows, prefer using a canonical `postId` in frontmatter to link translations to their original post when it is necessary to disambiguate slugs. The `postId` value, when present, should be the filename without `.md` (including date prefix if applicable). Ejemplo:
 
 ```yaml
-postId: '2025-12-25-por-que-uso-npm'
+translationKey: '2025-12-25-por-que-uso-npm'
 ```
 - For re-publications (completely rewritten content): create a new file with the current date and add a 301 redirect from the old URL to the new slug (edit `netlify.toml`).
 - Copilot: when generating or refactoring content with assistance, ensure the output includes complete frontmatter and that the suggested filename respects the date prefix. Do not accept suggestions for posts without a date-prefixed filename.
