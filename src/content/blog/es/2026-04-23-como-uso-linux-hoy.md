@@ -7,9 +7,6 @@ tags:
   - experiencias
 excerpt: Borrador sobre mi uso actual de Linux y cómo difiere de mis primeros pasos.
 postId: 'como-uso-linux-hoy'
-gallery:
-  - image: "@assets/img/post/chakra/openbox.png"
-    alt: "Openbox — captura de escritorio"
 draft: true
 ---
 

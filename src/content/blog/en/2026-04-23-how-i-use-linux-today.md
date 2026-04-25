@@ -7,9 +7,6 @@ tags:
   - experiences
 excerpt: Draft describing my current Linux usage and how it differs from my early experiments.
 postId: 'como-uso-linux-hoy'
-gallery:
-  - image: "@assets/img/post/chakra/openbox.png"
-    alt: "Openbox — screenshot"
 draft: true
 ---
 
