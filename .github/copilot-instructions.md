@@ -119,22 +119,18 @@ postId: '2025-12-25-por-que-uso-npm'
 
 ## Política de excepciones y technical debt (acuerdo)
 
-No crear issues individuales por cada excepción temporal. En su lugar, usar el siguiente patrón inline para marcar deuda técnica que debe revisarse posteriormente:
+Crear un issue en GitHub cuando sea útil para seguimiento; en el código, referenciar el issue en el TODO para vincular la excepción al seguimiento correspondiente. Ejemplo breve:
 
 ```ts
-// TODO(debt): <razón breve> — owner: @usuario — until: YYYY-MM-DD
+// TODO(debt): <razón breve> — issue: #123
 ```
 
-Reglas:
+Reglas rápidas:
 
 - El comentario debe aparecer inmediatamente arriba de la línea o bloque afectado.
-- `owner` es el @usuario responsable temporalmente del arreglo (puede ser un equipo).
-- `until` es la fecha estimada para revisar o remediar la deuda.
-- No usar `as any` ni `// eslint-disable` sin este TODO; si una excepción es absolutamente necesaria, debe acompañarse del TODO.
+- `issue` debe referenciar el número de issue donde se hará el seguimiento.
 
-Centralizar los ítems en `docs/tech-debt.md` — el comentario inline actuará como punto de referencia y la lista en `docs/tech-debt.md` servirá como único lugar para seguimiento y revisiones periódicas.
-
-Si una deuda técnica necesita más contexto, agregar una entrada en `docs/tech-debt.md` con más detalles en lugar de crear un issue por cada caso.
+Si conviene agrupar varias excepciones relacionadas en un solo issue, hágalo; deje que el mantenedor decida la granularidad. Mantenga la documentación en issues en lugar de archivos MD en el repo para simplificar la gestión.
 
 ---
 
