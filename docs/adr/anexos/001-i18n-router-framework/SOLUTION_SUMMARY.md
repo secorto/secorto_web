@@ -85,10 +85,6 @@ sectionLoader  SectionRenderer  [section]/index.astro
 - **SCALABILITY_ANALYSIS.md** - Proyecciones de crecimiento
 - **SOLUTION_README.md** - Guía de lectura y referencia
 
-### Herramientas
-
-- **validate-architecture.sh** - Script de validación
-
 ## 🎓 Conceptos Implementados
 
 ✅ **Configuration Pattern**: Lógica guiada por datos
