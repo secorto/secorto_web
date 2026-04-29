@@ -151,7 +151,6 @@ tsconfig.json                             (actualizado)
 4. ARCHITECTURE_DIAGRAM.md      (15 min)
 5. EXTENSION_EXAMPLES.md        (20 min)
 6. MAINTENANCE_CHECKLIST.md     (10 min - skimming)
-7. Run validate-architecture.sh (5 min)
 └─ Conclusión: Entender, usar, extender
 ```
 

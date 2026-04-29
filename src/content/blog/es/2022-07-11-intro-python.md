@@ -142,7 +142,7 @@ Python tambien puede trabajar con números y soporta las operaciones básicas co
 30 // 4
 ```
 
-```bash title="Salida division.py"
+```bash title="Salida division_entera.py"
 7
 ```
 
