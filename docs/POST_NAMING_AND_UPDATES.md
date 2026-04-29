@@ -18,12 +18,12 @@ Racional: mantener la fecha en el nombre facilita listar por orden cronológico,
 
 ## ¿Crear nuevo post o actualizar el existente? — Hoja de ruta
 
-- . Evaluación inicial:
+- Evaluación inicial:
 
   - Si los cambios son correctivos o pequeñas ampliaciones → actualizar in-place y añadir `updated: YYYY-MM-DD` en frontmatter.
   - Si la pieza es reescrita sustancialmente (nuevo enfoque, estructura, longitud) y quieres que aparezca como nueva → crear nueva entrada con fecha actual (ver pasos abajo).
 
-- . Si decides crear nueva entrada (re-publicar):
+- Si decides crear nueva entrada (re-publicar):
 
   - Crear archivo nuevo con fecha en el nombre: `YYYY-MM-DD-<slug>.md` y frontmatter mínimo (title, date, tags, excerpt). Metadata histórica no es necesaria en contenido nuevo.
   - Añadir redirect 301 desde la URL antigua al nuevo slug (ver sección "Redirecciones")
@@ -32,7 +32,7 @@ Racional: mantener la fecha en el nombre facilita listar por orden cronológico,
   - Mantener la versión antigua y dejar la 301 (la traducción no cambia de idioma, evita redirigir hacia otro idioma), o
   - Crear/actualizar la traducción y usar `postId` en la traducción para apuntar al identificador canónico de la nueva entrada (o crear borradores nuevos según tu workflow)
 
-- . Si decides actualizar in-place:
+- Si decides actualizar in-place:
 
   - Mantén `date` original si quieres preservar historial, y añade `updated: YYYY-MM-DD` en frontmatter
   - Si quieres que la entrada suba en listados/feeds, crea nueva entrada en su lugar (ver punto 2)

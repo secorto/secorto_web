@@ -86,18 +86,6 @@ Resumen y guía rápida de los documentos relacionados con la ADR-001 (Refactori
 
 ## 🚀 Implementación y Operación
 
-### 6. [MIGRATION_GUIDE.md](MIGRATION_GUIDE.md)
-
-**Pasos prácticos para implementar los cambios**:
-
-- Estado actual vs deseado
-- Opciones de migración (A: Eliminar rutas, B: Mantener rutas)
-- Pasos de implementación
-- Verificación
-- Transición gradual (opcional)
-- **Tiempo**: 15 minutos
-- **Público**: DevOps, Tech Leads
-
 ### 7. [EXTENSION_EXAMPLES.md](EXTENSION_EXAMPLES.md)
 
 **9 ejemplos prácticos de extensión**:
@@ -182,7 +170,7 @@ tsconfig.json                             (actualizado)
 
 ```text
 1. SOLUTION_SUMMARY.md          (5 min)
-2. MIGRATION_GUIDE.md           (15 min)
+
 3. MAINTENANCE_CHECKLIST.md     (10 min)
 └─ Conclusión: Cómo implementar, cómo mantener
 ```
@@ -201,7 +189,6 @@ tsconfig.json                             (actualizado)
 | ¿Cómo lo uso? | EXTENSION_EXAMPLES.md | Ejemplo 1 |
 | ¿Cómo cambio algo? | EXTENSION_EXAMPLES.md | Ejemplo 9 |
 | ¿Qué puede fallar? | MAINTENANCE_CHECKLIST.md | "Problemas Comunes" |
-| ¿Cómo lo instalo? | MIGRATION_GUIDE.md | "Pasos de Implementación" |
 | ¿Cómo lo valido? | validate-architecture.sh | Run it |
 
 ---
@@ -233,7 +220,6 @@ Cobertura: 100% del sistema
 
 - [ ] ARCHITECTURE_DIAGRAM.md
 - [ ] BEFORE_AFTER_COMPARISON.md
-- [ ] MIGRATION_GUIDE.md
 
 ### Lectura Complementaria (Referencia)
 

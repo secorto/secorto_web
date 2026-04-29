@@ -78,7 +78,6 @@ sectionLoader  SectionRenderer  [section]/index.astro
 #### Práctica
 
 - **EXTENSION_EXAMPLES.md** - 9 ejemplos de cómo extender
-- **MIGRATION_GUIDE.md** - Cómo implementar los cambios
 - **MAINTENANCE_CHECKLIST.md** - Checklists de operación
 
 #### Análisis

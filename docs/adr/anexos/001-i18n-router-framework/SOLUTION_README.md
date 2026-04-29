@@ -67,18 +67,6 @@ Diagramas ASCII de:
 - Flujo de datos
 - Patrones de diseño usados
 
-### 4. **[MIGRATION_GUIDE.md](./MIGRATION_GUIDE.md)** 🚀
-
-Cómo implementar
-
-Pasos prácticos:
-
-- Problema de rutas conflictivas
-- Opciones de migración
-- Pasos de implementación (backup, eliminar, test)
-- Estructura resultante
-- Transición gradual (opcional)
-
 ### 5. **[EXTENSION_EXAMPLES.md](./EXTENSION_EXAMPLES.md)** ✨
 
 Ejemplos prácticos
@@ -197,7 +185,7 @@ Configuración se pasa como props:
 ## ❓ Preguntas Frecuentes
 
 **¿Debo eliminar las rutas antiguas?**
-Sí, eventualmente. Ver [MIGRATION_GUIDE.md](./MIGRATION_GUIDE.md)
+Sí, eventualmente.
 
 **¿Cómo agrego una nueva sección?**
 Ver [EXTENSION_EXAMPLES.md](./EXTENSION_EXAMPLES.md) - Ejemplo 1

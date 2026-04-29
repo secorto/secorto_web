@@ -101,7 +101,6 @@ Para diagramas, snippets de generación de rutas y la comparación detallada ant
 - [ARCHITECTURE_DIAGRAM.md](./anexos/001-i18n-router-framework/ARCHITECTURE_DIAGRAM.md)
 - [BEFORE_AFTER_COMPARISON.md](./anexos/001-i18n-router-framework/BEFORE_AFTER_COMPARISON.md)
 - [SCALABILITY_ANALYSIS.md](./anexos/001-i18n-router-framework/SCALABILITY_ANALYSIS.md)
-- [MIGRATION_GUIDE.md](./anexos/001-i18n-router-framework/MIGRATION_GUIDE.md)
 
 ### A. Mantener rutas manuales por sección
 
@@ -171,7 +170,6 @@ Para diagramas, snippets de generación de rutas y la comparación detallada ant
 - **Single Source of Truth:** toda la configuración de secciones vive en un
   solo archivo type-safe.
 - **Aliasing multiidioma nativo:** `charla` (es) ↔ `talk` (en) resuelto por
-- **Aliasing multiidioma nativo:** `charla` (es) ↔ `talk` (en) resuelto por
    configuración, sin redirecciones ni hacks; añadir o ajustar entradas en
    `sectionsConfig` y, según el caso, registrar nuevos `listComponent` y/o
    `detailComponent`.
@@ -188,7 +186,6 @@ Para diagramas, snippets de generación de rutas y la comparación detallada ant
 - [ARCHITECTURE_SECTIONS.md](./anexos/001-i18n-router-framework/ARCHITECTURE_SECTIONS.md) — Arquitectura técnica detallada
 - [ARCHITECTURE_DIAGRAM.md](./anexos/001-i18n-router-framework/ARCHITECTURE_DIAGRAM.md) — Diagramas de flujo
 - [BEFORE_AFTER_COMPARISON.md](./anexos/001-i18n-router-framework/BEFORE_AFTER_COMPARISON.md) — Comparación antes/después
-- [MIGRATION_GUIDE.md](./anexos/001-i18n-router-framework/MIGRATION_GUIDE.md) — Guía de migración
 - [DETAIL_VIEW_ARCHITECTURE.md](../DETAIL_VIEW_ARCHITECTURE.md) — Arquitectura de vistas de detalle
 
 ---

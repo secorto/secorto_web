@@ -36,30 +36,22 @@ Estos cambios se implementaron en múltiples archivos y producen una API más es
 
 ## Decisión
 
-1. Normalizar la identidad canónica de una serie/entrada usando `postId`
-  a. `postId` será la clave única usada para agrupar traducciones/variantes
-    de una misma entrada a través de locales.
-
+1. Usar `postId` como identificador canónico único que agrupa todas las traducciones y variantes de una misma entrada entre locales.
 2. Hacer que la extracción de id sea explícita y con locale: `extractCleanId`
   devuelve `{ id: string, locale: UILanguages }` — el `locale` es obligatorio;
   la función es estricta y lanza si el `id` no contiene un prefijo de locale
   válido.
-
 3. `entryAdapter` debe normalizar entradas y asignar `computed.postId` y
   `computed.locale` para uso downstream.
-
 4. `buildLocaleEntryMap(allEntries)` devolverá un único `Record<postId, AvailableLocales>`
   (map por `postId`) para evitar doble-mapeos y parseos repetidos.
-
 5. Construir enlaces de idioma para detalle usando rutas ya localizadas
   (p. ej. `config.routes[locale]`) con `buildDetailLink(targetLang, localizedSection, availableLocales)`
   (helper actual en `src/i18n/languagePickerUtils.ts`, renombrado desde
   `buildDetailLinkFromLocalizedSection`) — esto elimina la dependencia a
   `findCanonicalSectionKey` en el builder de paths.
-
 6. Unificar componentes de SEO en un solo `SEOHead` (presentacional) y que
   `SiteLayout` sea la única fuente de `canonical` y emita `x-default`.
-
 7. Fallar rápido ante inconsistencias críticas: duplicados de `(postId, locale)`
   lanzan error en build time para forzar corrección de contenido.
 
