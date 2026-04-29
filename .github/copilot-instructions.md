@@ -1,6 +1,7 @@
 # GitHub Copilot Instructions for secorto_web
 
 ## Project Overview
+
 - **Framework:** Astro
 - **UI Enhancements:** astro-expressive-code
 - **Testing:** Cypress (with cypress-axe for accessibility)
@@ -9,6 +10,7 @@
 - **Types:** Avoid `any` type; always define custom types or interfaces
 
 ## Coding Guidelines
+
 - Use TypeScript for all new code and refactors when possible
 - Prefer explicit, custom types and interfaces over `any` or overly broad types
 - Omit semicolons at the end of statements unless absolutely necessary
@@ -21,6 +23,7 @@
   `// TODO(debt): <razón breve> — owner: @usuario — until: YYYY-MM-DD`
 
 ## Astro Specific
+
 - Use `.astro` components for UI and layout
 - Place shared components in `src/components/`
 - Use `src/layouts/` for layout components
@@ -28,6 +31,7 @@
 - Use `astro-expressive-code` for code block rendering and syntax highlighting
 
 ## Cypress Specific
+
 - Place end-to-end tests in `cypress/e2e/`
 - Use TypeScript for Cypress tests
 - Prefer custom Cypress commands and types over using `any`
@@ -68,6 +72,7 @@
 - Prefer deterministic tests: mock network, isolate external dependencies, and keep e2e suite as a small smoke surface
 
 ## General
+
 - Keep dependencies up to date
 - Write clear, concise commit messages
 - Document new features and changes in `README.md` as needed
@@ -90,6 +95,7 @@
 ```yaml
 postId: '2025-12-25-por-que-uso-npm'
 ```
+
 - For re-publications (completely rewritten content): create a new file with the current date and add a 301 redirect from the old URL to the new slug (edit `netlify.toml`).
 - Copilot: when generating or refactoring content with assistance, ensure the output includes complete frontmatter and that the suggested filename respects the date prefix. Do not accept suggestions for posts without a date-prefixed filename.
 - **Types (strict)**: Copilot must never introduce the TypeScript `any` type in generated code. The project enforces `@typescript-eslint/no-explicit-any` as `error` in ESLint. If Copilot proposes `any`, reject the suggestion and prefer one of the following:
@@ -120,6 +126,7 @@ No crear issues individuales por cada excepción temporal. En su lugar, usar el 
 ```
 
 Reglas:
+
 - El comentario debe aparecer inmediatamente arriba de la línea o bloque afectado.
 - `owner` es el @usuario responsable temporalmente del arreglo (puede ser un equipo).
 - `until` es la fecha estimada para revisar o remediar la deuda.

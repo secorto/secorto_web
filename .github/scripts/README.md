@@ -1,4 +1,4 @@
-wait-netlify.js
+# wait-netlify.js
 
 Purpose
 
@@ -54,4 +54,3 @@ Note on PR vs main/master runs
 - The script detects the branch from `PR_BRANCH` (recommended for PR workflows) or from `GITHUB_REF_NAME`/`GITHUB_REF` for non-PR runs.
 - For branches other than `main`/`master` the script searches `deploy-preview` deploys matching the branch.
 - When running on `main` or `master`, the script accepts `production` deploys (Netlify may omit `branch` on production deploy objects). This enables the workflow to resolve a usable `NETLIFY_PREVIEW_URL` when testing the default branch without special-casing or skipping validations.
-
