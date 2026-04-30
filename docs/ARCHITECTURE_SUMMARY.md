@@ -4,7 +4,7 @@ Breve resumen del diseño global del sitio `secorto_web` — referencia ejecutiv
 
 Principales ideas:
 
-- Single Source of Truth: la configuración de secciones vive en `src/domain/sections.ts` y debe ser la única fuente de verdad para alias, componentes y flags de sección
+- Single Source of Truth: la configuración de secciones vive en `src/domain/section.ts` y debe ser la única fuente de verdad para alias, componentes y flags de sección
 - Build-time Generation: rutas y enlaces se generan en build mediante builders (p. ej. `staticPathsBuilder`) para evitar trabajo en runtime
 - Domain‑First: tipos y helpers de dominio (`TranslationLink`, `resolveDefaultAccessibleLink`) encapsulan la lógica reutilizable
 - Separation of Concerns: builders (datos), routing y componentes (render) están separados
@@ -14,7 +14,7 @@ Principales ideas:
 
 Componentes clave (resumen):
 
-- `SectionConfig` (`src/domain/sections.ts`) — registro central de secciones y alias
+- `SectionConfig` (`src/domain/section.ts`) — registro central de secciones y alias
 - `TranslationLink` (`src/domain/translationLink.ts`) — tipos y helpers para enlaces traducidos y accesibles
 - `staticPathsBuilder` (`src/utils/staticPathsBuilder.ts`) — builder que precomputa rutas y `TranslationLink[]`
 - `componentMap` / `entry.category` — la lógica que mapea una entrada a su vista (`post` → `BlogTalkPostView`, `experience` → `WorkProjectCommunityView`)
@@ -26,7 +26,7 @@ Decisiones operativas importantes:
 
 Dónde mirar en el código:
 
-- Configuración: [src/domain/sections.ts](../src/domain/section.ts)
+- Configuración: [src/domain/section.ts](../src/domain/section.ts)
 - Schemas: [src/content.config.ts](../src/content.config.ts)
 - Builders: [src/utils/staticPathsBuilder.ts](../src/utils/staticPathsBuilder.ts)
 - Vistas: [src/components/BlogTalkPostView.astro](../src/components/BlogTalkPostView.astro)

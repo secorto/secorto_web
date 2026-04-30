@@ -14,7 +14,7 @@ Antes de mergear cambios que afecten `sections`, builders o views:
 
 Pasos rápidos para añadir una nueva sección:
 
-- Añadir entry en `src/domain/sections.ts` con los campos que se requieran
+- Añadir entry en `src/domain/section.ts` con los campos que se requieran
 - Asegurar que `src/content.config.ts` contiene el schema para la colección nueva
 - Ejecutar builder de paths y revisar rutas generadas
 - Añadir test unitario en `tests/unit/config/sections.test.ts` si procede
