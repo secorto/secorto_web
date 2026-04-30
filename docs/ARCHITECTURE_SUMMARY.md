@@ -10,7 +10,7 @@ Principales ideas:
 - Separation of Concerns: builders (datos), routing y componentes (render) están separados
 - Type‑Safety: usar tipos explícitos y evitar `any`
 
-![El diagrama refleja los objetos de dominio usados en la solución (SectionConfig, TranslationLink, Entry, EntryCategory) y cómo los builders (staticPathsBuilder) producen rutas y enlaces precomputados que alimentan la selección de componente en tiempo de render (mediante componentMap / entry.category).](ARCHITECTURE_DIAGRAM.svg)
+![El diagrama refleja los objetos de dominio usados en la solución (SectionConfig, TranslationLink, Entry, EntryCategory) y cómo los builders (staticPathsBuilder) producen rutas y enlaces precomputados que alimentan la selección de componente en tiempo de render (mediante componentMap / entry.category).](diagrams/ARCHITECTURE_DIAGRAM.svg)
 
 Componentes clave (resumen):
 
