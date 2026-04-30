@@ -41,6 +41,7 @@ El proyecto utiliza **2 componentes de vista de detalle** para renderizar **5 co
 
 | Feature | BlogTalkPostView | WorkProjectCommunityView |
 | --------- | ------------------ | -------------------------- |
+| **Tags** | ✅ Sí | ❌ No |
 | **Date (publicación)** | ✅ Sí | ❌ No |
 | **Period (startDate-endDate)** | ❌ No | ✅ Sí |
 | **Role** | ❌ No | ✅ Sí |
@@ -51,7 +52,8 @@ El proyecto utiliza **2 componentes de vista de detalle** para renderizar **5 co
 | **Excerpt** | ✅ Sí | ✅ Sí |
 | **Gallery** | ✅ Sí | ✅ Sí |
 | **Markdown Content** | ✅ Sí | ✅ Sí |
-| **Tags** | ✅ Sí | ✅ Sí |
+
+> Nota: El soporte de tags tiene un issue reportado #138
 
 ## Flujo de Renderizado
 
