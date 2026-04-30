@@ -18,7 +18,7 @@ El problema principal a resolver es operativo y de comunicación: reducir el rui
 
 Implementación mínima inicial:
 
-- Añadir y configurar `markdownlint-cli2` (se introduce en este PR: #137) mediante un fichero de configuración (`.markdownlint-cli2.json` o `.markdownlint.json`) que incluya las reglas críticas (frontmatter mínimo, presencia/format de `title` y `date` cuando aplique, code fences, encabezados, whitespace)
+- Añadir y configurar `markdownlint-cli2` (se introduce en este PR: #137) mediante un fichero de configuración (`.markdownlint-cli2.json` o `.markdownlint.json`) que incluya las reglas críticas de formato Markdown (encabezados, code fences, listas, whitespace y bare URLs)
 - Los ficheros de configuración (`.markdownlint-cli2.jsonc` y `.markdownlint.jsonc`) se introducen en este PR
 - Añadir el script `npm run lint:md` (que ejecutará `markdownlint-cli2`) y documentar su uso
 - Integrar `npm run lint` en CI antes del build (fallar el job si hay errores críticos). Nota: `npm run lint` ya está definido para ejecutar `lint:js` y `lint:md` en el repositorio
