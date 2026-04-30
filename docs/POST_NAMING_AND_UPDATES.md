@@ -86,7 +86,7 @@ date: 2016-06-18
 updated: 2025-12-25
 ```
 
-## Checklist antes de mergear/puentear
+ No crear posts nuevos sin prefijo de fecha en el filename; si una herramienta lo hace, ajusta el nombre antes de commitear.
 
 1. ¿Filename sigue convención `YYYY-MM-DD-slug.md`? (sí/no)
 2. ¿Frontmatter completo: title, date, tags, excerpt? (sí/no)
