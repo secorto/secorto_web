@@ -1,0 +1,25 @@
+flowchart LR
+  subgraph Domain
+    SC["SectionConfig\nsrc/domain/sections.ts"]
+    TL["TranslationLink\nsrc/domain/translationLink.ts"]
+    E["Entry / Content"]
+    EC["EntryCategory\n(post | experience)"]
+  end
+  subgraph Builders
+    SP[staticPathsBuilder]
+  end
+  subgraph Rendering
+    CM[componentMap / selección directa]
+    BV[BlogTalkPostView]
+    WV[WorkProjectCommunityView]
+  end
+
+  E --> EC
+  SC --> SP
+  E --> SP
+  SP --> TL
+  SP --> CM
+  EC --> CM
+  CM --> BV
+  CM --> WV
+

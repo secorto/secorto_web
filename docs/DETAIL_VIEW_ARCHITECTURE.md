@@ -11,7 +11,7 @@ El proyecto utiliza **2 componentes de vista de detalle** para renderizar **5 co
 
 ## Principio de Diseño
 
-**Single Source of Truth**: `SectionConfig` en [`src/config/sections.ts`](../src/config/sections.ts) define qué componente usa cada sección mediante el campo `detailComponent`.
+**Single Source of Truth**: `SectionConfig` en [src/domain/sections.ts](../src/domain/sections.ts)
 
 ## Mapeo de Colecciones a Componentes
 
@@ -21,46 +21,9 @@ El proyecto utiliza **2 componentes de vista de detalle** para renderizar **5 co
 
 **Características distintivas:**
 
-- ✅ Sistema de tags (`tags: string[]`)
 - ✅ Fechas de publicación (`date: Date`)
 - ✅ Soporte para video/slides (talk)
 - ✅ Orientado a contenido cronológico
-
-**Schema blog:**
-
-```typescript
-{
-  date: Date,
-  tags?: string[],
-  title: string,
-  image?: ImageMetadata,
-  excerpt?: string,
-  gallery?: Array<{ image, alt }>
-}
-```
-
-**Schema talk:**
-
-```typescript
-{
-  date: Date,
-  tags?: string[],
-  title: string,
-  image: ImageMetadata,
-  excerpt?: string,
-  comunidad: string,
-  video?: string,
-  slide: string,
-  gallery?: Array<{ image, alt }>
-}
-```
-
-**Configuración:**
-
-```typescript
-sectionsConfig.blog.detailComponent = 'BlogTalkPostView'
-sectionsConfig.talk.detailComponent = 'BlogTalkPostView'
-```
 
 ### WorkProjectCommunityView
 
@@ -73,64 +36,14 @@ sectionsConfig.talk.detailComponent = 'BlogTalkPostView'
 - ✅ Enlaces a sitios web (`website?: string`)
 - ✅ Periodo de trabajo (`startDate` + `endDate?`) - Renderizado con `WorkDateRange` component
 - ✅ Orientado a portafolio profesional
-- ❌ Sin sistema de tags
-
-**Schema work:**
-
-```typescript
-{
-  role: string,
-  responsibilities: string,
-  website: string,
-  startDate: Date,
-  endDate?: Date,
-  image: ImageMetadata,
-  excerpt: string,
-  gallery?: Array<{ image, alt }>
-}
-```
-
-**Schema projects:**
-
-```typescript
-{
-  role: string,
-  responsibilities: string,
-  website?: string,
-  image: ImageMetadata,
-  excerpt: string,
-  gallery?: Array<{ image, alt }>
-}
-```
-
-**Schema community:**
-
-```typescript
-{
-  role: string,
-  responsibilities: string,
-  website?: string,
-  image: ImageMetadata,
-  excerpt: string,
-  gallery?: Array<{ image, alt }>
-}
-```
-
-**Configuración:**
-
-```typescript
-sectionsConfig.work.detailComponent = 'WorkProjectCommunityView'
-sectionsConfig.project.detailComponent = 'WorkProjectCommunityView'
-sectionsConfig.community.detailComponent = 'WorkProjectCommunityView'
-```
 
 ## Tabla de Features por Componente
 
 | Feature | BlogTalkPostView | WorkProjectCommunityView |
 | --------- | ------------------ | -------------------------- |
-| **Tags** | ✅ Sí | ❌ No |
+| **Tags** | ✅ Sí | ✅ Sí |
 | **Date (publicación)** | ✅ Sí | ❌ No |
-| **Period (startDate-endDate)** | ❌ No | ✅ Sí (work) |
+| **Period (startDate-endDate)** | ❌ No | ✅ Sí |
 | **Role** | ❌ No | ✅ Sí |
 | **Responsibilities** | ❌ No | ✅ Sí |
 | **Website link** | ❌ No | ✅ Sí |
@@ -144,16 +57,7 @@ sectionsConfig.community.detailComponent = 'WorkProjectCommunityView'
 
 1. **Ruta dinámica**: `src/pages/[locale]/[section]/[...id].astro`
 2. **Determina sección**: Lee `section` param y lo mapea a `SectionConfig`
-3. **Lee configuración**: `config.detailComponent` indica qué componente usar
-4. **Renderiza condicionalmente**:
-
-   ```astro
-   {config.detailComponent === 'BlogTalkPostView' ? (
-     <BlogTalkPostView ... />
-   ) : (
-     <WorkProjectCommunityView ... />
-   )}
-   ```
+3. **Renderiza mediante un mapa de componentes** (evita largas cadenas de condicionales):
 
 ## Decisiones de Arquitectura
 
@@ -181,47 +85,39 @@ sectionsConfig.community.detailComponent = 'WorkProjectCommunityView'
 - Blog y Talk solo difieren en campos opcionales (video/slide)
 - DRY: No repetir código HTML/CSS para UIs idénticas
 
-## Extensibilidad
+## Principios rectores
+
+- **Build-time Generation:** Generar rutas y enlaces en build (p. ej. `staticPathsBuilder`) para evitar lógica costosa en runtime
+- **Domain‑First:** Encapsular helpers y tipos en el dominio (`TranslationLink`, `resolveDefaultAccessibleLink`) en lugar de distribuir lógica por snippets
+- **Type‑Safety:** Usar tipos explícitos para que TypeScript valide configuraciones y reduzca errores en tiempo de compilación
+- **Separation of Concerns:** Mantener builders (datos), routing y componentes (render) independientes
+- **Deterministic Outputs:** Las salidas del build deben ser reproducibles y predecibles
+- **Fail‑Fast / Validación temprana:** Detectar problemas de configuración o schema en build en lugar de runtime
+- **Performance by Design:** Evitar construir menús o resolver enlaces en cada petición; precomputar lo necesario
+- **Tests as Spec:** Los builders y transformaciones deben tener tests que sirvan como documentación ejecutable
+- **Accessibility:** Las comprobaciones de accesibilidad se realizan con Playwright en la suite e2e
+- **Deprecation Policy:** en este proyecto se tiende a eliminar artefactos legacy ("mochar de raíz"); documentar la eliminación en un ADR o issue y actualizar tests para evitar regresiones
+
+## Enlaces y Extensibilidad
 
 ### Para agregar una nueva sección
 
 1. **Define el schema** en `src/content.config.ts`
-2. **Agrega la configuración** en `src/config/sections.ts`:
+2. **Agrega la configuración** en `src/domain/section.ts`
 
-   ```typescript
-   newSection: {
-     collection: 'newcollection',
-     detailComponent: 'BlogTalkPostView' | 'WorkProjectCommunityView',
-     // ... otros campos
-   }
-   ```
+### Uso recomendado para enlaces (ejemplo)
 
-3. **Listo** - El sistema lo manejará automáticamente
+Evitar construir menús desde `sectionsConfig` en runtime. En su lugar, los builders deben producir `TranslationLink[]` y exponerse al CMS/layout.
 
-### Para crear un componente de vista nuevo
+Este enfoque delega la lógica de accesibilidad y fallback al dominio y mantiene las vistas simples.
 
-1. **Crea el componente**: `src/components/CustomView.astro`
-2. **Actualiza el type**:
+### Nota sobre `sectionLoader`
 
-   ```typescript
-   detailComponent: 'BlogTalkPostView' | 'WorkProjectCommunityView' | 'CustomView'
-   ```
-
-3. **Agrega condición** en `[...id].astro`:
-
-   ```astro
-   {config.detailComponent === 'CustomView' ? (
-     <CustomView ... />
-   ) : config.detailComponent === 'BlogTalkPostView' ? (
-     <BlogTalkPostView ... />
-   ) : (
-     <WorkProjectCommunityView ... />
-   )}
-   ```
+`src/utils/sectionLoader.ts` es hoy un artefacto legacy que ya no se recomienda para las cargas principales; ver ADR-001 (reemplazada) y la documentación del nuevo enfoque (ADR-007).
 
 ## Archivos Relacionados
 
-- **Config**: [`src/config/sections.ts`](../src/config/sections.ts) - Define `detailComponent` por sección
+- **Config**: [src/domain/sections.ts](../src/domain/sections.ts) - Define `detailComponent` por sección
 - **Schemas**: [`src/content.config.ts`](../src/content.config.ts) - Define estructura de datos
 - **Componentes**:
   - [`src/components/BlogTalkPostView.astro`](../src/components/BlogTalkPostView.astro)
@@ -258,4 +154,4 @@ La arquitectura actual con 2 componentes para 5 colecciones representa el **nive
 
 ---
 
-Última actualización: Febrero 2026
+Última actualización: Abril 2026

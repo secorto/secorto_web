@@ -1,6 +1,7 @@
 # ADR 001: Framework i18n y router polimórfico de secciones
 
-> **Estado:** Aceptada
+> **Estado:** Reemplazada (superseded)
+> **Reemplazada por:** ADR-007 (nuevo framework i18n)
 > **Fecha:** 2025-06
 > **Categoría:** Arquitectura / i18n / Routing
 ---
@@ -83,9 +84,8 @@ itera la configuración centralizada para generar todas las rutas en build time.
 
 | Archivo | Responsabilidad |
 | --- | --- |
-| `sectionLoader.ts` | Cargar datos de sección por ruta URL |
+| `staticPathsBuilder.ts` | Generar paths estáticos para `getStaticPaths` (builders build-time) |
 | `sectionContext.ts` | Construir contexto de página (índice, tags, detalle) |
-| `staticPathsBuilder.ts` | Generar paths estáticos para `getStaticPaths` |
 | `paths.ts` | Utilidades de filtrado/ordenación por locale y colección |
 | `ids.ts` | Extraer clean IDs de las entradas |
 
@@ -95,12 +95,7 @@ itera la configuración centralizada para generar todas las rutas en build time.
 
 Resumen: la solución centraliza la definición de secciones en `src/config/sections.ts`, expone un router universal en `src/pages/[locale]/[section]/index.astro` que delega la carga de datos a `sectionLoader.ts` y el renderizado a `SectionRenderer.astro`. Esto elimina la duplicación previa y permite generar rutas estáticas automáticamente a partir de la configuración.
 
-Para diagramas, snippets de generación de rutas y la comparación detallada antes/después, ver los anexos técnicos:
-
-- [ARCHITECTURE_SECTIONS.md](./anexos/001-i18n-router-framework/ARCHITECTURE_SECTIONS.md)
-- [ARCHITECTURE_DIAGRAM.md](./anexos/001-i18n-router-framework/ARCHITECTURE_DIAGRAM.md)
-- [BEFORE_AFTER_COMPARISON.md](./anexos/001-i18n-router-framework/BEFORE_AFTER_COMPARISON.md)
-- [SCALABILITY_ANALYSIS.md](./anexos/001-i18n-router-framework/SCALABILITY_ANALYSIS.md)
+Nota: los anexos técnicos de la versión anterior han sido eliminados o archivados. Consulta ADR-007 para la documentación y diseño actualizados.
 
 ### A. Mantener rutas manuales por sección
 
@@ -183,9 +178,8 @@ Para diagramas, snippets de generación de rutas y la comparación detallada ant
 
 ## Documentación extendida
 
-- [ARCHITECTURE_SECTIONS.md](./anexos/001-i18n-router-framework/ARCHITECTURE_SECTIONS.md) — Arquitectura técnica detallada
-- [ARCHITECTURE_DIAGRAM.md](./anexos/001-i18n-router-framework/ARCHITECTURE_DIAGRAM.md) — Diagramas de flujo
-- [BEFORE_AFTER_COMPARISON.md](./anexos/001-i18n-router-framework/BEFORE_AFTER_COMPARISON.md) — Comparación antes/después
+- [ARCHITECTURE_SUMMARY.md](../ARCHITECTURE_SUMMARY.md) — Resumen ejecutivo de la arquitectura
+- [MAINTENANCE_CHECKLIST.md](../MAINTENANCE_CHECKLIST.md) — Checklist de mantenimiento y pasos operativos
 - [DETAIL_VIEW_ARCHITECTURE.md](../DETAIL_VIEW_ARCHITECTURE.md) — Arquitectura de vistas de detalle
 
 ---
