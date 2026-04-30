@@ -11,7 +11,7 @@ El proyecto utiliza **2 componentes de vista de detalle** para renderizar **5 co
 
 ## Principio de Diseño
 
-**Single Source of Truth**: `SectionConfig` en [src/domain/sections.ts](../src/domain/sections.ts)
+**Single Source of Truth**: `SectionConfig` en [src/domain/sections.ts](../src/domain/section.ts)
 
 ## Mapeo de Colecciones a Componentes
 
@@ -41,17 +41,17 @@ El proyecto utiliza **2 componentes de vista de detalle** para renderizar **5 co
 
 | Feature | BlogTalkPostView | WorkProjectCommunityView |
 | --------- | ------------------ | -------------------------- |
-| **Tags** | ✅ Sí | ✅ Sí |
 | **Date (publicación)** | ✅ Sí | ❌ No |
 | **Period (startDate-endDate)** | ❌ No | ✅ Sí |
 | **Role** | ❌ No | ✅ Sí |
 | **Responsibilities** | ❌ No | ✅ Sí |
 | **Website link** | ❌ No | ✅ Sí |
-| **Video/Slides** | ✅ Sí (talk) | ❌ No |
+| **Video/Slides** | ✅ Sí | ❌ No |
 | **Image** | ✅ Sí | ✅ Sí |
 | **Excerpt** | ✅ Sí | ✅ Sí |
 | **Gallery** | ✅ Sí | ✅ Sí |
 | **Markdown Content** | ✅ Sí | ✅ Sí |
+| **Tags** | ✅ Sí | ✅ Sí |
 
 ## Flujo de Renderizado
 
@@ -117,7 +117,7 @@ Este enfoque delega la lógica de accesibilidad y fallback al dominio y mantiene
 
 ## Archivos Relacionados
 
-- **Config**: [src/domain/sections.ts](../src/domain/sections.ts) - Define `detailComponent` por sección
+- **Config**: [src/domain/sections.ts](../src/domain/section.ts) - Define configuración por sección
 - **Schemas**: [`src/content.config.ts`](../src/content.config.ts) - Define estructura de datos
 - **Componentes**:
   - [`src/components/BlogTalkPostView.astro`](../src/components/BlogTalkPostView.astro)

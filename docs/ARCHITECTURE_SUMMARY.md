@@ -26,7 +26,7 @@ Decisiones operativas importantes:
 
 Dónde mirar en el código:
 
-- Configuración: [src/domain/sections.ts](../src/domain/sections.ts)
+- Configuración: [src/domain/sections.ts](../src/domain/section.ts)
 - Schemas: [src/content.config.ts](../src/content.config.ts)
 - Builders: [src/utils/staticPathsBuilder.ts](../src/utils/staticPathsBuilder.ts)
 - Vistas: [src/components/BlogTalkPostView.astro](../src/components/BlogTalkPostView.astro)
