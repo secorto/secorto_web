@@ -1,6 +1,6 @@
 # ADR 009: Validación de Markdown (formato y sincronización de documentación)
 
-> **Estado:** Aceptada
+> **Estado:** Propuesta
 > **Fecha:** 2026-05-01
 > **Categoría:** Contenido / Tooling
 ---
