@@ -37,8 +37,8 @@ Arregla automáticamente los problemas que se puedan corregir (espacios, formato
 Para validar un archivo o carpeta específica:
 
 ```bash
-npx markdownlint-cli2 'path/to/file.md'
-npx markdownlint-cli2 'docs/**/*.md'
+npx markdownlint-cli2 "path/to/file.md"
+npx markdownlint-cli2 "docs/**/*.md"
 ```
 
 ## Integración con CI/CD

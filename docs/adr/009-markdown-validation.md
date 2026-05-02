@@ -1,6 +1,6 @@
 # ADR 009: Validación de Markdown (formato y sincronización de documentación)
 
-> **Estado:** Aceptado
+> **Estado:** Aceptada
 > **Fecha:** 2026-05-01
 > **Última actualización:** 2026-05-02
 > **Categoría:** Contenido / Tooling
@@ -23,40 +23,43 @@ que eviten correcciones manuales repetidas.
 
 ## Decisión
 
-Centralizar y automatizar la validación de Markdown
-en el pipeline de CI mediante `markdownlint-cli2` usando una **configuración única unificada**
-con niveles de severidad (`severity: "error"` y `severity: "warning"`).
+Adoptar y automatizar la validación de Markdown en el pipeline de CI mediante `markdownlint-cli2` separando responsabilidades:
 
-La herramienta se usará para aplicar reglas sintácticas y de estilo;
-la validación semántica del frontmatter seguirá siendo
-responsabilidad de las content collections en build time.
+- Un archivo de reglas principal: `.markdownlint.jsonc` (define reglas y severity)
+- Un archivo orientado a CLI/CI: `.markdownlint-cli2.jsonc`
+  o un archivo de patrones/exclusiones (globs/ignores) que controla qué ficheros valida la CI
 
-### Configuración unificada con severity levels
+Esta separación permite mantener las reglas como fuente de verdad
+mientras se adapta qué se valida en CI sin modificar las reglas mismas.
 
-La solución usa un único archivo de configuración (`.markdownlint.jsonc`) que especifica:
+### Configuración propuesta: reglas + patterns para CLI
 
-- **Sin `severity` (defecto `"error"`)**: Reglas que fallan tanto en local como en CI
-- **`severity: "warning"`**: Reglas que se reportan pero no bloquean la compilación
-  (útiles para excepciones justificadas en CI)
-- **`false`**: Reglas deshabilitadas
+Detalles:
 
-Esto elimina la necesidad de mantener dos configuraciones separadas.
+- **`.markdownlint.jsonc`**: contiene las reglas, niveles de `severity` (`error`/`warning`)
+  y deshabilitaciones puntuales
+- **`.markdownlint-cli2.jsonc` / patterns`**: contiene globs/exclusiones
+  usados por el pipeline (por ejemplo para evitar validar ficheros generados o paths large)
+
+Las reglas se siguen aplicando en local y en CI; los patterns determinan el alcance en cada entorno.
 
 ## Implementación
 
-- Crear un único archivo `.markdownlint.jsonc` con severity levels
+- Crear dos archivos de configuración:
+  - `.markdownlint.jsonc` — reglas y `severity`
+  - `.markdownlint-cli2.jsonc` — globs/exclusiones y opciones específicas de CI/CLI
 - Añadir scripts en `package.json`:
-  - `npm run lint:md`: Validar archivos Markdown
+  - `npm run lint:md`: Validar archivos Markdown (usa `.markdownlint-cli2.jsonc` en CI)
   - `npm run lint:md:fix`: Corregir automáticamente
-- Documentar en `docs/MARKDOWN_VALIDATION.md` las reglas aplicadas y cómo usarlas
+- Documentar en `docs/MARKDOWN_VALIDATION.md` las reglas, patrones y cómo usarlos
 - El script `npm run lint` integra `lint:md` como parte del flujo de validación
 
 ## Alternativas consideradas
 
-- **Dos configuraciones separadas** (`.markdownlint.jsonc` y `.markdownlint-ci.jsonc`):
-  - ❌ Ventaja: flexibilidad máxima
-  - ❌ Desventaja: duplicación, complejidad, riesgo de desincronización
-  - ❌ Rechazado en favor de severity levels
+- **Dos configuraciones separadas** (`.markdownlint.jsonc` y `.markdownlint-cli2.jsonc`):
+  - ✅ Ventaja: flexibilidad para CI sin modificar reglas
+  - ⚠️ Desventaja: riesgo de desincronización si no se documenta
+  - ✅ Decisión adoptada: separar reglas y patterns, con documentación y checks de sincronización
 
 - **Solo linters en editor**:
   - Reduce errores locales pero no garantiza calidad en CI
@@ -64,16 +67,14 @@ Esto elimina la necesidad de mantener dos configuraciones separadas.
 - **Validación en pre-commit**:
   - Útil, pero puede omitirse en merges externos
 
-- **Validación unificada en CI/local (elegida)**:
-  - ✅ Garantiza que el sitio no se publica con errores
-  - ✅ Centraliza las reglas en un único archivo
-  - ✅ Usa severity levels para flexibilidad controlada
+- **Validación unificada en CI/local (rechazada)**:
+  - ❌ Rechazada por no permitir adaptar el alcance de la validación en CI sin tocar reglas
 
 ## Criterios de aceptación
 
 - [x] `npm run lint:md` está documentado y ejecutable localmente
 - [x] `npm run lint:md:fix` funciona para corregir automáticamente
-- [x] Un único archivo `.markdownlint.jsonc` con severity levels
+- [x] Existen los archivos `.markdownlint.jsonc` (reglas) y `.markdownlint-cli2.jsonc` (patterns/CLI)
 - [x] Integración en CI mediante `npm run lint` (que incluye `lint:md`)
 - [x] Documentación en `docs/MARKDOWN_VALIDATION.md` explicando reglas y uso
 - [x] La decisión de unificación queda documentada en este ADR (ADR 009)
@@ -88,9 +89,9 @@ Esto elimina la necesidad de mantener dos configuraciones separadas.
 
 ## Notas operativas
 
-- Mantener un único fichero de configuración: `.markdownlint.jsonc`
+- Mantener un único fichero de configuración para las reglas: `.markdownlint.jsonc`
+- Mantener un único fichero de configuración para las opciones de linea de comando: `.markdownlint-cli2.jsonc`
 - Usar severity levels para controlar qué falla y qué se reporta
-- Actualizar reglas según necesidad; documentar cambios en PRs
 
 ## Pasos futuros
 
