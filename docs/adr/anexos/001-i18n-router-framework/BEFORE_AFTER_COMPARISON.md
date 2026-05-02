@@ -4,8 +4,9 @@ Comparación entre los ficheros antes y después de implementar i18n
 
 ## 🔴 ANTES: Duplicación Masiva
 
-### Estructura de Carpetas
-```
+### Estructura de Carpetas Original
+
+```bash
 src/pages/[locale]/
 ├── blog/
 │   ├── index.astro                    ← 23 líneas
@@ -25,6 +26,7 @@ Duplicación: ~95% del código
 ```
 
 ### blog/index.astro
+
 ```astro
 ---
 import BaseLayout from '@layouts/BaseLayout.astro'
@@ -52,6 +54,7 @@ const pageTitle = t('nav.blog');  // ← hardcoded
 ```
 
 ### charla/index.astro
+
 ```astro
 ---
 import BaseLayout from '@layouts/BaseLayout.astro'
@@ -79,6 +82,7 @@ const pageTitle = t('nav.talks');  // ← solo cambio
 ```
 
 ### trabajo/index.astro
+
 ```astro
 ---
 import ListWork from '@components/ListWork.astro';
@@ -104,7 +108,7 @@ const allPosts = await getPostsByLocale('work', locale);  // ← solo cambio
 
 ### Problemas Identificados
 
-```
+```text
 ❌ PROBLEMA 1: Duplicación de Imports
     Cada archivo importa lo mismo:
     - BaseLayout, Tags, ListPost/ListWork
@@ -140,8 +144,9 @@ const allPosts = await getPostsByLocale('work', locale);  // ← solo cambio
 
 ## 🟢 DESPUÉS: Arquitectura Polimórfica
 
-### Estructura de Carpetas
-```
+### Estructura de Carpetas Final
+
+```bash
 src/
 ├── config/
 │   └── sections.ts                    ← 63 líneas (configuración)
@@ -157,3 +162,50 @@ Total: 4 archivos, ~180 líneas
 Duplicación: 0% del código
 Configuración es metadata, no código
 ```
+
+---
+
+## 📊 Análisis de Escalabilidad
+
+### Comparación: O(n) vs O(1)
+
+**Antes (archivos por sección):**
+
+- Para 3 secciones: 3 archivos de routing, ~69 líneas, múltiples puntos de cambio
+- Para 8 secciones: 8 archivos de routing, ~184 líneas, puntos de cambio ~40+
+- **Complejidad: O(n)** — Agregar sección implica crear nuevos archivos
+
+**Después (sistema polimórfico):**
+
+- Para 3 secciones: 1 archivo de routing, ~60 líneas en `sections.ts`, 1 punto de cambio
+- Para 8 secciones: 1 archivo de routing, crecimiento en `sections.ts`, 1 punto de cambio
+- **Complejidad: O(1)** — Agregar sección solo modifica `sections.ts`
+
+### Tabla Comparativa por Escala
+
+| Secciones | Archivos (antes → después) | Líneas (antes → después) | Mejora |
+| --: | --: | --: | --- |
+| 3 | 3 → 1 | 69 → 60 | −13 % líneas |
+| 8 | 8 → 1 | 184 → 45 | −75 % líneas |
+| 11 | 11 → 1 | 253 → 60 | −76 % líneas |
+
+### Reducción de Puntos de Cambio
+
+**Antes**: Para cambiar aliasing de sección (ej. `charla` → `plenarias`) necesitabas:
+
+1. Actualizar `charla/index.astro`
+2. Actualizar `charla/[id].astro`
+3. Actualizar componentes de navegación
+4. Actualizar links en otras páginas
+5. Riesgo de inconsistencias distribuidas
+
+**Después**: Cambio centralizado en `sections.ts`:
+
+```typescript
+talk: {
+  routes: { es: 'plenarias', en: 'talk' },  // ← Un único cambio
+  // ... resto sin cambios
+}
+```
+
+Un punto de cambio, consistencia garantizada.
