@@ -27,24 +27,18 @@ La validación sintáctica con `markdownlint-cli2` adoptada en `ADR 009` reduce 
 
 3. Todo ADR nuevo —generado por humano o por IA— debe seguir `docs/adr/TEMPLATE.md`. Los PRs que introduzcan ADRs nuevos deben incluir la etiqueta `adr-review` y asignar un revisor humano antes de merge.
 
-4. Los anexos de `ADR 001` se auditarán y clasificarán en:
-   - `docs/anexos/` — documentación viva, con `owner` y `last-reviewed` en cabecera
-   - `docs/archives/` — material histórico sin mantenimiento activo
-
-5. Se creará un template `.github/ISSUE_TEMPLATE/tarea-adr.yml` para que cada tarea del plan de trabajo de un ADR se convierta en un issue con estructura consistente. El issue debe incluir: número de ADR, descripción de la tarea y criterios de aceptación mínimos. GitHub maneja asignación; las fechas se definen según disponibilidad.
+4. Las tareas del plan de trabajo se ejecutan pragmáticamente: se pueden agrupar en un único issue o PR cuando sea sensato, o dividirse si la complejidad lo justifica. Se usará el template `.github/ISSUE_TEMPLATE/tarea-adr.yml` para tareas que requieran seguimiento explícito.
 
 ## Consecuencias
 
 - Los ADRs 001–009 pueden presentar inconsistencias menores de formato; se normalizarán de forma incremental en PRs separados sin modificar el contenido de las decisiones.
-- Los ADRs generados por herramientas IA requerirán revisión de formato antes de merge.
-- La extracción de anexos de `ADR 001` reduce ruido en ese archivo y convierte la documentación viva en artefactos mantenibles con dueños claros.
+- Los ADRs generados por herramientas IA requerirán revisión de formato (`adr-review`) antes de merge.
+- La adopción de un template único y validación vía `markdownlint` (ADR 009) mejora la consistencia y reduce fricción en revisiones.
 
 ## Plan de trabajo
 
-1. Publicar `docs/adr/TEMPLATE.md` con la estructura definida — owner: @secorto — fecha objetivo: 2026-05-03
-2. Auditar y clasificar los anexos de `ADR 001` — owner: @secorto — fecha objetivo: 2026-05-07
-3. Extraer anexos vivos a `docs/anexos/` y archivar el histórico en `docs/archives/` — owner: responsable asignado — fecha objetivo: 2026-05-10
-4. Añadir requisito `adr-review` en el flujo de revisión de PRs — owner: maintainers — fecha objetivo: 2026-05-05
+1. Crear/publicar artefactos: `docs/adr/TEMPLATE.md`, `.github/ISSUE_TEMPLATE/tarea-adr.yml`, y actualizar `copilot-instructions.md` — owner: @secorto — fecha objetivo: 2026-05-03
+2. Implementar requisito `adr-review` en el flujo de revisión de PRs — owner: maintainers — fecha objetivo: 2026-05-05
 
 ## Riesgos y mitigaciones
 
@@ -53,5 +47,4 @@ La validación sintáctica con `markdownlint-cli2` adoptada en `ADR 009` reduce 
 
 ## Referencias
 
-- [ADR 001](001-i18n-router-framework.md) — fuente de los anexos a auditar
 - [ADR 009](009-markdown-validation.md) — validación de Markdown con `markdownlint-cli2`
