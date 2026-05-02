@@ -31,7 +31,7 @@ La validación sintáctica con `markdownlint-cli2` adoptada en `ADR 009` reduce 
    - `docs/anexos/` — documentación viva, con `owner` y `last-reviewed` en cabecera
    - `docs/archives/` — material histórico sin mantenimiento activo
 
-5. Cada tarea del plan de trabajo de un ADR se convierte en un issue usando el template `.github/ISSUE_TEMPLATE/tarea-adr.yml`. El issue debe incluir: número de ADR, descripción de la tarea y criterios de aceptación mínimos. GitHub maneja asignación; las fechas se definen según disponibilidad.
+5. Se creará un template `.github/ISSUE_TEMPLATE/tarea-adr.yml` para que cada tarea del plan de trabajo de un ADR se convierta en un issue con estructura consistente. El issue debe incluir: número de ADR, descripción de la tarea y criterios de aceptación mínimos. GitHub maneja asignación; las fechas se definen según disponibilidad.
 
 ## Consecuencias
 
@@ -49,7 +49,7 @@ La validación sintáctica con `markdownlint-cli2` adoptada en `ADR 009` reduce 
 ## Riesgos y mitigaciones
 
 - Riesgo: normalización de formato en ADRs existentes puede confundirse con cambios de decisión → Mitigación: commits exclusivos de formato con mensaje descriptivo, sin alterar el contenido
-- Riesgo: fricción adicional en PRs con ADRs generados por IA → Mitigación: checklist en `docs/adr/TEMPLATE.md` y validación automática via `markdownlint` (ADR 009)
+- Riesgo: fricción adicional en PRs con ADRs generados por IA → Mitigación: checklist en `docs/adr/TEMPLATE.md` y validación automática vía `markdownlint` (ADR 009)
 
 ## Referencias
 
