@@ -7,10 +7,7 @@
 ---
 
 **Alcance:** Este ADR cubre la adopción e integración de `markdownlint-cli2`
-como herramienta de validación sintáctica y de estilo de Markdown en CI y local.
-La gobernanza de la documentación
-(clasificación de anexos, políticas de archivado, owners y procesos de revisión)
-queda fuera del alcance de este ADR y se tratará en un ADR o issue separados.
+como herramienta de validación sintáctica y de estilo de Markdown.
 
 ## Contexto
 
@@ -23,26 +20,22 @@ que eviten correcciones manuales repetidas.
 
 ## Decisión
 
-Usar dos archivos con responsabilidades separadas:
-
-- `.markdownlint.jsonc`: reglas y niveles de `severity` (fuente de verdad)
-- `.markdownlint-cli2.jsonc` (opcional): patterns/globs/exclusiones y opciones de ejecución para la CLI/CI
-
-`npm run lint:md` invoca `markdownlint-cli2` y, si existe, aplica las opciones de `.markdownlint-cli2.jsonc`; CI usa el mismo script. No se usarán archivos distintos de reglas para local y CI: la configuración de reglas debe mantenerse sincronizada.
+Usar `markdownlint-cli2` con un archivo de reglas (`.markdownlint.jsonc`)
+y un archivo de opciones para la CLI (`.markdownlint-cli2.jsonc`) que controle patterns/exclusiones; ambos
+archivos serán consumidos por CI cuando el pipeline ejecute `markdownlint-cli2` (por ejemplo vía
+`npm run lint:md`), de modo que las mismas reglas se apliquen en CI y localmente.
 
 ## Implementación
 
-- Crear dos archivos de configuración:
+- Mantener dos archivos de configuración consumidos por CI y localmente:
   - `.markdownlint.jsonc` — reglas y `severity`
-  - `.markdownlint-cli2.jsonc` — globs/exclusiones y opciones específicas de CI/CLI
+  - `.markdownlint-cli2.jsonc` — globs/exclusiones y opciones de ejecución
 - Añadir scripts en `package.json`:
-  - `npm run lint:md`: Validar archivos Markdown (usa `.markdownlint-cli2.jsonc` en CI)
-  - `npm run lint:md:fix`: Corregir automáticamente
-- Documentar en `docs/MARKDOWN_VALIDATION.md` las reglas, patrones y cómo usarlos
-- El script `npm run lint` integra `lint:md` como parte del flujo de validación
+  - `npm run lint:md` — validar (usado en CI y local)
+  - `npm run lint:md:fix` — correcciones automáticas
+- Documentar en `docs/MARKDOWN_VALIDATION.md` los comandos mínimos y enlace al ADR
 
 ## Alternativas consideradas
-
 
 - **Dos archivos de reglas distintas (local vs CI)**:
   - ❌ Rechazada: provoca deriva de reglas y bloqueos inesperados
@@ -53,40 +46,12 @@ Usar dos archivos con responsabilidades separadas:
   - ⚠️ Desventaja: requiere documentación y controles para evitar confusiones
 
 - **Solo linters en editor**:
-  - Reduce errores locales pero no garantiza calidad en CI
-
-- **Validación en pre-commit**:
-  - Útil, pero puede omitirse en merges externos
-
-- **Validación unificada en CI/local (rechazada)**:
-  - ❌ Rechazada por no permitir adaptar el alcance de la validación en CI sin tocar reglas
+  - ❌ Rechazada: reduce errores locales pero no garantiza calidad en CI
+  - ⚠️ Desventaja: depende de la configuración individual y no es obligatorio en CI
 
 ## Criterios de aceptación
 
-- [x] `npm run lint:md` está documentado y ejecutable localmente
-- [x] `npm run lint:md:fix` funciona para corregir automáticamente
-- [x] Existen los archivos `.markdownlint.jsonc` (reglas) y `.markdownlint-cli2.jsonc` (patterns/CLI)
-- [x] Integración en CI mediante `npm run lint` (que incluye `lint:md`)
-- [x] Documentación en `docs/MARKDOWN_VALIDATION.md` explicando reglas y uso
-- [x] La decisión de unificación queda documentada en este ADR (ADR 009)
-
-## Riesgos y mitigaciones
-
-- **Riesgo**: Fricción para contribuyentes por nuevas reglas
-  - **Mitigación**: Ofrecer `npm run lint:md:fix`, documentación clara y ejemplos
-
-- **Riesgo**: Warnings no se revisan en CI
-  - **Mitigación**: Los warnings aparecen en logs; se revisan en PRs
-
-## Notas operativas
-
-- Mantener un único fichero de configuración para las reglas: `.markdownlint.jsonc`
-- Mantener un único fichero de configuración para las opciones de linea de comando: `.markdownlint-cli2.jsonc`
-- Usar severity levels para controlar qué falla y qué se reporta
-
-## Pasos futuros
-
-- Documentación regla-por-regla detallada (ejemplos de fallos, cómo corregir)
-- Auditar excepciones según sea necesario
-- Endurecer reglas (cambiar warnings a errors) por iteraciones planificadas
-- Considerar extensiones de markdownlint (plugins) si fuese necesario
+- `npm run lint:md` y `npm run lint:md:fix` funcionan localmente
+- `.markdownlint.jsonc` existe y contiene reglas con `severity`
+- `.markdownlint-cli2.jsonc` contiene las reglas de ejecución, por ejemplo patrones a ignorar
+- `docs/MARKDOWN_VALIDATION.md` muestra los comandos mínimos y enlaza al ADR
