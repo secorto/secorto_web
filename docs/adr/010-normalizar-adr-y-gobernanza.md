@@ -7,44 +7,51 @@
 
 ## Contexto
 
-La carpeta `docs/adr/` muestra inconsistencias de formato entre ADRs: mezcla de cabeceras ATX y setext, numeración de listas inconsistente (`1.` vs `1)`) y algunos archivos con frontmatter YAML en lugar del bloque de metadatos con blockquote establecido desde `ADR 001`. Además, `ADR 001` acumula anexos que mezclan histórico, notas operativas y documentación viva sin responsables ni ciclos de revisión definidos.
+La carpeta `docs/adr/` muestra inconsistencias de formato entre ADRs:
+mezcla de cabeceras ATX y setext, numeración de listas inconsistente (`1.` vs `1)`)
+y algunos archivos con frontmatter YAML en lugar del bloque de metadatos con blockquote establecido desde `ADR 001`.
+Además, `ADR 001` acumula anexos que mezclan histórico,
+notas operativas y documentación viva sin responsables ni ciclos de revisión definidos.
 
-El problema se agravó con el uso de asistentes IA que generan ADRs con formatos distintos al del proyecto, introduciendo ruido en revisiones de PR y dificultando la auditoría posterior.
+El problema se agravó con el uso de asistentes IA que generan ADRs con formatos distintos al del proyecto,
+introduciendo ruido en revisiones de PR y dificultando la auditoría posterior.
 
-La validación sintáctica con `markdownlint-cli2` adoptada en `ADR 009` reduce errores de formato Markdown pero no garantiza consistencia de estructura ni cubre el proceso de revisión para ADRs generados por IA.
+La validación sintáctica con `markdownlint-cli2` adoptada en `ADR 009`
+reduce errores de formato Markdown pero no garantiza consistencia de estructura
+ni cubre el proceso de revisión para ADRs generados por IA.
+
+## Objetivo
+
+Definir una plantilla canónica para ADRs y un esquema de metadata validable (frontmatter YAML),
+y actualizar las instrucciones para asistentes IA para que produzcan ADRs conformes.
 
 ## Decisión
 
-1. Esquema de nombres para ADRs: `NNN-slug-descriptivo.md` (ej.: `001-i18n-router-framework.md`). Mantener numeración secuencial y minúsculas en el slug.
+- Crear `docs/adr/TEMPLATE.md` con ejemplo de frontmatter YAML mínimo (
+  campos recomendados: `estado`, `fecha`, `ultima-actualizacion`, `categoria`).
+- Adoptar frontmatter YAML como formato canónico para metadata, para permitir validación automática
+  (por ejemplo con Zod/JSON Schema).
+- Actualizar `copilot-instructions.md` para que las salidas de IA generen ADRs
+  respeten la plantilla y produzcan frontmatter YAML válido.
 
-2. Establecer `docs/adr/TEMPLATE.md` como plantilla canónica con las siguientes reglas de formato:
-   - Metadatos en bloque blockquote: `> **Estado:**`, `> **Fecha:**`, `> **Categoría:**`
-   - Separador `---` inmediatamente después del bloque de metadatos
-   - Secciones exclusivamente con cabeceras ATX H2 (`##`); prohibido usar setext (`---` o `===` bajo texto)
-   - Listas numeradas con punto: `1.`, `2.`; no con paréntesis: `1)`, `2)`
-   - Sin frontmatter YAML
-   - Idioma por defecto: español (`es`)
+## Alcance
 
-3. Todo ADR nuevo —generado por humano o por IA— debe seguir `docs/adr/TEMPLATE.md`. Los PRs que introduzcan ADRs nuevos deben incluir la etiqueta `adr-review` y asignar un revisor humano antes de merge.
-
-4. Las tareas del plan de trabajo se ejecutan pragmáticamente: se pueden agrupar en un único issue o PR cuando sea sensato, o dividirse si la complejidad lo justifica. Se usará el template `.github/ISSUE_TEMPLATE/tarea-adr.yml` para tareas que requieran seguimiento explícito.
-
-## Consecuencias
-
-- Los ADRs 001–009 pueden presentar inconsistencias menores de formato; se normalizarán de forma incremental en PRs separados sin modificar el contenido de las decisiones.
-- Los ADRs generados por herramientas IA requerirán revisión de formato (`adr-review`) antes de merge.
-- La adopción de un template único y validación vía `markdownlint` (ADR 009) mejora la consistencia y reduce fricción en revisiones.
-
-## Plan de trabajo
-
-1. Crear/publicar artefactos: `docs/adr/TEMPLATE.md`, `.github/ISSUE_TEMPLATE/tarea-adr.yml`, y actualizar `copilot-instructions.md` — owner: @secorto — fecha objetivo: 2026-05-03
-2. Implementar requisito `adr-review` en el flujo de revisión de PRs — owner: maintainers — fecha objetivo: 2026-05-05
+- Obligatorio: esta ADR establece el formato objetivo y requiere la normalización
+  de los ADRs existentes en PRs separados y claramente marcados (commits de
+  formato que no cambien el sentido de las decisiones). El objetivo es unificar
+  el formato del repositorio para facilitar validación y búsquedas.
+- Incluye la especificación del formato (frontmatter YAML) y la plantilla canónica;
+  la implementación técnica (scripts de validación e integración en CI) se
+  planificará y ejecutará como pasos siguientes.
 
 ## Riesgos y mitigaciones
 
-- Riesgo: normalización de formato en ADRs existentes puede confundirse con cambios de decisión → Mitigación: commits exclusivos de formato con mensaje descriptivo, sin alterar el contenido
-- Riesgo: fricción adicional en PRs con ADRs generados por IA → Mitigación: checklist en `docs/adr/TEMPLATE.md` y validación automática vía `markdownlint` (ADR 009)
+- Riesgo: normalización de formato en ADRs existentes puede confundirse con cambios de decisión → Mitigación:
+  commits exclusivos de formato con mensaje descriptivo, sin alterar el contenido
+- Riesgo: fricción adicional en PRs con ADRs generados por IA → Mitigación: checklist en `docs/adr/TEMPLATE.md`
+  y validación automática vía `markdownlint` (ADR 009)
 
 ## Referencias
 
 - [ADR 009](009-markdown-validation.md) — validación de Markdown con `markdownlint-cli2`
+- [ADR README](README.md) — gobernanza y anexos (sección "Gobernanza y anexos")
