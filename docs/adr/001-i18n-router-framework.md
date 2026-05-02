@@ -176,11 +176,10 @@ según la configuración y aplica layout común
 - **Single Source of Truth:** toda la configuración de secciones vive en un
   solo archivo type-safe.
 - **Aliasing multi-idioma nativo:** `charla` (es) ↔ `talk` (en) resuelto por
-- **Aliasing multi-idioma nativo:** `charla` (es) ↔ `talk` (en) resuelto por
    configuración, sin redirecciones ni hacks; añadir o ajustar entradas en
    `sectionsConfig` y, según el caso, registrar nuevos `listComponent` y/o
    `detailComponent`.
-- **Testabilidad:** `staticPathsBuilder` usa inyección de dependencias para
+- **Testabilidad:** `staticPathsBuilder` usa inyección de dependencias para facilitar pruebas unitarias
 
 ### A tener en cuenta
 
