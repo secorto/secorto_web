@@ -1,6 +1,7 @@
 # Guía de Migración: Router Dinámico
 
-Resumen y consideraciones prácticas relacionadas con ADR-001 (Refactorización i18n). Aquí se describen opciones de migración y riesgos conocidos.
+Resumen y consideraciones prácticas relacionadas con ADR-001 (Refactorización i18n).
+Aquí se describen opciones de migración y riesgos conocidos.
 
 ## Estado Actual
 
@@ -20,6 +21,7 @@ Tienes 3 formas de definir rutas de secciones:
 ## Problema de Conflicto
 
 Astro no permite dos rutas que generen los mismos paths. Por ejemplo:
+
 - `[locale]/blog/index.astro` genera `/es/blog`
 - `[locale]/[section]/index.astro` genera `/es/blog` (si section=blog)
 
@@ -39,21 +41,25 @@ rm -rf src/pages/[locale]/proyecto
 ```
 
 **Ventajas**:
+
 - ✅ Una única fuente de verdad
 - ✅ Mantenimiento centralizado
 - ✅ Agregar secciones sin crear carpetas
 
 **Desventajas**:
+
 - Cambio de estructura (pero beneficio > costo)
 
 ### Opción B: Mantener rutas específicas + dinámicas
 
 Renombrar el nuevo router a una ruta diferente:
-```
+
+```text
 [locale]/sections/[section]/index.astro  ← Mantiene complejidad
 ```
 
 Luego redirigir:
+
 ```javascript
 // astro.config.mjs
 redirects: {
@@ -63,6 +69,7 @@ redirects: {
 ```
 
 **Ventajas**:
+
 - ✅ No cambia rutas existentes
 - ❌ Complejidad aumentada
 - ❌ Duplicación
@@ -80,6 +87,7 @@ Un único router = menor complejidad.
 Si eliges **Opción A**:
 
 ### 1. Backup
+
 ```bash
 git checkout -b feature/dynamic-sections
 git add .
@@ -87,6 +95,7 @@ git commit -m "before: backup before removing duplicate section routes"
 ```
 
 ### 2. Eliminar rutas específicas
+
 ```bash
 rm -rf src/pages/[locale]/blog
 rm -rf src/pages/[locale]/charla
@@ -94,16 +103,19 @@ rm -rf src/pages/[locale]/proyecto
 ```
 
 ### 3. Verificar que `[section]/index.astro` es el nuevo router
+
 - Debe estar en: `src/pages/[locale]/[section]/index.astro`
 - Debe generar las 5 secciones × 2 idiomas = 10 rutas
 
 ### 4. Test locales
+
 ```bash
 npm run build
 npm run preview
 ```
 
 ### 5. Verificar que todo funciona
+
 - `/es/blog` → ✅
 - `/es/charla` → ✅
 - `/en/blog` → ✅
@@ -112,12 +124,13 @@ npm run preview
 - Etc.
 
 ### 6. Items individuales aún funcionan
+
 - `/es/blog/articulo` → ✅ (mismo archivo)
 - `/es/charla/presentacion` → ✅ (mismo archivo)
 
 ## Estructura Resultante
 
-```
+```text
 src/pages/
 ├── index.astro
 ├── robots.txt.ts

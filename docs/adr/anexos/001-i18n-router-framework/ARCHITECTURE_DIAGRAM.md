@@ -1,7 +1,8 @@
 # Diagrama de Arquitectura - Sistema Polimórfico de Secciones
+
 ## Flujo de Solicitud
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────┐
 │ Usuario accede a /es/charla                                     │
 └────────────────────┬────────────────────────────────────────────┘
@@ -49,8 +50,7 @@
     }
 ```
 
-
-```
+```text
                      ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │ [locale]/[section]/index.astro                                  │
@@ -103,7 +103,7 @@
 
 ### ANTES: Múltiples Archivos con Duplicación
 
-```
+```text
 src/pages/[locale]/
 ├── blog/
 │   ├── index.astro               ← 23 líneas
@@ -144,7 +144,7 @@ Total: 3 secciones × 2 archivos = 6 archivos
 
 ### DESPUÉS: Arquitectura Centralizada
 
-```
+```text
 src/
 ├── config/
 │   └── sections.ts               ← 63 líneas
@@ -216,7 +216,7 @@ export async function getStaticPaths() {
 
 ## Flujo de Datos
 
-```
+```text
 Entrada:
   URL: /es/charla
   Params: { locale: 'es', section: 'charla' }
@@ -272,7 +272,7 @@ HTML final: /es/charla con contenido de 'talk' collection
 
 ## Beneficio: Extensibilidad
 
-```
+```ts
 Para agregar nueva sección "Newsletter":
 
   1. En sections.ts:
@@ -299,7 +299,7 @@ Para agregar nueva sección "Newsletter":
 
 ## Patrones Implementados
 
-```
+```text
 ┌───────────────────────────────────────────────┐
 │ Configuration Pattern                         │
 │ (Toda la lógica guiada por datos)             │
