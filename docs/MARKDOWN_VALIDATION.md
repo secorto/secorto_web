@@ -1,4 +1,5 @@
 # Markdownlint: Validación de Markdown
+
 Este documento contiene los comandos mínimos para validar Markdown en el proyecto.
 
 Comandos
@@ -8,7 +9,9 @@ Comandos
 
 Nota CI
 
-El CI ejecuta `npm run lint` (que incluye `lint:md`).
+En el pipeline de CI para `push` y `pull_request`
+se ejecuta `npm run lint` (que incluye `lint:md`).
+En ejecuciones manuales (`workflow_dispatch`), este paso puede omitirse.
 
 Validación puntual
 
