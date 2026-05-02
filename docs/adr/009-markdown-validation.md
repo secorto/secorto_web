@@ -23,25 +23,12 @@ que eviten correcciones manuales repetidas.
 
 ## Decisión
 
-Adoptar y automatizar la validación de Markdown en el pipeline de CI mediante `markdownlint-cli2` separando responsabilidades:
+Usar dos archivos con responsabilidades separadas:
 
-- Un archivo de reglas principal: `.markdownlint.jsonc` (define reglas y severity)
-- Un archivo orientado a CLI/CI: `.markdownlint-cli2.jsonc`
-  o un archivo de patrones/exclusiones (globs/ignores) que controla qué ficheros valida la CI
+- `.markdownlint.jsonc`: reglas y niveles de `severity` (fuente de verdad)
+- `.markdownlint-cli2.jsonc` (opcional): patterns/globs/exclusiones y opciones de ejecución para la CLI/CI
 
-Esta separación permite mantener las reglas como fuente de verdad
-mientras se adapta qué se valida en CI sin modificar las reglas mismas.
-
-### Configuración propuesta: reglas + patterns para CLI
-
-Detalles:
-
-- **`.markdownlint.jsonc`**: contiene las reglas, niveles de `severity` (`error`/`warning`)
-  y deshabilitaciones puntuales
-- **`.markdownlint-cli2.jsonc` / patterns`**: contiene globs/exclusiones
-  usados por el pipeline (por ejemplo para evitar validar ficheros generados o paths large)
-
-Las reglas se siguen aplicando en local y en CI; los patterns determinan el alcance en cada entorno.
+`npm run lint:md` invoca `markdownlint-cli2` y, si existe, aplica las opciones de `.markdownlint-cli2.jsonc`; CI usa el mismo script. No se usarán archivos distintos de reglas para local y CI: la configuración de reglas debe mantenerse sincronizada.
 
 ## Implementación
 
@@ -56,10 +43,14 @@ Las reglas se siguen aplicando en local y en CI; los patterns determinan el alca
 
 ## Alternativas consideradas
 
-- **Dos configuraciones separadas** (`.markdownlint.jsonc` y `.markdownlint-cli2.jsonc`):
-  - ✅ Ventaja: flexibilidad para CI sin modificar reglas
-  - ⚠️ Desventaja: riesgo de desincronización si no se documenta
-  - ✅ Decisión adoptada: separar reglas y patterns, con documentación y checks de sincronización
+
+- **Dos archivos de reglas distintas (local vs CI)**:
+  - ❌ Rechazada: provoca deriva de reglas y bloqueos inesperados
+  - ❌ Motivo: `severity` permite la flexibilidad necesaria sin duplicar reglas
+
+- **Separar reglas vs patterns/CLI (adoptada)** (`.markdownlint.jsonc` + `.markdownlint-cli2.jsonc`):
+  - ✅ Ventaja: reglas centralizadas y patterns ajustables por entorno
+  - ⚠️ Desventaja: requiere documentación y controles para evitar confusiones
 
 - **Solo linters en editor**:
   - Reduce errores locales pero no garantiza calidad en CI
