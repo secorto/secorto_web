@@ -16,4 +16,4 @@ Para validar un archivo específico puedes usar `npx markdownlint-cli2 "path/to/
 
 Configuración y contexto
 
-La motivación y la configuración completa están documentadas en el ADR: [docs/adr/009-markdown-validation.md](docs/adr/009-markdown-validation.md)
+La motivación y la configuración completa están documentadas en el ADR: [docs/adr/009-markdown-validation.md](adr/009-markdown-validation.md)

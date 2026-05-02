@@ -33,7 +33,7 @@ archivos serán consumidos por CI cuando el pipeline ejecute `markdownlint-cli2`
 - Añadir scripts en `package.json`:
   - `npm run lint:md` — validar (usado en CI y local)
   - `npm run lint:md:fix` — correcciones automáticas
-- Documentar en `docs/MARKDOWN_VALIDATION.md` los comandos mínimos y enlace al ADR
+- Documentar en [docs/MARKDOWN_VALIDATION.md](../MARKDOWN_VALIDATION.md) los comandos mínimos y enlace al ADR
 
 ## Alternativas consideradas
 
