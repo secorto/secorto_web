@@ -6,7 +6,7 @@ tags:
   - actualidad
   - experiencias
 excerpt: Borrador sobre mi uso actual de Linux y cómo difiere de mis primeros pasos.
-postId: 'como-uso-linux-hoy'
+translationKey: 'como-uso-linux-hoy'
 draft: true
 ---
 

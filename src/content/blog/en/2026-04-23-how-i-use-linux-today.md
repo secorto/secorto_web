@@ -6,7 +6,7 @@ tags:
   - current
   - experiences
 excerpt: Draft describing my current Linux usage and how it differs from my early experiments.
-postId: 'como-uso-linux-hoy'
+translationKey: 'como-uso-linux-hoy'
 draft: true
 ---
 
