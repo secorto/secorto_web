@@ -76,7 +76,7 @@ Esto elimina la necesidad de mantener dos configuraciones separadas.
 - [x] Un único archivo `.markdownlint.jsonc` con severity levels
 - [x] Integración en CI mediante `npm run lint` (que incluye `lint:md`)
 - [x] Documentación en `docs/MARKDOWN_VALIDATION.md` explicando reglas y uso
-- [x] ADR de referencia (ADR 010) documentando la decisión de unificación
+- [x] La decisión de unificación queda documentada en este ADR (ADR 009)
 
 ## Riesgos y mitigaciones
 
