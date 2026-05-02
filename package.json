@@ -18,7 +18,10 @@
     "test:unit": "vitest",
     "test:unit:watch": "vitest --watch",
     "test:unit:ui": "vitest --ui",
-    "lint": "eslint ."
+    "lint": "npm run lint:md && npm run lint:js",
+    "lint:js": "eslint .",
+    "lint:md": "markdownlint-cli2 \"**/*.md\"",
+    "lint:md:fix": "markdownlint-cli2 \"**/*.md\" --fix"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.8",
@@ -46,6 +49,7 @@
     "eslint-plugin-astro": "^1.7.0",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
+    "markdownlint-cli2": "^0.22.1",
     "vitest": "^4.1.4"
   }
 }

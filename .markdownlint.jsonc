@@ -1,0 +1,79 @@
+// Markdownlint configuration
+// Rules are configured with severity levels:
+// - severity: "warning": reported but doesn't fail (non-blocking)
+// - severity: "error": fails validation (default, if not specified)
+
+// WARNINGS: Non-blocking formatting suggestions (for compatibility with existing content)
+{
+  "blanks-around-fences": {
+    "severity": "warning"
+  },
+  "blanks-around-headings": {
+    "severity": "warning"
+  },
+  "blanks-around-lists": {
+    "severity": "warning"
+  },
+  "blanks-around-tables": {
+    "severity": "warning"
+  },
+  "code-block-style": {
+    "severity": "warning"
+  },
+  "line-length": {
+    "severity": "warning",
+    "line_length": 120
+  },
+  "list-indent": {
+    "severity": "warning"
+  },
+  "fenced-code-language": {
+    "severity": "warning"
+  },
+  "first-line-heading": {
+    "severity": "warning"
+  },
+  "heading-style": {
+    "severity": "warning"
+  },
+  "no-bare-urls": {
+    "severity": "warning"
+  },
+  "no-duplicate-heading": {
+    "severity": "warning"
+  },
+  "no-emphasis-as-heading": {
+    "severity": "warning"
+  },
+  "no-inline-html": {
+    // Allowed elements for inline HTML in content
+    "allowed_elements": ["a", "img"]
+  },
+  "no-multiple-blanks": {
+    "severity": "warning"
+  },
+  "no-multiple-space-atx": {
+    "severity": "warning"
+  },
+  "no-trailing-punctuation": {
+    "severity": "warning"
+  },
+  "no-trailing-spaces": {
+    "severity": "warning"
+  },
+  "ol-prefix": {
+    "severity": "warning"
+  },
+  "single-title": {
+    "severity": "warning"
+  },
+  "table-column-style": {
+    "severity": "warning"
+  },
+  "ul-indent": {
+    "severity": "warning"
+  },
+  "ul-style": {
+    "severity": "warning"
+  }
+}

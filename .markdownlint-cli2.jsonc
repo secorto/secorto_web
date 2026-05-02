@@ -1,0 +1,10 @@
+{
+  // Paths ignored by markdownlint-cli2 (supports glob patterns)
+  "ignores": [
+    "node_modules/**",
+    "coverage/**",
+    "playwright-report/**",
+    "test-results/**",
+    ".netlify/**"
+  ]
+}
