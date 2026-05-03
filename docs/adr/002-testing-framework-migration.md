@@ -235,7 +235,7 @@ e2e-tests:     playwright test          → artifact playwright-report
 ## Anexos
 
 - [METRICS_FOR_PRESENTATION.md](./anexos/002-testing-framework-migration/METRICS_FOR_PRESENTATION.md) —
-Métricas y artefactos para presentación y migración
+  Métricas y artefactos para presentación y migración
 
 Nota operativa: cualquier cambio en la decisión de testing
 (frameworks, mocks o CI) debe reflejarse en `docs/TESTING_STRATEGY.md`
