@@ -7,7 +7,6 @@ En esta carpeta `docs/` se agrupan guías, recursos técnicos y registros de dec
 ### Fundamentales
 
 - [CONTRIBUTING.md](CONTRIBUTING.md) — Guía de contribución y convenciones de desarrollo
-- [README.md](README.md) — Este archivo; índice y organización de la documentación
 
 ### Arquitectura y diseño
 

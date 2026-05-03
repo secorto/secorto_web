@@ -26,7 +26,7 @@ buenas prácticas en todos los niveles (código, testing, decisiones).
 | `npm run test:unit`   | Ejecuta pruebas unitarias (Vitest)                |
 | `npm run test:e2e`    | Ejecuta pruebas E2E (Playwright)                  |
 
-Ver más comandos y opciones de actualización en [docs/README.md](./docs/README.md).
+Consulta el índice de documentación y guías en [docs/README.md](./docs/README.md).
 
 ## 📚 Documentación
 
@@ -60,7 +60,7 @@ Copyright 2023 Scot3004. Bajo licencia [MIT](LICENSE) ([versión en español](LI
 
 ---
 
-**Herramientas en la nube:**
+## Herramientas en la nube
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/secorto/secorto_web)
 [![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/devbox/github/secorto/secorto_web)
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/secorto/secorto_web?devcontainer_path=.devcontainer/.devcontainer/devcontainer.json)
