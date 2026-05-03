@@ -55,9 +55,9 @@ secciones obligatorias y metadatos normalizados (`frontmatter` YAML).
 
 ### Trabajo futuro habilitado
 
-- **Validación de frontmatter YAML:** implementar scripts que validen estructura mínima
-  y campos obligatorios en CI (p.ej. con Zod, JSON Schema, o validador personalizado)
-- **Integración en linters:** extender `markdownlint` o herramientas similares para forzar
+- **Validación de `frontmatter` YAML:** implementar scripts que validen estructura mínima
+  y campos obligatorios en `CI` (p.ej. con Zod, JSON Schema, o validador personalizado)
+- **Integración en `linters`:** extender `markdownlint` o herramientas similares para forzar
   cabeceras obligatorias y secciones mínimas
 - **Auditoría de anexos:** revisar ciclo de vida y responsables de la carpeta `docs/adr/anexos/`
   (gobernanza fuera del alcance de este ADR)
