@@ -2,131 +2,65 @@
 
 [![SeCOrTo web](https://img.shields.io/endpoint?url=https://cloud.cypress.io/badge/simple/97byr8/master&style=flat-square&logo=cypress)](https://cloud.cypress.io/projects/97byr8/runs)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/414a6ef2-a3ea-48b0-85ba-ba7fbe9f20d1/deploy-status)](https://app.netlify.com/sites/secorto-astro/deploys)
+[![Tests workflow](https://github.com/secorto/secorto_web/actions/workflows/tests.yml/badge.svg)](https://github.com/secorto/secorto_web/actions/workflows/tests.yml)
 
 Página personal de presentación de Sergio C. Orozco Torres
 
-## Motivación
+## Propósito
 
-Practicar el desarrollo front-end para fortalecer habilidades y tener una plantilla base en caso que requiera iniciar otro desarrollo similar
+Plataforma de contenido estático multilingüe:
+blog, portafolio, charlas, trabajo y comunidad.
 
-## Objetivos
+Demostrando arquitectura de datos documentada, gestión compleja de i18n, infraestructura escalable y
+buenas prácticas en todos los niveles (código, testing, decisiones).
 
-### Objetivo General
+## 🚀 Inicio rápido
 
-Desarrollar un sitio web informativo que demuestre los conocimientos y habilidades en desarrollo web de Sergio Orozco Torres
+| Comando               | Acción                                            |
+| :-------------------- | :------------------------------------------------ |
+| `npm install`         | Instala dependencias                              |
+| `npm run dev`         | Dev server en `localhost:4321`                    |
+| `npm run build`       | Construye para producción en `./dist/`            |
+| `npm run preview`     | Previsualiza la compilación localmente            |
+| `npm run test`        | Ejecuta unitarias (Vitest) + E2E (Playwright)     |
+| `npm run test:unit`   | Ejecuta pruebas unitarias (Vitest)                |
+| `npm run test:e2e`    | Ejecuta pruebas E2E (Playwright)                  |
 
-### Objetivos específicos
+Consulta el índice de documentación y guías en [docs/README.md](./docs/README.md).
 
-- Presentarme como persona y desarrollador web
-- Compartir todo lo que he aprendido ya sea a traves del blog o del portafolio de experiencias
-- Demostrar buenas practicas a través del código fuente de la página
+## 📚 Documentación
 
-## Guía de contribución
+La documentación se organiza en dos espacios:
 
-En este [enlace al archivo contributing.md](./docs/CONTRIBUTING.md) puedes ver como contribuir con el mejoramiento de este proyecto
+- **[docs/](./docs/)** — Guías técnicas, arquitectura, procesos y flujos de trabajo
+- **[docs/adr/](./docs/adr/)** — Architecture Decision Records (ADRs) que documentan decisiones clave
 
-## Documentación
+Consulta [docs/README.md](./docs/README.md) para el índice completo de documentación.
 
-La documentación del proyecto se encuentra en la carpeta `docs/`. Allí hay guías y recursos organizados, por ejemplo:
+## 🤝 Contribuir
 
-- `docs/CONTRIBUTING.md` — Guía de contribución
-- `docs/DETAIL_VIEW_ARCHITECTURE.md`, `docs/TESTING_STRATEGY.md`, `docs/TRANSLATION_WORKFLOW.md` — Documentos técnicos y de proceso
-- `docs/README.md` — Índice breve y convenciones de la carpeta `docs/`, incluyendo la ubicación de los assets en `docs/images/`
+Lee [docs/CONTRIBUTING.md](./docs/CONTRIBUTING.md) para conocer cómo contribuir.
 
-Si quieres agregar documentación nueva, créala dentro de `docs/` y usa `docs/images/` para las imágenes relacionadas.
+## 🔒 Seguridad
 
-## Guía de seguridad
+Consulta [SECURITY.md](./SECURITY.md) para reportar vulnerabilidades.
 
-En este [enlace al archivo security.md](./SECURITY.md) puedes ver como puedes reportar un issue de seguridad
+## 🔧 Desarrollo
 
-## Copyright y licencia
+- **Framework:** Astro con TypeScript
+- **Testing:** Playwright (E2E) + Vitest (unitarias)
+- **Estilo:** ESLint, sin puntos y coma (a menos que sea necesario)
+- **i18n:** Soporte multilingüe; lee [docs/TRANSLATION_WORKFLOW.md](./docs/TRANSLATION_WORKFLOW.md)
 
-Copyright 2023 Scot3004. Este código es lanzado bajo licencia [MIT](LICENSE), también puedes ver [los términos de la licencia MIT traducidos al español](LICENSE_es)
+Para instrucciones de desarrollo en dev container, consulta [docs/DEVCONTAINER.md](./docs/DEVCONTAINER.md).
 
-## 🧞 Comandos
+## 📄 Licencia
 
-Puedes ejecutar estos comandos en la carpeta raíz del proyecto:
+Copyright 2023 Scot3004. Bajo licencia [MIT](LICENSE) ([versión en español](LICENSE_es)).
 
-| Command                   | Action                                                         |
-| :------------------------ | :------------------------------------------------------------- |
-| `npm install`             | Instala las dependencias                                       |
-| `npm run dev`             | Ejecuta el dev server en `localhost:4321`                      |
-| `npm run build`           | Construye el sitio para produccion en `./dist/`                |
-| `npm run preview`         | Previsualiza la compilacion localmente                         |
-| `npm run astro ...`       | Ejecuta commandos de Astro CLI como `astro add`, `astro check` |
-| `npm run astro -- --help` | Obtener ayuda sobre Astro CLI                                  |
-
-## Actualizar paquetes
-
-Primero actualizar astro que su script de actualización ayuda para actualizar configuraciones
-
-```
-npx @astrojs/upgrade
-```
-
-Actualizar otros paquetes
-
-```
-npx npm-check-updates -u
-```
+---
 
 ## Herramientas en la nube
-
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/secorto/secorto_web)
 [![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/devbox/github/secorto/secorto_web)
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/secorto/secorto_web?devcontainer_path=.devcontainer/.devcontainer/devcontainer.json)
-
-**Integración Continua (Playwright + Netlify)**
-
-- **Runner script:** El pipeline invoca `node .github/scripts/wait-netlify-runner.js`, que llama internamente a `runAndExit()` del script `wait-netlify.js` sólo cuando se ejecuta directamente. Esto evita problemas con exports mutables y mejora testabilidad.
-- **COMMIT_ID:** El workflow inyecta `COMMIT_ID` con el SHA del PR (o del push). `wait-netlify` usa `COMMIT_ID` para encontrar el deploy que coincide con el commit y exporta `NETLIFY_PREVIEW_URL` al entorno de GitHub Actions.
-- **Requisitos:** El runner requiere Node >= 20 (según `engines.node` en `package.json`) para el soporte global de `fetch` o que esté disponible en el entorno.
-
-## Tests
-
-[![Tests workflow](https://github.com/secorto/secorto_web/actions/workflows/tests.yml/badge.svg)](https://github.com/secorto/secorto_web/actions/workflows/tests.yml)
-
-Ejecutar localmente:
-
-| Command             | Acción                                                           |
-| :------------------ | :--------------------------------------------------------------- |
-| `npm run test`      | Ejecuta las pruebas E2E (Playwright/Cypress según configuración) |
-| `npm run test:unit` | Ejecuta las pruebas unitarias con Vitest                         |
-
-En CI el workflow `Tests` corre dos jobs en paralelo:
-
-- `unit-tests`: ejecuta `vitest --run --coverage` y sube el artifact `vitest-coverage/` (contiene `lcov.info`)
-- `e2e-tests`: ejecuta las pruebas E2E con Playwright y sube el reporte `playwright-report/`
-
-Así las unit y las E2E corren en paralelo y la cobertura la genera únicamente el job `unit-tests`.
-
-Cómo ejecutar E2E localmente con variables de entorno
-
-- `npm run test:e2e` — Ejecuta Playwright directamente (`npx playwright test`). Este comando no carga `.env` automáticamente; si necesitas pasar `NETLIFY_PREVIEW_URL` u otras variables, expórtalas en la misma línea o en tu entorno.
-- `npm run test:e2e:env` — Ejecuta Playwright con `env-cmd` vía `npx` y la opción `-f .env`. Esta opción carga `.env` automáticamente y evita tener que exportar variables manualmente.
-
-Ejemplos rápidos:
-
- - Exportar en shells POSIX y ejecutar (no requiere `env-cmd`):
-
-```bash
-NETLIFY_PREVIEW_URL=https://preview.example.com npm run test:e2e
-```
-
- - En PowerShell:
-
-```powershell
-$Env:NETLIFY_PREVIEW_URL = 'https://preview.example.com'
-npm run test:e2e
-```
-
- - Usar el script que carga `.env` con `env-cmd` (no requiere instalación global):
-
-```bash
-npm run test:e2e:env
-```
-
-Para instrucciones detalladas sobre la ejecución de E2E dentro de un devcontainer, consulta `docs/DEVCONTAINER.md`.
-
-Nota: `test:e2e:env` usa `npx env-cmd` para cargar `.env`; `test:e2e` es minimalista y ejecuta Playwright directamente.
-
