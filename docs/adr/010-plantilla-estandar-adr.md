@@ -38,11 +38,17 @@ secciones obligatorias y metadatos normalizados (`frontmatter` YAML).
 
 - Crear `docs/adr/TEMPLATE.md` que especifique:
   - `Frontmatter` YAML con campos: `estado`, `fecha`, `ultima-actualizacion`, `categoria`.
+    **Mapeo de reemplazo:** blockquote `**Estado:**` → YAML `estado`; `**Fecha:**` → `fecha`;
+    `**Última actualización:**` → `ultima-actualizacion`; `**Categoría:**` → `categoria`.
   - Secciones obligatorias: Contexto, Objetivo, Decisión, Implementación,
     Consecuencias (Positivas / A tener en cuenta), Referencias.
+- Actualizar `docs/adr/README.md` — sección **Convenciones** — para documentar el nuevo formato
+  `frontmatter` YAML como fuente única de verdad para autores humanos.
 - Normalizar ADRs existentes en PRs separados y claramente marcados (commits de
-  formato que no cambien el sentido de las decisiones).
-- Actualizar `.github/copilot-instructions.md` para que asistentes IA generen ADRs conformes.
+  formato que **reemplazan completamente** `blockquotes` por `frontmatter` YAML,
+  sin mezcla de ambos formatos).
+- Actualizar `.github/copilot-instructions.md` para que asistentes IA generen ADRs conformes
+  con `frontmatter` YAML desde el inicio.
 
 ## Consecuencias
 
