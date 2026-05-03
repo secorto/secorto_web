@@ -120,3 +120,14 @@ status = 301
 from = "/rss-en.xml"
 to = "/en/rss.xml"
 status = 301
+
+# Legacy blog posts redirected to original Blogger URLs
+[[redirects]]
+from = "/es/blog/2011-07-19-typeracer"
+to = "http://scot3004.blogspot.com/2011/07/typeracer.html"
+status = 301
+
+[[redirects]]
+from = "/es/blog/2011-09-03-un-dia-de-suerte-dudosa"
+to = "http://scot3004.blogspot.com/2011/09/un-dia-de-suerte-dudosa.html"
+status = 301
