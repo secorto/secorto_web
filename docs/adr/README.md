@@ -33,7 +33,7 @@ completa del proyecto a través de tres reescrituras en diferentes frameworks.
 | [007](007-domain-i18n-unificacion.md) | Unificación de dominio e i18n — `postId`, mapas de locales y SEO centralizado | Aceptada | 2026-03 |
 | [008](008-client-scripts-unit-testing.md) | Estrategia de pruebas client-side y reorganización del cliente | Aceptada | 2026-04 |
 | [009](009-markdown-validation.md) | Validación de Markdown (formato y sincronización de documentación) | Aceptada | 2026-05 |
-| [010](010-normalizar-adr-y-gobernanza.md) | Normalizar formato ADR y gobernanza de ADRs generados por IA | Propuesta | 2026-05 |
+| [010](010-plantilla-estandar-adr.md) | Normalizar formato ADR y gobernanza de ADRs generados por IA | Propuesta | 2026-05 |
 
 ## Convenciones
 
