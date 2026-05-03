@@ -185,6 +185,18 @@ Sidebar
   text-align: center;
 }
 
+.sidebar-logo-wrapper {
+  max-width: 10rem;
+  aspect-ratio: 1;
+  margin: 0 auto 1rem;
+}
+
+.sidebar-logo {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .sidebar-separator {
   width: 10%;
   margin: 1rem auto 0px;
