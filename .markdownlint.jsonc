@@ -22,7 +22,8 @@
   },
   "line-length": {
     "severity": "warning",
-    "line_length": 120
+    "line_length": 120,
+    "tables": false
   },
   "list-indent": {
     "severity": "warning"

@@ -37,27 +37,32 @@ Breve resumen de métricas y puntos para diapositiva (usa esto como guion).
 ## Slides sugeridas (3–4 bullets por slide)
 
 Slide 1 — Resumen rápido
+
 - `Con mocks: 4.7 s` vs `Sin mocks: 8.1 s` → `-42 %` tiempo total
 - 12 tests medidos (charla + blog posts)
 - Mocks = velocidad + determinismo
 
 Slide 2 — Detalle por caso
+
 - Charla detail: `-60 %`
 - Blog post (Giscus): `-77 %`
 - Nota: lists/tags sin cambio
 
 Slide 3 — Impacto en flujo de trabajo
+
 - Unit tests: 165+ tests, cobertura 100 %
 - Migración a Playwright + Vitest habilita multi-navegador y sin límite de ejecuciones
 - Menos flakiness → menos re-ejecuciones y ahorro de tiempo humano
 
 Slide 4 — Recomendaciones / próxima acción
+
 - Mantener mocks en la suite rápida de CI (smoke + a11y) y ejecutar integración real
   periódica (`REAL_THIRD_PARTY=true`) en pipeline nocturno
 - Incluir el ADR de mocks en tu presentación (docs/adr/003-third-party-mocks.md)
 - Mostrar la inversión en automatización (tiempo ahorrado vs coste de herramientas)
 
 ## Notas técnicas rápidas para la diapositiva
+
 - Comando para ejecutar con mocks (por defecto):
 
 ```bash

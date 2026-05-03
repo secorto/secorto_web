@@ -74,7 +74,7 @@ externos (p. ej. giscus) en pruebas integradas.
   integrales y contratos con terceros.
 - Código más modular y reusable (`src/client/themeToggle.ts`,
   `src/client/sidebar.ts`).
- - Cobertura añadida para `sidebar` vía `tests/unit/client/sidebar.test.ts`,
+- Cobertura añadida para `sidebar` vía `tests/unit/client/sidebar.test.ts`,
    permitiendo validar `openSidebar`, `closeSidebar`, `toggleSidebar` e
    `initSidebar` en `jsdom`.
 
