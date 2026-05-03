@@ -8,7 +8,11 @@ Página personal de presentación de Sergio C. Orozco Torres
 
 ## Propósito
 
-Practicar desarrollo front-end, compartir conocimientos a través de un blog, y demostrar buenas prácticas en código fuente.
+Plataforma de contenido estático multilingüe:
+blog, portafolio, charlas, trabajo y comunidad.
+
+Demostrando arquitectura de datos documentada, gestión compleja de i18n, infraestructura escalable y
+buenas prácticas en todos los niveles (código, testing, decisiones).
 
 ## 🚀 Inicio rápido
 
