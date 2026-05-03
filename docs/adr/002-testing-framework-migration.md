@@ -20,7 +20,7 @@ por cada `spec file` ejecutado en CI, no por test individual. Con una suite
 de ~12 specs ejecutándose en cada push y PR, el presupuesto mensual se agotaba
 rápidamente:
 
-```
+```text
 12 specs × ~3 PRs/semana × 4 semanas = ~144 ejecuciones/mes (solo PRs)
 + pushes a main + re-runs por flakiness → fácilmente > 500/mes
 ```
@@ -83,7 +83,7 @@ unitario, manteniendo Cypress temporalmente hasta completar la migración.
 ### Completado ✅
 
 | Área | Cypress | Playwright/Vitest |
-|---|---|---|
+| --- | --- | --- |
 | Accesibilidad (axe) | `cypress-axe` | `@axe-core/playwright` |
 | Blog (list, post) | `blog.cy.ts` | `blog.list.spec.ts`, `blog.post.spec.ts` |
 | Charlas | `charla.cy.ts` | `charla.spec.ts`, `charla.a11y.spec.ts` |
@@ -101,7 +101,7 @@ unitario, manteniendo Cypress temporalmente hasta completar la migración.
 
 ### Artefactos de Cypress aún presentes
 
-```
+```text
 cypress/
 ├── e2e/
 │   ├── accessibility.cy.ts
@@ -121,7 +121,7 @@ Estos archivos se mantienen temporalmente como referencia de paridad.
 
 ### Tests unitarios — Vitest
 
-```
+```text
 tests/unit/           ← 165+ tests, 100 % cobertura
 ├── sections.test.ts
 ├── sectionLoader.test.ts
@@ -136,7 +136,7 @@ tests/unit/           ← 165+ tests, 100 % cobertura
 
 ### Tests E2E — Playwright
 
-```
+```text
 tests/e2e/
 ├── a11y/             ← Tests de accesibilidad (axe-core)
 │   └── charla.a11y.spec.ts
@@ -172,7 +172,7 @@ tests/e2e/
 El workflow `Tests` (`.github/workflows/tests.yml`) ejecuta dos jobs en
 paralelo:
 
-```
+```text
 unit-tests:    vitest --run --coverage  → artifact vitest-coverage
 e2e-tests:     playwright test          → artifact playwright-report
 ```
@@ -188,7 +188,7 @@ e2e-tests:     playwright test          → artifact playwright-report
 ## Comparación directa
 
 | Criterio | Cypress | Playwright |
-|---|---|---|
+| --- | --- | --- |
 | Límite mensual CI | **500 ejecuciones** (Cloud) | **Sin límite** |
 | Navegadores | Chromium, Firefox | Chromium, Firefox, **WebKit** |
 | Interceptación de red | `cy.intercept()` | `page.route()` (más flexible) |
@@ -199,7 +199,7 @@ e2e-tests:     playwright test          → artifact playwright-report
 | API de mocking | Limitada | `route.fulfill()` con body, headers, status |
 
 | Criterio | — (sin framework) | Vitest |
-|---|---|---|
+| --- | --- | --- |
 | Tests unitarios | No existían | 165+ tests |
 | Cobertura | No medible | 100 % (statements, branches, functions, lines) |
 | Velocidad | — | < 1 s toda la suite |
@@ -234,9 +234,12 @@ e2e-tests:     playwright test          → artifact playwright-report
 
 ## Anexos
 
-- [METRICS_FOR_PRESENTATION.md](./anexos/002-testing-framework-migration/METRICS_FOR_PRESENTATION.md) — Métricas y artefactos para presentación y migración
+- [METRICS_FOR_PRESENTATION.md](./anexos/002-testing-framework-migration/METRICS_FOR_PRESENTATION.md) —
+Métricas y artefactos para presentación y migración
 
-Nota operativa: cualquier cambio en la decisión de testing (frameworks, mocks o CI) debe reflejarse en `docs/TESTING_STRATEGY.md` y en los anexos relacionados para mantener la coherencia operativa.
+Nota operativa: cualquier cambio en la decisión de testing
+(frameworks, mocks o CI) debe reflejarse en `docs/TESTING_STRATEGY.md`
+y en los anexos relacionados para mantener la coherencia operativa.
 
 ## Referencias
 

@@ -44,6 +44,7 @@ Las áreas donde Copilot aportó valor en este repo:
 ## Pros y contras
 
 ### A. Suscribirse a Copilot
+
 - Pros:
   - Aumento de productividad (ej.: épica de unit tests completada más rápido)
   - Integración nativa en VSCode/GitHub
@@ -54,6 +55,7 @@ Las áreas donde Copilot aportó valor en este repo:
   - Dependencia de un servicio externo
 
 ### C. Alternativas (local/OSS)
+
 - Pros:
   - Control total sobre datos si se usa un modelo local
   - Sin coste recurrente (si se gestiona internamente)
@@ -110,7 +112,7 @@ Las áreas donde Copilot aportó valor en este repo:
 - [ ] Medir 4–8 semanas de productividad y compararlas con la línea base
 - [ ] Documentar política de uso y privacidad
 - [ ] Revisar la decisión en 2 meses y marcar ADR como **Aceptada** o **Rechazada**
- - [ ] Evaluar habilitar `Copilot Code Review` en modo opt-in y documentar la
+- [ ] Evaluar habilitar `Copilot Code Review` en modo opt-in y documentar la
    política de revisión para sugerencias automáticas
 
 ---

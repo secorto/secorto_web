@@ -51,7 +51,7 @@ contenido, y Jest + Cypress como frameworks de testing.
 ### Stack adoptado
 
 | Capa | Tecnología | Reemplaza a |
-|---|---|---|
+| --- | --- | --- |
 | SSG | Gatsby 5 | Jekyll |
 | UI | React 18 | Liquid templates |
 | Estilos | Theme UI 0.16 + Emotion | Sass + Minimal Mistakes |
@@ -70,7 +70,7 @@ contenido, y Jest + Cypress como frameworks de testing.
 
 ### Arquitectura de la aplicación
 
-```
+```text
 src/
 ├── assets/          → Recursos estáticos (avatar, logo, iconos)
 ├── blocks/          → Contenido MDX como bloques (about.mdx)
@@ -167,7 +167,7 @@ deploy previews.
 ## Alternativas consideradas
 
 | Alternativa | Razón de descarte |
-|---|---|
+| --- | --- |
 | **Next.js** | Orientado a apps dinámicas con SSR; el sitio es 100% estático |
 | **Hugo** | Go templates menos expresivos que JSX; sin ecosistema npm nativo |
 | **Eleventy** | Más simple pero sin el ecosistema de componentes React |
@@ -211,7 +211,7 @@ deploy previews.
 ### Métricas del repositorio
 
 | Métrica | Valor |
-|---|---|
+| --- | --- |
 | Commits totales | 111 |
 | Período activo | 2021-03 a 2023-07 (~2 años 4 meses) |
 | Tags de versión | Ninguno |

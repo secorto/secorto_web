@@ -32,7 +32,8 @@ borradores. Cambios concretos:
 - El esquema de contenido (`src/content.config.ts`) incluirá `draft?: boolean`.
 - Las funciones que generan listados y paths (`src/utils/paths.ts`) solo
   filtrarán por `data.draft === true` para excluir borradores.
-- La lógica de canonical/noindex y avisos se basará en `draft` y en los helpers del dominio; no se recomienda inferir borradores desde `translation_status`.
+- La lógica de canonical/noindex y avisos se basará en `draft` y en los helpers del dominio;
+  no se recomienda inferir borradores desde `translation_status`.
 - `translation_status` podrá permanecer como metadata histórica/auxiliar,
   pero ya no se usará para inferir el estado de borrador.
 
@@ -85,7 +86,8 @@ borradores. Cambios concretos:
 
 - `src/content.config.ts` — campo `draft` añadido al schema base
 - `src/utils/paths.ts` — filtrado por `draft`
-- `src/domain/post.ts` — helpers de dominio (p. ej. `getSeoDescription`) y tipos relacionados; las extracciones simples de metadata también pueden encontrarse inline en las plantillas o centralizadas en estos helpers.
+- `src/domain/post.ts` — helpers de dominio (p. ej. `getSeoDescription`) y tipos relacionados;
+  las extracciones simples de metadata también pueden encontrarse inline en las plantillas o centralizadas en estos helpers.
 - `docs/TRANSLATION_WORKFLOW.md` — guía actualizada
 
 ---
@@ -103,7 +105,8 @@ accidental y asegurar comportamiento consistente:
   en tiempo de ejecución sobre `Record<string, unknown>` para evitar `any`.
 - `src/domain/post.ts`: los helpers de dominio (por ejemplo `getSeoDescription`)
   y la lógica de SEO/canonical/noindex se concentran aquí o se dejan inline en
-  las plantillas. Se simplificó la lógica para depender únicamente de `draft` (frontmatter: `entry.data.draft`) y evitar inferencias desde `translation_status`.
+  las plantillas. Se simplificó la lógica para depender únicamente de `draft`
+  (frontmatter: `entry.data.draft`) y evitar inferencias desde `translation_status`.
   Se eliminaron inferencias automáticas sobre `translation_status` en el
   flujo principal (la metadata histórica puede permanecer en archivos).
 - `src/pages/[locale]/[section]/[...id].astro`: la plantilla de detalle ahora
@@ -118,6 +121,7 @@ accidental y asegurar comportamiento consistente:
   completamente tras los cambios.
 
 Notas importantes:
+
 - Se priorizó eliminar compatibilidad retro en el runtime para evitar
   lógica dispersa y ambigua. Si se necesita, se puede crear un script de
   migración que proponga `draft: true` en archivos con
@@ -126,7 +130,6 @@ Notas importantes:
   plantillas) para mejorar la seguridad de tipos y la mantenibilidad.
 - Resultado: comportamiento determinista — solo `draft: true` controla la
   visibilidad y SEO (noindex/canonical) en la web.
-
 
 ---
 
