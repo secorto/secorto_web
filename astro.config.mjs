@@ -19,6 +19,8 @@ export default defineConfig({
     '/es/blog/2011-02-28-openbox': '/es/blog/2026-04-25-mis-primeros-pasos-en-linux',
     '/es/blog/2011-03-03-screenshoots-chakra': '/es/blog/2026-04-25-mis-primeros-pasos-en-linux',
     '/es/blog/2011-06-05-kde-46-netbook': '/es/blog/2026-04-25-mis-primeros-pasos-en-linux',
+    '/es/blog/2010-10-19-windows-o-linux': '/es/blog/2026-04-25-mis-primeros-pasos-en-linux',
+    '/es/blog/2011-07-11-aprendiendo-hacer-paginas-web': '/es/charla/2020-08-03-que-es-markdown',
   },
   integrations: [
     sitemap(),
