@@ -7,15 +7,20 @@
 
 ## Contexto
 
-La carpeta `docs/adr/` muestra inconsistencias de formato entre ADRs:
-mezcla de cabeceras ATX y setext, numeración de listas inconsistente (`1.` vs `1)`)
-y algunos archivos con frontmatter YAML en lugar del bloque de metadatos con blockquote establecido desde `ADR 001`.
+La carpeta `docs/adr/` actual usa un formato **consistente** de metadatos basado en blockquote
+(establecido desde `ADR 001`), pero sigue habiendo inconsistencias menores en el cuerpo del documento:
+mezcla de cabeceras ATX y setext, numeración de listas inconsistente (`1.` vs `1)`),
+y ausencia de validación automatizada de estructura.
 
-El problema se agravó con el uso de asistentes IA que generan ADRs con formatos distintos al del proyecto,
-introduciendo ruido en revisiones de PR.
+Aunque el estado es ya más uniforme que en versiones anteriores, persisten dos retos:
+
+1. **Sin validación automática:** no hay herramienta que fuerce la presencia de secciones obligatorias
+   (Contexto, Decisión, Consecuencias) ni que valide la estructura YAML de la metadata.
+2. **Inconsistencia generada por IA:** los asistentes IA generan ADRs con formatos distintos;
+   usar frontmatter YAML estándar facilita que las instrucciones sean seguidas uniformemente.
 
 La validación sintáctica con `markdownlint-cli2` adoptada en `ADR 009`
-reduce errores de formato Markdown pero no garantiza consistencia de estructura.
+reduce errores de formato Markdown pero no garantiza consistencia de estructura ni presencia de secciones.
 
 ## Objetivo
 
