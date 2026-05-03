@@ -7,10 +7,11 @@ import type { PostLikeEntry } from '@domain/post';
 
 export interface Props {
   basePath: string
-  posts: PostLikeEntry[];
+  posts: PostLikeEntry[]
+  cta: string
 }
 
-const { posts, basePath } = Astro.props;
+const { posts, basePath, cta } = Astro.props;
 const dateFormat = getFullFormat(Astro.url);
 ---
 
@@ -20,13 +21,15 @@ const dateFormat = getFullFormat(Astro.url);
       image={post.data.image}
       url={`/${basePath}/${post.cleanId}`}
       title={post.data.title}
+      excerpt={post.data.excerpt}
+      cta={cta}
+      imageAlt={`featured image for ${post.data.title}`}
     >
       {post.data.date &&
         <PostDate>
           {dateFormat.format(post.data.date)}
         </PostDate>
       }
-      {post.data.excerpt}
     </PostItem>
   )}
 </PostList>
