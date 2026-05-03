@@ -23,6 +23,7 @@ const dateFormat = getFullFormat(Astro.url);
       title={post.data.title}
       excerpt={post.data.excerpt}
       cta={cta}
+      imageAlt={`featured image for ${post.data.title}`}
     >
       {post.data.date &&
         <PostDate>

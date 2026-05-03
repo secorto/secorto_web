@@ -23,6 +23,7 @@ const { posts, basePath, lang, cta } = Astro.props
       url={`/${basePath}/${post.cleanId}`}
       title={post.data.title}
       cta={cta}
+      imageAlt={`featured image for ${post.data.title}`}
     >
       {post.data.startDate && (
         <PostDate>
