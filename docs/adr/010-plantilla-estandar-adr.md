@@ -25,38 +25,36 @@ Actualizar las instrucciones para asistentes IA para que produzcan ADRs conforme
 
 ## Decisión
 
-- Crear `docs/adr/TEMPLATE.md` con plantilla canónica que incluya:
-  - Cabeceras mínimas requeridas: título, bloque de metadatos (estado, fecha, categoría).
-  - Secciones obligatorias: Contexto, Objetivo, Decisión, Alcance, Riesgos y mitigaciones, Referencias.
-  - Ejemplo de frontmatter YAML con campos: `estado`, `fecha`, `ultima-actualizacion`, `categoria`.
-- Normalizar ADRs existentes para adoptar esta estructura en PRs separadas.
-- Actualizar `copilot-instructions.md` para que asistentes IA generen ADRs
-  respetando la plantilla y estructura de cabeceras.
+Adoptar una plantilla estándar para ADRs que define cabeceras mínimas,
+secciones obligatorias y metadata normalizada (frontmatter YAML).
 
-## Alcance
+## Implementación
 
-- Establecer la plantilla canónica con cabeceras y secciones mínimas obligatorias.
+- Crear `docs/adr/TEMPLATE.md` que especifique:
+  - Frontmatter YAML con campos: `estado`, `fecha`, `ultima-actualizacion`, `categoria`.
+  - Secciones obligatorias: Contexto, Objetivo, Decisión, Implementación,
+    Consecuencias (Positivas / A tener en cuenta), Referencias.
 - Normalizar ADRs existentes en PRs separados y claramente marcados (commits de
   formato que no cambien el sentido de las decisiones).
-- Actualizar `copilot-instructions.md` para que asistentes IA generen ADRs conformes.
+- Actualizar `.github/copilot-instructions.md` para que asistentes IA generen ADRs conformes.
 
-## Riesgos y mitigaciones
+## Consecuencias
 
-- Riesgo: normalización de formato en ADRs existentes puede confundirse con cambios de decisión → Mitigación:
-  commits exclusivos de formato con mensaje descriptivo, sin alterar el contenido.
-- Riesgo: futuros ADRs (incluyendo IA-generados) no respeten la plantilla → Mitigación:
-  una vez adoptada la plantilla como referencia canónica, los autores (humanos e IA) tendrán
-  una especificación clara. La validación automática de estructura y frontmatter se habilitará
-  como future step (ver más abajo).
+### Positivas
 
-## Próximos pasos
+- Plantilla canónica proporciona referencia clara para autores (humanos e IA)
+- Normalización visual de ADRs facilita revisiones y búsquedas
+- Base estructural para validación automática futura (frontmatter, secciones obligatorias)
+- Commits de normalización quedan claramente marcados (formato, no cambios de decisión)
+
+### Trabajo futuro habilitado
 
 - **Validación de frontmatter YAML:** implementar scripts que validen estructura mínima
-  y campos obligatorios en CI (p.ej. con Zod, JSON Schema, o validador personalizado).
+  y campos obligatorios en CI (p.ej. con Zod, JSON Schema, o validador personalizado)
 - **Integración en linters:** extender `markdownlint` o herramientas similares para forzar
-  cabeceras obligatorias y secciones mínimas.
+  cabeceras obligatorias y secciones mínimas
 - **Auditoría de anexos:** revisar ciclo de vida y responsables de la carpeta `docs/adr/anexos/`
-  (gobernanza fuera del scope de este ADR).
+  (gobernanza fuera del alcance de este ADR)
 
 ## Referencias
 
