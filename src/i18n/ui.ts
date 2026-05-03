@@ -42,7 +42,12 @@ export const ui = {
     'footer.avatar_alt': 'Featured image',
     'footer.role': 'Software developer',
     'footer.follow': 'Follow me: ',
-    'footer.tags': 'Browse tags'
+    'footer.tags': 'Browse tags',
+    'cta.blog': 'Read more',
+    'cta.talk': 'Watch talk',
+    'cta.project': 'View project',
+    'cta.work': 'View more',
+    'cta.community': 'Learn more'
   },
   es: {
     'site.description': 'Blog personal de Sergio Orozco - Desarrollador, Conferencista, Entusiasta del Open Source',
@@ -76,7 +81,12 @@ export const ui = {
     'footer.avatar_alt': 'Foto destacada',
     'footer.role': 'Desarrollador de software',
     'footer.follow': 'Sígueme en: ',
-    'footer.tags': 'Explorar etiquetas'
+    'footer.tags': 'Explorar etiquetas',
+    'cta.blog': 'Leer más',
+    'cta.talk': 'Ver charla',
+    'cta.project': 'Ver proyecto',
+    'cta.work': 'Ver más',
+    'cta.community': 'Saber más'
   },
 } as const;
 

@@ -29,9 +29,9 @@ const pageTitle = t(config.translationKey)
     <Tags route={`/${locale}/${section}/tags/`} tags={tags} />
   )}
   {config.category === 'post' && (
-    <ListPost posts={sectionProps.posts} basePath={`${locale}/${config.routes[locale]}`} />
+    <ListPost posts={sectionProps.posts} basePath={`${locale}/${config.routes[locale]}`} cta={t(config.ctaKey)} />
   )}
   {config.category === 'experience' && (
-    <ListWork posts={sectionProps.posts} basePath={`${locale}/${config.routes[locale]}`} lang={locale} />
+    <ListWork posts={sectionProps.posts} basePath={`${locale}/${config.routes[locale]}`} lang={locale} cta={t(config.ctaKey)}/>
   )}
 </BaseLayout>

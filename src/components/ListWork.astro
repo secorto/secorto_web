@@ -10,9 +10,10 @@ export interface Props {
   basePath: string
   posts: ExperienceLikeEntry[]
   lang: UILanguages
+  cta: string
 }
 
-const { posts, basePath, lang } = Astro.props
+const { posts, basePath, lang, cta } = Astro.props
 ---
 
 <PostList>
@@ -21,6 +22,7 @@ const { posts, basePath, lang } = Astro.props
       image={post.data.image}
       url={`/${basePath}/${post.cleanId}`}
       title={post.data.title}
+      cta={cta}
     >
       {post.data.startDate && (
         <PostDate>
