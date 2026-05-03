@@ -41,18 +41,21 @@ const { title, url, image, excerpt = '', cta = 'Ver más' } = Astro.props
     flex-direction: row;
     gap: 1.5rem;
     align-items: flex-start;
-    min-height: 260px;
+    min-height: 12rem;
   }
   @container (min-width: 1440px) {
     .card {
-      min-height: 300px;
+      min-height: 20rem;
     }
   }
-  @container (max-width: 700px) {
+  @container (max-width: 829px) {
     .card {
       flex-direction: column;
       align-items: center;
       min-height: auto;
+    }
+    .card-content {
+      text-align: center;
     }
   }
   .card:hover {
@@ -66,11 +69,9 @@ const { title, url, image, excerpt = '', cta = 'Ver más' } = Astro.props
     color: var(--colors-primary);
     flex: 1;
     min-width: 0;
-  }
-  @container (max-width: 700px) {
-    .card-content {
-      text-align: center;
-    }
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
   }
   .card-title {
     margin: 0;
