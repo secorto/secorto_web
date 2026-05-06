@@ -5,15 +5,14 @@ interface Props {
   url: string
   image?: ImageMetadata
   excerpt?: string
-  cta: string,
-  imageAlt: string
+  cta: string
 }
-const { title, url, image, excerpt = '', cta, imageAlt } = Astro.props
+const { title, url, image, excerpt = '', cta } = Astro.props
 ---
 
 <a class="card" href={url}>
   {image &&
-    <Image src={image} alt={imageAlt} class="card-image" />
+    <Image src={image} alt={title} class="card-image" />
   }
   <div class="card-content">
     <h2 class="card-title">{title}</h2>
