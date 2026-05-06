@@ -13,5 +13,7 @@ describe('langFromString', () => {
   it('throws TypeError for unknown or undefined languages', () => {
     expect(() => langFromString('xx')).toThrow(TypeError)
     expect(() => langFromString(undefined)).toThrow(TypeError)
+    expect(() => langFromString('toString')).toThrow(TypeError)
+    expect(() => langFromString('constructor')).toThrow(TypeError)
   })
 })

@@ -1,4 +1,4 @@
-import { ui, defaultLang, type UILanguages } from './ui'
+import { ui, defaultLang, type UILanguages, languageKeys } from './ui'
 import { showDefaultLang } from '@i18n/config'
 import { full, monthYear } from '@i18n/dateFormat'
 
@@ -11,7 +11,10 @@ import { full, monthYear } from '@i18n/dateFormat'
  */
 export function getLangFromUrl(url: URL) {
   const [, lang] = url.pathname.split('/')
-  if (lang in ui) return lang as UILanguages
+  const possiblyLang = lang as UILanguages
+  if (languageKeys.includes(possiblyLang)) {
+    return possiblyLang
+  }
   return defaultLang
 }
 
@@ -41,8 +44,9 @@ export function useTranslations(lang: UILanguages) {
  * ```
  */
 export function langFromString(lang: string | undefined) {
-  if (lang && lang in ui) {
-    return lang as UILanguages
+  const possiblyLang = lang as UILanguages
+  if (languageKeys.includes(possiblyLang)) {
+    return possiblyLang
   } else {
     throw new TypeError(`Invalid language: ${lang}`)
   }
