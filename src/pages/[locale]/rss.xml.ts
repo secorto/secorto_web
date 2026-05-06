@@ -1,5 +1,5 @@
 import rss from '@astrojs/rss'
-import { useTranslations } from '@i18n/utils'
+import { langFromString, useTranslations } from '@i18n/utils'
 import { languageKeys } from '@i18n/ui'
 import type { APIContext } from 'astro'
 import type { UILanguages } from '@i18n/ui'
@@ -15,7 +15,7 @@ export function getStaticPaths() {
 }
 
 export async function GET(context: APIContext) {
-  const locale = context.params.locale as UILanguages
+  const locale = langFromString(context.params.locale)
   const t = useTranslations(locale)
 
   const items = await buildRSSItems('blog', locale)
