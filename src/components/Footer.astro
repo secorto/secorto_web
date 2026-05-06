@@ -6,7 +6,7 @@ import { resolveLocalized } from '@i18n/rootMap'
 
 type Props = Record<string, never>
 const locale = langFromString(Astro.currentLocale)
-const t = useTranslations(locale);
+const t = useTranslations(locale)
 const site = import.meta.env.SITE
 ---
 <footer class="footer">
