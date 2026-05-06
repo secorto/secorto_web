@@ -37,6 +37,23 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta property="twitter:description" content={siteDescription} />
     {/* Inline script previene flash en tema oscuro */}
     <script is:inline>function getInitialTheme(){const e=localStorage?.getItem("theme");return"string"==typeof e?e:window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}const theme=getInitialTheme();document.documentElement.classList.add(theme),window.localStorage.setItem("theme",theme);</script>
+    <style>
+      @media (min-width: 1440px) {
+        html {
+          font-size: 112.5%;
+        }
+      }
+      @media (min-width: 2160px) {
+        html {
+          font-size: 150%;
+        }
+      }
+      @media (min-width: 3200px) {
+        html {
+          font-size: 200%;
+        }
+      }
+    </style>
   </head>
   <body>
     <Hamburger />

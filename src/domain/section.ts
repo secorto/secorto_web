@@ -14,6 +14,8 @@ export interface SectionConfig {
   translationKey: TranslationKey
   /** Clave i18n opcional para etiquetas de la sección */
   taggedKey?: TranslationKey
+  /** Clave i18n para el botón CTA en listados */
+  ctaKey: TranslationKey
   /** URLs de la sección por idioma */
   routes: Record<UILanguages, string>
   /** Si mostrar imagen destacada en listados y detalle de esta sección */
@@ -26,6 +28,7 @@ export const sectionsConfig: Record<SectionType, SectionConfig> = {
     category: 'post',
     translationKey: 'nav.blog',
     taggedKey: 'blog.tagged',
+    ctaKey: 'cta.blog',
     routes: { es: 'blog', en: 'blog' },
     showFeaturedImage: true
   },
@@ -34,6 +37,7 @@ export const sectionsConfig: Record<SectionType, SectionConfig> = {
     category: 'post',
     translationKey: 'nav.talks',
     taggedKey: 'talk.tagged',
+    ctaKey: 'cta.talk',
     routes: { es: 'charla', en: 'talk' },
     showFeaturedImage: true
   },
@@ -41,6 +45,7 @@ export const sectionsConfig: Record<SectionType, SectionConfig> = {
     name: 'work',
     category: 'experience',
     translationKey: 'nav.work',
+    ctaKey: 'cta.work',
     routes: { es: 'trabajo', en: 'work' },
     showFeaturedImage: false
   },
@@ -48,6 +53,7 @@ export const sectionsConfig: Record<SectionType, SectionConfig> = {
     name: 'projects',
     category: 'experience',
     translationKey: 'nav.projects',
+    ctaKey: 'cta.project',
     routes: { es: 'proyecto', en: 'project' },
     showFeaturedImage: true
   },
@@ -55,6 +61,7 @@ export const sectionsConfig: Record<SectionType, SectionConfig> = {
     name: 'community',
     category: 'experience',
     translationKey: 'nav.community',
+    ctaKey: 'cta.community',
     routes: { es: 'comunidad', en: 'community' },
     showFeaturedImage: true
   }

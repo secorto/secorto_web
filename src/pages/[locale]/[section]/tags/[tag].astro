@@ -36,7 +36,7 @@ const metaDescription = `${config.taggedKey ? t(config.taggedKey) : t(config.tra
     </div>
   ) : (
     <div>
-      <ListPost posts={posts} basePath={`${locale}/${config.routes[locale]}`} />
+      <ListPost posts={posts} basePath={`${locale}/${config.routes[locale]}`} cta={t(config.ctaKey)} />
     </div>
   )}
 </BaseLayout>
