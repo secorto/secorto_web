@@ -23,8 +23,29 @@ export function getLangFromUrl(url: URL) {
  * @returns Función `t(key)` que devuelve la traducción
  */
 export function useTranslations(lang: UILanguages) {
-  return function t(key: keyof typeof ui[typeof defaultLang]) {
-    return ui[lang][key] || ui[defaultLang][key]
+  return function t(key: keyof typeof ui[typeof lang]) {
+    return ui[lang][key]
+  }
+}
+
+/**
+ * Convierte una cadena en un valor válido de `UILanguages`.
+ *
+ * @param lang - Código de idioma a validar (por ejemplo `'es'`, `'en'`) o `undefined`
+ * @returns `lang` como `UILanguages` si es válido
+ * @throws {TypeError} si `lang` es `undefined` o no corresponde a un idioma soportado
+ *
+ * Ejemplo:
+ * ```ts
+ * langFromString('en') // 'en'
+ * langFromString(undefined) // throws TypeError
+ * ```
+ */
+export function langFromString(lang: string | undefined) {
+  if (lang && lang in ui) {
+    return lang as UILanguages
+  } else {
+    throw new TypeError(`Invalid language: ${lang}`)
   }
 }
 
