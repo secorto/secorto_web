@@ -47,7 +47,14 @@ export const ui = {
     'cta.talk': 'Watch talk',
     'cta.project': 'View project',
     'cta.work': 'View more',
-    'cta.community': 'Learn more'
+    'cta.community': 'Learn more',
+    'home.latest_blog': 'Latest blog post',
+    'home.latest_talk': 'Latest talk',
+    'home.pybaq_role': 'Organizer',
+    'home.pybaq_label': 'Python Barranquilla',
+    'home.pybaq_since': 'Since August 2018',
+    'home.pybaq_desc': 'I help organize events, maintain the website, and give talks about testing and software development.',
+    'home.pybaq_cta': 'View my profile'
   },
   es: {
     'site.description': 'Blog personal de Sergio Orozco - Desarrollador, Conferencista, Entusiasta del Open Source',
@@ -86,7 +93,14 @@ export const ui = {
     'cta.talk': 'Ver charla',
     'cta.project': 'Ver proyecto',
     'cta.work': 'Ver más',
-    'cta.community': 'Saber más'
+    'cta.community': 'Saber más',
+    'home.latest_blog': 'Última entrada en el blog',
+    'home.latest_talk': 'Última charla',
+    'home.pybaq_role': 'Organizador',
+    'home.pybaq_label': 'Python Barranquilla',
+    'home.pybaq_since': 'Desde agosto de 2018',
+    'home.pybaq_desc': 'Ayudo a organizar eventos, mantengo el sitio web y doy charlas sobre testing y desarrollo de software.',
+    'home.pybaq_cta': 'Ver mi perfil'
   },
 } as const;
 

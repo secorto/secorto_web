@@ -1,29 +1,111 @@
 ---
-import SiteLayout from "@layouts/SiteLayout.astro";
-import SEOHead from '@components/SEOHead.astro';
+import BaseLayout from "@layouts/BaseLayout.astro"
+import SEOHead from '@components/SEOHead.astro'
+import HomeHighlights from '@components/HomeHighlights.astro'
 import intro from '@assets/img/intro.inline.svg?raw'
-import Footer from '@components/Footer.astro';
-import { getRelativeLocaleUrl } from 'astro:i18n';
+import { getRelativeLocaleUrl } from 'astro:i18n'
 import LanguagePicker from '@components/LanguagePicker.astro'
 import { buildHomeLinks } from '@i18n/languagePickerUtils'
+import { useTranslations } from '@i18n/utils'
+import { getPostsByLocale } from '@utils/paths'
+import { sectionsConfig } from '@domain/section'
 
-const pageTitle = "Página de inicio";
+const pageTitle = "Página de inicio"
 const links = buildHomeLinks()
+const t = useTranslations('es')
+
+const blogPosts = await getPostsByLocale('blog', 'es')
+const talkPosts = await getPostsByLocale('talk', 'es')
+
+const latestBlog = blogPosts[0]
+const latestTalk = talkPosts[0]
+
+const blogRoute = sectionsConfig.blog.routes.es
+const talkRoute = sectionsConfig.talk.routes.es
 ---
 
-<SiteLayout pageTitle={pageTitle}>
+<BaseLayout pageTitle={pageTitle}>
   <SEOHead slot="seo-head" links={links} />
   <LanguagePicker slot="langpicker" links={links} />
-  <Fragment set:html={intro} />
-  <main class="main-content">
-    <div>
-      <h1>Soy Sergio Carlos Orozco Torres</h1>
-      <p>👨🏼‍🎓 <a href={getRelativeLocaleUrl('es', 'about')}>Especialista en seguridad informática</a> con amplios conocimientos en <a href="trabajo">desarrollo de software</a></p>
-      <p>🗣️ He dado <a href="charla">charlas</a> en diferentes <a href="comunidad">comunidades</a> por toda Colombia</p>
-      <p>📝 Además de haber escrito <a href="blog">articulos</a> sobre diversos temas</p>
-      <p>🛠️ Participo en <a href="proyecto">proyectos</a> de código libre</p>
+
+  <section class="home-bio">
+    <div class="home-avatar" set:html={intro} />
+    <div class="home-bio-text">
+      <h2>Soy Sergio Carlos Orozco Torres</h2>
+      <p>
+        Desarrollador de software radicado en Itagüí, Colombia.
+        Trabajo en <strong>calidad de software y automatización de pruebas</strong> en
+        <a href={getRelativeLocaleUrl('es', 'trabajo')}>Perficient</a> desde 2018.
+        Organizador y conferencista en <a href={getRelativeLocaleUrl('es', 'comunidad')}>Python Barranquilla</a>.
+      </p>
+      <p>
+        Este sitio es en sí mismo un ejercicio práctico: cobertura de tests al 100%
+        y pruebas e2e con Playwright — el punto de partida para una nueva serie de
+        <a href={getRelativeLocaleUrl('es', 'blog')}>posts</a> y <a href={getRelativeLocaleUrl('es', 'charla')}>charlas</a>.
+      </p>
     </div>
-    <slot />
-  </main>
-  <Footer />
-</SiteLayout>
+  </section>
+
+  <HomeHighlights
+    blog={latestBlog ? {
+      sectionLabel: t('nav.blog'),
+      title: latestBlog.data.title,
+      excerpt: latestBlog.data.excerpt ?? '',
+      url: `/${getRelativeLocaleUrl('es', blogRoute)}${latestBlog.cleanId}`,
+      cta: t('cta.blog')
+    } : undefined}
+    talk={latestTalk ? {
+      sectionLabel: t('nav.talks'),
+      title: latestTalk.data.title,
+      excerpt: latestTalk.data.excerpt ?? '',
+      url: `/${getRelativeLocaleUrl('es', talkRoute)}${latestTalk.cleanId}`,
+      cta: t('cta.talk')
+    } : undefined}
+    pybaq={{
+      role: t('home.pybaq_role'),
+      since: t('home.pybaq_since'),
+      description: t('home.pybaq_desc'),
+      url: 'https://pybaq.co/nosotros/sergio-orozco/',
+      cta: t('home.pybaq_cta')
+    }}
+  />
+</BaseLayout>
+
+<style>
+  .home-bio {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding: 1rem 0 0;
+  }
+
+  .home-avatar {
+    flex: 0 1 16.5rem;
+    min-width: 10rem;
+    aspect-ratio: 3 / 2;
+    margin-inline: auto;
+  }
+
+  .home-avatar :global(svg) {
+    width: 100%;
+    height: 100%;
+  }
+
+  .home-bio-text {
+    flex: 1 1 20rem;
+    min-width: 0;
+  }
+
+  .home-bio-text h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.3rem;
+    color: var(--colors-heading);
+  }
+
+  .home-bio-text p {
+    margin: 0 0 0.5rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+</style>

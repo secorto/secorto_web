@@ -1,29 +1,111 @@
 ---
-import SiteLayout from "@layouts/SiteLayout.astro";
-import SEOHead from '@components/SEOHead.astro';
+import BaseLayout from "@layouts/BaseLayout.astro"
+import SEOHead from '@components/SEOHead.astro'
+import HomeHighlights from '@components/HomeHighlights.astro'
 import intro from '@assets/img/intro.inline.svg?raw'
-import Footer from '@components/Footer.astro';
-import { getRelativeLocaleUrl } from 'astro:i18n';
+import { getRelativeLocaleUrl } from 'astro:i18n'
 import LanguagePicker from '@components/LanguagePicker.astro'
 import { buildHomeLinks } from '@i18n/languagePickerUtils'
+import { useTranslations } from '@i18n/utils'
+import { getPostsByLocale } from '@utils/paths'
+import { sectionsConfig } from '@domain/section'
 
-const pageTitle = "Homepage";
+const pageTitle = "Homepage"
 const links = buildHomeLinks()
+const t = useTranslations('en')
+
+const blogPosts = await getPostsByLocale('blog', 'en')
+const talkPosts = await getPostsByLocale('talk', 'en')
+
+const latestBlog = blogPosts[0]
+const latestTalk = talkPosts[0]
+
+const blogRoute = sectionsConfig.blog.routes.en
+const talkRoute = sectionsConfig.talk.routes.en
 ---
 
-<SiteLayout pageTitle={pageTitle}>
+<BaseLayout pageTitle={pageTitle}>
   <SEOHead slot="seo-head" links={links} />
   <LanguagePicker slot="langpicker" links={links} />
-  <Fragment set:html={intro} />
-  <main class="main-content">
-    <div>
-      <h1>I'm Sergio Carlos Orozco Torres</h1>
-      <p>👨🏼‍🎓 <a href={getRelativeLocaleUrl('en', 'about')}>Computer security specialist</a> with extensive knowledge in <a href="trabajo">software development</a></p>
-      <p>🗣️ I gave <a href={getRelativeLocaleUrl('en', 'charla')}>talks</a> in different <a href="comunidad">communities</a> throughout Colombia</p>
-      <p>📝 Also I writen <a href="blog">a blog</a> about different topics</p>
-      <p>🛠️ I participate in open source <a href="proyecto">projects</a></p>
+
+  <section class="home-bio">
+    <div class="home-avatar" set:html={intro} />
+    <div class="home-bio-text">
+      <h2>I'm Sergio Carlos Orozco Torres</h2>
+      <p>
+        Software developer based in Itagüí, Colombia.
+        I work in <strong>software quality and test automation</strong> at
+        <a href={getRelativeLocaleUrl('en', 'work')}>Perficient</a> since 2018.
+        Organizer and speaker at <a href={getRelativeLocaleUrl('en', 'community')}>Python Barranquilla</a>.
+      </p>
+      <p>
+        This site is itself a practical exercise: 100% test coverage
+        and e2e testing with Playwright — the starting point for a new series of
+        <a href={getRelativeLocaleUrl('en', 'blog')}>posts</a> and <a href={getRelativeLocaleUrl('en', 'talk')}>talks</a>.
+      </p>
     </div>
-    <slot />
-  </main>
-  <Footer />
-</SiteLayout>
+  </section>
+
+  <HomeHighlights
+    blog={latestBlog ? {
+      sectionLabel: t('nav.blog'),
+      title: latestBlog.data.title,
+      excerpt: latestBlog.data.excerpt ?? '',
+      url: `/${getRelativeLocaleUrl('en', blogRoute)}${latestBlog.cleanId}`,
+      cta: t('cta.blog')
+    } : undefined}
+    talk={latestTalk ? {
+      sectionLabel: t('nav.talks'),
+      title: latestTalk.data.title,
+      excerpt: latestTalk.data.excerpt ?? '',
+      url: `/${getRelativeLocaleUrl('en', talkRoute)}${latestTalk.cleanId}`,
+      cta: t('cta.talk')
+    } : undefined}
+    pybaq={{
+      role: t('home.pybaq_role'),
+      since: t('home.pybaq_since'),
+      description: t('home.pybaq_desc'),
+      url: 'https://pybaq.co/en/nosotros/sergio-orozco/',
+      cta: t('home.pybaq_cta')
+    }}
+  />
+</BaseLayout>
+
+<style>
+  .home-bio {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding: 1rem 0 0;
+  }
+
+  .home-avatar {
+    flex: 0 1 16.5rem;
+    min-width: 10rem;
+    aspect-ratio: 3 / 2;
+    margin-inline: auto;
+  }
+
+  .home-avatar :global(svg) {
+    width: 100%;
+    height: 100%;
+  }
+
+  .home-bio-text {
+    flex: 1 1 20rem;
+    min-width: 0;
+  }
+
+  .home-bio-text h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.3rem;
+    color: var(--colors-heading);
+  }
+
+  .home-bio-text p {
+    margin: 0 0 0.5rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+</style>
