@@ -37,4 +37,4 @@ export default defineConfig({
       redirectToDefaultLocale: isDev,
     }
   }
-});
+})
