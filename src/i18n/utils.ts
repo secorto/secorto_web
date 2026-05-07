@@ -20,7 +20,7 @@ export function getLangFromUrl(url: URL) {
 
 /**
  * Crea una función traductora ligada a un idioma concreto.
- * La función devuelta recibe una clave y devuelve la cadena localizada,
+ * La función devuelta recibe una clave y devuelve la cadena localizada.
  * @param lang - Idioma a usar para las traducciones
  * @returns Función `t(key)` que devuelve la traducción
  */
