@@ -20,7 +20,7 @@ buenas prácticas en todos los niveles (código, testing, decisiones).
 | `npm install`         | Instala dependencias                              |
 | `npm run dev`         | Dev server en `localhost:4321`                    |
 | `npm run build`       | Construye para producción en `./dist/`            |
-| `npm run preview`     | Pre-visualiza la compilación localmente           |
+| `npm run preview`     | Previsualiza la compilación localmente            |
 | `npm run test`        | Ejecuta unitarias (Vitest) + E2E (Playwright)     |
 | `npm run test:unit`   | Ejecuta pruebas unitarias (Vitest)                |
 | `npm run test:e2e`    | Ejecuta pruebas E2E (Playwright)                  |
