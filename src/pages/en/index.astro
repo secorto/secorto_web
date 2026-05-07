@@ -51,14 +51,14 @@ const talkRoute = sectionsConfig.talk.routes.en
       sectionLabel: t('nav.blog'),
       title: latestBlog.data.title,
       excerpt: latestBlog.data.excerpt ?? '',
-      url: `/${getRelativeLocaleUrl('en', blogRoute)}${latestBlog.cleanId}`,
+      url: getRelativeLocaleUrl('en', `${blogRoute}/${latestBlog.cleanId}`),
       cta: t('cta.blog')
     } : undefined}
     talk={latestTalk ? {
       sectionLabel: t('nav.talks'),
       title: latestTalk.data.title,
       excerpt: latestTalk.data.excerpt ?? '',
-      url: `/${getRelativeLocaleUrl('en', talkRoute)}${latestTalk.cleanId}`,
+      url: getRelativeLocaleUrl('en', `${talkRoute}/${latestTalk.cleanId}`),
       cta: t('cta.talk')
     } : undefined}
     pybaq={{
