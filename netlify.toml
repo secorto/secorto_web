@@ -15,16 +15,6 @@ package = "netlify-plugin-cypress"
   record = true
 
 [[redirects]]
-from = "/es/*"
-to = "/es/404"
-status = 404
-
-[[redirects]]
-from = "/en/*"
-to = "/en/404"
-status = 404
-
-[[redirects]]
 from = "/"
 to = "/es"
 
@@ -120,3 +110,29 @@ status = 301
 from = "/rss-en.xml"
 to = "/en/rss.xml"
 status = 301
+
+# Legacy blog posts redirected to original Blogger URLs
+[[redirects]]
+from = "/es/blog/2011-07-19-typeracer"
+to = "https://scot3004.blogspot.com/2011/07/typeracer.html"
+status = 301
+
+[[redirects]]
+from = "/es/blog/2011-09-03-un-dia-de-suerte-dudosa"
+to = "https://scot3004.blogspot.com/2011/09/un-dia-de-suerte-dudosa.html"
+status = 301
+
+[[redirects]]
+from = "/es/blog/2011-07-05-en-el-lado-oscuro"
+to = "https://scot3004.blogspot.com/2011/07/en-el-lado-oscuro.html"
+status = 301
+
+[[redirects]]
+from = "/es/*"
+to = "/es/404"
+status = 404
+
+[[redirects]]
+from = "/en/*"
+to = "/en/404"
+status = 404
