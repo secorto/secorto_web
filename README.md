@@ -1,6 +1,5 @@
 # secorto.com fuentes
 
-[![SeCOrTo web](https://img.shields.io/endpoint?url=https://cloud.cypress.io/badge/simple/97byr8/master&style=flat-square&logo=cypress)](https://cloud.cypress.io/projects/97byr8/runs)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/414a6ef2-a3ea-48b0-85ba-ba7fbe9f20d1/deploy-status)](https://app.netlify.com/sites/secorto-astro/deploys)
 [![Tests workflow](https://github.com/secorto/secorto_web/actions/workflows/tests.yml/badge.svg)](https://github.com/secorto/secorto_web/actions/workflows/tests.yml)
 
@@ -21,7 +20,7 @@ buenas prácticas en todos los niveles (código, testing, decisiones).
 | `npm install`         | Instala dependencias                              |
 | `npm run dev`         | Dev server en `localhost:4321`                    |
 | `npm run build`       | Construye para producción en `./dist/`            |
-| `npm run preview`     | Previsualiza la compilación localmente            |
+| `npm run preview`     | Pre-visualiza la compilación localmente           |
 | `npm run test`        | Ejecuta unitarias (Vitest) + E2E (Playwright)     |
 | `npm run test:unit`   | Ejecuta pruebas unitarias (Vitest)                |
 | `npm run test:e2e`    | Ejecuta pruebas E2E (Playwright)                  |
@@ -61,6 +60,7 @@ Copyright 2023 Scot3004. Bajo licencia [MIT](LICENSE) ([versión en español](LI
 ---
 
 ## Herramientas en la nube
+
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/secorto/secorto_web)
 [![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/devbox/github/secorto/secorto_web)
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/secorto/secorto_web?devcontainer_path=.devcontainer/.devcontainer/devcontainer.json)
