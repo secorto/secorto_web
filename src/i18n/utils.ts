@@ -1,4 +1,4 @@
-import { ui, defaultLang, type UILanguages } from './ui'
+import { ui, defaultLang, type UILanguages, languageKeys } from './ui'
 import { showDefaultLang } from '@i18n/config'
 import { full, monthYear } from '@i18n/dateFormat'
 
@@ -11,20 +11,44 @@ import { full, monthYear } from '@i18n/dateFormat'
  */
 export function getLangFromUrl(url: URL) {
   const [, lang] = url.pathname.split('/')
-  if (lang in ui) return lang as UILanguages
+  const possiblyLang = lang as UILanguages
+  if (languageKeys.includes(possiblyLang)) {
+    return possiblyLang
+  }
   return defaultLang
 }
 
 /**
  * Crea una función traductora ligada a un idioma concreto.
- * La función devuelta recibe una clave y devuelve la cadena localizada,
- * con fallback al `defaultLang` si falta la traducción.
+ * La función devuelta recibe una clave y devuelve la cadena localizada.
  * @param lang - Idioma a usar para las traducciones
  * @returns Función `t(key)` que devuelve la traducción
  */
 export function useTranslations(lang: UILanguages) {
-  return function t(key: keyof typeof ui[typeof defaultLang]) {
-    return ui[lang][key] || ui[defaultLang][key]
+  return function t(key: keyof typeof ui[typeof lang]) {
+    return ui[lang][key]
+  }
+}
+
+/**
+ * Convierte una cadena en un valor válido de `UILanguages`.
+ *
+ * @param lang - Código de idioma a validar (por ejemplo `'es'`, `'en'`) o `undefined`
+ * @returns `lang` como `UILanguages` si es válido
+ * @throws {TypeError} si `lang` es `undefined` o no corresponde a un idioma soportado
+ *
+ * Ejemplo:
+ * ```ts
+ * langFromString('en') // 'en'
+ * langFromString(undefined) // throws TypeError
+ * ```
+ */
+export function langFromString(lang: string | undefined) {
+  const possiblyLang = lang as UILanguages
+  if (languageKeys.includes(possiblyLang)) {
+    return possiblyLang
+  } else {
+    throw new TypeError(`Invalid language: ${lang}`)
   }
 }
 

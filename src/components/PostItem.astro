@@ -1,5 +1,7 @@
 ---
-import { Image } from "astro:assets";
+import { useTranslations, langFromString } from "@i18n/utils"
+import { formatString } from "@utils/formatString"
+import { Image } from "astro:assets"
 interface Props {
   title: string
   url: string
@@ -8,11 +10,12 @@ interface Props {
   cta: string
 }
 const { title, url, image, excerpt = '', cta } = Astro.props
+const t = useTranslations(langFromString(Astro.currentLocale))
 ---
 
 <a class="card" href={url}>
   {image &&
-    <Image src={image} alt={title} class="card-image" />
+    <Image src={image} alt={formatString(t('featured_image'), [title])} class="card-image" />
   }
   <div class="card-content">
     <h2 class="card-title">{title}</h2>

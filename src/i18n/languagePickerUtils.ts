@@ -6,6 +6,7 @@ import { languageKeys } from './ui'
 import { findSectionMap } from './rootMap'
 import type { AvailableLocales } from '@domain/translation'
 import { showDefaultLang } from '@i18n/config'
+import { langFromString } from './utils'
 
 /**
  * Calcula el prefijo de ruta localizado según el idioma.
@@ -71,7 +72,7 @@ export function buildStaticPageLinks(url: URL): TranslationLink[] {
   const [, maybeLocale, rawSegment] = url.pathname.split('/')
   if (!(languageKeys as string[]).includes(maybeLocale)) return buildMissingLanguageLinks()
 
-  const currentLocale = maybeLocale as UILanguages
+  const currentLocale = langFromString(maybeLocale)
   const sectionMap = findSectionMap(rawSegment, currentLocale)
 
   return languageKeys.map(targetLang => {

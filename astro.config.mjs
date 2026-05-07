@@ -1,9 +1,9 @@
-import { defineConfig } from 'astro/config';
-const isDev = import.meta.env.DEV;
+import { defineConfig } from 'astro/config'
+const isDev = import.meta.env.DEV
 
-import sitemap from "@astrojs/sitemap";
+import sitemap from "@astrojs/sitemap"
 
-import expressiveCode from 'astro-expressive-code';
+import expressiveCode from 'astro-expressive-code'
 
 // https://astro.build/config
 export default defineConfig({
@@ -37,4 +37,4 @@ export default defineConfig({
       redirectToDefaultLocale: isDev,
     }
   }
-});
+})
