@@ -1,29 +1,69 @@
 ---
-import SiteLayout from "@layouts/SiteLayout.astro";
-import SEOHead from '@components/SEOHead.astro';
+import Home from '@layouts/Home.astro'
 import intro from '@assets/img/intro.inline.svg?raw'
-import Footer from '@components/Footer.astro';
-import { getRelativeLocaleUrl } from 'astro:i18n';
-import LanguagePicker from '@components/LanguagePicker.astro'
+import { getRelativeLocaleUrl } from 'astro:i18n'
 import { buildHomeLinks } from '@i18n/languagePickerUtils'
+import { useTranslations } from '@i18n/utils'
+import { getPostsByLocale } from '@utils/paths'
+import { sectionsConfig } from '@domain/section'
 
-const pageTitle = "Página de inicio";
+const pageTitle = "Página de inicio"
 const links = buildHomeLinks()
+const t = useTranslations('es')
+
+const [blogPosts, talkPosts] = await Promise.all([
+  getPostsByLocale('blog', 'es'),
+  getPostsByLocale('talk', 'es'),
+])
+
+const latestBlog = blogPosts[0]
+const latestTalk = talkPosts[0]
+
+if (!latestBlog || !latestTalk) {
+  throw new Error('Homepage build requires at least one blog post and one talk post (es)')
+}
+
+const blogRoute = sectionsConfig.blog.routes.es
+const talkRoute = sectionsConfig.talk.routes.es
 ---
 
-<SiteLayout pageTitle={pageTitle}>
-  <SEOHead slot="seo-head" links={links} />
-  <LanguagePicker slot="langpicker" links={links} />
-  <Fragment set:html={intro} />
-  <main class="main-content">
-    <div>
-      <h1>Soy Sergio Carlos Orozco Torres</h1>
-      <p>👨🏼‍🎓 <a href={getRelativeLocaleUrl('es', 'about')}>Especialista en seguridad informática</a> con amplios conocimientos en <a href="trabajo">desarrollo de software</a></p>
-      <p>🗣️ He dado <a href="charla">charlas</a> en diferentes <a href="comunidad">comunidades</a> por toda Colombia</p>
-      <p>📝 Además de haber escrito <a href="blog">articulos</a> sobre diversos temas</p>
-      <p>🛠️ Participo en <a href="proyecto">proyectos</a> de código libre</p>
-    </div>
-    <slot />
-  </main>
-  <Footer />
-</SiteLayout>
+<Home
+  pageTitle={pageTitle}
+  links={links}
+  intro={intro}
+  blog={{
+    sectionLabel: t('nav.blog'),
+    title: latestBlog.data.title,
+    excerpt: latestBlog.data.excerpt ?? '',
+    url: getRelativeLocaleUrl('es', `${blogRoute}/${latestBlog.cleanId}`),
+    cta: t('cta.blog')
+  }}
+  talk={{
+    sectionLabel: t('nav.talks'),
+    title: latestTalk.data.title,
+    excerpt: latestTalk.data.excerpt ?? '',
+    url: getRelativeLocaleUrl('es', `${talkRoute}/${latestTalk.cleanId}`),
+    cta: t('cta.talk')
+  }}
+  pybaq={{
+    label: t('home.pybaq_label'),
+    role: t('home.pybaq_role'),
+    since: t('home.pybaq_since'),
+    description: t('home.pybaq_desc'),
+    url: 'https://pybaq.co/nosotros/sergio-orozco/',
+    cta: t('home.pybaq_cta')
+  }}
+>
+  <h2 slot="bio">Soy Sergio Carlos Orozco Torres</h2>
+  <p slot="bio">
+    Desarrollador de software radicado en Itagüí, Colombia.
+    Trabajo en <strong>calidad de software y automatización de pruebas</strong> en
+    <a href={getRelativeLocaleUrl('es', 'trabajo')}>Perficient</a> desde 2018.
+    Organizador y conferencista en <a href={getRelativeLocaleUrl('es', 'comunidad')}>Python Barranquilla</a>.
+  </p>
+  <p slot="bio">
+    Este sitio es en sí mismo un ejercicio práctico: cobertura de tests al 100%
+    y pruebas e2e con Playwright — el punto de partida para una nueva serie de
+    <a href={getRelativeLocaleUrl('es', 'blog')}>posts</a> y <a href={getRelativeLocaleUrl('es', 'charla')}>charlas</a>.
+  </p>
+</Home>

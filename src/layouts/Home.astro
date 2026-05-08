@@ -1,0 +1,36 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro"
+import SEOHead from '@components/SEOHead.astro'
+import LanguagePicker from '@components/LanguagePicker.astro'
+import HomeHighlights from '@components/HomeHighlights.astro'
+import type { TranslationLink } from '@domain/translationLink'
+
+import type { ContentItem, PyBaqItem } from '../types/home'
+
+interface Props {
+  pageTitle: string
+  links: TranslationLink[]
+  intro: string
+  blog: ContentItem
+  talk: ContentItem
+  pybaq: PyBaqItem
+}
+
+import '../styles/home.css'
+
+const { pageTitle, links, intro, blog, talk, pybaq } = Astro.props as Props
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  <SEOHead slot="seo-head" links={links} />
+  <LanguagePicker slot="langpicker" links={links} />
+
+  <section class="home-bio">
+    <div class="home-avatar" set:html={intro} />
+    <div class="home-bio-text">
+      <slot name="bio" />
+    </div>
+  </section>
+
+  <HomeHighlights blog={blog} talk={talk} pybaq={pybaq} />
+</BaseLayout>
