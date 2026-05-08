@@ -14,7 +14,12 @@ for (const locale of languageKeys) {
     test('renders bio, avatar and highlights', async () => {
       await expect(home.avatar()).toBeVisible()
       await expect(home.bioText()).toBeVisible()
-      await expect(home.highlights()).toHaveCount(2)
+
+      const blog = home.blogHighlight()
+      const talk = home.talkHighlight()
+
+      await expect(blog).toBeVisible()
+      await expect(talk).toBeVisible()
     })
 
     test('PyBAQ callout uses i18n strings', async () => {
@@ -26,12 +31,28 @@ for (const locale of languageKeys) {
     })
 
     test('first highlight link navigates to content', async ({ page }) => {
-      const first = home.firstHighlight()
-      await expect(first).toBeVisible()
-      const href = await first.getAttribute('href')
-      expect(href).toBeTruthy()
-      await page.goto(href || '/')
-      await expect(page).not.toHaveURL(`/${locale}/`)
+      const blog = home.blogHighlight()
+      const talk = home.talkHighlight()
+
+      if ((await blog.count()) > 0) {
+        await expect(blog).toBeVisible()
+        const href = await blog.getAttribute('href')
+        expect(href).toBeTruthy()
+        await page.goto(href || '/')
+        await expect(page).not.toHaveURL(`/${locale}/`)
+        return
+      }
+
+      if ((await talk.count()) > 0) {
+        await expect(talk).toBeVisible()
+        const href = await talk.getAttribute('href')
+        expect(href).toBeTruthy()
+        await page.goto(href || '/')
+        await expect(page).not.toHaveURL(`/${locale}/`)
+        return
+      }
+
+      throw new Error('No highlight cards found to navigate')
     })
   })
 }

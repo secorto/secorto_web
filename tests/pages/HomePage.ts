@@ -21,12 +21,11 @@ export class HomePage {
   pybaq(): Locator {
     return this.page.locator('.pybaq-callout')
   }
-
-  highlights(): Locator {
-    return this.page.locator('[data-testid^="highlight-"]')
+  blogHighlight(): Locator {
+    return this.page.locator('[data-testid="highlight-blog"]')
   }
 
-  firstHighlight(): Locator {
-    return this.page.locator('[data-testid="highlight-0"]')
+  talkHighlight(): Locator {
+    return this.page.locator('[data-testid="highlight-talk"]')
   }
 }

@@ -19,6 +19,10 @@ const [blogPosts, talkPosts] = await Promise.all([
 const latestBlog = blogPosts[0]
 const latestTalk = talkPosts[0]
 
+if (!latestBlog || !latestTalk) {
+  throw new Error('Homepage build requires at least one blog post and one talk post (en)')
+}
+
 const blogRoute = sectionsConfig.blog.routes.en
 const talkRoute = sectionsConfig.talk.routes.en
 ---
@@ -27,20 +31,20 @@ const talkRoute = sectionsConfig.talk.routes.en
   pageTitle={pageTitle}
   links={links}
   intro={intro}
-  blog={latestBlog ? {
+  blog={{
     sectionLabel: t('nav.blog'),
     title: latestBlog.data.title,
     excerpt: latestBlog.data.excerpt ?? '',
     url: getRelativeLocaleUrl('en', `${blogRoute}/${latestBlog.cleanId}`),
     cta: t('cta.blog')
-  } : undefined}
-  talk={latestTalk ? {
+  }}
+  talk={{
     sectionLabel: t('nav.talks'),
     title: latestTalk.data.title,
     excerpt: latestTalk.data.excerpt ?? '',
     url: getRelativeLocaleUrl('en', `${talkRoute}/${latestTalk.cleanId}`),
     cta: t('cta.talk')
-  } : undefined}
+  }}
   pybaq={{
     label: t('home.pybaq_label'),
     role: t('home.pybaq_role'),

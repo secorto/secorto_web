@@ -2,8 +2,8 @@
 import type { ContentItem, PyBaqItem } from '../types/home'
 
 interface Props {
-  blog?: ContentItem
-  talk?: ContentItem
+  blog: ContentItem
+  talk: ContentItem
   pybaq: PyBaqItem
 }
 
@@ -12,16 +12,19 @@ const { blog, talk, pybaq } = Astro.props as Props
 
 <div class="highlights">
   <div class="highlights-cards">
-    {([blog, talk] as ContentItem[])
-      .filter(Boolean)
-      .map((item, idx) => (
-        <a class="highlight-card" href={item.url} data-testid={`highlight-${idx}`}>
-          <span class="highlight-label">{item.sectionLabel}</span>
-          <h2 class="highlight-title">{item.title}</h2>
-          {item.excerpt && <p class="highlight-excerpt">{item.excerpt}</p>}
-          <span class="highlight-cta">{item.cta}</span>
-        </a>
-      ))}
+    <a class="highlight-card" href={blog.url} data-testid="highlight-blog">
+      <span class="highlight-label">{blog.sectionLabel}</span>
+      <h2 class="highlight-title">{blog.title}</h2>
+      {blog.excerpt && <p class="highlight-excerpt">{blog.excerpt}</p>}
+      <span class="highlight-cta">{blog.cta}</span>
+    </a>
+
+    <a class="highlight-card" href={talk.url} data-testid="highlight-talk">
+      <span class="highlight-label">{talk.sectionLabel}</span>
+      <h2 class="highlight-title">{talk.title}</h2>
+      {talk.excerpt && <p class="highlight-excerpt">{talk.excerpt}</p>}
+      <span class="highlight-cta">{talk.cta}</span>
+    </a>
   </div>
 
   <a class="pybaq-callout" href={pybaq.url} target="_blank" rel="noopener noreferrer">
@@ -34,5 +37,3 @@ const { blog, talk, pybaq } = Astro.props as Props
     <span class="pybaq-cta">{pybaq.cta} →</span>
   </a>
 </div>
-<style>
-
