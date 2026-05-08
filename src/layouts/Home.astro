@@ -5,21 +5,7 @@ import LanguagePicker from '@components/LanguagePicker.astro'
 import HomeHighlights from '@components/HomeHighlights.astro'
 import type { TranslationLink } from '@domain/translationLink'
 
-interface ContentItem {
-  sectionLabel: string
-  title: string
-  excerpt: string
-  url: string
-  cta: string
-}
-
-interface PyBaqItem {
-  role: string
-  since: string
-  description: string
-  url: string
-  cta: string
-}
+import type { ContentItem, PyBaqItem } from '../types/home'
 
 interface Props {
   pageTitle: string
@@ -29,6 +15,8 @@ interface Props {
   talk?: ContentItem
   pybaq: PyBaqItem
 }
+
+import '../styles/home.css'
 
 const { pageTitle, links, intro, blog, talk, pybaq } = Astro.props as Props
 ---
@@ -46,42 +34,3 @@ const { pageTitle, links, intro, blog, talk, pybaq } = Astro.props as Props
 
   <HomeHighlights blog={blog} talk={talk} pybaq={pybaq} />
 </BaseLayout>
-
-<style>
-  .home-bio {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    gap: 1.5rem;
-    padding: 1rem 0 0;
-  }
-
-  .home-avatar {
-    flex: 0 1 16.5rem;
-    min-width: 10rem;
-    aspect-ratio: 3 / 2;
-    margin-inline: auto;
-  }
-
-  .home-avatar :global(svg) {
-    width: 100%;
-    height: 100%;
-  }
-
-  .home-bio-text {
-    flex: 1 1 20rem;
-    min-width: 0;
-  }
-
-  .home-bio-text h2 {
-    margin: 0 0 0.5rem;
-    font-size: 1.3rem;
-    color: var(--colors-heading);
-  }
-
-  .home-bio-text p {
-    margin: 0 0 0.5rem;
-    font-size: 0.95rem;
-    line-height: 1.6;
-  }
-</style>
