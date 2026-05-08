@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test'
 import { ui, languageKeys } from '@i18n/ui'
 import { HomePage } from '../pages/HomePage'
+import { sectionsConfig } from '@domain/section'
 
 for (const locale of languageKeys) {
   test.describe(`@homepage Homepage (${locale})`, () => {
@@ -14,6 +15,10 @@ for (const locale of languageKeys) {
     test('renders bio, avatar and highlights', async () => {
       await expect(home.avatar()).toBeVisible()
       await expect(home.bioText()).toBeVisible()
+
+      const header = home.page.locator('[data-testid="header-title"]')
+      await expect(header).toBeVisible()
+      await expect(header).toHaveText(/\S+/)
 
       const blog = home.blogHighlight()
       const talk = home.talkHighlight()
@@ -30,29 +35,24 @@ for (const locale of languageKeys) {
       await expect(callout.getByText(ui[locale]['home.pybaq_cta'])).toBeVisible()
     })
 
-    test('first highlight link navigates to content', async ({ page }) => {
+    test('blog highlight navigates to a blog post', async ({ page }) => {
       const blog = home.blogHighlight()
+      await expect(blog).toBeVisible()
+      const blogHref = await blog.getAttribute('href')
+      expect(blogHref).toBeTruthy()
+      await page.goto(blogHref || '/')
+      const blogRoute = sectionsConfig.blog.routes[locale]
+      await expect(page).toHaveURL(new RegExp(`^.*\\/${locale}\\\/${blogRoute}\\\/`))
+    })
+
+    test('talk highlight navigates to a talk post', async ({ page }) => {
       const talk = home.talkHighlight()
-
-      if ((await blog.count()) > 0) {
-        await expect(blog).toBeVisible()
-        const href = await blog.getAttribute('href')
-        expect(href).toBeTruthy()
-        await page.goto(href || '/')
-        await expect(page).not.toHaveURL(`/${locale}/`)
-        return
-      }
-
-      if ((await talk.count()) > 0) {
-        await expect(talk).toBeVisible()
-        const href = await talk.getAttribute('href')
-        expect(href).toBeTruthy()
-        await page.goto(href || '/')
-        await expect(page).not.toHaveURL(`/${locale}/`)
-        return
-      }
-
-      throw new Error('No highlight cards found to navigate')
+      await expect(talk).toBeVisible()
+      const talkHref = await talk.getAttribute('href')
+      expect(talkHref).toBeTruthy()
+      await page.goto(talkHref || '/')
+      const talkRoute = sectionsConfig.talk.routes[locale]
+      await expect(page).toHaveURL(new RegExp(`^.*\\/${locale}\\\/${talkRoute}\\\/`))
     })
   })
 }
