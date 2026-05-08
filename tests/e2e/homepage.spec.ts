@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 import { ui, languageKeys } from '@i18n/ui'
-import { HomePage } from '../pages/HomePage'
+import { HomePage } from '@tests/pages/HomePage'
 import { sectionsConfig } from '@domain/section'
 
 for (const locale of languageKeys) {

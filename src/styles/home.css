@@ -1,24 +1,164 @@
-.highlights{display:flex;flex-direction:column;gap:1.5rem;margin-top:2rem}
-.highlights-cards{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
-@media(max-width:829px){.highlights-cards{grid-template-columns:1fr}}
-.highlight-card{display:flex;flex-direction:column;gap:.5rem;padding:1.25rem 1.5rem;border-radius:10px;text-decoration:none;box-shadow:0 0 8px var(--colors-primary);background:var(--colors-background);color:var(--colors-text);transition:transform .2s ease-out,box-shadow .2s ease-out}
-.highlight-card:hover{transform:translateY(-4px);box-shadow:0 4px 16px var(--colors-primary)}
-.highlight-label{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--colors-primary)}
-.highlight-title{font-size:1.1rem;font-weight:600;color:var(--colors-heading);margin:0;line-height:1.3}
-.highlight-excerpt{font-size:.9rem;color:var(--colors-text);margin:0;line-height:1.5;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.highlight-cta{margin-top:auto;font-size:.85rem;font-weight:600;color:var(--colors-primary)}
-.pybaq-callout{display:flex;flex-direction:column;gap:.5rem;padding:1.25rem 1.5rem;border-radius:10px;text-decoration:none;background:var(--colors-sidebar-background);color:var(--colors-sidebar-text);transition:opacity .2s ease-out}
-.pybaq-callout:hover{opacity:.9}
-.pybaq-header{display:flex;align-items:baseline;gap:.75rem;flex-wrap:wrap}
-.pybaq-label{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--colors-sidebar-hover)}
-.pybaq-name{font-size:.85rem;color:var(--colors-sidebar-text);opacity:.8}
-.pybaq-role{font-size:.85rem;color:var(--colors-sidebar-text);opacity:.95}
-.pybaq-desc{margin:0;font-size:.95rem;line-height:1.5;color:var(--colors-sidebar-text)}
-.pybaq-cta{font-size:.85rem;font-weight:600;color:var(--colors-sidebar-hover);margin-top:.25rem}
+.highlights {
+	display: flex;
+	flex-direction: column;
+	gap: 1.5rem;
+	margin-top: 2rem;
+}
 
-.home-bio{display:flex;flex-wrap:wrap;align-items:flex-start;gap:1.5rem;padding:1rem 0 0}
-.home-avatar{flex:0 1 16.5rem;min-width:10rem;aspect-ratio:3 / 2;margin-inline:auto}
-.home-avatar svg{width:100%;height:100%}
-.home-bio-text{flex:1 1 20rem;min-width:0}
-.home-bio-text h2{margin:0 0 .5rem;font-size:1.3rem;color:var(--colors-heading)}
-.home-bio-text p{margin:0 0 .5rem;font-size:.95rem;line-height:1.6}
+.highlights-cards {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 1.5rem;
+}
+
+@media (max-width: 829px) {
+	.highlights-cards {
+		grid-template-columns: 1fr;
+	}
+}
+
+.highlight-card {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	padding: 1.25rem 1.5rem;
+	border-radius: 10px;
+	text-decoration: none;
+	box-shadow: 0 0 8px var(--colors-primary);
+	background: var(--colors-background);
+	color: var(--colors-text);
+	transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+}
+
+.highlight-card:hover {
+	transform: translateY(-4px);
+	box-shadow: 0 4px 16px var(--colors-primary);
+}
+
+.highlight-label {
+	font-size: 0.75rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	color: var(--colors-primary);
+}
+
+.highlight-title {
+	font-size: 1.1rem;
+	font-weight: 600;
+	color: var(--colors-heading);
+	margin: 0;
+	line-height: 1.3;
+}
+
+.highlight-excerpt {
+	font-size: 0.9rem;
+	color: var(--colors-text);
+	margin: 0;
+	line-height: 1.5;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+}
+
+.highlight-cta {
+	margin-top: auto;
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: var(--colors-primary);
+}
+
+.pybaq-callout {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	padding: 1.25rem 1.5rem;
+	border-radius: 10px;
+	text-decoration: none;
+	background: var(--colors-sidebar-background);
+	color: var(--colors-sidebar-text);
+	transition: opacity 0.2s ease-out;
+}
+
+.pybaq-callout:hover {
+	opacity: 0.9;
+}
+
+.pybaq-header {
+	display: flex;
+	align-items: baseline;
+	gap: 0.75rem;
+	flex-wrap: wrap;
+}
+
+.pybaq-label {
+	font-size: 0.75rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	color: var(--colors-sidebar-hover);
+}
+
+.pybaq-name {
+	font-size: 0.85rem;
+	color: var(--colors-sidebar-text);
+	opacity: 0.8;
+}
+
+.pybaq-role {
+	font-size: 0.85rem;
+	color: var(--colors-sidebar-text);
+	opacity: 0.95;
+}
+
+.pybaq-desc {
+	margin: 0;
+	font-size: 0.95rem;
+	line-height: 1.5;
+	color: var(--colors-sidebar-text);
+}
+
+.pybaq-cta {
+	font-size: 0.85rem;
+	font-weight: 600;
+	color: var(--colors-sidebar-hover);
+	margin-top: 0.25rem;
+}
+
+.home-bio {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	gap: 1.5rem;
+	padding: 1rem 0 0;
+}
+
+.home-avatar {
+	flex: 0 1 16.5rem;
+	min-width: 10rem;
+	aspect-ratio: 3 / 2;
+	margin-inline: auto;
+}
+
+.home-avatar svg {
+	width: 100%;
+	height: 100%;
+}
+
+.home-bio-text {
+	flex: 1 1 20rem;
+	min-width: 0;
+}
+
+.home-bio-text h2 {
+	margin: 0 0 0.5rem;
+	font-size: 1.3rem;
+	color: var(--colors-heading);
+}
+
+.home-bio-text p {
+	margin: 0 0 0.5rem;
+	font-size: 0.95rem;
+	line-height: 1.6;
+}
