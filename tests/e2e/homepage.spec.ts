@@ -9,7 +9,7 @@ for (const locale of languageKeys) {
 
     test.beforeEach(async ({ page }) => {
       home = new HomePage(page)
-      await home.goto(locale)
+      await page.goto(locale)
     })
 
     test('renders bio, avatar and highlights', async () => {
@@ -40,7 +40,7 @@ for (const locale of languageKeys) {
       await expect(blog).toBeVisible()
       const blogHref = await blog.getAttribute('href')
       expect(blogHref).toBeTruthy()
-      await page.goto(blogHref || '/')
+      await page.goto(blogHref!)
       const blogRoute = sectionsConfig.blog.routes[locale]
       await expect(page).toHaveURL(new RegExp(`^.*\\/${locale}\\\/${blogRoute}\\\/`))
     })
@@ -50,7 +50,7 @@ for (const locale of languageKeys) {
       await expect(talk).toBeVisible()
       const talkHref = await talk.getAttribute('href')
       expect(talkHref).toBeTruthy()
-      await page.goto(talkHref || '/')
+      await page.goto(talkHref!)
       const talkRoute = sectionsConfig.talk.routes[locale]
       await expect(page).toHaveURL(new RegExp(`^.*\\/${locale}\\\/${talkRoute}\\\/`))
     })

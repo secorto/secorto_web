@@ -6,9 +6,6 @@ export class HomePage {
     this.page = page
   }
 
-  async goto(locale: string) {
-    await this.page.goto(`/${locale}/`)
-  }
 
   headerTitle(): Locator {
     return this.page.locator('[data-testid="header-title"]')
