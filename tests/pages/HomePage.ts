@@ -8,7 +8,7 @@ export class HomePage {
 
 
   headerTitle(): Locator {
-    return this.page.locator('[data-testid="header-title"]')
+    return this.page.getByTestId('header-title')
   }
 
   avatar(): Locator {
@@ -23,10 +23,10 @@ export class HomePage {
     return this.page.locator('.pybaq-callout')
   }
   blogHighlight(): Locator {
-    return this.page.locator('[data-testid="highlight-blog"]')
+    return this.page.getByTestId('highlight-blog')
   }
 
   talkHighlight(): Locator {
-    return this.page.locator('[data-testid="highlight-talk"]')
+    return this.page.getByTestId('highlight-talk')
   }
 }

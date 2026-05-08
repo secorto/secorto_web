@@ -7,7 +7,7 @@ export interface ContentItem {
 }
 
 export interface PyBaqItem {
-  label?: string
+  label: string
   role: string
   since: string
   description: string

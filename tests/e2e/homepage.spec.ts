@@ -9,7 +9,7 @@ for (const locale of languageKeys) {
 
     test.beforeEach(async ({ page }) => {
       home = new HomePage(page)
-      await page.goto(locale)
+      await page.goto(`/${locale}/`)
     })
 
     test('renders bio, avatar and highlights', async () => {
@@ -30,6 +30,7 @@ for (const locale of languageKeys) {
     test('PyBAQ callout uses i18n strings', async () => {
       const callout = home.pybaq()
       await expect(callout).toBeVisible()
+      await expect(callout.getByText(ui[locale]['home.pybaq_label'])).toBeVisible()
       await expect(callout.getByText(ui[locale]['home.pybaq_role'])).toBeVisible()
       await expect(callout.getByText(ui[locale]['home.pybaq_since'])).toBeVisible()
       await expect(callout.getByText(ui[locale]['home.pybaq_cta'])).toBeVisible()

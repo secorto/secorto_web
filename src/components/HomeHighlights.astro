@@ -29,9 +29,9 @@ const { blog, talk, pybaq } = Astro.props as Props
 
   <a class="pybaq-callout" href={pybaq.url} target="_blank" rel="noopener noreferrer">
     <div class="pybaq-header">
-      {pybaq.label && <span class="pybaq-label">{pybaq.label}</span>}
+      <span class="pybaq-label">{pybaq.label}</span>
       <span class="pybaq-role">{pybaq.role}</span>
-      <span class="pybaq-name">{pybaq.since}</span>
+      <span class="pybaq-since">{pybaq.since}</span>
     </div>
     <p class="pybaq-desc">{pybaq.description}</p>
     <span class="pybaq-cta">{pybaq.cta} →</span>
