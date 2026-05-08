@@ -1,0 +1,86 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro"
+import SEOHead from '@components/SEOHead.astro'
+import LanguagePicker from '@components/LanguagePicker.astro'
+import HomeHighlights from '@components/HomeHighlights.astro'
+
+interface ContentItem {
+  sectionLabel: string
+  title: string
+  excerpt: string
+  url: string
+  cta: string
+}
+
+interface PyBaqItem {
+  role: string
+  since: string
+  description: string
+  url: string
+  cta: string
+}
+
+interface Props {
+  pageTitle: string
+  links: unknown
+  intro: string
+  blog?: ContentItem
+  talk?: ContentItem
+  pybaq: PyBaqItem
+}
+
+const { pageTitle, links, intro, blog, talk, pybaq } = Astro.props as Props
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  <SEOHead slot="seo-head" links={links} />
+  <LanguagePicker slot="langpicker" links={links} />
+
+  <section class="home-bio">
+    <div class="home-avatar" set:html={intro} />
+    <div class="home-bio-text">
+      <slot name="bio" />
+    </div>
+  </section>
+
+  <HomeHighlights blog={blog} talk={talk} pybaq={pybaq} />
+</BaseLayout>
+
+<style>
+  .home-bio {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding: 1rem 0 0;
+  }
+
+  .home-avatar {
+    flex: 0 1 16.5rem;
+    min-width: 10rem;
+    aspect-ratio: 3 / 2;
+    margin-inline: auto;
+  }
+
+  .home-avatar :global(svg) {
+    width: 100%;
+    height: 100%;
+  }
+
+  .home-bio-text {
+    flex: 1 1 20rem;
+    min-width: 0;
+  }
+
+  .home-bio-text h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.3rem;
+    color: var(--colors-heading);
+  }
+
+  .home-bio-text p {
+    margin: 0 0 0.5rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+</style>
