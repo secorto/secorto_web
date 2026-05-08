@@ -16,7 +16,7 @@ for (const locale of languageKeys) {
       await expect(home.avatar()).toBeVisible()
       await expect(home.bioText()).toBeVisible()
 
-      const header = home.page.locator('[data-testid="header-title"]')
+      const header = home.headerTitle()
       await expect(header).toBeVisible()
       await expect(header).toHaveText(/\S+/)
 

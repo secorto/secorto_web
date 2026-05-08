@@ -10,6 +10,10 @@ export class HomePage {
     await this.page.goto(`/${locale}/`)
   }
 
+  headerTitle(): Locator {
+    return this.page.locator('[data-testid="header-title"]')
+  }
+
   avatar(): Locator {
     return this.page.locator('.home-avatar svg')
   }
