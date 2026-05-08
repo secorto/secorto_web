@@ -3,6 +3,7 @@ import BaseLayout from "@layouts/BaseLayout.astro"
 import SEOHead from '@components/SEOHead.astro'
 import LanguagePicker from '@components/LanguagePicker.astro'
 import HomeHighlights from '@components/HomeHighlights.astro'
+import type { TranslationLink } from '@domain/translationLink'
 
 interface ContentItem {
   sectionLabel: string
@@ -22,7 +23,7 @@ interface PyBaqItem {
 
 interface Props {
   pageTitle: string
-  links: unknown
+  links: TranslationLink[]
   intro: string
   blog?: ContentItem
   talk?: ContentItem

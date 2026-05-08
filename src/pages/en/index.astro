@@ -11,8 +11,10 @@ const pageTitle = "Homepage"
 const links = buildHomeLinks()
 const t = useTranslations('en')
 
-const blogPosts = await getPostsByLocale('blog', 'en')
-const talkPosts = await getPostsByLocale('talk', 'en')
+const [blogPosts, talkPosts] = await Promise.all([
+  getPostsByLocale('blog', 'en'),
+  getPostsByLocale('talk', 'en'),
+])
 
 const latestBlog = blogPosts[0]
 const latestTalk = talkPosts[0]
