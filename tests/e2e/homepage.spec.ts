@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test'
 import { ui, languageKeys } from '@i18n/ui'
 import { HomePage } from '@tests/pages/HomePage'
 import { sectionsConfig } from '@domain/section'
+import { mockThirdParty } from './helpers/mockThirdParty'
 
 for (const locale of languageKeys) {
   test.describe(`@homepage Homepage (${locale})`, () => {
@@ -10,6 +11,7 @@ for (const locale of languageKeys) {
     test.beforeEach(async ({ page }) => {
       home = new HomePage(page)
       await page.goto(`/${locale}/`)
+      mockThirdParty(page)
     })
 
     test('renders bio, avatar and highlights', async () => {
@@ -54,6 +56,12 @@ for (const locale of languageKeys) {
       await page.goto(talkHref!)
       const talkRoute = sectionsConfig.talk.routes[locale]
       await expect(page).toHaveURL(new RegExp(`^.*\\/${locale}\\\/${talkRoute}\\\/`))
+    })
+
+    test('title and about link are correct (smoke)', async ({ page }) => {
+      await expect(page).toHaveTitle(/SeCOrTo/)
+      const aboutLink = page.getByTestId('sidebar-about')
+      await expect(aboutLink).toHaveText(ui[locale]['nav.about'])
     })
   })
 }

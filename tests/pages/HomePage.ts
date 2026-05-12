@@ -6,7 +6,6 @@ export class HomePage {
     this.page = page
   }
 
-
   headerTitle(): Locator {
     return this.page.getByTestId('header-title')
   }
@@ -22,6 +21,7 @@ export class HomePage {
   pybaq(): Locator {
     return this.page.locator('.pybaq-callout')
   }
+
   blogHighlight(): Locator {
     return this.page.getByTestId('highlight-blog')
   }
