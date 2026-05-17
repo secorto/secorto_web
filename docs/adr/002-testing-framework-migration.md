@@ -78,94 +78,6 @@ unitario, manteniendo Cypress temporalmente hasta completar la migración.
 
 ---
 
-## Estado de la migración
-
-### Completado ✅
-
-| Área | Cypress | Playwright/Vitest |
-| --- | --- | --- |
-| Accesibilidad (axe) | `cypress-axe` | `@axe-core/playwright` |
-| Blog (list, post) | `blog.cy.ts` | `blog.list.spec.ts`, `blog.post.spec.ts` |
-| Charlas | `charla.cy.ts` | `charla.spec.ts`, `charla.a11y.spec.ts` |
-| Color switch | `color-switch.cy.ts` | `color-switch.spec.ts` |
-| Homepage | `main-page.cy.ts` | `homepage.spec.ts` |
-| Mocks de terceros | `stubs.ts` (cy.intercept) | `helpers/mock*.ts` (page.route) |
-| Lógica de negocio | — (no existía) | 165+ tests unitarios, 100 % cobertura |
-
-### Pendiente ⏳
-
-- Eliminar dependencias de Cypress (`cypress`, `cypress-axe`)
-- Eliminar `cypress.config.js` y carpeta `cypress/`
-- Actualizar `npm run test` para que apunte a Playwright
-- Eliminar `projectId` de Cypress Cloud de la configuración
-
-### Artefactos de Cypress aún presentes
-
-```text
-cypress/
-├── e2e/
-│   ├── accessibility.cy.ts
-│   ├── blog.cy.ts
-│   ├── charla.cy.ts
-│   ├── color-switch.cy.ts
-│   ├── main-page.cy.ts
-│   └── stubs.ts
-└── support/
-```
-
-Estos archivos se mantienen temporalmente como referencia de paridad.
-
----
-
-## Organización de tests actual
-
-### Tests unitarios — Vitest
-
-```text
-tests/unit/           ← 165+ tests, 100 % cobertura
-├── sections.test.ts
-├── sectionLoader.test.ts
-├── sectionContext.test.ts
-├── staticPathsBuilder.test.ts
-├── paths.test.ts
-├── ids.test.ts
-├── navLinks.test.ts
-├── dateFormat.test.ts
-└── ...
-```
-
-### Tests E2E — Playwright
-
-```text
-tests/e2e/
-├── a11y/             ← Tests de accesibilidad (axe-core)
-│   └── charla.a11y.spec.ts
-├── functional/       ← Tests de funcionalidad específica
-│   ├── blog.list.spec.ts
-│   ├── blog.post.spec.ts
-│   ├── color-switch.spec.ts
-│   ├── homepage.language.spec.ts
-│   ├── menu.spec.ts
-│   ├── robots.spec.ts
-│   ├── rss.spec.ts
-│   ├── theme-load.spec.ts
-│   └── theme-persistence.spec.ts
-├── helpers/          ← Mocks y utilidades compartidas
-│   ├── mockGiscus.ts
-│   ├── mockSlides.ts
-│   ├── mockThirdParty.ts
-│   ├── mockYouTube.ts
-│   └── whenMocked.ts
-└── smoke/            ← Tests de humo (verificación rápida)
-    ├── charla.spec.ts
-    ├── community.titles.spec.ts
-    ├── footer.spec.ts
-    ├── homepage.spec.ts
-    ├── project.titles.spec.ts
-    └── work.titles.spec.ts
-```
-
----
 
 ## CI
 
@@ -221,25 +133,20 @@ e2e-tests:     playwright test          → artifact playwright-report
 - **Un solo ecosistema:** Vitest + Playwright comparten configuración
   TypeScript y convenciones
 
-### A tener en cuenta
+### Anexos
 
-- La migración completa requiere eliminar Cypress como dependencia y sus
-  archivos residuales
-- Playwright requiere instalar los binarios de navegador
-  (`npx playwright install`) en CI y localmente
-- El equipo debe familiarizarse con la API de Playwright si venía de
-  Cypress (`cy.get()` → `page.locator()`, `cy.intercept()` → `page.route()`)
+Los detalles operativos por cada fase se almacenan
+en los anexos.
+Ademas un documento que detalla las métricas recolectadas
 
----
-
-## Anexos
-
-- [METRICS_FOR_PRESENTATION.md](./anexos/002-testing-framework-migration/METRICS_FOR_PRESENTATION.md) —
-  Métricas y artefactos para presentación y migración
-
-Nota operativa: cualquier cambio en la decisión de testing
-(frameworks, mocks o CI) debe reflejarse en `docs/TESTING_STRATEGY.md`
-y en los anexos relacionados para mantener la coherencia operativa.
+- [Fase de convivencia](./anexos/002-testing-framework-migration/convivencia.md)
+  Se agregó Playwright; ambos runners E2E se ejecutaron en CI durante la fase de convivencia
+  (criterios de paridad documentados)
+- [Fase de eliminación](./anexos/002-testing-framework-migration/eliminacion.md)
+  Checklist de artefactos y verificaciones realizadas al retirar el runner antiguo
+  (registro de decisiones y puntos de validación)
+- [Métricas y artefactos](./anexos/002-testing-framework-migration/METRICS_FOR_PRESENTATION.md)
+  Resumen de métricas y artefactos recopilados para presentación y toma de decisión
 
 ## Referencias
 
