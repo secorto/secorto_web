@@ -23,7 +23,7 @@ for (const f of postFixtures) {
       await mockThirdParty(page)
       await page.setViewportSize({ width: 480, height: 800 })
       const blog = new BlogPage(page)
-      await blog.gotoList(f.listPath)
+      await page.goto(f.listPath)
       await blog.openPost(f.postHref, f.locale)
       await expect(blog.headerTitle()).toBeVisible()
     })

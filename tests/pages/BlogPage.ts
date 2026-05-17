@@ -7,10 +7,6 @@ export class BlogPage {
     this.page = page
   }
 
-  async gotoList(path: string) {
-    await this.page.goto(path)
-  }
-
   headerTitle(): Locator {
     return this.page.getByTestId('header-title')
   }
