@@ -48,19 +48,26 @@ Esta es una vista rápida del primer nivel de directorio que veras en este proye
 │   └── favicon.svg
 ├── src/
 │   ├── components/
-│   │   └── Card.astro
+│   │   └── (componentes reutilizables de la página)
 │   ├── layouts/
-│   │   └── Layout.astro
+│   │   └── (plantillas/layouts del sitio)
+│   ├── content/
+│   │   └── (posts y colecciones de contenido)
 │   └── pages/
 │       └── index.astro
+├── tests/
+│   ├── e2e/
+│   └── unit/
+├── astro.config.mjs
+├── tsconfig.json
 └── package.json
 ```
 
-1. **`/src`**: En este directorio está el código fuente del proyecto, entre ellas las paginas (src/pages) y todos los componentes usados de forma auxiliar
+1. **`/src`**: Código fuente del proyecto — páginas (`src/pages`), componentes reutilizables (`src/components`), layouts (`src/layouts`), contenidos (`src/content`), estilos (`src/styles`) y utilidades (`src/utils`)
 
-2. **`/src/content`**: En este directorio están almacenados los contenidos de mi página web
+2. **`/src/content`**: Contenidos estáticos y publicaciones organizadas por colección (por ejemplo `blog`, `work`, `talk`) que alimentan el sitio
 
-3. **`/cypress`**: Este directorio contiene los test e2e desarrollados usando cypress
+3. **`tests/`**: Este directorio contiene las pruebas unitarias y E2E (end-to-end).
 
 4. **`.gitignore`**: Este archivo especifica los archivos y directorios que no se deben cargar en git
 
@@ -92,31 +99,26 @@ npm run dev
 
 El cual nos iniciara un servidor de desarrollo donde podemos ir viendo como afectan al sitio web los cambios que estamos haciendo y por defecto se ejecutará en [http://localhost:4321](http://localhost:4321)!
 
-
 ## Pruebas
 
-Las pruebas son parte clave de cualquier proceso de desarrollo, en lo personal soy muy apasionado por este tema y considero que ayudan a poder dormir tranquilo sabiendo que hicimos un trabajo bien hecho.
+Las pruebas son parte clave de cualquier proceso de desarrollo.
 
-puedes ejecutar todas las pruebas que están en este proyecto usando el comando
+Este proyecto se basa en una estrategia de pruebas documentada en [Testing Strategy](./TESTING_STRATEGY.md)
+
+La ejecución de todas las pruebas se hace con:
 
 ```bash
 npm test
 ```
 
-### Pruebas e2e
+Estructura de `tests/`
 
-Estas pruebas dan un feedback de la aplicación real aunque son lentas y tediosas de mantener considero que el valor que aporta se da para querer tener unas pocas de estas muy bien enfocadas, para este proyecto en particular decidí usar [cypress](https://www.cypress.io/)
+El repositorio organiza las pruebas en `tests/` con dos carpetas principales:
 
-Puedes ejecutar la ui de cypress con el siguiente comando
-```sh
-npx cypress open
-```
+- `tests/unit/`: pruebas unitarias (rápidas, aisladas) — usar `Vitest`. Ver `docs/TESTING_STRATEGY.md` para criterios de cobertura y convenciones.
+- `tests/e2e/`: pruebas end-to-end (flujos de usuario) — usar `Playwright`. Se recomienda POM en `tests/pages/` y acciones en `tests/actions/`; ver `docs/TESTING_STRATEGY.md` para patrones y buenas prácticas.
 
-Si ya estas ejecutando la aplicación y solo quieres ver el resultados de las pruebas ejecuta
-
-```sh
-npx cypress run
-```
+Para detalles operativos (scripts, flags y jobs de CI) consulte `docs/TESTING_STRATEGY.md` y los archivos de configuración del repositorio.
 
 ## Pull Requests
 

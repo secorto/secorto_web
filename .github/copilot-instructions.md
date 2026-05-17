@@ -3,7 +3,7 @@
 ## Project Overview
 - **Framework:** Astro
 - **UI Enhancements:** astro-expressive-code
-- **Testing:** Cypress (with cypress-axe for accessibility)
+- **Testing:** Playwright (primary) — `@axe-core/playwright` for accessibility
 - **Language:** TypeScript (preferred)
 - **Semicolons:** Omit semicolons (`;`) unless required by syntax or tooling
 - **Types:** Avoid `any` type; always define custom types or interfaces
@@ -12,7 +12,7 @@
 - Use TypeScript for all new code and refactors when possible
 - Prefer explicit, custom types and interfaces over `any` or overly broad types
 - Omit semicolons at the end of statements unless absolutely necessary
-- Follow Astro and Cypress best practices for file structure and conventions
+- Follow Astro best practices for file structure and conventions
 - Keep code modular and readable
 - Use descriptive variable and function names
 - Add comments for complex logic or non-obvious code
@@ -27,13 +27,6 @@
 - Static assets go in `public/` or `src/assets/`
 - Use `astro-expressive-code` for code block rendering and syntax highlighting
 
-## Cypress Specific
-- Place end-to-end tests in `cypress/e2e/`
-- Use TypeScript for Cypress tests
-- Prefer custom Cypress commands and types over using `any`
-- Integrate `cypress-axe` for accessibility checks in tests
-- Place Cypress support files in `cypress/support/`
-- Use `cy.injectAxe()` and `cy.checkA11y()` in tests to ensure accessibility
 
 ## Playwright Specific
 

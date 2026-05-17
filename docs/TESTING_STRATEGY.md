@@ -14,15 +14,7 @@ Este documento explica el objetivo de las pruebas unitarias y E2E en este reposi
   - Razonamiento: integración con TypeScript, API compatible con Jest/Vitest, rápido y con `vi.mock` para mocking de módulos.
 - E2E: `Playwright`
   - Razonamiento: soporta múltiples navegadores (incluido WebKit/Safari), fixtures robustos, rutas de red (`page.route`) para mocks, control en CI y ejecución local headful/headless.
-  - Además, Playwright no tiene límite de ejecuciones en CI a diferencia de Cypress Cloud (ver abajo).
-
-> **Nota sobre Cypress:** actualmente el repo aún incluye Cypress como dependencia, pero **Playwright es el E2E principal**. La migración se motivó por:
->
-> - **Límite de 500 ejecuciones/mes en Cypress Cloud (plan gratuito).** Una "ejecución" se cuenta por cada spec file ejecutado en CI. Con ~12 specs × múltiples PRs y pushes, el presupuesto mensual se agotaba, dejando CI sin reportes E2E hasta el siguiente ciclo.
-> - Falta de soporte para WebKit/Safari y multi-tab.
-> - Interceptación de red menos flexible que `page.route()`.
->
-> Cypress se mantiene temporalmente hasta completar la limpieza (eliminar `cypress/`, `cypress.config.js` y las dependencias). Ver [ADR 002 — Migración de Cypress a Playwright + Vitest](adr/002-testing-framework-migration.md) para el análisis completo.
+  - Además, Playwright no tiene límite de ejecuciones en CI.
 
 ## Objetivos concretos por tipo de prueba
 
@@ -108,12 +100,6 @@ Este documento explica el objetivo de las pruebas unitarias y E2E en este reposi
 
 - Solo el job `unit-tests` genera cobertura (`lcov.info`) y la sube como artifact `vitest-coverage`.
 - Recomendación: si se integra un servicio de cobertura (Codecov/Coveralls), subir `coverage/lcov.info` desde el job `unit-tests`.
-
-## Migración y consolidación (pasos operativos)
-
-1. Mantener ambos runners localmente (`Cypress` y `Playwright`) solo hasta que se verifique la paridad
-2. Eliminar scripts y configuraciones de Cypress cuando se confirme que Playwright cubre los casos necesarios
-3. Unificar el comando `npm run test` si decides mantener un único runner: por ejemplo `test` -> `npm run test:e2e` o usar subcomandos claros (`test:unit`, `test:e2e`)
 
 ## Ejemplos rápidos
 
