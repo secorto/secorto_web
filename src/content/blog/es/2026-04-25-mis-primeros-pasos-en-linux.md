@@ -38,7 +38,7 @@ qué funcionó, qué me frustró y qué sigo usando.
 ## Openbox y entornos ligeros
 
 - Lección principal: separar compositor/gestor de ventanas de utilidades
-(Nitrogen para fondos, Conky para información, pcmanfm como gestor)
+  (Nitrogen para fondos, Conky para información, pcmanfm como gestor)
 - Aprendizaje práctico: con la combinación correcta, equipos antiguos recuperan mucha vida y flexibilidad
 - Recomendación: usar configuraciones modulares para entender cada pieza del escritorio
 

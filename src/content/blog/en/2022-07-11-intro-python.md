@@ -35,7 +35,7 @@ When we select **Code**, we can add a snippet of code.
 
 ## What is Python
 
-Python is an interpreted programming language created by Guido Van Rossum around the 1990s,
+Python is an interpreted programming language created by Guido van Rossum around the 1990s,
 which stands out for its ease of reading and writing. Python can be used for the web,
 as well as for automating repetitive tasks (yes, testing falls into this category),
 and also as a tool for processing massive data.

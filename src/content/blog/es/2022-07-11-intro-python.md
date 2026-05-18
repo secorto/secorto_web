@@ -52,7 +52,7 @@ y técnicas que están disponibles para nosotros siguiendo algún enfoque.
 
 Como buena introducción a cualquier lenguaje de programación,
 aprender a imprimir un mensaje en pantalla es de las primeras cosas aprendemos,
-ademas de servir para corroborar que la herramienta quedo instalada satisfactoriamente,
+además de servir para corroborar que la herramienta quedó instalada satisfactoriamente,
 vamos a iniciar con uno de mis programas favoritos "Hola mundo",
 para lo cual nos apoyaremos en la función `print` la cual nos imprime por consola lo que escribamos entre comillas.
 
@@ -83,10 +83,10 @@ Hola Sergio
 
 Python es un lenguaje de programación fuertemente tipado de tipado dinámico,
 esto quiere decir que podemos crear variables con cualquier tipo de datos
-sin preocuparnos por declarar explicitamente el tipo
+sin preocuparnos por declarar explícitamente el tipo
 
 > Python posee un mecanismo ([Type hints](https://peps.python.org/pep-0484/))
-> con el que se puede definir los tipos que se van a usar, algo asi como lo que se hace con typescript.
+> con el que se puede definir los tipos que se van a usar, algo así como lo que se hace con typescript.
 
 ### Cadenas de caracteres
 
@@ -210,7 +210,7 @@ print(complex_number)
 
 Hay veces que los tipos de datos que vienen pre cargados en python no nos son suficientes
 para lo cual necesitamos importar "objetos" externos por ejemplo funciones o bien clases,
-en python el código esta organizado en paquetes y módulos
+en python el código está organizado en paquetes y módulos
 
 ¿Recuerdan ese ejemplo donde intentábamos sumar `0.1 + 0.2`? Bueno, para poderlo resolver vamos a
 importar la clase `Decimal` del módulo `decimal`, el cual nos va a permitir operar sobre números en base 10.
@@ -279,7 +279,7 @@ print(lista)
 ```
 
 En algunos escenarios no vamos a querer que los elementos de nuestra lista sea mutable
-para lo cual lo mas recomendable es usar una tupla (tuple)
+para lo cual lo más recomendable es usar una tupla (tuple)
 
 ```python title="tupla.py"
 tupla = ("a", "b", "c", "a")
@@ -416,7 +416,7 @@ estructuras comunes (listas, tuplas, diccionarios), funciones, condicionales y b
 Recursos útiles para seguir aprendiendo:
 
 - Documentación oficial de Python: <https://docs.python.org/3/>
-- The interactive tutorial (Colab notebook used in this post): [Open in Colab](https://colab.research.google.com/gist/Scot3004/c5a562df9ca6509820f6320b5e4c6900/introducci-n-a-python.ipynb)
+- Tutorial interactivo [Notebook en colab](https://colab.research.google.com/gist/Scot3004/c5a562df9ca6509820f6320b5e4c6900/introducci-n-a-python.ipynb)
 - PEP 484 — Type hints: <https://peps.python.org/pep-0484/>
 - Curso en DataCamp <https://www.datacamp.com/courses/intro-to-python-for-data-science>
 - Patrones de código en refactoring guru <https://refactoring.guru/es/design-patterns/python>
