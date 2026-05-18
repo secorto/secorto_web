@@ -2,7 +2,7 @@
 title: Introducción a Python
 tags:
     - dev
-    - Python
+    - python
 excerpt: Gist que da una introducción a Python
 date: 2022-07-11
 ---
@@ -163,7 +163,7 @@ multiplicación `*`, división `/`, división entera `//` y exponenciación `**`
 30 // 4
 ```
 
-```bash title="Salida division.py"
+```bash title="Salida division_entera.py"
 7
 ```
 

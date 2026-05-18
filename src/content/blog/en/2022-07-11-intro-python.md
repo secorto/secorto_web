@@ -2,7 +2,7 @@
 title: Introduction to Python
 tags:
   - dev
-  - Python
+  - python
 excerpt: A Gist that provides an introduction to Python
 date: 2022-07-11
 ---

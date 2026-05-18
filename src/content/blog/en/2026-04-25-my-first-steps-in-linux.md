@@ -36,7 +36,7 @@ what frustrated me, and what I still use.
 ## Openbox and lightweight environments
 
 - Main lesson: separate the compositor/window manager from utilities
-(Nitrogen for wallpapers, Conky for info, pcmanfm as file manager)
+  (Nitrogen for wallpapers, Conky for info, pcmanfm as file manager)
 - Practical takeaway: with the right combination, old machines regain a lot of life and flexibility
 - Recommendation: use modular configurations to understand each part of the desktop
 

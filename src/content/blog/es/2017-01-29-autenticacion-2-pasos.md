@@ -75,5 +75,3 @@ interactiva.
 
 Nota: mantén tu clave privada segura (no la subas a repositorios) y considera protegerla con passphrase.
 Utiliza `ssh-agent` para evitar introducir la passphrase constantemente.
-
-*** End Patch

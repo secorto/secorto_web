@@ -24,9 +24,9 @@ qué funcionó, qué me frustró y qué sigo usando.
 
 - Lección principal: las minidistros enseñan a priorizar lo esencial; valen para hardware muy limitado
 - Conceptos aprendidos: `tazpkg` como gestor, flavors (loram),
-ejecución desde RAM, herramientas incluidas (LightTPD, mplayer, GParted)
+  ejecución desde RAM, herramientas incluidas (LightTPD, mplayer, GParted)
 - Problemas típicos: compatibilidad gráfica en ciertos netbooks
-(soluciones: usar Xvesa o instalar drivers intel y ajustar resoluciones)
+  (soluciones: usar Xvesa o instalar drivers intel y ajustar resoluciones)
 - Consejo: las distros minimalistas son excelentes para aprender diagnóstico de hardware y manejo mínimo de paquetes
 
 ## Chakra / Arch-derived (KDE en netbook)
