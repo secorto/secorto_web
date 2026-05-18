@@ -49,7 +49,7 @@ Consulta [SECURITY.md](./SECURITY.md) para reportar vulnerabilidades.
 - **Framework:** Astro con TypeScript
 - **Testing:** Playwright (E2E) + Vitest (unitarias)
 - **Estilo:** ESLint, sin puntos y coma (a menos que sea necesario)
-- **i18n:** Soporte multilingüe; lee [docs/TRANSLATION_WORKFLOW.md](./docs/TRANSLATION_WORKFLOW.md)
+- **Content:** Soporte multilingüe; lee [docs/CONTENT_POLICY.md](./docs/CONTENT_POLICY.md)
 
 Para instrucciones de desarrollo en dev container, consulta [docs/DEVCONTAINER.md](./docs/DEVCONTAINER.md).
 
