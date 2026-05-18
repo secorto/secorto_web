@@ -1,11 +1,19 @@
-# ADR R02: Migración de Jekyll a Gatsby
-
-> **Estado:** Reemplazada → [R03](R03-migracion-gatsby-a-astro.md)
-> **Fecha:** 2021-03
-> **Categoría:** Plataforma / SSG / Testing / Quality
-> **Repositorio:** `web2021` (111 commits, 2021–2023)
-> **Fecha reconstrucción:** 2026-02
-
+---
+title: ADR R02: Migración de Jekyll a Gatsby
+status: replaced
+date: 2021-03
+last_updated: null
+categories:
+  - Platform
+  - SSG
+  - Testing
+  - Quality
+repository: web2021
+commits: 111
+start_year: 2021
+end_year: 2023
+reconstruction_date: 2026-02
+replaced_by: R03-migracion-gatsby-a-astro.md
 ---
 
 ## Contexto

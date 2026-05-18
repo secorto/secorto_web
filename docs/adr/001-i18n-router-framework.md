@@ -1,8 +1,12 @@
-# ADR 001: Framework i18n y router polimórfico de secciones
-
-> **Estado:** Aceptada
-> **Fecha:** 2025-06
-> **Categoría:** Arquitectura / i18n / Routing
+---
+title: ADR 001: Framework i18n y router polimórfico de secciones
+status: accepted
+date: 2025-06
+last_updated: null
+categories:
+  - Architecture
+  - i18n
+  - Routing
 ---
 
 ## Contexto

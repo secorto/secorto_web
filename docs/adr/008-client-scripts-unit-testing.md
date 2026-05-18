@@ -1,8 +1,11 @@
-# ADR 008: Estrategia de pruebas client-side y reorganización del cliente
-
-> **Estado:** Aceptada
-> **Fecha:** 2026-04-02
-> **Categoría:** Testing / Arquitectura cliente
+---
+title: ADR 008: Estrategia de pruebas client-side y reorganización del cliente
+status: accepted
+date: 2026-04-02
+last_updated: null
+categories:
+  - Testing
+  - Architecture
 ---
 
 ## Contexto

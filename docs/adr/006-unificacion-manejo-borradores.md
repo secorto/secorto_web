@@ -1,9 +1,12 @@
-# ADR 006: Unificación del manejo de borradores (`draft`)
-
-> **Estado:** Aceptada
-> **Fecha:** 2026-02-13
-> **Categoría:** Contenido / i18n / Tooling
-
+---
+title: ADR 006: Unificación del manejo de borradores (`draft`)
+status: accepted
+date: 2026-02-13
+last_updated: null
+categories:
+  - Content
+  - i18n
+  - Tooling
 ---
 
 ## Contexto
