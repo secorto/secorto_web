@@ -86,7 +86,7 @@ esto quiere decir que podemos crear variables con cualquier tipo de datos
 sin preocuparnos por declarar explícitamente el tipo
 
 > Python posee un mecanismo ([Type hints](https://peps.python.org/pep-0484/))
-> con el que se puede definir los tipos que se van a usar, algo así como lo que se hace con typescript.
+-> con el que se puede definir los tipos que se van a usar, algo así como lo que se hace con TypeScript.
 
 ### Cadenas de caracteres
 

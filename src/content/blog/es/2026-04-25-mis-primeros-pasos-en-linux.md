@@ -46,7 +46,7 @@ qué funcionó, qué me frustró y qué sigo usando.
 
 - La comunidad GNU/Linux es un recurso clave: foros y wikis aceleraron la solución de problemas
 - Enseñanza transversal: cada experimento me enseñó a diagnosticar hardware,
-leer logs, y a preferir soluciones simples cuando es posible
+  leer logs, y a preferir soluciones simples cuando es posible
 - En lugar de repetir pasos largos, este post prioriza los aprendizajes
 y enlaces a los posts originales para quien necesite detalle técnico
 
