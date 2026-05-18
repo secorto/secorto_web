@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
 import { ContentListPage } from '@tests/pages/ContentListPage'
 import { languageKeys, ui, type UILanguages } from '@i18n/ui'
-import { openItem } from '@tests/actions/ContentListActions'
+import { clickLinkItem } from '@tests/actions/ContentListActions'
 import { getURLForSection } from '@utils/sections'
 import { mockThirdParty } from '@tests/e2e/helpers/mockThirdParty'
 
@@ -50,7 +50,7 @@ test.describe('Charlas', () => {
       await expect(list.headerTitle()).toHaveText(`${ui[locale]['nav.talks']} - containers`)
 
       // Accede a la charla de Devcontainers
-      await openItem(list, locale, 'talk', '2023-09-27-devcontainers')
+      await clickLinkItem(page, locale, 'talk', '2023-09-27-devcontainers')
       await expect(list.headerTitle()).toHaveText(expectedTitles[locale])
       await expect(list.tags()).toMatchAriaSnapshot(expectedTags[locale])
 

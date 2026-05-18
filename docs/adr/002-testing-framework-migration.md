@@ -78,7 +78,6 @@ unitario, manteniendo Cypress temporalmente hasta completar la migración.
 
 ---
 
-
 ## CI
 
 El workflow `Tests` (`.github/workflows/tests.yml`) ejecuta dos jobs en
