@@ -1,18 +1,20 @@
 import { test, expect } from '@playwright/test'
 import { BlogPage } from '@tests/pages/BlogPage'
 import { mockThirdParty } from '@tests/e2e/helpers/mockThirdParty'
+import { openCollectionList, clickLinkItem } from '@tests/actions/ContentListActions'
+import type { UILanguages } from '@i18n/ui'
 
-const postFixtures = [
+type PostFixture = { locale: UILanguages, slug: string, postTitle: string }
+
+const postFixtures: PostFixture[] = [
   {
     locale: 'es',
-    listPath: '/es/blog',
-    postHref: '/es/blog/2022-07-11-intro-python',
+    slug: '2022-07-11-intro-python',
     postTitle: 'Introducción a python'
   },
   {
     locale: 'en',
-    listPath: '/en/blog',
-    postHref: '/en/blog/2022-07-11-intro-python',
+    slug: '2022-07-11-intro-python',
     postTitle: 'Introduction to Python'
   }
 ]
@@ -23,8 +25,8 @@ for (const f of postFixtures) {
       await mockThirdParty(page)
       await page.setViewportSize({ width: 480, height: 800 })
       const blog = new BlogPage(page)
-      await blog.gotoList(f.listPath)
-      await blog.openPost(f.postHref, f.locale)
+      await openCollectionList(page, f.locale, 'blog')
+      await clickLinkItem(page, f.locale, 'blog', f.slug)
       await expect(blog.headerTitle()).toBeVisible()
     })
 
