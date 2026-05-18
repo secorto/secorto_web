@@ -117,7 +117,7 @@ npm run dev
 ```
 
 El cual nos iniciara un servidor de desarrollo donde podemos ir viendo como afectan al sitio web
-  los cambios que estamos haciendo y por defecto se ejecutará en [http://localhost:4321](http://localhost:4321)!
+los cambios que estamos haciendo y por defecto se ejecutará en [http://localhost:4321](http://localhost:4321)!
 
 ## Pruebas
 

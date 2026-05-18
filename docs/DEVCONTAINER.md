@@ -39,12 +39,12 @@ para quienes usan Codespaces o devcontainers.
 - Si necesitas ejecutar E2E dentro del contenedor, instala los navegadores manualmente
   (recomendado sólo en máquinas de desarrollo o CI que lo requieran):
 
-```bash
-npx playwright install --with-deps
-```
+  ```bash
+  npx playwright install --with-deps
+  ```
 
-- Ese comando instala **Chromium**, **Firefox** y **WebKit** y las dependencias nativas necesarias.
-No inicia servidores ni ejecuta tests por sí mismo.
+  > Ese comando instala **Chromium**, **Firefox** y **WebKit** y las dependencias nativas necesarias.
+  > No inicia servidores ni ejecuta tests por sí mismo.
 
 ## Qué se inicia automáticamente en este devcontainer
 

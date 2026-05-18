@@ -15,12 +15,12 @@ que monta un `iframe` con la interfaz de discusión ligada a un repositorio de G
 ## Dónde se usa en este proyecto
 
 - El componente de integración es `src/components/Comments.astro`. Inserta un `div.comments`
-y carga `https://giscus.app/client.js` con los atributos necesarios
-(`data-repo`, `data-category`, `data-mapping`, `data-lang`, etc.)
+  y carga `https://giscus.app/client.js` con los atributos necesarios
+  (`data-repo`, `data-category`, `data-mapping`, `data-lang`, etc.)
 - `Comments.astro` se incluye en la plantilla de detalle de contenidos: `src/pages/[locale]/[section]/[...id].astro`.
-Por tanto, Giscus aparece en las páginas de detalle
-(posts de blog, charlas, proyectos/works y páginas de comunidad)
-que usan el componente de detalle.
+  Por tanto, Giscus aparece en las páginas de detalle
+  (posts de blog, charlas, proyectos/works y páginas de comunidad)
+  que usan el componente de detalle.
 
 ## Por qué usar Giscus
 
@@ -43,9 +43,9 @@ que usan el componente de detalle.
   para desactivar los mocks y permitir que el widget real se cargue
   (necesitarás conexión a Internet y configuración correcta del widget):
 
-```bash
-REAL_THIRD_PARTY=true npm run test:e2e
-```
+  ```bash
+  REAL_THIRD_PARTY=true npm run test:e2e
+  ```
 
 - En CI, es recomendable proporcionar una ruta controlada
   (por ejemplo, ejecutar contra un `NETLIFY_PREVIEW_URL`)
