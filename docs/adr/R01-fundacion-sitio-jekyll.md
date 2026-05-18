@@ -1,11 +1,18 @@
-# ADR R01: Fundación del sitio personal con Jekyll
-
-> **Estado:** Reemplazada → [R02](R02-migracion-jekyll-a-gatsby.md)
-> **Fecha:** 2016-04
-> **Categoría:** Plataforma / SSG / Quality
-> **Repositorio:** `secorto.com_jekyll` (423 commits, 2016–2023)
-> **Fecha reconstrucción:** 2026-02
-
+---
+title: ADR R01: Fundación del sitio personal con Jekyll
+status: replaced
+date: 2016-04
+last_updated: null
+categories:
+  - Platform
+  - SSG
+  - Quality
+repository: secorto.com_jekyll
+commits: 423
+start_year: 2016
+end_year: 2023
+reconstruction_date: 2026-02
+replaced_by: R02-migracion-jekyll-a-gatsby.md
 ---
 
 ## Contexto

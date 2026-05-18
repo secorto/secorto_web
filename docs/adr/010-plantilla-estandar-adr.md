@@ -1,8 +1,11 @@
-# ADR 010: Plantilla estándar de ADRs
-
-> **Estado:** Propuesta
-> **Fecha:** 2026-05-01
-> **Categoría:** Contenido / Tooling
+---
+title: ADR 010: Plantilla estándar de ADRs
+status: proposed
+date: 2026-05-01
+last_updated: null
+categories:
+  - Content
+  - Tooling
 ---
 
 ## Contexto
@@ -37,9 +40,17 @@ secciones obligatorias y metadatos normalizados (`frontmatter` YAML).
 ## Implementación
 
 - Crear `docs/adr/TEMPLATE.md` que especifique:
-  - `Frontmatter` YAML con campos: `estado`, `fecha`, `ultima-actualizacion`, `categoria`.
-    **Mapeo de reemplazo:** blockquote `**Estado:**` → YAML `estado`; `**Fecha:**` → `fecha`;
-    `**Última actualización:**` → `ultima-actualizacion`; `**Categoría:**` → `categoria`.
+  - `Frontmatter` YAML con campos: `status`, `date`, `last_updated`, `categories`.
+    **Note:** `categories` is an array of strings
+  - Recomendación adicional para metadatos de reconstrucción/historia:
+    - `repository`: repositorio origen o nombre histórico (string)
+    - `commits`: número aproximado de commits migrados (number)
+    - `start_year`: año de inicio del repositorio/mantenimiento (number)
+    - `end_year`: año de fin. **Omisión** de `end_year` se interpreta como "present".
+      - Recomendar: si se quiere dejar explícito, usar `end_year: null` para indicar abierto/en curso;
+        la plantilla debe documentar que la ausencia es equivalente a presente para compatibilidad con ADRs anteriores.
+    - `replaced_by`: campo opcional que apunta al ADR que reemplaza a este
+      (string, preferiblemente filename relativo, p.ej. `R03-migracion-gatsby-a-astro.md`).
   - Secciones obligatorias: Contexto, Objetivo, Decisión, Implementación,
     Consecuencias (Positivas / A tener en cuenta), Referencias.
 - Actualizar `docs/adr/README.md` — sección **Convenciones** — para documentar el nuevo formato

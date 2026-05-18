@@ -1,9 +1,12 @@
-# ADR: Mocks de servicios de terceros en tests E2E
-
-> **Estado:** Aceptada
-> **Fecha:** 2026-01
-> **Categoría:** Testing / Rendimiento / Arquitectura
-
+---
+title: ADR: Mocks de servicios de terceros en tests E2E
+status: accepted
+date: 2026-01
+last_updated: null
+categories:
+  - Testing
+  - Performance
+  - Architecture
 ---
 
 ## Contexto

@@ -1,9 +1,11 @@
-# ADR 009: Validación de Markdown (formato y sincronización de documentación)
-
-> **Estado:** Aceptada
-> **Fecha:** 2026-05-01
-> **Última actualización:** 2026-05-02
-> **Categoría:** Contenido / Tooling
+---
+title: ADR 009: Validación de Markdown (formato y sincronización de documentación)
+status: accepted
+date: 2026-05-01
+last_updated: 2026-05-02
+categories:
+  - Content
+  - Tooling
 ---
 
 **Alcance:** Este ADR cubre la adopción e integración de `markdownlint-cli2`

@@ -1,9 +1,12 @@
-# ADR 004: Linting, tipo `any` y convenciones de estilo
-
-> **Estado:** Aceptada (parcialmente — la sección de formateo está en evaluación)
-> **Fecha:** 2026-02-15
-> **Categoría:** Tooling / Calidad de código / Estilo
-
+---
+title: ADR 004: Linting, tipo `any` y convenciones de estilo
+status: accepted
+date: 2026-02-15
+last_updated: null
+categories:
+  - Tooling
+  - Code Quality
+  - Style
 ---
 
 ## Contexto

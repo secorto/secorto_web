@@ -1,9 +1,12 @@
-# ADR 002: Migración de Cypress a Playwright + Vitest
-
-> **Estado:** Aceptada
-> **Fecha:** 2025-07
-> **Categoría:** Testing / Tooling / CI
-
+---
+title: ADR 002: Migración de Cypress a Playwright + Vitest
+status: accepted
+date: 2025-07
+last_updated: null
+categories:
+  - Testing
+  - Tooling
+  - CI
 ---
 
 ## Contexto
