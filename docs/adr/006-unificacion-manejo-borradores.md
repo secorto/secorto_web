@@ -77,7 +77,7 @@ borradores. Cambios concretos:
    código base actual).
 3. Ejecutar un script que identifique archivos con `translation_status: 'draft'`
    y proponga (o aplique con turno manual) `draft: true`.
-4. Actualizar la documentación (`docs/TRANSLATION_WORKFLOW.md`) para reflejar
+4. Actualizar la documentación (`docs/CONTENT_POLICY.md`) para reflejar
    la nueva convención.
 
 ---
@@ -88,7 +88,7 @@ borradores. Cambios concretos:
 - `src/utils/paths.ts` — filtrado por `draft`
 - `src/domain/post.ts` — helpers de dominio (p. ej. `getSeoDescription`) y tipos relacionados;
   las extracciones simples de metadata también pueden encontrarse inline en las plantillas o centralizadas en estos helpers.
-- `docs/TRANSLATION_WORKFLOW.md` — guía actualizada
+- `docs/CONTENT_POLICY.md` — guía actualizada
 
 ---
 

@@ -17,18 +17,13 @@ En esta carpeta `docs/` se agrupan guías, recursos técnicos y registros de dec
 ### Procesos y flujos
 
 - [TESTING_STRATEGY.md](TESTING_STRATEGY.md) — Estrategia de pruebas (E2E con Playwright, unitarias con Vitest)
-- [TRANSLATION_WORKFLOW.md](TRANSLATION_WORKFLOW.md) — Flujo de trabajo para traducciones y soporte multilingüe
-- [POST_NAMING_AND_UPDATES.md](POST_NAMING_AND_UPDATES.md) — Convenciones de nombres para posts y procedimientos de actualización
+- [CONTENT_POLICY.md](CONTENT_POLICY.md) — Convenciones sobre el contenido del sitio
 - [MARKDOWN_VALIDATION.md](MARKDOWN_VALIDATION.md) — Validación de Markdown (linting y reglas de formato)
 
 ### Operativo y configuración
 
 - [DEVCONTAINER.md](DEVCONTAINER.md) — Configuración de Dev Container para desarrollo consistente
 - [E2E_PARAMS.md](E2E_PARAMS.md) — Parámetros y configuración para tests E2E
-
-### Deuda técnica y seguimiento
-
-- [tech-debt.md](tech-debt.md) — Registro centralizado de deuda técnica y TODOs de arquitectura
 
 ### Decisiones arquitectónicas (ADRs)
 
