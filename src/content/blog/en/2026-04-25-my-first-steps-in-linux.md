@@ -16,7 +16,9 @@ gallery:
 translationKey: 'mis-primeros-pasos-en-linux'
 ---
 
-Over the years I wrote tutorials and notes about different distributions and desktop environments. This post gathers those experiences into practical lessons and reflections: what worked, what frustrated me, and what I still use.
+Over the years I wrote tutorials and notes about different distributions and desktop environments.
+This post gathers those experiences into practical lessons and reflections: what worked,
+what frustrated me, and what I still use.
 
 ## Slitaz
 
@@ -33,7 +35,8 @@ Over the years I wrote tutorials and notes about different distributions and des
 
 ## Openbox and lightweight environments
 
-- Main lesson: separate the compositor/window manager from utilities (Nitrogen for wallpapers, Conky for info, pcmanfm as file manager)
+- Main lesson: separate the compositor/window manager from utilities
+(Nitrogen for wallpapers, Conky for info, pcmanfm as file manager)
 - Practical takeaway: with the right combination, old machines regain a lot of life and flexibility
 - Recommendation: use modular configurations to understand each part of the desktop
 
@@ -48,5 +51,6 @@ Over the years I wrote tutorials and notes about different distributions and des
 - Slitaz on Acer Aspire One — <http://scot3004.blogspot.com/2010/08/slitaz-gnulinux-acer-aspire-one.html> (original in Spanish)
 - Windows or Linux — <http://scot3004.blogspot.com/2010/10/windows-o-linux.html> (original in Spanish)
 - Openbox — <http://scot3004.blogspot.com/2011/02/openbox.html> (original in Spanish)
-- Screenshots of my Chakra — <http://scot3004.blogspot.com/2011/03/screenshoots-de-mi-chakra-bueno-en.html> (original in Spanish)
+- Screenshots of my Chakra — <http://scot3004.blogspot.com/2011/03/screenshoots-de-mi-chakra-bueno-en.html>
+  (original in Spanish)
 - KDE 4.6 netbook (Chakra) — <http://scot3004.blogspot.com/2011/06/kde-46-netbook.html> (original in Spanish)
