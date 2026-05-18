@@ -30,7 +30,8 @@ que monta un `iframe` con la interfaz de discusión ligada a un repositorio de G
 
 ## Comportamiento en pruebas E2E
 
-- Para evitar llamadas externas y mantener las pruebas rápidas y deterministas, el repositorio usa un mock durante las pruebas E2E.
+- Para evitar llamadas externas y mantener las pruebas rápidas y deterministas,
+  el repositorio usa un mock durante las pruebas E2E.
 - Helper relevante: `tests/e2e/helpers/mockGiscus.ts` — inyecta un `iframe.giscus-frame` simulado interceptando `https://giscus.app/client.js`.
 - Decorador: `tests/e2e/helpers/whenMocked.ts` ejecuta los mocks solo si `process.env.REAL_THIRD_PARTY !== 'true'`.
   Si `REAL_THIRD_PARTY` está a `'true'`,
@@ -64,7 +65,8 @@ Cómo usarlo desde GitHub Actions UI:
 
 1. Ve a la pestaña **Actions → Tests** en el repositorio
 2. Haz clic en **Run workflow**
-3. Ajusta `real_third_party` a `true` si quieres probar contra infra real y, opcionalmente, establece `base_url`, `folder` o `tag`
+3. Ajusta `real_third_party` a `true` si quieres probar contra infra real y, opcionalmente,
+  establece `base_url`, `folder` o `tag`
 4. Ejecuta el workflow (recomendado sólo para ejecuciones manuales controladas)
 
 ## Notas sobre estabilidad

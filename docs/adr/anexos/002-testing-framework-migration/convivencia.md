@@ -13,7 +13,8 @@ de tests unitarios con Vitest. La paridad funcional se alcanzó en las
 ## Acciones realizadas
 
 - Se instaló Playwright con los navegadores necesarios y se documentó la caracterización de escenarios
-- Se ejecutaron las suites de Playwright y Cypress en convivencia para comparar resultados y estudiar diferencias entre frameworks
+- Se ejecutaron las suites de Playwright y Cypress en convivencia
+  para comparar resultados y estudiar diferencias entre frameworks
 - Se migraron y verificaron los tests de Cypress a Playwright
 - Durante el periodo de convivencia se eliminó únicamente un test (homepage)
   debido a que la página fue rediseñada y se prefirió crear el nuevo spec en Playwright
