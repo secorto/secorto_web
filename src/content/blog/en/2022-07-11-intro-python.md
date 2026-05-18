@@ -2,14 +2,14 @@
 title: Introduction to Python
 tags:
   - dev
-  - python
+  - Python
 excerpt: A Gist that provides an introduction to Python
 date: 2022-07-11
 ---
 
 In this [Gist hosted on GitHub](https://gist.github.com/Scot3004/c5a562df9ca6509820f6320b5e4c6900)
-we find a notebook on how you can use Python from scratch and it explains the use of Jupyter Notebook,
-plus a link so you can do your own testing in Colab.
+we find a notebook showing how you can use Python from scratch and that explains the use of
+Jupyter Notebook, plus a link so you can do your own testing in Colab.
 
 <a href="https://colab.research.google.com/gist/Scot3004/c5a562df9ca6509820f6320b5e4c6900/introducci-n-a-python.ipynb" target="_parent">
 <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
@@ -412,5 +412,5 @@ Useful resources:
 - The interactive tutorial (Colab/Gist used in this post)
 - PEP 484 — Type hints: <https://peps.python.org/pep-0484/>
 - DataCamp Intro to Python course: <https://www.datacamp.com/courses/intro-to-python-for-data-science>
-- Refactoring Guru patterns: <https://refactoring.guru/es/design-patterns/python>
+- Refactoring Guru patterns: <https://refactoring.guru/design-patterns/python>
 - Microsoft beginner Python course: <https://docs.microsoft.com/es-es/shows/intro-to-python-development/>

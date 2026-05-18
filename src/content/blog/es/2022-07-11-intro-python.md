@@ -1,15 +1,15 @@
 ---
-title: Introducción a python
+title: Introducción a Python
 tags:
-  - dev
-  - python
-excerpt: Gist que da una introducción a python
+    - dev
+    - Python
+excerpt: Gist que da una introducción a Python
 date: 2022-07-11
 ---
 
-En este [gist alojado en github](https://gist.github.com/Scot3004/c5a562df9ca6509820f6320b5e4c6900)
-vemos un notebook sobre como se puede usar python desde 0 y explica el uso de jupyter notebook,
-ademas de un enlace para que hagas tus pruebas en colab
+En este [Gist alojado en GitHub](https://gist.github.com/Scot3004/c5a562df9ca6509820f6320b5e4c6900)
+vemos un notebook sobre cómo se puede usar Python desde 0 y explica el uso de Jupyter Notebook,
+además de un enlace para que hagas tus pruebas en Colab
 
 <a href="https://colab.research.google.com/gist/Scot3004/c5a562df9ca6509820f6320b5e4c6900/introducci-n-a-python.ipynb" target="_parent">
   <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
@@ -17,30 +17,30 @@ ademas de un enlace para que hagas tus pruebas en colab
 
 ## Saludo
 
-Hola, El dia de hoy vamos a estar aprendiendo a programar en **python** usando **jupyter notebook**,
-esto para ir directo al código sin preocuparnos sobre como instalamos python localmente.
+Hola, el día de hoy vamos a estar aprendiendo a programar en **Python** usando **Jupyter Notebook**,
+esto para ir directo al código sin preocuparnos sobre cómo instalamos Python localmente.
 En el mundo de la ciencia de datos es muy común usar dicha herramienta
 para hacer scripts de prueba y compartir las notas sobre lo que se va desarrollando.
 
 Adicionar nuevos bloques
 
-en jupyter existen 2 tipos de bloques, texto y código
+En Jupyter existen 2 tipos de bloques, texto y código.
 
-Para adicionar uno nuevo en collab colocamos el mouse en el espacio en blanco entre los bloques donde se quiere agregar
-y este nos va a preguntar el tipo de bloque a ser adicionado
+Para adicionar uno nuevo en Colab colocamos el mouse en el espacio en blanco entre los bloques donde se quiere agregar
+y este nos va a preguntar el tipo de bloque a ser adicionado.
 
-Cuando seleccionamos **Text**, podemos agregar markdown para la edición
+Cuando seleccionamos **Text**, podemos agregar Markdown para la edición.
 
-Cuando seleccionamos **Code**, podemos agregar un fragmento de código
+Cuando seleccionamos **Code**, podemos agregar un fragmento de código.
 
-## Que es python
+## Qué es Python
 
-Python es un lenguaje de programación interpretado creado por Guido Van Rossum por alla en los años 90
-el cual es destaca por su facilidad de lectura y escritura, python puede ser usado tanto para la web,
-como la automatización de tareas repetitivas (si, las pruebas entran en esta categoria),
-también como herramienta para procesar datos masivos
+Python es un lenguaje de programación interpretado creado por Guido van Rossum por allá en los años 90,
+el cual destaca por su facilidad de lectura y escritura. Python puede ser usado tanto para la web como para
+la automatización de tareas repetitivas (sí, las pruebas entran en esta categoría), y también como
+herramienta para procesar datos masivos.
 
-## Paradigmas de programación en python
+## Paradigmas de programación en Python
 
 El paradigma también se puede denominar como un método para resolver algunos problemas o realizar algunas tareas.
 
@@ -103,8 +103,8 @@ str
 
 #### Format
 
-En lo personal para concatenar cadenas recomiendo usar la función format en lugar del operador +,
-esta nos permite incluso definir formato para la salida de las variables
+En lo personal, para concatenar cadenas recomiendo usar la función `format` en lugar del operador `+`.
+Esta nos permite incluso definir formato para la salida de las variables.
 
 ```python title="format.py"
 print("Hola {}".format(nombre))
@@ -116,8 +116,8 @@ Hola Sergio
 
 ### **Números**
 
-Python también puede trabajar con números y soporta las operaciones básicas
-como la suma `+`, resta `-`, multiplicación `*`, división`/`, división entera `//`, exponenciación `**`
+Python también puede trabajar con números y soporta las operaciones básicas, como la suma `+`, resta `-`,
+multiplicación `*`, división `/`, división entera `//` y exponenciación `**`.
 
 ```python title="suma.py"
 1 + 2
@@ -167,9 +167,9 @@ como la suma `+`, resta `-`, multiplicación `*`, división`/`, división entera
 7
 ```
 
-En cuanto a los numeros de coma flotante (float) recomiendo ser muy cuidadoso,
-dado que en python por defecto estos se representan en base 2,
-por lo cual al igual que en otros lenguajes de programación sumar `0.1 + 0.2` puede no dar el resultado esperado `0.3`
+En cuanto a los números de coma flotante (`float`) recomiendo ser muy cuidadoso, dado que en Python por
+defecto estos se representan en base 2. Por lo cual, al igual que en otros lenguajes de programación,
+sumar `0.1 + 0.2` puede no dar el resultado esperado `0.3`.
 
 ```python title="type.py"
 type(0.1)
@@ -187,7 +187,7 @@ float
 0.30000000000000004
 ```
 
-Python tambien tiene soporte a números complejos
+Python también tiene soporte a números complejos
 
 ```python title="complejo.py"
 complex_number = 1 + 2j
@@ -212,9 +212,8 @@ Hay veces que los tipos de datos que vienen pre cargados en python no nos son su
 para lo cual necesitamos importar "objetos" externos por ejemplo funciones o bien clases,
 en python el código esta organizado en paquetes y módulos
 
-Recuerdan ese ejemplo donde intentábamos sumar `0.1 + 0.2`,
-bueno para poderlo resolver vamos a importar la clase `Decimal` del módulo `decimal`
-el cual nos va a permitir operar sobre números en base 10
+¿Recuerdan ese ejemplo donde intentábamos sumar `0.1 + 0.2`? Bueno, para poderlo resolver vamos a
+importar la clase `Decimal` del módulo `decimal`, el cual nos va a permitir operar sobre números en base 10.
 
 ```python title="import_decimal.py"
 from decimal import Decimal
@@ -249,9 +248,9 @@ Decimal('0.3')
 
 ### Listas
 
-en python podemos tener colecciones de objetos donde tengamos un listado de elementos
-donde necesitemos agregar o quitar valores (es decir mutables) para lo cual podemos usar listas (list)
-representadas con corchetes
+En Python podemos tener colecciones de objetos donde tengamos un listado de elementos en los que
+necesitemos agregar o quitar valores (es decir, mutables). Para ello podemos usar listas (`list`)
+representadas con corchetes.
 
 ```python title="lista.py"
 lista = ["a", "b", "c", "a"]
@@ -417,8 +416,8 @@ estructuras comunes (listas, tuplas, diccionarios), funciones, condicionales y b
 Recursos útiles para seguir aprendiendo:
 
 - Documentación oficial de Python: <https://docs.python.org/3/>
-- Tutorial interactivo (Colab/Gist usado en este post)
+- The interactive tutorial (Colab notebook used in this post): [Open in Colab](https://colab.research.google.com/gist/Scot3004/c5a562df9ca6509820f6320b5e4c6900/introducci-n-a-python.ipynb)
 - PEP 484 — Type hints: <https://peps.python.org/pep-0484/>
-- Curso en Codecamp <https://www.datacamp.com/courses/intro-to-python-for-data-science>
+- Curso en DataCamp <https://www.datacamp.com/courses/intro-to-python-for-data-science>
 - Patrones de código en refactoring guru <https://refactoring.guru/es/design-patterns/python>
 - Curso de python para principiantes de microsoft <https://docs.microsoft.com/es-es/shows/intro-to-python-development/>
