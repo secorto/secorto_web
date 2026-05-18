@@ -12,10 +12,10 @@ export interface ComputedFields {
 
   /**
   * Identificador que agrupa todas las traducciones de una misma pieza.
-  * Proviene del frontmatter `postId` cuando se desea forzar la relación,
-  * o se deriva del `cleanId` cuando no existe `postId`.
+  * Proviene del frontmatter `translationKey` cuando se desea forzar la relación,
+  * o se deriva del `cleanId` cuando no existe `translationKey`.
   */
-  postId: string
+  translationKey: string
   /**
    * Locale detectado a partir del `entry.id` (p.ej. 'es' o 'en').
    */
