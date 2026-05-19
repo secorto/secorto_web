@@ -7,6 +7,10 @@ categories:
   - Architecture
   - i18n
   - Domain
+supercedes:
+  - 001
+superseded_by:
+  - 011
 ---
 
 ## Contexto
