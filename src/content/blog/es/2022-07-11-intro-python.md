@@ -51,7 +51,7 @@ y técnicas que están disponibles para nosotros siguiendo algún enfoque.
 ## Hola mundo
 
 Como buena introducción a cualquier lenguaje de programación,
-aprender a imprimir un mensaje en pantalla es de las primeras cosas aprendemos,
+aprender a imprimir un mensaje en pantalla es una de las primeras cosas que aprendemos,
 además de servir para corroborar que la herramienta quedó instalada satisfactoriamente,
 vamos a iniciar con uno de mis programas favoritos "Hola mundo",
 para lo cual nos apoyaremos en la función `print` la cual nos imprime por consola lo que escribamos entre comillas.

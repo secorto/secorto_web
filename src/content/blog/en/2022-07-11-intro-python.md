@@ -413,4 +413,4 @@ Useful resources:
 - PEP 484 — Type hints: <https://peps.python.org/pep-0484/>
 - DataCamp Intro to Python course: <https://www.datacamp.com/courses/intro-to-python-for-data-science>
 - Refactoring Guru patterns: <https://refactoring.guru/design-patterns/python>
-- Microsoft beginner Python course: <https://docs.microsoft.com/es-es/shows/intro-to-python-development/>
+- Microsoft beginner Python course: <https://learn.microsoft.com/en-us/shows/intro-to-python-development/>

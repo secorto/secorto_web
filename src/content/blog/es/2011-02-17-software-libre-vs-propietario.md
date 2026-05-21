@@ -17,7 +17,7 @@ poniendo en riesgo tanto nuestro equipo como nuestra información.
 
 Opino que la mejor opción es la que estamos dispuestos a pagar y respetar,
 pues el software cerrado no es malo lo que pasa es que uno paga por una licencia restrictiva
-esta aceptando los términos que esta establece.
+está aceptando los términos que está establece.
 
 Pienso que es una perdida de tiempo buscar a toda costa instalar algo que no se nos es permitido.
 
@@ -28,7 +28,7 @@ Debemos evitar hacer parte de la cadena de ilegalidad,
 pues luego podemos llegar a un estado de conformismo donde en lo único que pensamos que lo que podemos hacer
 solo lo podemos hacer con esa herramienta especifica.
 
-Debemos además evitar enseñar u aprende a utilizar una única herramienta,
+Debemos además evitar enseñar o aprender a utilizar una única herramienta,
 podemos enseñar alternativas asi hacemos que los desarrolladores se pongan las pilas
 viendo que la competencia existe y evitamos que estos se estanquen
 Si no queremos seguir estas licencias dejemos a este software a un lado respetemos a los desarrolladores,
