@@ -139,7 +139,7 @@ e2e-tests:     playwright test          → artifact playwright-report
 
 Los detalles operativos por cada fase se almacenan
 en los anexos.
-Ademas un documento que detalla las métricas recolectadas
+Además un documento que detalla las métricas recolectadas
 
 - [Fase de convivencia](./anexos/002-testing-framework-migration/convivencia.md)
   Se agregó Playwright; ambos runners E2E se ejecutaron en CI durante la fase de convivencia

@@ -10,9 +10,9 @@ excerpt: Analisis sobre software libre vs propietario
 Si bien es sabido que en los sistemas cerrados no hay muchas opciones de modificación,
 el software es como viene, y modificarlos podría violar los términos que los desarrolladores de estos establecen.
 
-El software cerrado es buena opción para el que esta acostumbrado y tiene el dinero para pagar la licencia original.
+El software cerrado es buena opción para el que está acostumbrado y tiene el dinero para pagar la licencia original.
 
-Ademas no es justo que nos pongamos a estar inventando instalar cracks de dudosa procedencia
+Además no es justo que nos pongamos a estar inventando instalar cracks de dudosa procedencia
 poniendo en riesgo tanto nuestro equipo como nuestra información.
 
 Opino que la mejor opción es la que estamos dispuestos a pagar y respetar,
@@ -21,14 +21,14 @@ esta aceptando los términos que esta establece.
 
 Pienso que es una perdida de tiempo buscar a toda costa instalar algo que no se nos es permitido.
 
-Ademas, si tenemos una versión de básica del mismo no hay por que hacer maromas
+Además, si tenemos una versión de básica del mismo no hay por que hacer maromas
 para obtener las funcionalidades de una mas avanzadas, pues estaríamos de igual forma violando la licencia del mismo.
 
 Debemos evitar hacer parte de la cadena de ilegalidad,
 pues luego podemos llegar a un estado de conformismo donde en lo único que pensamos que lo que podemos hacer
 solo lo podemos hacer con esa herramienta especifica.
 
-Debemos ademas evitar enseñar u aprende a utilizar una única herramienta,
+Debemos además evitar enseñar u aprende a utilizar una única herramienta,
 podemos enseñar alternativas asi hacemos que los desarrolladores se pongan las pilas
 viendo que la competencia existe y evitamos que estos se estanquen
 Si no queremos seguir estas licencias dejemos a este software a un lado respetemos a los desarrolladores,

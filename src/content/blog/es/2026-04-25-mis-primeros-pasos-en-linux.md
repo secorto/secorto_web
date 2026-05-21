@@ -48,7 +48,7 @@ qué funcionó, qué me frustró y qué sigo usando.
 - Enseñanza transversal: cada experimento me enseñó a diagnosticar hardware,
   leer logs, y a preferir soluciones simples cuando es posible
 - En lugar de repetir pasos largos, este post prioriza los aprendizajes
-y enlaces a los posts originales para quien necesite detalle técnico
+  y enlaces a los posts originales para quien necesite detalle técnico
 
 ## Referencias y posts originales
 
