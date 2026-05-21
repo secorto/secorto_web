@@ -17,9 +17,9 @@ import type { PostEntry } from '@domain/post'
  */
 export function getAvailableLocaleEntriesFromMap(
   localeEntryMap: Record<string, AvailableLocales>,
-  postId: string
+  translationKey: string
 ): AvailableLocales {
-  return localeEntryMap[postId] ?? {}
+  return localeEntryMap[translationKey] ?? {}
 }
 
 /**
@@ -64,18 +64,18 @@ export function buildTagLocaleMap(
 }
 
 /**
- * Construye y devuelve un mapa `postId` -> `AvailableLocales`.
+ * Construye y devuelve un mapa `translationKey` -> `AvailableLocales`.
  *
  * Esto permite evitar parseos redundantes de `entry.id` cuando el caller
- * necesita el conjunto de locales disponibles por `postId`.
+ * necesita el conjunto de locales disponibles por `translationKey`.
  *
  * Single-pass build: O(N) sobre las entradas. Lanza si detecta un duplicado
- * por la combinación `(postId, locale)` para fallar rápido en caso de contenido
- * inconsistente (es decir, si el mismo `postId` aparece más de una vez para
+ * por la combinación `(translationKey, locale)` para fallar rápido en caso de contenido
+ * inconsistente (es decir, si el mismo `translationKey` aparece más de una vez para
  * el mismo `locale`).
  *
  * @param allEntries - Entradas de la colección (pre-fetch)
- * @returns Mapa `postId` → `AvailableLocales`
+ * @returns Mapa `translationKey` → `AvailableLocales`
  */
 export function buildLocaleEntryMap<C extends CollectionKey = CollectionKey>(
   allEntries: PostEntry<C>[]
@@ -83,12 +83,12 @@ export function buildLocaleEntryMap<C extends CollectionKey = CollectionKey>(
   const localeEntryMap: Record<string, AvailableLocales> = {}
 
   for (const e of allEntries) {
-    // Inicializa perezosamente el bucket para este `postId` usando `??=`.
-    const bucket = localeEntryMap[e.postId] ??= {}
+    // Inicializa perezosamente el bucket para este `translationKey` usando `??=`.
+    const bucket = localeEntryMap[e.translationKey] ??= {}
     const existing = bucket[e.locale as keyof AvailableLocales] as { slug?: string } | undefined
     if (existing) {
       throw new Error(
-        `Duplicate entry for postId "${e.postId}" and locale "${e.locale}" - existing slug "${existing.slug}" vs "${e.cleanId}" (entry.id: ${e.id})`
+        `Duplicate entry for translationKey "${e.translationKey}" and locale "${e.locale}" - existing slug "${existing.slug}" vs "${e.cleanId}" (entry.id: ${e.id})`
       )
     }
 

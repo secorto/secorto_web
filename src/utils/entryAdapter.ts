@@ -5,16 +5,16 @@ import type { PostEntry } from '@domain/post'
 
 /**
  * Adapter: convierte una `CollectionEntry` -> `DomainEntry` (computed fields agregados)
- * - No realiza fallbacks agresivos: sólo calcula `cleanId` y `postId` (desde `data.postId` o `cleanId`)
+ * - No realiza fallbacks agresivos: sólo calcula `cleanId` y `translationKey` (desde `data.translationKey` o `cleanId`)
  */
 export function adaptToDomainEntry<C extends CollectionKey = CollectionKey>(entry: CollectionEntry<C>): PostEntry<C> {
   const extracted = extractCleanId(entry.id)
   const cleanId = extracted.id
-  const postId = entry.data.postId ?? cleanId
+  const translationKey = entry.data.translationKey ?? cleanId
 
   const computed: ComputedFields = {
     cleanId,
-    postId,
+    translationKey,
     locale: extracted.locale
   }
   return {

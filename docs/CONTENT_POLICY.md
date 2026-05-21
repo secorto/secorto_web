@@ -26,9 +26,9 @@ Según el tipo de colección el nombre de archivo puede tener un prefijo por fec
 - Usa los campos existentes en el frontmatter, no añadir campos ad-hoc en frontmatter.
 - Usa `draft: true` en el frontmatter para marcar traducciones en progreso;
   las plantillas y listados del sitio respetan este flag para mostrar banners y `noindex` cuando corresponda.
-- Solo cuando el slug/id difiera entre origen y destino (por ejemplo `why-npm` vs `por-que-npm`)
-  añade `postId` (proximamente `translationKey`) en la traducción para apuntar al identificador canónico del original
-  (nombre de fichero sin `.md`, incluir prefijo de fecha si aplica)
+- No usar `postId` en frontmatter ni en objetos de contenido; el proyecto valida que no exista `postId`.
+- Para enlazar traducciones utiliza `translationKey`, que es el identificador canónico del mensaje (nombre estable y semántico, independiente del nombre de fichero).
+- `translationKey` debe referenciar la unidad de traducción y no el recurso; no incluir `postId`.
 - Todo el contenido markdown debe ser revisado de forma estática (markdownlint)
 
 ## Actualizar contenido en entrada existente
@@ -49,7 +49,7 @@ decidir entre actualizar in-place o re-publicar según la colección y la magnit
 - Añadir redirect 301 desde la URL antigua al nuevo slug.
 - Actualizar enlaces internos relevantes.
 - Si hay traducciones antiguas,
-  decide si mantenerlas, crear redirecciones lingüísticas apropiadas o actualizar traducciones y enlazarlas mediante `postId`.
+  decide si mantenerlas, crear redirecciones lingüísticas apropiadas o actualizar traducciones y enlazarlas mediante `translationKey`.
 
 ## Actualizar in-place
 

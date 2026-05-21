@@ -13,7 +13,7 @@ type PostFixtureOptions = {
   excerpt?: string
   tags?: string[]
   draft?: boolean
-  postId?: string
+  translationKey?: string
 }
 
 export function createPostEntry(
@@ -52,7 +52,7 @@ export function createCollectionEntry(
     excerpt = 'Test excerpt',
     tags = [],
     draft = false,
-    postId: explicitPostId
+    translationKey
   } = options
 
   return {
@@ -64,9 +64,9 @@ export function createCollectionEntry(
       excerpt,
       tags,
       draft,
+      translationKey,
       image: undefined,
       description: undefined,
-      postId: explicitPostId,
       canonical: undefined,
       change_log: undefined
     },
