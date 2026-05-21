@@ -51,7 +51,8 @@ export function createCollectionEntry(
     date = new Date('2024-01-01'),
     excerpt = 'Test excerpt',
     tags = [],
-    draft = false
+    draft = false,
+    translationKey
   } = options
 
   return {
@@ -63,6 +64,7 @@ export function createCollectionEntry(
       excerpt,
       tags,
       draft,
+      translationKey,
       image: undefined,
       description: undefined,
       canonical: undefined,
