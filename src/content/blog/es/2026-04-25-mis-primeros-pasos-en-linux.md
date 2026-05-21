@@ -13,7 +13,7 @@ gallery:
     alt: "LXDE — captura de escritorio"
   - image: "@assets/img/post/chakra/kde.png"
     alt: "KDE — captura de escritorio"
-postId: 'mis-primeros-pasos-en-linux'
+translationKey: 'mis-primeros-pasos-en-linux'
 ---
 
 A lo largo de varios años escribí tutoriales y notas sobre distintas distribuciones y entornos. Este post reúne esas experiencias en forma de lecciones prácticas y reflexiones: qué funcionó, qué me frustró y qué sigo usando.
