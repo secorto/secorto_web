@@ -19,6 +19,7 @@ En esta carpeta `docs/` se agrupan guías, recursos técnicos y registros de dec
 - [TESTING_STRATEGY.md](TESTING_STRATEGY.md) — Estrategia de pruebas (E2E con Playwright, unitarias con Vitest)
 - [CONTENT_POLICY.md](CONTENT_POLICY.md) — Convenciones sobre el contenido del sitio
 - [MARKDOWN_VALIDATION.md](MARKDOWN_VALIDATION.md) — Validación de Markdown (linting y reglas de formato)
+- [UPGRADE.md](UPGRADE.md) — Guía de actualización
 
 ### Operativo y configuración
 
