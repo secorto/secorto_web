@@ -1,12 +1,14 @@
 ---
 title: ADR 004: Linting, tipo `any` y convenciones de estilo
-status: accepted
+status: superseded
 date: 2026-02-15
 last_updated: null
 categories:
   - Tooling
   - Code Quality
   - Style
+superseded_by:
+  - 013
 ---
 
 ## Contexto
@@ -25,20 +27,6 @@ calidad de código:
 4. **Código generado por herramientas con estilo diferente:** Playwright
    codegen genera código con `;` (semicolons), pero la convención del
    proyecto es omitirlos.
-
-### Perfil del desarrollador
-
-El mantenedor principal viene de **Python**, donde:
-
-- No existen los `;` al final de sentencia
-- La legibilidad sin ruido sintáctico es un valor
-- El formateo lo resuelve una sola herramienta (`black` / `ruff format`)
-
-En el entorno laboral se usa `;` por convención de equipo. En este proyecto
-personal, la preferencia es **omitir semicolons** para mantener el código
-más limpio y cercano al estilo natural del autor.
-
----
 
 ## Decisiones tomadas
 
@@ -74,33 +62,6 @@ que la override para `.d.ts` esté consolidada.
 
 Esto asegura que Copilot tampoco genere código con `any`.
 
-### 2. Omitir semicolons — convención sin enforcement automático
-
-**Decisión:** omitir `;` al final de sentencias en todo el código del
-proyecto.
-
-**Estado actual:** la convención está documentada en `copilot-instructions.md`
-pero **no está enforceada por ESLint ni por un formateador automático**. Esto
-es intencional mientras se evalúan las opciones (ver sección de formateo
-abajo).
-
-**Excepción conocida:** el código generado por `npx playwright codegen`
-incluye `;` automáticamente. El flujo de trabajo esperado es:
-
-1. Generar código con `playwright codegen`
-2. Copiar al test
-3. Eliminar `;` manualmente o con un futuro autofix
-
-### 3. Indentación a 2 espacios — enforceada
-
-```javascript
-'indent': ['error', 2, { SwitchCase: 1 }]
-```
-
-Esta regla sí está enforceada a nivel `error` y se aplica con `--fix`.
-
----
-
 ## Configuración actual de ESLint
 
 ```javascript
@@ -133,61 +94,14 @@ Esta regla sí está enforceada a nivel `error` y se aplica con `--fix`.
 ### Lo que falta estructurar
 
 La configuración actual tiene reglas funcionales pero hay áreas pendientes
-de organizar:
+de organizar (se excluyen decisiones de estilo, que se documentan en
+`ADR 012`):
 
 | Área | Estado | Nota |
 | --- | --- | --- |
 | `no-explicit-any` | ✅ Activa (`error`) | Elevada a `error`; monitorizar en CI y tests |
 | `no-unused-vars` | ✅ Activa (`error`) | Con ignore para `_` prefixed |
 | `import/no-unresolved` | ✅ Activa | Con módulos core de Astro configurados |
-| `indent` | ✅ Activa (2 espacios) | Enforceada |
-| Semicolons | ❌ Sin regla | Convención manual; pendiente de evaluación |
-| Trailing commas | ❌ Sin regla | Pendiente |
-| Quotes (single/double) | ❌ Sin regla | Pendiente |
-| Max line length | ❌ Sin regla | Pendiente |
-| Reglas para `.astro` frontmatter | ⚠️ Parcial | Solo `jsx-a11y`, no estilo |
-
----
-
-## Decisión pendiente: formateo automático
-
-### Opciones en evaluación
-
-#### A. Prettier
-
-- ✅ Estándar de facto en proyectos JS/TS
-- ✅ Opinionado: pocas decisiones que tomar
-- ✅ Integración con ESLint vía `eslint-config-prettier`
-- ❌ Requiere `eslint-config-prettier` para desactivar reglas conflictivas
-- ❌ Otro binario más en el toolchain
-- ❌ Formato de `.astro` tiene soporte limitado (plugin `prettier-plugin-astro`)
-
-#### B. ESLint Stylistic (`@stylistic/eslint-plugin`)
-
-- ✅ Un solo tool (ESLint) para lint + formato
-- ✅ Reglas granulares: se puede activar solo `semi`, `quotes`, etc.
-- ✅ No necesita un segundo tool ni config de desactivación
-- ❌ Más reglas que configurar manualmente
-- ❌ Menos adoption que Prettier en la comunidad
-
-#### C. Mantener convención manual (status quo)
-
-- ✅ Sin overhead de configuración
-- ✅ Copilot respeta las instrucciones de `copilot-instructions.md`
-- ❌ No previene inconsistencias en contribuciones manuales
-- ❌ `playwright codegen` genera código con estilo diferente
-
-### Estado
-
-**En pausa.** No se ha tomado una decisión final sobre formateo automático.
-Los tradeoffs se evaluarán cuando:
-
-- Se complete la eliminación de Cypress (simplifica el scope de configs)
-- Se tenga claro si se quiere Prettier o solo ESLint Stylistic
-- Se definan las reglas exactas de estilo
-
-Por ahora, la convención se mantiene vía `copilot-instructions.md` y
-revisión manual.
 
 ---
 
@@ -215,8 +129,6 @@ revisión manual.
 └──────────────────────────────────────────────────────────┘
 ```
 
----
-
 ## Consecuencias
 
 ### Positivas
@@ -232,30 +144,19 @@ revisión manual.
 
 ### Deuda técnica conocida
 
-- Semicolons: convención manual sin enforcement automático. El código
-  generado por `playwright codegen` necesita limpieza manual.
-- Reglas de estilo (quotes, trailing commas, etc.) sin definir.
-- Decisión Prettier vs Stylistic pendiente.
+- Reglas de estilo (quotes, trailing commas, semicolons) sin definir; el
+  contenido y propuesta de formateo se trasladó a `ADR 012`.
 - `no-explicit-any` ahora es `error`; revisar fallos en CI y agregar
-   excepciones justificadas si aparecen casos legítimos.
-- Configuración de ESLint podría consolidarse mejor (algunas reglas
-  sueltas).
-
----
+  excepciones justificadas si aparecen casos legítimos.
+- Configuración de ESLint podría consolidarse mejor (algunas reglas sueltas).
 
 ## Acciones futuras (cuando se retome)
 
-1. [ ] Decidir entre Prettier y ESLint Stylistic
-2. [ ] Definir regla de semicolons (`semi: ['error', 'never']` o vía Prettier)
-3. [ ] Definir regla de quotes (`quotes: ['error', 'single']` o similar)
-4. [ ] Verificar CI y/o agregar excepciones justificadas para `no-explicit-any`
-5. [ ] Revisar y eliminar `eslint-disable` restantes (ej. `src/env.d.ts`) y
-  confirmar que las overrides en ESLint para `.d.ts` permiten quitar
-  la mayoría de disables inline
-6. [ ] Evaluar si agregar `@stylistic/eslint-plugin` o `prettier` a CI
-7. [ ] Documentar la resolución final en este ADR (cambiar estado a **Aceptada**)
-
----
+1. [ ] Verificar CI y/o agregar excepciones justificadas para `no-explicit-any`
+2. [ ] Revisar y eliminar `eslint-disable` restantes (ej. `src/env.d.ts`) y
+   confirmar que las overrides en ESLint para `.d.ts` permiten quitar
+   la mayoría de disables inline
+3. [ ] Documentar la resolución final en este ADR (cambiar estado a **Aceptada**)
 
 ## Referencias
 
