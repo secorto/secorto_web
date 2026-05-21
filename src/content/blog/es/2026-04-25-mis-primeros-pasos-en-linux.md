@@ -16,13 +16,17 @@ gallery:
 translationKey: 'mis-primeros-pasos-en-linux'
 ---
 
-A lo largo de varios años escribí tutoriales y notas sobre distintas distribuciones y entornos. Este post reúne esas experiencias en forma de lecciones prácticas y reflexiones: qué funcionó, qué me frustró y qué sigo usando.
+A lo largo de varios años escribí tutoriales y notas sobre distintas distribuciones y entornos.
+Este post reúne esas experiencias en forma de lecciones prácticas y reflexiones:
+qué funcionó, qué me frustró y qué sigo usando.
 
 ## Slitaz
 
 - Lección principal: las minidistros enseñan a priorizar lo esencial; valen para hardware muy limitado
-- Conceptos aprendidos: `tazpkg` como gestor, flavors (loram), ejecución desde RAM, herramientas incluidas (LightTPD, mplayer, GParted)
-- Problemas típicos: compatibilidad gráfica en ciertos netbooks (soluciones: usar Xvesa o instalar drivers intel y ajustar resoluciones)
+- Conceptos aprendidos: `tazpkg` como gestor, flavors (loram),
+  ejecución desde RAM, herramientas incluidas (LightTPD, mplayer, GParted)
+- Problemas típicos: compatibilidad gráfica en ciertos netbooks
+  (soluciones: usar Xvesa o instalar drivers intel y ajustar resoluciones)
 - Consejo: las distros minimalistas son excelentes para aprender diagnóstico de hardware y manejo mínimo de paquetes
 
 ## Chakra / Arch-derived (KDE en netbook)
@@ -33,15 +37,18 @@ A lo largo de varios años escribí tutoriales y notas sobre distintas distribuc
 
 ## Openbox y entornos ligeros
 
-- Lección principal: separar compositor/gestor de ventanas de utilidades (Nitrogen para fondos, Conky para información, pcmanfm como gestor)
+- Lección principal: separar compositor/gestor de ventanas de utilidades
+  (Nitrogen para fondos, Conky para información, pcmanfm como gestor)
 - Aprendizaje práctico: con la combinación correcta, equipos antiguos recuperan mucha vida y flexibilidad
 - Recomendación: usar configuraciones modulares para entender cada pieza del escritorio
 
 ## Observaciones generales
 
 - La comunidad GNU/Linux es un recurso clave: foros y wikis aceleraron la solución de problemas
-- Enseñanza transversal: cada experimento me enseñó a diagnosticar hardware, leer logs, y a preferir soluciones simples cuando es posible
-- En lugar de repetir pasos largos, este post prioriza los aprendizajes y enlaces a los posts originales para quien necesite detalle técnico
+- Enseñanza transversal: cada experimento me enseñó a diagnosticar hardware,
+  leer logs, y a preferir soluciones simples cuando es posible
+- En lugar de repetir pasos largos, este post prioriza los aprendizajes
+  y enlaces a los posts originales para quien necesite detalle técnico
 
 ## Referencias y posts originales
 

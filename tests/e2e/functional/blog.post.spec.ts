@@ -10,7 +10,7 @@ const postFixtures: PostFixture[] = [
   {
     locale: 'es',
     slug: '2022-07-11-intro-python',
-    postTitle: 'Introducción a python'
+    postTitle: 'Introducción a Python'
   },
   {
     locale: 'en',
