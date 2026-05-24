@@ -1,0 +1,20 @@
+import:
+  - '@cspell/dict-es-es/cspell-ext.json'
+dictionaryDefinitions:
+  - name: missing_es
+    path: ./dictionaries/missing_es.txt
+  - name: tecnicismos
+    path: ./dictionaries/tecnicismos.txt
+  - name: project
+    path: ./dictionaries/project.txt
+  - name: argot
+    path: ./dictionaries/argot.txt
+language: es, es_ES, en, en_US
+
+dictionaries:
+  - missing_es
+  - tecnicismos
+  - project
+  - argot
+
+useGitignore: true
