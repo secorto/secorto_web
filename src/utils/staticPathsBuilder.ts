@@ -18,6 +18,7 @@ import { filterByLocale, getUniqueTags, mapEntryId } from './paths'
 import type { AvailableLocales } from '@domain/translation'
 import { type PostEntry, type ExperienceLikeEntry } from '@domain/post'
 import { buildTagLocaleMap, getAvailableLocaleEntriesFromMap, buildLocaleEntryMap } from './translationHelpers'
+import { sortByPriority } from '@utils/sorting'
 import { buildDetailLinks } from '@i18n/languagePickerUtils'
 import { availableLink, missingLink } from '@domain/translationLink'
 import { buildLangPrefix } from '@i18n/languagePickerUtils'
@@ -143,7 +144,7 @@ export async function buildSectionIndexPathsCore(
 ): Promise<SectionPath[]> {
   const pathGroups = await Promise.all(
     sections.map(async config => {
-      const allEntries = mapEntryId(await fetchCollection(config.name))
+      const allEntries = sortByPriority(mapEntryId(await fetchCollection(config.name)))
       return buildLocalePathsForSection(config, allEntries)
     })
   )
@@ -165,7 +166,7 @@ export async function buildTagPathsCore(
 
   for (const config of sections) {
     const collectedEntries = await fetchCollection(config.name)
-    const allEntries = mapEntryId(collectedEntries)
+    const allEntries = sortByPriority(mapEntryId(collectedEntries))
     const tagLocaleMap = buildTagLocaleMap(allEntries, tagTranslations)
 
     for (const locale of languageKeys) {
@@ -240,7 +241,7 @@ export async function buildTagIndexPathsCore(
 
   for (const config of sections) {
     const entries = await fetchCollection(config.name)
-    allSectionEntries[config.name] = mapEntryId(entries)
+    allSectionEntries[config.name] = sortByPriority(mapEntryId(entries))
   }
 
   const globalTagsLinks = languageKeys.map(l =>

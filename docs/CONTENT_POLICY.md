@@ -91,5 +91,15 @@ No redirijas antiguas URLs en un idioma hacia contenido en otro idioma mediante 
 
 ## Añadir campos nuevos en el frontmatter
 
-Todo campo agregado debe ser documentado y las plantillas actualizadas
-En el caso de renombrar campos estos definitivamente deben pasar por un proceso de ADR por que es un cambio mayor y breaking.
+Todo campo agregado debe ser documentado y las plantillas actualizadas. En el caso de renombrar
+campos, estos deben pasar por un proceso de ADR porque es un cambio mayor y breaking.
+
+### Reglas de ordenamiento
+
+- Primero: `priority` (entero opcional, por defecto tratado como `0`) — orden descendente (mayor primero).
+- Segundo: fecha en orden descendente (más recientes primero).
+  Se intenta primero con el campo `date` y, si no existe, con `startDate`.
+- Entradas sin la fecha correspondiente se consideran de menor precedencia que las que sí la tienen.
+- Empate final: `cleanId` (slug limpio) en orden alfabético ascendente para determinismo.
+
+Nota: estas reglas son las aplicadas por la utilidad `sortByPriority` usada en generación de listados y rutas.
