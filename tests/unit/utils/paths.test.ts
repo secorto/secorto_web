@@ -29,6 +29,23 @@ describe('paths utils', () => {
     expect(res.some(r => r.cleanId === 'two')).toBe(true)
   })
 
+  it('orders getPostsByLocale by cleanId descending', async () => {
+    const posts = [
+      { id: 'en/2023-01-01-older', data: { slug: 'older' } },
+      { id: 'en/2024-08-15-newer', data: { slug: 'newer' } },
+      { id: 'en/2022-12-31-oldest', data: { slug: 'oldest' } }
+    ]
+    vi.resetModules()
+    vi.doMock('astro:content', () => ({ getCollection: vi.fn(async () => posts) }))
+    const { getPostsByLocale } = await import('@utils/paths')
+    const res = await getPostsByLocale('blog', 'en')
+    expect(res.map(r => r.cleanId)).toEqual([
+      '2024-08-15-newer',
+      '2023-01-01-older',
+      '2022-12-31-oldest'
+    ])
+  })
+
   it('getUniqueTags extracts unique tags and handles missing tags', () => {
     const posts = [
       { data: { tags: ['a', 'b'] } },

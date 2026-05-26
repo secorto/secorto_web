@@ -28,6 +28,7 @@ export function mapEntryId<C extends CollectionKey>(
 /**
  * Obtiene todos los posts de una colección para un locale específico.
  * Enriquece cada post con su cleanId (nombre de archivo limpio).
+ * Ordenados por cleanId descendente (más reciente primero) asumiendo formato YYYY-MM-DD en el nombre del archivo.
  * @param collection - Nombre de la colección
  * @param locale - Idioma/locale
  * @returns Array de posts filtrados por locale
@@ -38,6 +39,7 @@ export async function getPostsByLocale<C extends CollectionKey>(
 ): Promise<PostEntry<C>[]> {
   const posts = await getCollection(collection)
   return filterByLocale(mapEntryId(posts), locale)
+    .sort((a, b) => b.cleanId.localeCompare(a.cleanId))
 }
 
 /**
