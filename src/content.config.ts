@@ -27,7 +27,8 @@ const createBasePostSchema = (imageHelper: ImageFunction) => z.object({
     details: z.string().optional(),
     type: z.enum(['typo', 'minor', 'rewrite', 'translation', 'meta']).optional(),
     locale: z.string().optional()
-  })).optional()
+  })).optional(),
+  priority: z.number().int().optional()
 })
 
 /**
@@ -75,7 +76,7 @@ const projectsCollection = defineCollection({
   schema: ({ image }) => createBasePostSchema(image).extend({
     role: z.string(),
     responsibilities: z.string(),
-    website: z.url().optional(),
+    website: z.url().optional()
   }),
 })
 
