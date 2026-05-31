@@ -4,6 +4,7 @@ import {
   step,
   type Action,
   type GherkinStep,
+  type StepDefinition
 } from './gherkin'
 
 type GherkinFixtures = {
@@ -35,4 +36,4 @@ export const test = base.extend<GherkinFixtures>({
 export const Act = createVerb('Act', base)
 export const Verify = createVerb('Verify', base)
 
-export { expect, step, type Action }
+export { expect, step, type Action, type StepDefinition }

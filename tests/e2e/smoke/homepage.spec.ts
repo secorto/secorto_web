@@ -1,5 +1,5 @@
 import { test } from '@tests/fixtures'
-import type { StepDefinition } from '@tests/fixtures/gherkin'
+import type { StepDefinition } from '@tests/fixtures'
 import { ui, languageKeys } from '@i18n/ui'
 import { HomePage, userInHome } from '@tests/pages/HomePage'
 import { sectionsConfig } from '@domain/section'
