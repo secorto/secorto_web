@@ -1,11 +1,18 @@
 import { test as base, expect } from '@playwright/test'
 import {
-  createVerb,
-  step,
+  createStep,
   type Action,
-  type GherkinStep,
-  type StepDefinition
+  type StepDefinition,
 } from './gherkin'
+
+export type StepExpect = {expect: typeof expect}
+const { step, createVerb } = createStep<StepExpect>({expect})
+
+export type GherkinStep = <T>(definition: StepDefinition<T, StepExpect>, stepExpect?: StepExpect) => Promise<T>
+export type GherkinStepDefinition<T> = {
+  title: string
+  action: Action<T, StepExpect>
+}
 
 type GherkinFixtures = {
   Given: GherkinStep
@@ -36,4 +43,4 @@ export const test = base.extend<GherkinFixtures>({
 export const Act = createVerb('Act', base)
 export const Verify = createVerb('Verify', base)
 
-export { expect, step, type Action, type StepDefinition }
+export { expect, step }

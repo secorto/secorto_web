@@ -1,5 +1,5 @@
 import { test } from '@tests/fixtures'
-import type { StepDefinition } from '@tests/fixtures'
+import type { GherkinStepDefinition } from '@tests/fixtures'
 import { ui, languageKeys } from '@i18n/ui'
 import { HomePage, userInHome } from '@tests/pages/HomePage'
 import { sectionsConfig } from '@domain/section'
@@ -8,7 +8,7 @@ for (const locale of languageKeys) {
   test.describe(`Homepage (${locale})`,
     { tag: ['@homepage', '@smoke'] },
     () => {
-      let userInHomeForLocale: () => StepDefinition<HomePage>
+      let userInHomeForLocale: () => GherkinStepDefinition<HomePage>
 
       test.beforeEach(async ({ page }) => {
         userInHomeForLocale = () => userInHome(page, locale)

@@ -1,31 +1,27 @@
-import { expect } from "@playwright/test"
-
-export type StepExpect = { expect: typeof expect }
-export type Action<T> = (args: StepExpect) => T | Promise<T>
-export type Verification<T> = Action<T>
-export type StepBody<T> = Action<T>
+export type Action<T, E = unknown> = (args: E) => T | Promise<T>
 export type StepResult<T> = Promise<T>
 
-export type StepDefinition<T> = {
+export type StepDefinition<T, E = unknown> = {
   title: string
-  action: Action<T>
+  action: Action<T, E>
 }
 
-export const step = <T>(title: string, action: Action<T>): StepDefinition<T> => ({ title, action })
+export const createStep = <E = unknown>(defaultValue: E) => {
 
-export type GherkinStep = <T>(definition: StepDefinition<T>, stepExpect?: StepExpect) => StepResult<T>
+  const step = <T>(title: string, action: Action<T, E>): StepDefinition<T, E> => ({ title, action })
 
-type StepRunner = {
-  step: <R>(name: string, fn: () => R | Promise<R>) => Promise<R>
-}
+  type GherkinStep = <T>(definition: StepDefinition<T, E>, stepExpect?: E) => StepResult<T>
 
-export const createVerb = (
-  verb: string,
-  runner: StepRunner,
-  defaultValue: StepExpect = { expect }
-): GherkinStep => {
-  return async <T>(definition: StepDefinition<T>, stepExpect?: StepExpect) => {
-    const value = stepExpect ?? defaultValue
-    return await runner.step(`${verb} ${definition.title}`, () => definition.action(value))
+  type StepRunner = {
+    step: <R>(name: string, fn: () => R | Promise<R>) => Promise<R>
   }
+
+  const createVerb = (verb: string, runner: StepRunner): GherkinStep => {
+    return async <T>(definition: StepDefinition<T, E>, stepExpect?: E) => {
+      const value = stepExpect ?? defaultValue
+      return await runner.step(`${verb} ${definition.title}`, () => definition.action(value))
+    }
+  }
+
+  return { step, createVerb }
 }
