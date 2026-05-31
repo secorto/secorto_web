@@ -5,7 +5,7 @@ export class Link {
   constructor(readonly locator: Locator) {}
 
   hrefMatches(locale: string, route: string) {
-    return step('link href matches route', async (expect) => {
+    return step('link href matches route', async ({ expect }) => {
       const el = this.locator
       await expect(el).toBeVisible()
       const href = await el.getAttribute('href')

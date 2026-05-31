@@ -11,7 +11,7 @@ export class Highlight {
   }
 
   shouldBeVisible() {
-    return step('highlight should be visible', async (expect) => {
+    return step('highlight should be visible', async ({ expect }) => {
       await expect(this.root).toBeVisible()
     })
   }

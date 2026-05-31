@@ -5,19 +5,19 @@ export class Target {
   constructor(readonly locator: Locator) {}
 
   shouldBeVisible() {
-    return step('target should be visible', async (expect) => {
+    return step('target should be visible', async ({ expect }) => {
       await expect(this.locator).toBeVisible()
     })
   }
 
   shouldHaveText(textOrRegex: string | RegExp) {
-    return step('target should have text', async (expect) => {
+    return step('target should have text', async ({ expect }) => {
       await expect(this.locator).toHaveText(textOrRegex)
     })
   }
 
   shouldHaveClass(re: RegExp) {
-    return step('target should have class', async (expect) => {
+    return step('target should have class', async ({ expect }) => {
       await expect(this.locator).toHaveClass(re)
     })
   }

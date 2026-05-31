@@ -11,21 +11,21 @@ export class SidebarPage {
   ) {}
 
   shouldBeReady() {
-    return step('sidebar should be ready', async (expect) => {
+    return step('sidebar should be ready', async ({ expect }) => {
       await expect(this.sidebarTitle).toBeVisible()
       await expect(this.hamburger).toBeVisible()
     })
   }
 
   shouldHaveAboutLink(i18n: Record<string, string>) {
-    return step('sidebar shows about link text', async (expect) => {
+    return step('sidebar shows about link text', async ({ expect }) => {
       await expect(this.aboutLink).toBeVisible()
       await expect(this.aboutLink).toHaveText(i18n['nav.about'])
     })
   }
 
   shouldHaveThemeToggle() {
-    return step('sidebar has theme toggle', async (expect) => {
+    return step('sidebar has theme toggle', async ({ expect }) => {
       await expect(this.themeToggle).toBeVisible()
     })
   }
@@ -44,7 +44,7 @@ export class SidebarPage {
   }
 
   themeToggleShouldBeDifferent(initialTransform: string) {
-    return step('theme toggle icon transform should be changed', async (expect) => {
+    return step('theme toggle icon transform should be changed', async ({ expect }) => {
       const themeCircle = this.themeToggle.locator('svg circle')
       await expect.poll(async () => {
         return await themeCircle.evaluate((el: Element) => getComputedStyle(el).transform)

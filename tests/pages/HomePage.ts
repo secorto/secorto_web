@@ -35,7 +35,7 @@ export class HomePage {
   }
 
   shouldHaveTitle() {
-    return step('page and header have a title', async (expect) => {
+    return step('page and header have a title', async ({ expect }) => {
       await this.pageHelper.shouldHaveTitle()
       await expect(this.headerTitle.locator).toBeVisible()
       await expect(this.headerTitle.locator).toHaveText(/\S+/)

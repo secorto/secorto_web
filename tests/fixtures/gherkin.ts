@@ -1,7 +1,7 @@
 import { expect } from "@playwright/test"
 
 export type StepExpect = typeof expect
-export type Action<T> = (expect: StepExpect) => T | Promise<T>
+export type Action<T> = (args: { expect: StepExpect }) => T | Promise<T>
 export type Verification<T> = Action<T>
 export type StepBody<T> = Action<T>
 export type StepResult<T> = Promise<T>
@@ -21,6 +21,6 @@ type StepRunner = {
 
 export const createVerb = (verb: string, runner: StepRunner): GherkinStep => {
   return async <T>(definition: StepDefinition<T>, stepExpect: StepExpect = expect) => {
-    return await runner.step(`${verb} ${definition.title}`, () => definition.action(stepExpect))
+    return await runner.step(`${verb} ${definition.title}`, () => definition.action({ expect: stepExpect }))
   }
 }

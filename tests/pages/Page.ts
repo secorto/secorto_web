@@ -5,13 +5,13 @@ export class PageHelper {
   constructor(readonly page: Page) {}
 
   shouldHaveTitle(expected: RegExp = /SeCOrTo/) {
-    return step('page has title', async (expect) => {
+    return step('page has title', async ({ expect }) => {
       await expect(this.page).toHaveTitle(expected)
     })
   }
 
   shouldHaveLocalStorage(key: string, value: string | null, timeout = 2000, interval = 100) {
-    return step(`localStorage ${key} should be ${String(value)}`, async (expect) => {
+    return step(`localStorage ${key} should be ${String(value)}`, async ({ expect }) => {
       await expect.poll(() => this.page.evaluate((k: string) => window.localStorage.getItem(k), key), { timeout, intervals: [interval] }).toBe(value)
     })
   }
