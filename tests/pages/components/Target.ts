@@ -16,6 +16,12 @@ export class Target {
     })
   }
 
+  shouldContainText(textOrRegex: string | RegExp) {
+    return step('target should contain text', async ({ expect }) => {
+      await expect(this.locator).toContainText(textOrRegex)
+    })
+  }
+
   shouldHaveVisibleText(textOrRegex: string | RegExp) {
     return step('target visible and has text', async ({ expect }) => {
       await expect(this.locator).toBeVisible()

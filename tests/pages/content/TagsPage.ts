@@ -1,5 +1,7 @@
 import type { Page } from '@playwright/test'
 import { step } from '@tests/fixtures'
+import { link } from '@tests/pages/components/Link'
+import type { Link as LinkComponent } from '@tests/pages/components/Link'
 import { target } from '@tests/pages/components/Target'
 import type { Target as TargetComponent } from '@tests/pages/components/Target'
 
@@ -10,7 +12,7 @@ export class TagsPage {
     readonly pageDescription: TargetComponent,
     readonly tagGroups: TargetComponent,
     readonly allTagGroups: TargetComponent,
-    readonly firstTagLink: TargetComponent,
+    readonly firstTagLink: LinkComponent,
     readonly pageBody: TargetComponent,
   ) {}
 
@@ -47,10 +49,8 @@ export class TagsPage {
     })
   }
 
-  firstTagHref() {
-    return step('get first tag href', async () => {
-      return this.firstTagLink.locator.getAttribute('href')
-    })
+  firstTagLinkHrefMatches(pattern: RegExp) {
+    return this.firstTagLink.hrefMatchesPattern(pattern)
   }
 
   clickFirstTagAndWaitForUrl(urlRegex: RegExp) {
@@ -63,16 +63,8 @@ export class TagsPage {
     })
   }
 
-  shouldHaveUrlContaining(locale: string) {
-    return step('url should contain locale and tags segment', async ({ expect }) => {
-      await expect(this.page).toHaveURL(new RegExp(`/${locale}/.+/tags/`))
-    })
-  }
-
   shouldContainAvailabilityText(expectedText: string) {
-    return step('page should include availability text', async ({ expect }) => {
-      await expect(this.pageBody.locator).toContainText(expectedText)
-    })
+    return this.pageBody.shouldContainText(expectedText)
   }
 }
 
@@ -83,7 +75,7 @@ export function tagsPage(page: Page) {
     target(page.getByTestId('tags-description')),
     target(page.getByTestId('global-tag-groups')),
     target(page.getByTestId(/^global-tag-/)),
-    target(page.getByTestId('global-tag-groups').locator('a').first()),
+    link(page.getByTestId('global-tag-groups').locator('a').first()),
     target(page.locator('body')),
   )
 }
