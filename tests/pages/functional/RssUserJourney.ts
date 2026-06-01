@@ -2,6 +2,11 @@ import { step } from '@tests/fixtures'
 import type { UILanguages } from '@i18n/ui'
 import type { APIRequestContext, APIResponse } from '@playwright/test'
 
+const localeCountry = {
+  es: 'es-co',
+  en: 'en-us'
+} as const satisfies Record<UILanguages, string>
+
 export type RSSJourney = {
   response: APIResponse
   body: string
@@ -42,7 +47,6 @@ export const createRssUserJourney = (request: APIRequestContext, locale: UILangu
           }),
         shouldIncludeLanguageTag: () =>
           step('includes correct language tag', async ({ expect }) => {
-            const localeCountry: Record<UILanguages, string> = { es: 'es-co', en: 'en-us' }
             expect(body).toContain(`<language>${localeCountry[locale]}</language>`)
           })
       }
