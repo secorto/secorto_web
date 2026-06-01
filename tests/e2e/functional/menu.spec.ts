@@ -3,7 +3,7 @@ import type { GherkinStepDefinition } from '@tests/fixtures'
 import { userInHome } from '@tests/pages/home/MenuUserJourney'
 import type { MenuUserJourney } from '@tests/pages/home/MenuUserJourney'
 
-test.describe('Hamburger menu', () => {
+test.describe('Hamburger menu', { tag: ['@functional', '@home', '@menu', '@sidebar', '@es'] }, () => {
   test.use({ viewport: { width: 375, height: 667 } })
 
   let userInMenuFlow: () => GherkinStepDefinition<MenuUserJourney>
