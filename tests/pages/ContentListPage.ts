@@ -29,4 +29,16 @@ export class ContentListPage {
   commentsFrame(): Locator {
     return this.page.locator('iframe.giscus-frame')
   }
+
+  postRole(): Locator {
+    return this.page.getByTestId('post-role')
+  }
+
+  postResponsibilities(): Locator {
+    return this.page.getByTestId('post-responsibilities')
+  }
+
+  postWebsite(): Locator {
+    return this.page.getByTestId('post-website')
+  }
 }

@@ -5,19 +5,11 @@ import { step } from '@tests/fixtures'
 import { visit } from '@tests/pages/UserJourneyFactory'
 import { ContentListPage } from '@tests/pages/ContentListPage'
 import { getURLForSection } from '@utils/sections'
+import { ContentListJourney, ContentDetailJourney } from '@tests/pages/ContentUserJourney'
 
-export class TalkListJourney {
-  constructor(
-    readonly page: Page,
-    readonly list: ContentListPage,
-    readonly locale: UILanguages,
-  ) {}
-
-  shouldHaveTitle() {
-    return step('talk list has page title and header', async ({ expect }) => {
-      await expect(this.page).toHaveTitle(`${ui[this.locale]['nav.talks']} | SeCOrTo`)
-      await expect(this.list.headerTitle()).toHaveText(ui[this.locale]['nav.talks'])
-    })
+export class TalkListJourney extends ContentListJourney {
+  constructor(page: Page, list: ContentListPage, locale: UILanguages) {
+    super(page, list, locale, 'nav.talks')
   }
 
   filterByTag(tag: string) {
@@ -44,19 +36,7 @@ export class TalkListJourney {
   }
 }
 
-export class TalkDetailJourney {
-  constructor(
-    readonly page: Page,
-    readonly list: ContentListPage,
-    readonly locale: UILanguages,
-  ) {}
-
-  shouldHaveTitle(expected: string) {
-    return step(`talk detail has title "${expected}"`, async ({ expect }) => {
-      await expect(this.list.headerTitle()).toHaveText(expected)
-    })
-  }
-
+export class TalkDetailJourney extends ContentDetailJourney {
   shouldHaveTags(ariaSnapshot: string) {
     return step('talk detail has expected tags', async ({ expect }) => {
       await expect(this.list.tags()).toMatchAriaSnapshot(ariaSnapshot)
