@@ -1,4 +1,5 @@
 import { step } from '@tests/fixtures'
+import type { UILanguages } from '@i18n/ui'
 import type { APIRequestContext, APIResponse } from '@playwright/test'
 
 export type RSSJourney = {
@@ -10,7 +11,7 @@ export type RSSJourney = {
   shouldIncludeLanguageTag: () => ReturnType<typeof step>
 }
 
-export const createRssUserJourney = (request: APIRequestContext, locale: string) => {
+export const createRssUserJourney = (request: APIRequestContext, locale: UILanguages) => {
   return (url?: string) =>
     step(`request RSS ${url ?? ''}`, async () => {
       const target = url ?? `/${locale}/rss.xml`
@@ -41,7 +42,7 @@ export const createRssUserJourney = (request: APIRequestContext, locale: string)
           }),
         shouldIncludeLanguageTag: () =>
           step('includes correct language tag', async ({ expect }) => {
-            const localeCountry: Record<string, string> = { es: 'es-co', en: 'en-us' }
+            const localeCountry: Record<UILanguages, string> = { es: 'es-co', en: 'en-us' }
             expect(body).toContain(`<language>${localeCountry[locale]}</language>`)
           })
       }
