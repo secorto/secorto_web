@@ -21,8 +21,38 @@ export class Target {
       await expect(this.locator).toHaveClass(re)
     })
   }
+
+  shouldHaveAttribute(name: string, value: string) {
+    return step(`target should have attribute ${name}`, async ({ expect }) => {
+      await expect(this.locator).toHaveAttribute(name, value)
+    })
+  }
+
+  shouldHaveCount(count: number) {
+    return step(`target should have count ${String(count)}`, async ({ expect }) => {
+      await expect(this.locator).toHaveCount(count)
+    })
+  }
+
+  click() {
+    return step('click target', async () => {
+      await this.locator.click()
+    })
+  }
 }
 
 export function target(locator: Locator) {
   return new Target(locator)
+}
+
+export class TargetSelector<T> {
+  constructor(readonly resolve: (value: T) => Locator) {}
+
+  get(value: T) {
+    return target(this.resolve(value))
+  }
+}
+
+export function targetSelector<T>(resolve: (value: T) => Locator) {
+  return new TargetSelector(resolve)
 }

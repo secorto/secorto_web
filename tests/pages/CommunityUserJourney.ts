@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
 import { visit } from '@tests/pages/UserJourneyFactory'
-import { ContentListPage } from '@tests/pages/ContentListPage'
+import { ContentListPage, contentListPage } from '@tests/pages/ContentListPage'
 import { getURLForSection } from '@utils/sections'
 import { ContentListJourney, WorkProjectCommunityDetailJourney } from '@tests/pages/ContentUserJourney'
 
@@ -18,7 +18,7 @@ export const userInCommunityList = (page: Page, locale: UILanguages) =>
     `a user in community list ${locale}`,
     page,
     getURLForSection('community', locale),
-    (p) => new CommunityListJourney(p, new ContentListPage(p), locale),
+    (p) => new CommunityListJourney(p, contentListPage(p), locale),
   )
 
 export const userInCommunityDetail = (page: Page, locale: UILanguages, slug: string) =>
@@ -26,5 +26,5 @@ export const userInCommunityDetail = (page: Page, locale: UILanguages, slug: str
     `a user in community detail ${locale} ${slug}`,
     page,
     `${getURLForSection('community', locale)}/${slug}`,
-    (p) => new CommunityDetailJourney(p, new ContentListPage(p), locale),
+    (p) => new CommunityDetailJourney(p, contentListPage(p), locale),
   )

@@ -1,44 +1,93 @@
-import type { Page, Locator } from '@playwright/test'
+import type { Page } from '@playwright/test'
+import type { UILanguages } from '@i18n/ui'
+import { step } from '@tests/fixtures'
+import { target, targetSelector } from '@tests/pages/Target'
+import type { Target as TargetComponent } from '@tests/pages/Target'
+import type { TargetSelector } from '@tests/pages/Target'
+import { comments } from '@tests/pages/Comments'
+import type { Comments as CommentsComponent } from '@tests/pages/Comments'
 
 export class ContentListPage {
-  readonly page: Page
-  constructor(page: Page) {
-    this.page = page
+  constructor(
+    readonly tagLinks: TargetSelector<string>,
+    readonly itemLinks: TargetSelector<string>,
+    readonly headerTitle: TargetComponent,
+    readonly tags: TargetComponent,
+    readonly comments: CommentsComponent,
+    readonly postRole: TargetComponent,
+    readonly postResponsibilities: TargetComponent,
+    readonly postWebsite: TargetComponent,
+  ) {}
+
+  shouldHaveListHeaderTitle(expected: string) {
+    return this.headerTitle.shouldHaveText(expected)
   }
 
-  headerTitle(): Locator {
-    return this.page.getByTestId('header-title')
+  shouldHaveDetailTitle(expected: string) {
+    return this.headerTitle.shouldHaveText(expected)
   }
 
-  tags(): Locator {
-    return this.page.getByTestId('tags')
+  shouldHaveFilteredTitle(expectedSectionTitle: string, tag: string) {
+    return this.headerTitle.shouldHaveText(`${expectedSectionTitle} - ${tag}`)
   }
 
-  tagLink(tag: string): Locator {
-    return this.page.getByTestId(`tag-link-${tag}`)
+  filterByTag(tag: string) {
+    return step(`filter talks by tag "${tag}"`, async ({ expect }) => {
+      const tagLink = this.tagLinks.get(tag)
+      await expect(tagLink.locator).not.toHaveClass(/active/)
+      await tagLink.locator.click()
+      await expect(tagLink.locator).toHaveClass(/active/)
+    })
   }
 
-  itemLink(href: string): Locator {
-    return this.page.locator(`[href="${href}"]`)
+  clickItem(href: string, title: string) {
+    return step(title, async () => {
+      await this.itemLinks.get(href).locator.click()
+    })
   }
 
-  commentsScript(): Locator {
-    return this.page.locator('.comments script[src*="giscus.app"]')
+  clickItemAndReturn<T>(href: string, title: string, next: () => T) {
+    return step(title, async () => {
+      await this.itemLinks.get(href).locator.click()
+      return next()
+    })
   }
 
-  commentsFrame(): Locator {
-    return this.page.locator('iframe.giscus-frame')
+  shouldHaveTags(ariaSnapshot: string) {
+    return step('detail has expected tags', async ({ expect }) => {
+      await expect(this.tags.locator).toMatchAriaSnapshot(ariaSnapshot)
+    })
   }
 
-  postRole(): Locator {
-    return this.page.getByTestId('post-role')
+  shouldHaveComments(locale: UILanguages) {
+    return this.comments.shouldBeReady(locale)
   }
 
-  postResponsibilities(): Locator {
-    return this.page.getByTestId('post-responsibilities')
+  shouldHaveRole(expected: string) {
+    return this.postRole.shouldHaveText(expected)
   }
 
-  postWebsite(): Locator {
-    return this.page.getByTestId('post-website')
+  shouldHaveResponsibilities(expected: string) {
+    return this.postResponsibilities.shouldHaveText(expected)
   }
+
+  shouldHaveWebsite(expected: string) {
+    return this.postWebsite.shouldHaveAttribute('href', expected)
+  }
+}
+
+export function contentListPage(page: Page) {
+  return new ContentListPage(
+    targetSelector((tag: string) => page.getByTestId(`tag-link-${tag}`)),
+    targetSelector((href: string) => page.locator(`[href="${href}"]`)),
+    target(page.getByTestId('header-title')),
+    target(page.getByTestId('tags')),
+    comments(
+      page.locator('.comments script[src*="giscus.app"]'),
+      page.locator('iframe.giscus-frame'),
+    ),
+    target(page.getByTestId('post-role')),
+    target(page.getByTestId('post-responsibilities')),
+    target(page.getByTestId('post-website')),
+  )
 }

@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
 import { visit } from '@tests/pages/UserJourneyFactory'
-import { ContentListPage } from '@tests/pages/ContentListPage'
+import { ContentListPage, contentListPage } from '@tests/pages/ContentListPage'
 import { getURLForSection } from '@utils/sections'
 import { ContentListJourney, WorkProjectCommunityDetailJourney } from '@tests/pages/ContentUserJourney'
 
@@ -18,7 +18,7 @@ export const userInWorkList = (page: Page, locale: UILanguages) =>
     `a user in work list ${locale}`,
     page,
     getURLForSection('work', locale),
-    (p) => new WorkListJourney(p, new ContentListPage(p), locale),
+    (p) => new WorkListJourney(p, contentListPage(p), locale),
   )
 
 export const userInWorkDetail = (page: Page, locale: UILanguages, slug: string) =>
@@ -26,5 +26,5 @@ export const userInWorkDetail = (page: Page, locale: UILanguages, slug: string) 
     `a user in work detail ${locale} ${slug}`,
     page,
     `${getURLForSection('work', locale)}/${slug}`,
-    (p) => new WorkDetailJourney(p, new ContentListPage(p), locale),
+    (p) => new WorkDetailJourney(p, contentListPage(p), locale),
   )

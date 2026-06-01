@@ -1,9 +1,8 @@
 import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
-import { step } from '@tests/fixtures'
 import { visit } from '@tests/pages/UserJourneyFactory'
 
-import { ContentListPage } from '@tests/pages/ContentListPage'
+import { ContentListPage, contentListPage } from '@tests/pages/ContentListPage'
 import { getURLForSection } from '@utils/sections'
 import { ContentListJourney, WorkProjectCommunityDetailJourney } from '@tests/pages/ContentUserJourney'
 
@@ -15,9 +14,7 @@ export class ProjectListJourney extends ContentListJourney {
 
 export class ProjectDetailJourney extends WorkProjectCommunityDetailJourney {
   shouldHaveTags(ariaSnapshot: string) {
-    return step('project detail has expected tags', async ({ expect }) => {
-      await expect(this.list.tags()).toMatchAriaSnapshot(ariaSnapshot)
-    })
+    return this.list.shouldHaveTags(ariaSnapshot)
   }
 }
 
@@ -26,7 +23,7 @@ export const userInProjectList = (page: Page, locale: UILanguages) =>
     `a user in project list ${locale}`,
     page,
     getURLForSection('projects', locale),
-    (p) => new ProjectListJourney(p, new ContentListPage(p), locale),
+    (p) => new ProjectListJourney(p, contentListPage(p), locale),
   )
 
 export const userInProjectDetail = (page: Page, locale: UILanguages, slug: string) =>
@@ -34,5 +31,5 @@ export const userInProjectDetail = (page: Page, locale: UILanguages, slug: strin
     `a user in project detail ${locale} ${slug}`,
     page,
     `${getURLForSection('projects', locale)}/${slug}`,
-    (p) => new ProjectDetailJourney(p, new ContentListPage(p), locale),
+    (p) => new ProjectDetailJourney(p, contentListPage(p), locale),
   )
