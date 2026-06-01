@@ -11,6 +11,10 @@ export class FooterUserJourney {
     return this.footer.shouldHaveAvatarAlt(ui[this.locale]['footer.avatar_alt'])
   }
 
+  shouldHaveAvatarLoaded() {
+    return this.footer.shouldHaveAvatarLoaded()
+  }
+
   shouldHaveRoleText() {
     return this.footer.shouldHaveRoleText(ui[this.locale]['footer.role'])
   }

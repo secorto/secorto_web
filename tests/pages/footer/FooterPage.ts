@@ -29,6 +29,26 @@ export class FooterPage {
       await expect(this.follow).toHaveText(expectedFollow)
     })
   }
+
+  shouldHaveAvatarLoaded() {
+    return step('footer avatar is present and loaded', async ({ expect }) => {
+      await expect(this.avatar).toBeVisible()
+      await expect(this.avatar).toHaveCount(1)
+
+      await expect
+        .poll(
+          async () =>
+            this.avatar.evaluate((img: HTMLImageElement) =>
+              img.complete && img.naturalWidth > 0 ? img.naturalWidth : 0
+            ),
+          {
+            message: 'Footer avatar image should be loaded',
+            timeout: 10000,
+          }
+        )
+        .toBeGreaterThan(0)
+    })
+  }
 }
 
 export function footerPage(page: Page) {
