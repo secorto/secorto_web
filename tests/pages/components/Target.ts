@@ -63,13 +63,21 @@ export function target(name: string, locator: Locator) {
 }
 
 export class TargetSelector<T> {
-  constructor(readonly resolve: (value: T) => Locator) {}
+  constructor(
+    readonly parent: string,
+    readonly resolve: (value: T) => Locator,
+    readonly valueLabel: (value: T) => string,
+  ) {}
 
   get(value: T) {
-    return target(`target ${String(value)}`, this.resolve(value))
+    return target(`${this.parent} "${this.valueLabel(value)}"`, this.resolve(value))
   }
 }
 
-export function targetSelector<T>(resolve: (value: T) => Locator) {
-  return new TargetSelector(resolve)
+export function targetSelector<T>(
+  parent: string,
+  resolve: (value: T) => Locator,
+  valueLabel: (value: T) => string = (value: T) => `"${String(value)}"`,
+) {
+  return new TargetSelector(parent, resolve, valueLabel)
 }

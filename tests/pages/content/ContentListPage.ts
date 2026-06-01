@@ -89,8 +89,8 @@ export class ContentListPage {
 
 export function contentListPage(page: Page) {
   return new ContentListPage(
-    targetSelector((tag: string) => page.getByTestId(`tag-link-${tag}`)),
-    targetSelector((href: string) => page.locator(`[href="${href}"]`)),
+    targetSelector('tag link', (tag: string) => page.getByTestId(`tag-link-${tag}`)),
+    targetSelector('item link', (href: string) => page.locator(`[href="${href}"]`)),
     target('content header title', page.getByTestId('header-title')),
     target('content tags', page.getByTestId('tags')),
     comments(

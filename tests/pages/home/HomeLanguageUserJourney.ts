@@ -34,6 +34,6 @@ export const userInHome = (page: Page, locale: UILanguages) =>
     locale,
     (p) => new HomeLanguageUserJourney(
       p,
-      targetSelector((lang: UILanguages) => p.getByTestId(`lang-${lang}`)),
+      targetSelector('language link', (lang: UILanguages) => p.getByTestId(`lang-${lang}`)),
     ),
   )

@@ -28,9 +28,9 @@ for (const f of fixtures) {
       await Then(tags.shouldHaveAtLeastOneLinkInFirstTagGroup())
     })
 
-    test('tag links are valid and navigable', async ({ page, Then, When }) => {
+    test('tag links are valid and navigable', async ({ page, Then, When, And }) => {
       const tags = await When(userIsOnTags(page, f.locale))
-      await Then(tags.firstTagLinkHrefMatches(new RegExp(`^/${f.locale}/[a-z]+/tags/`)))
+      await And(tags.firstTagLinkHrefMatches(new RegExp(`^/${f.locale}/[a-z]+/tags/`)))
 
       await When(tags.clickFirstTagAndWaitForUrl(new RegExp(`/${f.locale}/[a-z]+/tags/`)))
       await Then(tags.shouldHaveUrlContaining(f.locale))
