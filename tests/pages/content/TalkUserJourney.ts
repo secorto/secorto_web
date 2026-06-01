@@ -33,7 +33,7 @@ export const userInTalkList = (page: Page, locale: UILanguages) =>
     `a user in talk list ${locale}`,
     page,
     contentListPath('talk', locale),
-    (p) => new TalkListJourney(p, contentListPage(p), locale),
+    (p) => new TalkListJourney(p, contentListPage(p, 'talk'), locale),
   )
 
 export const userInTalkDetail = (page: Page, locale: UILanguages, slug: string) =>
@@ -41,5 +41,5 @@ export const userInTalkDetail = (page: Page, locale: UILanguages, slug: string) 
     `a user in talk detail ${locale} ${slug}`,
     page,
     contentDetailsPath('talk', locale, slug),
-    (p) => new TalkDetailJourney(p, contentListPage(p), locale),
+    (p) => new TalkDetailJourney(p, contentListPage(p, 'talk'), locale),
   )

@@ -21,7 +21,7 @@ export class BlogUserJourney {
 
 export class BlogListJourney extends ContentListJourney {
   constructor(page: Page, locale: UILanguages) {
-    super(page, contentListPage(page), locale, 'nav.blog')
+    super(page, contentListPage(page, 'blog'), locale, 'nav.blog')
   }
 
   clickItem(slug: string) {
@@ -52,7 +52,7 @@ export const userInBlogPost = (
     `a user opening blog post ${slug} in ${locale}`,
     page,
     contentDetailsPath('blog', locale, slug),
-    () => new BlogUserJourney(page, contentListPage(page)),
+    () => new BlogUserJourney(page, contentListPage(page, 'blog')),
     async (p: Page) => {
       if (viewport) await p.setViewportSize(viewport)
     },

@@ -25,7 +25,7 @@ export const userInCommunityList = (page: Page, locale: UILanguages) =>
     `a user in community list ${locale}`,
     page,
     contentListPath('community', locale),
-    (p) => new CommunityListJourney(p, contentListPage(p), locale),
+    (p) => new CommunityListJourney(p, contentListPage(p, 'community'), locale),
   )
 
 export const userInCommunityDetail = (page: Page, locale: UILanguages, slug: string) =>
@@ -33,5 +33,5 @@ export const userInCommunityDetail = (page: Page, locale: UILanguages, slug: str
     `a user in community detail ${locale} ${slug}`,
     page,
     contentDetailsPath('community', locale, slug),
-    (p) => new CommunityDetailJourney(p, contentListPage(p), locale),
+    (p) => new CommunityDetailJourney(p, contentListPage(p, 'community'), locale),
   )

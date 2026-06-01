@@ -29,7 +29,7 @@ export const userInProjectList = (page: Page, locale: UILanguages) =>
     `a user in project list ${locale}`,
     page,
     contentListPath('projects', locale),
-    (p) => new ProjectListJourney(p, contentListPage(p), locale),
+    (p) => new ProjectListJourney(p, contentListPage(p, 'project'), locale),
   )
 
 export const userInProjectDetail = (page: Page, locale: UILanguages, slug: string) =>
@@ -37,5 +37,5 @@ export const userInProjectDetail = (page: Page, locale: UILanguages, slug: strin
     `a user in project detail ${locale} ${slug}`,
     page,
     contentDetailsPath('projects', locale, slug),
-    (p) => new ProjectDetailJourney(p, contentListPage(p), locale),
+    (p) => new ProjectDetailJourney(p, contentListPage(p, 'project'), locale),
   )

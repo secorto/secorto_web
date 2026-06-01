@@ -25,7 +25,7 @@ export const userInWorkList = (page: Page, locale: UILanguages) =>
     `a user in work list ${locale}`,
     page,
     contentListPath('work', locale),
-    (p) => new WorkListJourney(p, contentListPage(p), locale),
+    (p) => new WorkListJourney(p, contentListPage(p, 'work'), locale),
   )
 
 export const userInWorkDetail = (page: Page, locale: UILanguages, slug: string) =>
@@ -33,5 +33,5 @@ export const userInWorkDetail = (page: Page, locale: UILanguages, slug: string) 
     `a user in work detail ${locale} ${slug}`,
     page,
     contentDetailsPath('work', locale, slug),
-    (p) => new WorkDetailJourney(p, contentListPage(p), locale),
+    (p) => new WorkDetailJourney(p, contentListPage(p, 'work'), locale),
   )

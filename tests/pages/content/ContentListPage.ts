@@ -9,6 +9,7 @@ import type { Comments as CommentsComponent } from '@tests/pages/content/Comment
 
 export class ContentListPage {
   constructor(
+    readonly name: string,
     readonly tagLinks: TargetSelector<string>,
     readonly itemLinks: TargetSelector<string>,
     readonly headerTitle: TargetComponent,
@@ -32,7 +33,7 @@ export class ContentListPage {
   }
 
   filterByTag(tag: string) {
-    return step(`filter talks by tag "${tag}"`, async ({ expect }) => {
+    return step(`filter ${this.name} list by tag "${tag}"`, async ({ expect }) => {
       const tagLink = this.tagLinks.get(tag)
       await expect(tagLink.locator).not.toHaveClass(/active/)
       await tagLink.locator.click()
@@ -54,13 +55,13 @@ export class ContentListPage {
   }
 
   shouldHaveTags(ariaSnapshot: string) {
-    return step('detail has expected tags', async ({ expect }) => {
+    return step(`${this.name} detail has expected tags`, async ({ expect }) => {
       await expect(this.tags.locator).toMatchAriaSnapshot(ariaSnapshot)
     })
   }
 
   shouldRenderTagsForSection() {
-    return step('section list renders available tags', async ({ expect }) => {
+    return step(`${this.name} list renders available tags`, async ({ expect }) => {
       await expect(this.tags.locator).toBeVisible()
 
       const tagLinks = this.tags.locator.locator('[data-testid^="tag-link-"]')
@@ -87,18 +88,19 @@ export class ContentListPage {
   }
 }
 
-export function contentListPage(page: Page) {
+export function contentListPage(page: Page, name: string) {
   return new ContentListPage(
-    targetSelector('tag link', (tag: string) => page.getByTestId(`tag-link-${tag}`)),
-    targetSelector('item link', (href: string) => page.locator(`[href="${href}"]`)),
-    target('content header title', page.getByTestId('header-title')),
-    target('content tags', page.getByTestId('tags')),
+    name,
+    targetSelector(`${name} tag link`, (tag: string) => page.getByTestId(`tag-link-${tag}`)),
+    targetSelector(`${name} item link`, (href: string) => page.locator(`[href="${href}"]`)),
+    target(`${name} header title`, page.getByTestId('header-title')),
+    target(`${name} tags`, page.getByTestId('tags')),
     comments(
       page.locator('.comments script[src*="giscus.app"]'),
       page.locator('iframe.giscus-frame'),
     ),
-    target('post role', page.getByTestId('post-role')),
-    target('post responsibilities', page.getByTestId('post-responsibilities')),
-    target('post website', page.getByTestId('post-website')),
+    target(`${name} role`, page.getByTestId('post-role')),
+    target(`${name} responsibilities`, page.getByTestId('post-responsibilities')),
+    target(`${name} website`, page.getByTestId('post-website')),
   )
 }
