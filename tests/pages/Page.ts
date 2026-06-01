@@ -1,5 +1,7 @@
 import type { Page } from '@playwright/test'
 import { step } from '@tests/fixtures'
+import type { TestInfo } from '@playwright/test'
+import { assertNoHorizontalOverflow as assertNoHorizontalOverflowUtil } from '@tests/utils/layout'
 
 export class PageHelper {
   constructor(readonly page: Page) {}
@@ -28,6 +30,12 @@ export class PageHelper {
           throw new Error(`Failed to set localStorage entries: ${err instanceof Error ? err.message : String(err)}`)
         }
       }, entries)
+    })
+  }
+
+  assertNoHorizontalOverflow(testInfo?: TestInfo, locale?: string) {
+    return step('no horizontal scroll on mobile', async () => {
+      await assertNoHorizontalOverflowUtil(this.page, testInfo, locale)
     })
   }
 }
