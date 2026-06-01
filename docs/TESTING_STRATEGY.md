@@ -63,7 +63,7 @@ Para el razonamiento y la justificación de cada elección, ver [ADR 002](./adr/
     - Incluye un factory (`userIn*`) que orquesta el setup completo (navegación, mocks, estado inicial)
       y devuelve el Journey listo para usar desde el spec.
     - Cada Journey cubre un flujo cohesivo; si los métodos necesarios divergen mucho, crear un Journey separado
-      (p.ej. `HomeUserJourney` para smoke home y `ColorSwitchUserJourney` para tema/color).
+      (p.ej. `HomeUserJourney` para smoke home y `ThemeLocaleUserJourney` para tema/locale).
     - No usar patrones «actor» con estado inyectable y tipos débiles: el Journey define todo lo necesario.
   - **Spec**: usa únicamente Given/When/Then sobre el objeto retornado por el factory. Sin locators directos.
   - Las `actions` en `tests/actions/` se reservan para composiciones que no encajan en un Journey
@@ -102,7 +102,7 @@ En su lugar, consulta los ejemplos concretos ya existentes en el repositorio:
 - Ejemplos de specs E2E: `tests/e2e/functional/blog.post.spec.ts`, `tests/e2e/a11y/charla.a11y.spec.ts`
 - Ejemplos de tests unitarios y mocks: `tests/unit/i18n/utils.test.ts`, `tests/unit/client/themeToggle.test.ts`
 - Ejemplo de Page (locators): `tests/pages/SidebarPage.ts`, `tests/pages/HomePage.ts`
-- Ejemplo de User Journey: `tests/pages/HomeUserJourney` (en `HomePage.ts`), `tests/pages/ColorSwitchUserJourney.ts`
+- Ejemplo de User Journey: `tests/pages/HomeUserJourney` (en `HomePage.ts`), `tests/pages/ThemeLocaleUserJourney.ts`
 - Spec usando User Journey: `tests/e2e/smoke/homepage.spec.ts`, `tests/e2e/functional/theme/color-switch.spec.ts`
 
 ## Recomendaciones finales

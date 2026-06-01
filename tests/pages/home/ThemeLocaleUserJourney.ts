@@ -9,7 +9,7 @@ import { userInHomeFactory } from '@tests/pages/shared/UserJourneyFactory'
 import { pageHelper } from '@tests/pages/components/PageHelper'
 import type { PageHelper } from '@tests/pages/components/PageHelper'
 
-export class ColorSwitchUserJourney {
+export class ThemeLocaleUserJourney {
   constructor(
     readonly sidebar: SidebarPage,
     readonly themeElement: TargetComponent,
@@ -42,8 +42,8 @@ export class ColorSwitchUserJourney {
   }
 }
 
-function colorSwitchJourney(page: Page) {
-  return new ColorSwitchUserJourney(
+function themeLocaleJourney(page: Page) {
+  return new ThemeLocaleUserJourney(
     sidebarPage(page),
     target(page.locator('html')),
     pageHelper(page),
@@ -56,10 +56,10 @@ export const userInHome = (
   options?: { theme?: string }
 ) =>
   userInHomeFactory(
-    `a user opening home in ${locale} for color switch`,
+    `a user opening home in ${locale} for theme/locale`,
     page,
     locale,
-    colorSwitchJourney,
+    themeLocaleJourney,
     async (p) => {
       if (options?.theme !== undefined) {
         await Act(pageHelper(p).injectStorageEntries({ theme: options.theme }))

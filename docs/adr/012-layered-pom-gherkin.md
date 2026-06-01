@@ -38,7 +38,7 @@ Encapsula un flujo de usuario concreto y cohesivo.
 - Incluye un factory (`userIn*`) que orquesta el setup completo
   (navegación, mocks de terceros, inyección de estado inicial) y devuelve el Journey listo para usar.
 - Un Journey cubre un flujo; si los métodos divergen significativamente, se crea un Journey separado.
-  Ejemplos: `HomeUserJourney` (smoke home) y `ColorSwitchUserJourney` (flujo tema/color).
+  Ejemplos: `HomeUserJourney` (smoke home) y `ThemeLocaleUserJourney` (flujo tema/locale).
 
 ### Capa 3 — Spec (`*.spec.ts`)
 
@@ -85,7 +85,7 @@ el compilador garantiza que solo se usan los pasos que corresponden.
 2. `tests/pages/*Page.ts` — POM puro (locators). Ejemplo: `SidebarPage.ts`, `HomePage.ts`.
 3. `tests/pages/*UserJourney.ts` — Journey con factory. Ejemplos:
    - `HomePage.ts` exporta `HomeUserJourney` + `userInHome`.
-   - `ColorSwitchUserJourney.ts` exporta `ColorSwitchUserJourney` + `userInHomeForColorSwitch` + `userInHomeWithStorageTheme`.
+  - `ThemeLocaleUserJourney.ts` exporta `ThemeLocaleUserJourney` + `userInHomeForColorSwitch` + `userInHomeWithStorageTheme`.
 4. `tests/e2e/**/*.spec.ts` — specs con Given/When/Then sobre el Journey.
 
 ## Referencias
@@ -94,7 +94,7 @@ el compilador garantiza que solo se usan los pasos que corresponden.
 - `tests/fixtures/index.ts`
 - `tests/pages/SidebarPage.ts`
 - `tests/pages/HomePage.ts` — `HomePage` (locators) + `HomeUserJourney`
-- `tests/pages/ColorSwitchUserJourney.ts`
+- `tests/pages/ThemeLocaleUserJourney.ts`
 - `tests/e2e/smoke/homepage.spec.ts`
 - `tests/e2e/functional/theme/color-switch.spec.ts`
 - `tests/e2e/functional/theme/theme-persistence.spec.ts`
