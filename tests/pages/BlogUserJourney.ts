@@ -5,7 +5,7 @@ import { visit } from './UserJourneyFactory'
 import { BlogPage } from './BlogPage'
 import type { TestInfo } from '@playwright/test'
 import { pageHelper } from './Page'
-import { getURLForSection } from '@utils/sections'
+import { contentListPath, contentDetailsPath } from '@tests/pages/NavigationPaths'
 import { contentListPage } from '@tests/pages/ContentListPage'
 import { ContentListJourney, ContentDetailJourney } from '@tests/pages/ContentUserJourney'
 
@@ -29,7 +29,7 @@ export class BlogListJourney extends ContentListJourney {
   }
 
   clickItem(slug: string) {
-    const href = `${getURLForSection('blog', this.locale)}/${slug}`
+    const href = contentDetailsPath('blog', this.locale, slug)
     return this.list.clickItemAndReturn(href, `click blog item "${slug}"`, () => {
       return new BlogDetailJourney(this.page, this.list, this.locale)
     })
@@ -42,7 +42,7 @@ export const userInBlogList = (page: Page, locale: UILanguages) =>
   visit(
     `a user in blog list ${locale}`,
     page,
-    getURLForSection('blog', locale),
+    contentListPath('blog', locale),
     (p) => new BlogListJourney(p, locale),
   )
 
@@ -55,7 +55,7 @@ export const userInBlogPost = (
   visit(
     `a user opening blog post ${slug} in ${locale}`,
     page,
-    `/${locale}/blog/${slug}`,
+    contentDetailsPath('blog', locale, slug),
     () => new BlogUserJourney(page, new BlogPage(page)),
     async (p) => {
       if (viewport) await p.setViewportSize(viewport)

@@ -3,7 +3,7 @@ import type { UILanguages } from '@i18n/ui'
 import { visit } from '@tests/pages/UserJourneyFactory'
 
 import { ContentListPage, contentListPage } from '@tests/pages/ContentListPage'
-import { getURLForSection } from '@utils/sections'
+import { contentListPath, contentDetailsPath } from '@tests/pages/NavigationPaths'
 import { ContentListJourney, WorkProjectCommunityDetailJourney } from '@tests/pages/ContentUserJourney'
 
 export class ProjectListJourney extends ContentListJourney {
@@ -12,7 +12,7 @@ export class ProjectListJourney extends ContentListJourney {
   }
 
   clickItem(slug: string) {
-    const href = `${getURLForSection('projects', this.locale)}/${slug}`
+    const href = contentDetailsPath('projects', this.locale, slug)
     return this.list.clickItemAndReturn(href, `click project item "${slug}"`, () => {
       return new ProjectDetailJourney(this.page, this.list, this.locale)
     })
@@ -29,7 +29,7 @@ export const userInProjectList = (page: Page, locale: UILanguages) =>
   visit(
     `a user in project list ${locale}`,
     page,
-    getURLForSection('projects', locale),
+    contentListPath('projects', locale),
     (p) => new ProjectListJourney(p, contentListPage(p), locale),
   )
 
@@ -37,6 +37,6 @@ export const userInProjectDetail = (page: Page, locale: UILanguages, slug: strin
   visit(
     `a user in project detail ${locale} ${slug}`,
     page,
-    `${getURLForSection('projects', locale)}/${slug}`,
+    contentDetailsPath('projects', locale, slug),
     (p) => new ProjectDetailJourney(p, contentListPage(p), locale),
   )

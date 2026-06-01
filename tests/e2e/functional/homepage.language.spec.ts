@@ -1,18 +1,25 @@
-import { test, expect } from '@playwright/test'
+import { test } from '@tests/fixtures'
+import type { UILanguages } from '@i18n/ui'
+import { userInHome } from '@tests/pages/HomeLanguageUserJourney'
 
-test('switch from Spanish to English via UI', async ({ page }) => {
-  await page.goto('/es/')
-  const en = page.getByTestId('lang-en')
-  await expect(en).toBeVisible()
-  await en.click()
-  await expect(page).toHaveURL(/\/en(\/|$)/)
-})
+type LocaleSwitchFixture = {
+  from: UILanguages
+  to: UILanguages
+}
 
-test('switch from English to Spanish via UI', async ({ page }) => {
-  await page.goto('/en/')
-  const es = page.getByTestId('lang-es')
-  await expect(es).toBeVisible()
-  await es.click()
-  await expect(page).toHaveURL(/\/es(\/|$)/)
+const fixtures: LocaleSwitchFixture[] = [
+  { from: 'es', to: 'en' },
+  { from: 'en', to: 'es' },
+]
+
+test.describe('Homepage language switch', { tag: ['@functional', '@i18n'] }, () => {
+  for (const f of fixtures) {
+    test(`switch from ${f.from} to ${f.to} via UI`, async ({ Given, When, Then, page }) => {
+      const journey = await Given(userInHome(page, f.from))
+      await Then(journey.shouldHaveLanguageOption(f.to))
+      await When(journey.switchTo(f.to))
+      await Then(journey.shouldBeInLocale(f.to))
+    })
+  }
 })
 

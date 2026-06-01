@@ -1,5 +1,5 @@
 import { test } from '@tests/fixtures'
-import { userInHomeWithStorageTheme } from '@tests/pages/ColorSwitchUserJourney'
+import { userInHome } from '@tests/pages/ColorSwitchUserJourney'
 
 test.describe('Theme local storage',
   { tag: ['@theme-local-storage', '@functional'] },
@@ -12,7 +12,7 @@ test.describe('Theme local storage',
     for (const { startTheme, toggledTheme } of cases) {
       test(`start ${startTheme} → toggle → ${toggledTheme}`,
         async ({ page, When, Given, Then, And }) => {
-          const home = await Given(userInHomeWithStorageTheme(page, 'en', startTheme))
+          const home = await Given(userInHome(page, 'en', { theme: startTheme }))
           await When(home.toggleTheme())
           await Then(home.shouldHaveTheme(toggledTheme))
           await And(home.shouldHaveThemeStorage(toggledTheme))

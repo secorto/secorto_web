@@ -1,6 +1,8 @@
 import type { Page } from '@playwright/test'
+import type { UILanguages } from '@i18n/ui'
 import { step } from '@tests/fixtures'
 import { mockThirdParty } from '@tests/e2e/helpers/mockThirdParty'
+import { homePath } from '@tests/pages/NavigationPaths'
 
 export type JourneyFactory<T> = (page: Page) => T | Promise<T>
 
@@ -17,3 +19,11 @@ export const visit = <T>(
       await page.goto(url)
       return factory(page)
     })
+
+export const userInHomeFactory = <T>(
+  title: string,
+  page: Page,
+  locale: UILanguages,
+  factory: JourneyFactory<T>,
+  preAct?: (page: Page) => Promise<void> | void,
+) => visit(title, page, homePath(locale), factory, preAct)

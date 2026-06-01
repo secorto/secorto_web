@@ -2,7 +2,7 @@ import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
 import { visit } from '@tests/pages/UserJourneyFactory'
 import { ContentListPage, contentListPage } from '@tests/pages/ContentListPage'
-import { getURLForSection } from '@utils/sections'
+import { contentListPath, contentDetailsPath } from '@tests/pages/NavigationPaths'
 import { ContentListJourney, WorkProjectCommunityDetailJourney } from '@tests/pages/ContentUserJourney'
 
 export class WorkListJourney extends ContentListJourney {
@@ -11,7 +11,7 @@ export class WorkListJourney extends ContentListJourney {
   }
 
   clickItem(slug: string) {
-    const href = `${getURLForSection('work', this.locale)}/${slug}`
+    const href = contentDetailsPath('work', this.locale, slug)
     return this.list.clickItemAndReturn(href, `click work item "${slug}"`, () => {
       return new WorkDetailJourney(this.page, this.list, this.locale)
     })
@@ -24,7 +24,7 @@ export const userInWorkList = (page: Page, locale: UILanguages) =>
   visit(
     `a user in work list ${locale}`,
     page,
-    getURLForSection('work', locale),
+    contentListPath('work', locale),
     (p) => new WorkListJourney(p, contentListPage(p), locale),
   )
 
@@ -32,6 +32,6 @@ export const userInWorkDetail = (page: Page, locale: UILanguages, slug: string) 
   visit(
     `a user in work detail ${locale} ${slug}`,
     page,
-    `${getURLForSection('work', locale)}/${slug}`,
+    contentDetailsPath('work', locale, slug),
     (p) => new WorkDetailJourney(p, contentListPage(p), locale),
   )

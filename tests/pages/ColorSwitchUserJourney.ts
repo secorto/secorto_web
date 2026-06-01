@@ -5,7 +5,7 @@ import { sidebarPage } from '@tests/pages/SidebarPage'
 import { target } from '@tests/pages/Target'
 import type { Target as TargetComponent } from '@tests/pages/Target'
 import { Act } from '@tests/fixtures'
-import { visit } from '@tests/pages/UserJourneyFactory'
+import { userInHomeFactory } from '@tests/pages/UserJourneyFactory'
 import { pageHelper } from '@tests/pages/Page'
 import type { PageHelper } from '@tests/pages/Page'
 
@@ -46,14 +46,19 @@ function colorSwitchJourney(page: Page) {
   )
 }
 
-export const userInHome = (page: Page, locale: UILanguages) =>
-  visit(`a user opening home in ${locale} for color switch`, page, `/${locale}/`, colorSwitchJourney)
-
-export const userInHomeWithStorageTheme = (page: Page, locale: UILanguages, theme: string) =>
-  visit(
-    `a user in ${locale} with storage theme ${String(theme)}`,
+export const userInHome = (
+  page: Page,
+  locale: UILanguages,
+  options?: { theme?: string }
+) =>
+  userInHomeFactory(
+    `a user opening home in ${locale} for color switch`,
     page,
-    `/${locale}/`,
+    locale,
     colorSwitchJourney,
-    async (p) => await Act(pageHelper(p).injectStorageEntries({ theme })),
+    async (p) => {
+      if (options?.theme !== undefined) {
+        await Act(pageHelper(p).injectStorageEntries({ theme: options.theme }))
+      }
+    },
   )

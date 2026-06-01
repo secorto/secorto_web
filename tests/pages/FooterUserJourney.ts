@@ -2,7 +2,7 @@ import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
 import { ui } from '@i18n/ui'
 import { FooterPage, footerPage } from '@tests/pages/FooterPage'
-import { visit } from '@tests/pages/UserJourneyFactory'
+import { userInHomeFactory } from '@tests/pages/UserJourneyFactory'
 
 export class FooterUserJourney {
   constructor(readonly footer: FooterPage, readonly locale: UILanguages) {}
@@ -20,10 +20,10 @@ export class FooterUserJourney {
   }
 }
 
-export const userInHomeWithFooter = (page: Page, locale: UILanguages) =>
-  visit(
+export const userInHome = (page: Page, locale: UILanguages) =>
+  userInHomeFactory(
     `a user on home with footer in ${locale}`,
     page,
-    `/${locale}/`,
+    locale,
     (p) => new FooterUserJourney(footerPage(p), locale),
   )
