@@ -6,7 +6,7 @@ import { sectionsConfig } from '@domain/section'
 
 for (const locale of languageKeys) {
   test.describe(`Homepage (${locale})`,
-    { tag: ['@homepage', '@smoke'] },
+    { tag: ['@home', '@smoke'] },
     () => {
       let userInHomeForLocale: () => GherkinStepDefinition<HomeUserJourney>
 
