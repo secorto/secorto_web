@@ -6,8 +6,8 @@ import { target } from '@tests/pages/Target'
 import type { Target as TargetComponent } from '@tests/pages/Target'
 import { homeHighlights } from '@tests/pages/HomeHighlights'
 import type { HomeHighlights as HomeHighlightsComponent } from '@tests/pages/HomeHighlights'
+import { visit } from '@tests/pages/UserJourneyFactory'
 import { step } from '@tests/fixtures'
-import { mockThirdParty } from '@tests/e2e/helpers/mockThirdParty'
 import { pageHelper } from '@tests/pages/Page'
 import type { PageHelper } from '@tests/pages/Page'
 
@@ -70,8 +70,6 @@ export class HomeUserJourney {
 }
 
 export const userInHome = (page: Page, locale: UILanguages) =>
-  step(`a user in ${locale}`, async () => {
-    await page.goto(`/${locale}/`)
-    await mockThirdParty(page)
-    return new HomeUserJourney(homePage(page), sidebarPage(page), pageHelper(page))
-  })
+  visit(`a user in ${locale}`, page, `/${locale}/`, () =>
+    new HomeUserJourney(homePage(page), sidebarPage(page), pageHelper(page)),
+  )
