@@ -1,11 +1,11 @@
 import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
 import { step } from '@tests/fixtures'
-import { target, targetSelector } from '@tests/pages/Target'
-import type { Target as TargetComponent } from '@tests/pages/Target'
-import type { TargetSelector } from '@tests/pages/Target'
-import { comments } from '@tests/pages/Comments'
-import type { Comments as CommentsComponent } from '@tests/pages/Comments'
+import { target, targetSelector } from '@tests/pages/components/Target'
+import type { Target as TargetComponent } from '@tests/pages/components/Target'
+import type { TargetSelector } from '@tests/pages/components/Target'
+import { comments } from '@tests/pages/content/Comments'
+import type { Comments as CommentsComponent } from '@tests/pages/content/Comments'
 
 export class ContentListPage {
   constructor(

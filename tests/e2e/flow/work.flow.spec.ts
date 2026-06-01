@@ -1,6 +1,6 @@
 import { test } from '@tests/fixtures'
 import { languageKeys, type UILanguages } from '@i18n/ui'
-import { userInWorkList } from '@tests/pages/WorkUserJourney'
+import { userInWorkList } from '@tests/pages/content/WorkUserJourney'
 
 const SLUG = 'perficient'
 

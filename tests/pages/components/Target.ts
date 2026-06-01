@@ -16,6 +16,13 @@ export class Target {
     })
   }
 
+  shouldHaveVisibleText(textOrRegex: string | RegExp) {
+    return step('target visible and has text', async ({ expect }) => {
+      await expect(this.locator).toBeVisible()
+      await expect(this.locator).toHaveText(textOrRegex)
+    })
+  }
+
   shouldHaveClass(re: RegExp) {
     return step('target should have class', async ({ expect }) => {
       await expect(this.locator).toHaveClass(re)

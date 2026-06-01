@@ -1,6 +1,6 @@
 import { test } from '@tests/fixtures'
 import { languageKeys, type UILanguages } from '@i18n/ui'
-import { userInProjectList } from '@tests/pages/ProjectUserJourney'
+import { userInProjectList } from '@tests/pages/content/ProjectUserJourney'
 
 const SLUG = 'scot3004'
 

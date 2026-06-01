@@ -1,6 +1,6 @@
 import { test } from '@tests/fixtures'
 import type { UILanguages } from '@i18n/ui'
-import { userInProjectList, userInProjectDetail } from '@tests/pages/ProjectUserJourney'
+import { userInProjectList, userInProjectDetail } from '@tests/pages/content/ProjectUserJourney'
 
 type ProjectFixture = { locale: UILanguages; slug: string; title: string; role: string }
 

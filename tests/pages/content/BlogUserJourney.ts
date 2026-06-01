@@ -1,21 +1,17 @@
 import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
-import { step } from '@tests/fixtures'
-import { visit } from './UserJourneyFactory'
-import { BlogPage } from './BlogPage'
+import { visit } from '@tests/pages/shared/UserJourneyFactory'
+import { ContentListPage, contentListPage } from '@tests/pages/content/ContentListPage'
 import type { TestInfo } from '@playwright/test'
-import { pageHelper } from './Page'
-import { contentListPath, contentDetailsPath } from '@tests/pages/NavigationPaths'
-import { contentListPage } from '@tests/pages/ContentListPage'
-import { ContentListJourney, ContentDetailJourney } from '@tests/pages/ContentUserJourney'
+import { pageHelper } from '@tests/pages/components/PageHelper'
+import { contentListPath, contentDetailsPath } from '@tests/pages/shared/NavigationPaths'
+import { ContentListJourney, ContentDetailJourney } from '@tests/pages/content/ContentUserJourney'
 
 export class BlogUserJourney {
-  constructor(readonly page: Page, readonly blog: BlogPage) {}
+  constructor(readonly page: Page, readonly list: ContentListPage) {}
 
   shouldHaveTitle(expected: string) {
-    return step('shows post title', async ({ expect }) => {
-      await expect(this.blog.headerTitle()).toHaveText(expected)
-    })
+    return this.list.shouldHaveDetailTitle(expected)
   }
 
   assertNoHorizontalOverflow(testInfo?: TestInfo, locale?: string) {
@@ -43,7 +39,7 @@ export const userInBlogList = (page: Page, locale: UILanguages) =>
     `a user in blog list ${locale}`,
     page,
     contentListPath('blog', locale),
-    (p) => new BlogListJourney(p, locale),
+    (p: Page) => new BlogListJourney(p, locale),
   )
 
 export const userInBlogPost = (
@@ -56,8 +52,8 @@ export const userInBlogPost = (
     `a user opening blog post ${slug} in ${locale}`,
     page,
     contentDetailsPath('blog', locale, slug),
-    () => new BlogUserJourney(page, new BlogPage(page)),
-    async (p) => {
+    () => new BlogUserJourney(page, contentListPage(page)),
+    async (p: Page) => {
       if (viewport) await p.setViewportSize(viewport)
     },
   )

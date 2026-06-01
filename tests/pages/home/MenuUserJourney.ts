@@ -1,8 +1,8 @@
 import type { UILanguages } from '@i18n/ui'
 import type { Page } from '@playwright/test'
-import { sidebarPage } from '@tests/pages/SidebarPage'
-import type { SidebarPage } from '@tests/pages/SidebarPage'
-import { userInHomeFactory } from '@tests/pages/UserJourneyFactory'
+import { sidebarPage } from '@tests/pages/sidebar/SidebarPage'
+import type { SidebarPage } from '@tests/pages/sidebar/SidebarPage'
+import { userInHomeFactory } from '@tests/pages/shared/UserJourneyFactory'
 
 export class MenuUserJourney {
   constructor(readonly sidebar: SidebarPage) {}

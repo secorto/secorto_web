@@ -1,8 +1,8 @@
 import type { Locator } from '@playwright/test'
-import { highlight } from '@tests/pages/Highlight'
-import type { Highlight as HighlightComponent } from '@tests/pages/Highlight'
-import { callout } from '@tests/pages/Callout'
-import type { Callout as CalloutComponent } from '@tests/pages/Callout'
+import { highlight } from '@tests/pages/home/Highlight'
+import type { Highlight as HighlightComponent } from '@tests/pages/home/Highlight'
+import { callout } from '@tests/pages/content/Callout'
+import type { Callout as CalloutComponent } from '@tests/pages/content/Callout'
 
 export class HomeHighlights {
   readonly blog: HighlightComponent

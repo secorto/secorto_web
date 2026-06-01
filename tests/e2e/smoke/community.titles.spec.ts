@@ -1,6 +1,6 @@
 import { test } from '@tests/fixtures'
 import type { UILanguages } from '@i18n/ui'
-import { userInCommunityList, userInCommunityDetail } from '@tests/pages/CommunityUserJourney'
+import { userInCommunityList, userInCommunityDetail } from '@tests/pages/content/CommunityUserJourney'
 
 type CommunityFixture = { locale: UILanguages; slug: string; title: string; role: string; website: string }
 

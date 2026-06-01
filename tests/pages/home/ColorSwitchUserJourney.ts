@@ -1,13 +1,13 @@
 import type { UILanguages } from '@i18n/ui'
 import type { Page } from '@playwright/test'
-import type { SidebarPage } from '@tests/pages/SidebarPage'
-import { sidebarPage } from '@tests/pages/SidebarPage'
-import { target } from '@tests/pages/Target'
-import type { Target as TargetComponent } from '@tests/pages/Target'
+import type { SidebarPage } from '@tests/pages/sidebar/SidebarPage'
+import { sidebarPage } from '@tests/pages/sidebar/SidebarPage'
+import { target } from '@tests/pages/components/Target'
+import type { Target as TargetComponent } from '@tests/pages/components/Target'
 import { Act } from '@tests/fixtures'
-import { userInHomeFactory } from '@tests/pages/UserJourneyFactory'
-import { pageHelper } from '@tests/pages/Page'
-import type { PageHelper } from '@tests/pages/Page'
+import { userInHomeFactory } from '@tests/pages/shared/UserJourneyFactory'
+import { pageHelper } from '@tests/pages/components/PageHelper'
+import type { PageHelper } from '@tests/pages/components/PageHelper'
 
 export class ColorSwitchUserJourney {
   constructor(

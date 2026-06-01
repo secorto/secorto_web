@@ -1,9 +1,9 @@
 import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
 import { AxeBuilder } from '@axe-core/playwright'
-import { visit, userInHomeFactory } from '@tests/pages/UserJourneyFactory'
+import { visit, userInHomeFactory } from '@tests/pages/shared/UserJourneyFactory'
 import { step } from '@tests/fixtures'
-import { contentDetailsPath, contentListPath, contentTagsPath, tagsPath } from '@tests/pages/NavigationPaths'
+import { contentDetailsPath, contentListPath, contentTagsPath, tagsPath } from '@tests/pages/shared/NavigationPaths'
 
 const DEFAULT_EXCLUDES = [
   '[data-netlify-deploy-id]', 'iframe', 'iframe *'

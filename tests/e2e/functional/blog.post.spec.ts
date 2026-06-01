@@ -1,5 +1,5 @@
 import { test } from '@tests/fixtures'
-import { userInBlogPost } from '@tests/pages/BlogUserJourney'
+import { userInBlogPost } from '@tests/pages/content/BlogUserJourney'
 import type { UILanguages } from '@i18n/ui'
 import type { TestInfo } from '@playwright/test'
 

@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { TagsPage } from '@tests/pages/TagsPage'
+import { TagsPage } from '@tests/pages/content/TagsPage'
 import { languageKeys, type UILanguages, ui } from '@i18n/ui'
 
 const fixtures: { locale: UILanguages; expectedTitle: string; expectedDescription: string }[] = languageKeys.map((locale) => ({

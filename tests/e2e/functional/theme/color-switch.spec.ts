@@ -1,5 +1,5 @@
 import { test } from '@tests/fixtures'
-import { userInHome } from '@tests/pages/ColorSwitchUserJourney'
+import { userInHome } from '@tests/pages/home/ColorSwitchUserJourney'
 
 const schemes: Array<'light' | 'dark'> = ['light', 'dark']
 

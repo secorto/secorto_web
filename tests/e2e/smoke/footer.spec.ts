@@ -1,6 +1,6 @@
 import { test } from '@tests/fixtures'
 import { languageKeys } from '@i18n/ui'
-import { userInHome } from '@tests/pages/FooterUserJourney'
+import { userInHome } from '@tests/pages/footer/FooterUserJourney'
 
 
 test.describe('Footer translations', () => {

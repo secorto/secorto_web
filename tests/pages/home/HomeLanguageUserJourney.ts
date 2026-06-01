@@ -1,7 +1,7 @@
 import type { UILanguages } from '@i18n/ui'
 import type { Page } from '@playwright/test'
-import { userInHomeFactory } from '@tests/pages/UserJourneyFactory'
-import { targetSelector } from '@tests/pages/Target'
+import { userInHomeFactory } from '@tests/pages/shared/UserJourneyFactory'
+import { targetSelector } from '@tests/pages/components/Target'
 import { step } from '@tests/fixtures'
 
 export class HomeLanguageUserJourney {

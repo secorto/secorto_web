@@ -2,7 +2,7 @@ import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
 import { step } from '@tests/fixtures'
 import { mockThirdParty } from '@tests/e2e/helpers/mockThirdParty'
-import { homePath } from '@tests/pages/NavigationPaths'
+import { homePath } from '@tests/pages/shared/NavigationPaths'
 
 export type JourneyFactory<T> = (page: Page) => T | Promise<T>
 

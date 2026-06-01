@@ -1,6 +1,6 @@
 import { test } from '@tests/fixtures'
 import { languageKeys } from '@i18n/ui'
-import { userInTalk, userInTalkTag, userInTalkDetail, userInTags } from '@tests/pages/A11yUserJourney'
+import { userInTalk, userInTalkTag, userInTalkDetail, userInTags } from '@tests/pages/a11y/A11yUserJourney'
 
 
 test.describe('A11y - Charlas', { tag: ['@a11y', '@talk'] }, () => {

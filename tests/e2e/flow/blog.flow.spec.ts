@@ -1,6 +1,6 @@
 import { test } from '@tests/fixtures'
 import { languageKeys, type UILanguages } from '@i18n/ui'
-import { userInBlogList } from '@tests/pages/BlogUserJourney'
+import { userInBlogList } from '@tests/pages/content/BlogUserJourney'
 
 const SLUG = '2022-07-11-intro-python'
 const TAG = 'python'

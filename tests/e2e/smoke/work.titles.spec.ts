@@ -1,6 +1,6 @@
 import { test } from '@tests/fixtures'
 import type { UILanguages } from '@i18n/ui'
-import { userInWorkList, userInWorkDetail } from '@tests/pages/WorkUserJourney'
+import { userInWorkList, userInWorkDetail } from '@tests/pages/content/WorkUserJourney'
 
 type WorkFixture = { locale: UILanguages; slug: string; title: string; role: string; website: string }
 

@@ -1,9 +1,9 @@
 import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
-import { visit } from '@tests/pages/UserJourneyFactory'
-import { ContentListPage, contentListPage } from '@tests/pages/ContentListPage'
-import { contentListPath, contentDetailsPath } from '@tests/pages/NavigationPaths'
-import { ContentListJourney, WorkProjectCommunityDetailJourney } from '@tests/pages/ContentUserJourney'
+import { visit } from '@tests/pages/shared/UserJourneyFactory'
+import { ContentListPage, contentListPage } from '@tests/pages/content/ContentListPage'
+import { contentListPath, contentDetailsPath } from '@tests/pages/shared/NavigationPaths'
+import { ContentListJourney, WorkProjectCommunityDetailJourney } from '@tests/pages/content/ContentUserJourney'
 
 export class WorkListJourney extends ContentListJourney {
   constructor(page: Page, list: ContentListPage, locale: UILanguages) {

@@ -1,8 +1,8 @@
 import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
 import { ui } from '@i18n/ui'
-import { FooterPage, footerPage } from '@tests/pages/FooterPage'
-import { userInHomeFactory } from '@tests/pages/UserJourneyFactory'
+import { FooterPage, footerPage } from '@tests/pages/footer/FooterPage'
+import { userInHomeFactory } from '@tests/pages/shared/UserJourneyFactory'
 
 export class FooterUserJourney {
   constructor(readonly footer: FooterPage, readonly locale: UILanguages) {}

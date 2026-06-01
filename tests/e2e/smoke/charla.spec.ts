@@ -1,6 +1,6 @@
 import { test } from '@tests/fixtures'
 import { languageKeys, type UILanguages } from '@i18n/ui'
-import { userInTalkList, userInTalkDetail } from '@tests/pages/TalkUserJourney'
+import { userInTalkList, userInTalkDetail } from '@tests/pages/content/TalkUserJourney'
 
 const SLUG = '2023-09-27-devcontainers'
 

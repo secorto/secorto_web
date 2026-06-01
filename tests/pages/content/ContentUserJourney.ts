@@ -3,8 +3,8 @@ import type { UILanguages } from '@i18n/ui'
 import { ui } from '@i18n/ui'
 import type { TranslationKey } from '@domain/section'
 import { step } from '@tests/fixtures'
-import { ContentListPage } from '@tests/pages/ContentListPage'
-import { pageHelper } from '@tests/pages/Page'
+import { ContentListPage } from '@tests/pages/content/ContentListPage'
+import { pageHelper } from '@tests/pages/components/PageHelper'
 
 function escapeRegExp(value: string) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')

@@ -1,7 +1,7 @@
 import { test } from '@tests/fixtures'
 import type { GherkinStepDefinition } from '@tests/fixtures'
 import { ui, languageKeys } from '@i18n/ui'
-import { HomeUserJourney, userInHome } from '@tests/pages/HomePage'
+import { HomeUserJourney, userInHome } from '@tests/pages/home/HomeUserJourney'
 import { sectionsConfig } from '@domain/section'
 
 for (const locale of languageKeys) {

@@ -1,7 +1,7 @@
 import { test } from '@tests/fixtures'
 import type { GherkinStepDefinition } from '@tests/fixtures'
-import { userInHome } from '@tests/pages/MenuUserJourney'
-import type { MenuUserJourney } from '@tests/pages/MenuUserJourney'
+import { userInHome } from '@tests/pages/home/MenuUserJourney'
+import type { MenuUserJourney } from '@tests/pages/home/MenuUserJourney'
 
 test.describe('Hamburger menu', () => {
   test.use({ viewport: { width: 375, height: 667 } })

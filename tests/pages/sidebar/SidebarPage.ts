@@ -1,8 +1,8 @@
 import { step } from '@tests/fixtures'
-import { sidebarToggleFromPage, SidebarToggle } from '@tests/pages/SidebarToggle'
-import { target } from '@tests/pages/Target'
-import type { Target as TargetComponent } from '@tests/pages/Target'
-import { ThemeToggle, themeToggleFromPage } from '@tests/pages/ThemeToggle'
+import { sidebarToggleFromPage, SidebarToggle } from '@tests/pages/sidebar/SidebarToggle'
+import { target } from '@tests/pages/components/Target'
+import type { Target as TargetComponent } from '@tests/pages/components/Target'
+import { ThemeToggle, themeToggleFromPage } from '@tests/pages/sidebar/ThemeToggle'
 
 export class SidebarPage {
   constructor(

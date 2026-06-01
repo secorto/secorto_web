@@ -1,6 +1,6 @@
 import { test } from '@tests/fixtures'
 import { languageKeys, type UILanguages } from '@i18n/ui'
-import { userInCommunityList } from '@tests/pages/CommunityUserJourney'
+import { userInCommunityList } from '@tests/pages/content/CommunityUserJourney'
 
 const SLUG = 'pybaq'
 
