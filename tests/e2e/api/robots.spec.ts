@@ -3,7 +3,7 @@ import type { GherkinStepDefinition } from '@tests/fixtures'
 import { createRobotsUserJourney, type RobotsJourney } from '@tests/pages/functional/RobotsUserJourney'
 import type { APIRequestContext } from '@playwright/test'
 
-test.describe('robots.txt endpoint', () => {
+test.describe('robots.txt endpoint', { tag: ['@api', '@robots', '@functional'] }, () => {
   let userRequestRobots: (path?: string) => GherkinStepDefinition<RobotsJourney>
 
   test.beforeEach(async ({ request }) => {
