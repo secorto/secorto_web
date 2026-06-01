@@ -5,6 +5,9 @@ import { visit } from './UserJourneyFactory'
 import { BlogPage } from './BlogPage'
 import type { TestInfo } from '@playwright/test'
 import { pageHelper } from './Page'
+import { getURLForSection } from '@utils/sections'
+import { contentListPage } from '@tests/pages/ContentListPage'
+import { ContentListJourney, ContentDetailJourney } from '@tests/pages/ContentUserJourney'
 
 export class BlogUserJourney {
   constructor(readonly page: Page, readonly blog: BlogPage) {}
@@ -19,6 +22,29 @@ export class BlogUserJourney {
     return pageHelper(this.page).assertNoHorizontalOverflow(testInfo, locale)
   }
 }
+
+export class BlogListJourney extends ContentListJourney {
+  constructor(page: Page, locale: UILanguages) {
+    super(page, contentListPage(page), locale, 'nav.blog')
+  }
+
+  clickItem(slug: string) {
+    const href = `${getURLForSection('blog', this.locale)}/${slug}`
+    return this.list.clickItemAndReturn(href, `click blog item "${slug}"`, () => {
+      return new BlogDetailJourney(this.page, this.list, this.locale)
+    })
+  }
+}
+
+export class BlogDetailJourney extends ContentDetailJourney {}
+
+export const userInBlogList = (page: Page, locale: UILanguages) =>
+  visit(
+    `a user in blog list ${locale}`,
+    page,
+    getURLForSection('blog', locale),
+    (p) => new BlogListJourney(p, locale),
+  )
 
 export const userInBlogPost = (
   page: Page,

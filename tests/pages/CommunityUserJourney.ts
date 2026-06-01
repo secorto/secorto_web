@@ -9,6 +9,13 @@ export class CommunityListJourney extends ContentListJourney {
   constructor(page: Page, list: ContentListPage, locale: UILanguages) {
     super(page, list, locale, 'nav.community')
   }
+
+  clickItem(slug: string) {
+    const href = `${getURLForSection('community', this.locale)}/${slug}`
+    return this.list.clickItemAndReturn(href, `click community item "${slug}"`, () => {
+      return new CommunityDetailJourney(this.page, this.list, this.locale)
+    })
+  }
 }
 
 export class CommunityDetailJourney extends WorkProjectCommunityDetailJourney {}

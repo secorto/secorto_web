@@ -31,6 +31,14 @@ export class ContentListJourney {
       await headerStep.action(stepExpect)
     })
   }
+
+  filterByTag(tag: string) {
+    return this.list.filterByTag(tag)
+  }
+
+  shouldShowFilteredTitle(tag: string) {
+    return this.list.shouldHaveFilteredTitle(ui[this.locale][this.titleKey], tag)
+  }
 }
 
 // ─── Detail base ─────────────────────────────────────────────────────────────

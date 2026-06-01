@@ -9,7 +9,7 @@ const expectedTitles: Record<UILanguages, string> = {
   en: 'Devcontainers on localhost',
 }
 
-test.describe('Charlas - flujo de navegación', { tag: ['@functional', '@talk'] }, () => {
+test.describe('Charlas - flujo de navegación', { tag: ['@flow', '@talk'] }, () => {
   for (const locale of languageKeys) {
     test(`navega de lista a detalle via tag y click (${locale})`, async ({
       Given, When, Then, And, page,

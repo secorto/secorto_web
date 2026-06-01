@@ -1,6 +1,5 @@
 import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
-import { ui } from '@i18n/ui'
 import { visit } from '@tests/pages/UserJourneyFactory'
 import { ContentListPage, contentListPage } from '@tests/pages/ContentListPage'
 import { getURLForSection } from '@utils/sections'
@@ -9,14 +8,6 @@ import { ContentListJourney, ContentDetailJourney } from '@tests/pages/ContentUs
 export class TalkListJourney extends ContentListJourney {
   constructor(page: Page, list: ContentListPage, locale: UILanguages) {
     super(page, list, locale, 'nav.talks')
-  }
-
-  filterByTag(tag: string) {
-    return this.list.filterByTag(tag)
-  }
-
-  shouldShowFilteredTitle(tag: string) {
-    return this.list.shouldHaveFilteredTitle(ui[this.locale]['nav.talks'], tag)
   }
 
   clickItem(slug: string) {

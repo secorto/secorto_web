@@ -10,6 +10,13 @@ export class ProjectListJourney extends ContentListJourney {
   constructor(page: Page, list: ContentListPage, locale: UILanguages) {
     super(page, list, locale, 'nav.projects')
   }
+
+  clickItem(slug: string) {
+    const href = `${getURLForSection('projects', this.locale)}/${slug}`
+    return this.list.clickItemAndReturn(href, `click project item "${slug}"`, () => {
+      return new ProjectDetailJourney(this.page, this.list, this.locale)
+    })
+  }
 }
 
 export class ProjectDetailJourney extends WorkProjectCommunityDetailJourney {

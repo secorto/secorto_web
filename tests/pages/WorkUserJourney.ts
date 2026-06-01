@@ -9,6 +9,13 @@ export class WorkListJourney extends ContentListJourney {
   constructor(page: Page, list: ContentListPage, locale: UILanguages) {
     super(page, list, locale, 'nav.work')
   }
+
+  clickItem(slug: string) {
+    const href = `${getURLForSection('work', this.locale)}/${slug}`
+    return this.list.clickItemAndReturn(href, `click work item "${slug}"`, () => {
+      return new WorkDetailJourney(this.page, this.list, this.locale)
+    })
+  }
 }
 
 export class WorkDetailJourney extends WorkProjectCommunityDetailJourney {}
