@@ -19,7 +19,7 @@ const postFixtures: PostFixture[] = [
 ]
 
 for (const f of postFixtures) {
-  test.describe(`Blog post (${f.locale})`, () => {
+  test.describe(`Blog post (${f.locale})`, { tag: ['@functional', '@blog', `@${f.locale}`] }, () => {
     test('shows post title', async ({ When, Then, page }) => {
       const journey = await When(userInBlogPost(page, f.locale, f.slug))
       await Then(journey.shouldHaveTitle(f.postTitle))

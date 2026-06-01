@@ -9,7 +9,7 @@ const fixtures: { locale: UILanguages; expectedTitle: string; expectedDescriptio
 }))
 
 for (const f of fixtures) {
-  test.describe(`Tags list (${f.locale})`, () => {
+  test.describe(`Tags list (${f.locale})`, { tag: ['@functional', '@tags', `@${f.locale}`] }, () => {
     test('shows page title and description', async ({ page, When, Then }) => {
       const tags = await When(userIsOnTags(page, f.locale))
       await Then(tags.shouldHavePageTitle(f.expectedTitle))

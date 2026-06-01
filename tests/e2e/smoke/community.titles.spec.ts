@@ -23,14 +23,14 @@ const fixtures: CommunityFixture[] = [
 
 test.describe('Community', { tag: ['@smoke', '@community'] }, () => {
   for (const locale of ['es', 'en'] as UILanguages[]) {
-    test(`community list shows title (${locale})`, async ({ Given, Then, page }) => {
+    test(`community list shows title (${locale})`, { tag: [`@${locale}`] }, async ({ Given, Then, page }) => {
       const journey = await Given(userInCommunityList(page, locale))
       await Then(journey.shouldHaveTitle())
     })
   }
 
   for (const f of fixtures) {
-    test(`community detail shows title, role and website (${f.locale})`, async ({ Given, Then, And, page }) => {
+    test(`community detail shows title, role and website (${f.locale})`, { tag: [`@${f.locale}`] }, async ({ Given, Then, And, page }) => {
       const journey = await Given(userInCommunityDetail(page, f.locale, f.slug))
       await Then(journey.shouldHaveTitle(f.title))
       await And(journey.shouldHaveRole(f.role))

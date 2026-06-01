@@ -5,7 +5,7 @@ const schemes: Array<'light' | 'dark'> = ['light', 'dark']
 
 for (const colorScheme of schemes) {
   test.describe(`Color switch — ${colorScheme}`,
-    { tag: ['@color-switch', '@functional'] },
+    { tag: ['@color-switch', '@functional', '@home'] },
     () => {
       test.use({ colorScheme })
       test(`toggles between light and dark mode (start ${colorScheme})`, async ({ page, Given, When, Then, And }) => {

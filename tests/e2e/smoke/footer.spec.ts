@@ -3,9 +3,9 @@ import { languageKeys } from '@i18n/ui'
 import { userInHome } from '@tests/pages/footer/FooterUserJourney'
 
 
-test.describe('Footer translations', () => {
+test.describe('Footer translations', { tag: ['@smoke', '@home'] }, () => {
   languageKeys.forEach((locale) => {
-    test(`footer texts are correct (${locale})`, async ({ Given, Then, And, page }) => {
+    test(`footer texts are correct (${locale})`, { tag: [`@${locale}`] }, async ({ Given, Then, And, page }) => {
       const journey = await Given(userInHome(page, locale))
       await Then(journey.shouldHaveAvatarAlt())
       await And(journey.shouldHaveRoleText())

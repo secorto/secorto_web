@@ -4,7 +4,7 @@ import type { GherkinStepDefinition } from '@tests/fixtures'
 import { createRssUserJourney, type RSSJourney } from '@tests/pages/functional/RssUserJourney'
 
 for (const locale of languageKeys) {
-  test.describe(`RSS feed (${locale})`, () => {
+  test.describe(`RSS feed (${locale})`, { tag: ['@functional', '@rss', `@${locale}`] }, () => {
     let userRequestRss: (url?: string) => GherkinStepDefinition<RSSJourney>
 
     test.beforeEach(async ({ request }) => {

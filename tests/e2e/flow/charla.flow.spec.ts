@@ -11,7 +11,7 @@ const expectedTitles: Record<UILanguages, string> = {
 
 test.describe('Charlas - flujo de navegación', { tag: ['@flow', '@talk'] }, () => {
   for (const locale of languageKeys) {
-    test(`navega de lista a detalle via tag y click (${locale})`, async ({
+    test(`navega de lista a detalle via tag y click (${locale})`, { tag: [`@${locale}`] }, async ({
       Given, When, Then, And, page,
     }) => {
       const list = await Given(userInTalkList(page, locale))

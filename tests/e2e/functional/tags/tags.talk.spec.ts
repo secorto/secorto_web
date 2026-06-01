@@ -4,7 +4,7 @@ import { userInTalkList } from '@tests/pages/content/TalkUserJourney'
 
 for (const locale of languageKeys) {
   test(`Tags - Talk (${locale})`,
-    {tag: ['@talk', '@tags']},
+    {tag: ['@talk', '@tags', `@${locale}`]},
     async ({ When, Then, page }) => {
       const journey = await When(userInTalkList(page, locale))
       await Then(journey.verifyTagsForSection())
