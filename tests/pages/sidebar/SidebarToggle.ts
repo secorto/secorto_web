@@ -42,7 +42,10 @@ export class SidebarToggle {
 }
 
 export function sidebarToggle(hamburgerLocator: import('@playwright/test').Locator, sidebarLocator: import('@playwright/test').Locator) {
-  return new SidebarToggle(target(hamburgerLocator), target(sidebarLocator))
+  return new SidebarToggle(
+    target('sidebar hamburger', hamburgerLocator),
+    target('sidebar panel', sidebarLocator),
+  )
 }
 
 export function sidebarToggleFromPage(page: Page) {

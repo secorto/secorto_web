@@ -7,7 +7,7 @@ export class Highlight {
 
   hrefMatches(locale: string, route: string) {
     // the highlight root is the anchor element in the Astro component
-    return link(this.root).hrefMatches(locale, route)
+    return link('highlight link', this.root).hrefMatches(locale, route)
   }
 
   shouldBeVisible() {

@@ -19,9 +19,9 @@ export class HomePage {
 
 export function homePage(page: Page) {
   return new HomePage(
-    target(page.getByRole('heading', { level: 1 })),
-    target(page.locator('.home-avatar svg')),
-    target(page.locator('.home-bio-text')),
+    target('home header title', page.getByRole('heading', { level: 1 })),
+    target('home avatar', page.locator('.home-avatar svg')),
+    target('home bio text', page.locator('.home-bio-text')),
     homeHighlights(page.locator('.highlights')),
   )
 }

@@ -32,7 +32,7 @@ export class ThemeToggle {
 }
 
 export function themeToggleFromTarget(locator: import('@playwright/test').Locator) {
-  return new ThemeToggle(target(locator))
+  return new ThemeToggle(target('theme toggle', locator))
 }
 
 export function themeToggleFromPage(page: Page) {

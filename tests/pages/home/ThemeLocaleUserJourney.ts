@@ -45,7 +45,7 @@ export class ThemeLocaleUserJourney {
 function themeLocaleJourney(page: Page) {
   return new ThemeLocaleUserJourney(
     sidebarPage(page),
-    target(page.locator('html')),
+    target('html root', page.locator('html')),
     pageHelper(page),
   )
 }

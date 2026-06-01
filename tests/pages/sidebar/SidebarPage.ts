@@ -79,9 +79,9 @@ export class SidebarPage {
 export function sidebarPage(page: import('@playwright/test').Page) {
   return new SidebarPage(
     sidebarToggleFromPage(page),
-    target(page.getByTestId('sidebar-title')),
+    target('sidebar title', page.getByTestId('sidebar-title')),
     themeToggleFromPage(page),
-    target(page.getByTestId('sidebar-about')),
-    target(page.locator('nav.sidebar svg.sidebar-logo')),
+    target('sidebar about link', page.getByTestId('sidebar-about')),
+    target('sidebar logo', page.locator('nav.sidebar svg.sidebar-logo')),
   )
 }

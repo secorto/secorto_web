@@ -91,14 +91,14 @@ export function contentListPage(page: Page) {
   return new ContentListPage(
     targetSelector((tag: string) => page.getByTestId(`tag-link-${tag}`)),
     targetSelector((href: string) => page.locator(`[href="${href}"]`)),
-    target(page.getByTestId('header-title')),
-    target(page.getByTestId('tags')),
+    target('content header title', page.getByTestId('header-title')),
+    target('content tags', page.getByTestId('tags')),
     comments(
       page.locator('.comments script[src*="giscus.app"]'),
       page.locator('iframe.giscus-frame'),
     ),
-    target(page.getByTestId('post-role')),
-    target(page.getByTestId('post-responsibilities')),
-    target(page.getByTestId('post-website')),
+    target('post role', page.getByTestId('post-role')),
+    target('post responsibilities', page.getByTestId('post-responsibilities')),
+    target('post website', page.getByTestId('post-website')),
   )
 }

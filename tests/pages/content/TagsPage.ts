@@ -37,7 +37,7 @@ export class TagsPage {
   }
 
   firstTagGroupHeadingShouldBeVisible() {
-    return target(this.allTagGroups.locator.first().locator('h2').first()).shouldBeVisible()
+    return target('first tag group heading', this.allTagGroups.locator.first().locator('h2').first()).shouldBeVisible()
   }
 
   shouldHaveAtLeastOneLinkInFirstTagGroup() {
@@ -71,11 +71,11 @@ export class TagsPage {
 export function tagsPage(page: Page) {
   return new TagsPage(
     page,
-    target(page.getByTestId('header-title')),
-    target(page.getByTestId('tags-description')),
-    target(page.getByTestId('global-tag-groups')),
-    target(page.getByTestId(/^global-tag-/)),
-    link(page.getByTestId('global-tag-groups').locator('a').first()),
-    target(page.locator('body')),
+    target('tags header title', page.getByTestId('header-title')),
+    target('tags description', page.getByTestId('tags-description')),
+    target('tags groups container', page.getByTestId('global-tag-groups')),
+    target('all tag groups', page.getByTestId(/^global-tag-/)),
+    link('first tag link', page.getByTestId('global-tag-groups').locator('a').first()),
+    target('tags page body', page.locator('body')),
   )
 }

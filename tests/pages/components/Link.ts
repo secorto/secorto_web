@@ -1,18 +1,21 @@
 import type { Locator } from '@playwright/test'
 import { step } from '@tests/fixtures'
+import { Target } from '@tests/pages/components/Target'
 
-export class Link {
-  constructor(readonly locator: Locator) {}
+export class Link extends Target {
+  constructor(name: string, locator: Locator) {
+    super(name, locator)
+  }
 
   click() {
-    return step('click link', async ({ expect }) => {
+    return step(`click ${this.name}`, async ({ expect }) => {
       await expect(this.locator).toBeVisible()
       await this.locator.click()
     })
   }
 
   hrefMatches(locale: string, route: string) {
-    return step('link href matches route', async ({ expect }) => {
+    return step(`${this.name} href matches route`, async ({ expect }) => {
       const el = this.locator
       await expect(el).toBeVisible()
       const href = await el.getAttribute('href')
@@ -22,7 +25,7 @@ export class Link {
   }
 
   hrefMatchesPattern(pattern: RegExp) {
-    return step('link href matches pattern', async ({ expect }) => {
+    return step(`${this.name} href matches pattern`, async ({ expect }) => {
       await expect(this.locator).toBeVisible()
       const href = await this.locator.getAttribute('href')
       expect(href).toBeTruthy()
@@ -31,6 +34,6 @@ export class Link {
   }
 }
 
-export function link(locator: Locator) {
-  return new Link(locator)
+export function link(name: string, locator: Locator) {
+  return new Link(name, locator)
 }
