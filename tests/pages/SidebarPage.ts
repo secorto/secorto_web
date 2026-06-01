@@ -1,108 +1,81 @@
-import type { Page, Locator } from '@playwright/test'
 import { step } from '@tests/fixtures'
+import { sidebarToggleFromPage, SidebarToggle } from '@tests/pages/SidebarToggle'
+import { target } from '@tests/pages/Target'
+import type { Target as TargetComponent } from '@tests/pages/Target'
+import { ThemeToggle, themeToggleFromPage } from '@tests/pages/ThemeToggle'
 
 export class SidebarPage {
   constructor(
-    readonly page: Page,
-    readonly hamburger: Locator,
-    readonly sidebar: Locator,
-    readonly sidebarTitle: Locator,
-    readonly themeToggle: Locator,
-    readonly aboutLink: Locator,
+    readonly toggle: SidebarToggle,
+    readonly sidebarTitle: TargetComponent,
+    readonly themeToggle: ThemeToggle,
+    readonly aboutLink: TargetComponent,
   ) {}
 
   shouldHaveHamburgerButton() {
-    return step('hamburger button is visible', async ({ expect }) => {
-      await expect(this.hamburger).toBeVisible()
-    })
+    return this.toggle.shouldHaveHamburgerButton()
   }
 
   toggleSidebar() {
-    return step('toggle sidebar from hamburger', async () => {
-      await this.hamburger.click()
-    })
+    return this.toggle.toggle()
   }
 
   shouldHaveSidebarOpen() {
-    return step('sidebar should be open', async ({ expect }) => {
-      await expect(this.sidebar).toHaveClass(/sidebar-open/)
-    })
+    return this.toggle.shouldBeOpen()
   }
 
   shouldHaveSidebarClosed() {
-    return step('sidebar should be closed', async ({ expect }) => {
-      await expect(this.sidebar).not.toHaveClass(/sidebar-open/)
-    })
+    return this.toggle.shouldBeClosed()
   }
 
   shouldHaveHamburgerOpenState() {
-    return step('hamburger should have open state class', async ({ expect }) => {
-      await expect(this.hamburger).toHaveClass(/sidebar-open/)
-    })
+    return this.toggle.hamburgerShouldHaveOpenState()
   }
 
   shouldHaveHamburgerClosedState() {
-    return step('hamburger should not have open state class', async ({ expect }) => {
-      await expect(this.hamburger).not.toHaveClass(/sidebar-open/)
-    })
+    return this.toggle.hamburgerShouldHaveClosedState()
   }
 
   shouldShowNavigationLinks() {
-    return step('sidebar shows navigation links', async ({ expect }) => {
-      await expect(this.sidebarTitle).toBeVisible()
-    })
+    return this.toggle.showNavigationLinks()
   }
 
   shouldBeReady() {
     return step('sidebar should be ready', async ({ expect }) => {
-      await expect(this.sidebarTitle).toBeVisible()
-      await expect(this.hamburger).toBeVisible()
+      await expect(this.sidebarTitle.locator).toBeVisible()
+      await expect(this.toggle.hamburger.locator).toBeVisible()
     })
   }
 
   shouldHaveAboutLink(i18n: Record<string, string>) {
     return step('sidebar shows about link text', async ({ expect }) => {
-      await expect(this.aboutLink).toBeVisible()
-      await expect(this.aboutLink).toHaveText(i18n['nav.about'])
+      await expect(this.aboutLink.locator).toBeVisible()
+      await expect(this.aboutLink.locator).toHaveText(i18n['nav.about'])
     })
   }
 
   shouldHaveThemeToggle() {
-    return step('sidebar has theme toggle', async ({ expect }) => {
-      await expect(this.themeToggle).toBeVisible()
-    })
+    return this.themeToggle.shouldBeVisible()
   }
 
   toggleTheme() {
-    return step('toggle theme', async () => {
-      await this.themeToggle.click()
-    })
+    return this.themeToggle.toggleTheme()
   }
 
   getTransformOfThemeToggle() {
-    return step('get transform of theme toggle circle', async () => {
-      const themeCircle = this.themeToggle.locator('svg circle')
-      return await themeCircle.evaluate((el: Element) => getComputedStyle(el).transform)
-    })
+    return this.themeToggle.getTransform()
   }
 
   themeToggleShouldBeDifferent(initialTransform: string) {
-    return step('theme toggle icon transform should be changed', async ({ expect }) => {
-      const themeCircle = this.themeToggle.locator('svg circle')
-      await expect.poll(async () => {
-        return await themeCircle.evaluate((el: Element) => getComputedStyle(el).transform)
-      }, { timeout: 2000, intervals: [100] }).not.toBe(initialTransform)
-    })
+    return this.themeToggle.shouldBeDifferent(initialTransform)
   }
 }
 
-export function sidebarPage(page: Page) {
+export function sidebarPage(page: import('@playwright/test').Page) {
   return new SidebarPage(
-    page,
-    page.getByTestId('hamburger'),
-    page.locator('.sidebar-toggle'),
-    page.getByTestId('sidebar-title'),
-    page.getByTestId('theme-toggle'),
-    page.getByTestId('sidebar-about'),
+    sidebarToggleFromPage(page),
+    target(page.getByTestId('sidebar-title')),
+    themeToggleFromPage(page),
+    target(page.getByTestId('sidebar-about')),
   )
 }
