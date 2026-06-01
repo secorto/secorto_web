@@ -36,6 +36,10 @@ export class ColorSwitchUserJourney {
   shouldHaveThemeStorage(theme: string) {
     return this.page.shouldHaveLocalStorage('theme', theme)
   }
+
+  shouldHaveLang(expected: string) {
+    return this.themeElement.shouldHaveAttribute('lang', expected)
+  }
 }
 
 function colorSwitchJourney(page: Page) {

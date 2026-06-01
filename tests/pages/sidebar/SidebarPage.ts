@@ -10,6 +10,7 @@ export class SidebarPage {
     readonly sidebarTitle: TargetComponent,
     readonly themeToggle: ThemeToggle,
     readonly aboutLink: TargetComponent,
+    readonly logo: TargetComponent,
   ) {}
 
   shouldHaveHamburgerButton() {
@@ -54,6 +55,10 @@ export class SidebarPage {
     })
   }
 
+  shouldHaveLogo() {
+    return this.logo.shouldHaveCount(1)
+  }
+
   shouldHaveThemeToggle() {
     return this.themeToggle.shouldBeVisible()
   }
@@ -77,5 +82,6 @@ export function sidebarPage(page: import('@playwright/test').Page) {
     target(page.getByTestId('sidebar-title')),
     themeToggleFromPage(page),
     target(page.getByTestId('sidebar-about')),
+    target(page.locator('nav.sidebar svg.sidebar-logo')),
   )
 }
