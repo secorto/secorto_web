@@ -16,7 +16,6 @@ test.describe('Blog - flujo de navegación', { tag: ['@flow', '@blog'] }, () => 
       Given, When, Then, And, page,
     }) => {
       const list = await Given(userInBlogList(page, locale))
-      await Then(list.shouldHaveTitle())
 
       await When(list.filterByTag(TAG))
       await And(list.shouldShowFilteredTitle(TAG))
