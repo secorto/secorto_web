@@ -1,5 +1,5 @@
 import { test } from '@tests/fixtures'
-import { userInHomeWithStorageTheme } from '@tests/pages/HomePage'
+import { userInHomeWithStorageTheme } from '@tests/pages/ColorSwitchUserJourney'
 
 test.describe('Theme local storage',
   { tag: ['@theme-local-storage', '@functional'] },
