@@ -39,6 +39,10 @@ export class ContentListJourney {
   shouldShowFilteredTitle(tag: string) {
     return this.list.shouldHaveFilteredTitle(ui[this.locale][this.titleKey], tag)
   }
+
+  verifyTagsForSection() {
+    return this.list.shouldRenderTagsForSection()
+  }
 }
 
 // ─── Detail base ─────────────────────────────────────────────────────────────

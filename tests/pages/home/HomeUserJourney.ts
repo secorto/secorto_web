@@ -2,7 +2,7 @@ import type { UILanguages } from '@i18n/ui'
 import type { SidebarPage } from '@tests/pages/sidebar/SidebarPage'
 import { sidebarPage } from '@tests/pages/sidebar/SidebarPage'
 import { userInHomeFactory } from '@tests/pages/shared/UserJourneyFactory'
-import { step } from '@tests/fixtures'
+import { step, Verify } from '@tests/fixtures'
 import { pageHelper } from '@tests/pages/components/PageHelper'
 import type { PageHelper } from '@tests/pages/components/PageHelper'
 import { homePage, HomePage } from '@tests/pages/home/HomePage'
@@ -28,12 +28,9 @@ export class HomeUserJourney {
   }
 
   shouldHaveTitle() {
-    const pageTitleStep = this.page.shouldHaveTitle()
-    const headerStep = this.home.shouldHaveTitle()
-
     return step('page and header have a title', async (stepExpect) => {
-      await pageTitleStep.action(stepExpect)
-      await headerStep.action(stepExpect)
+      await Verify(this.page.shouldHaveTitle(), stepExpect)
+      await Verify(this.home.shouldHaveTitle(), stepExpect)
     })
   }
 

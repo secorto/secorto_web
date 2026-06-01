@@ -59,6 +59,17 @@ export class ContentListPage {
     })
   }
 
+  shouldRenderTagsForSection() {
+    return step('section list renders available tags', async ({ expect }) => {
+      await expect(this.tags.locator).toBeVisible()
+
+      const tagLinks = this.tags.locator.locator('[data-testid^="tag-link-"]')
+      await expect
+        .poll(async () => tagLinks.count())
+        .toBeGreaterThan(0)
+    })
+  }
+
   shouldHaveComments(locale: UILanguages) {
     return this.comments.shouldBeReady(locale)
   }
