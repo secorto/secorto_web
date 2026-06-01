@@ -13,7 +13,7 @@ export const visit = <T>(
 ) =>
     step(title, async () => {
       if (preAct) await preAct(page)
-      await page.goto(url)
       await mockThirdParty(page)
+      await page.goto(url)
       return factory(page)
     })

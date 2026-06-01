@@ -5,15 +5,19 @@ import { getURLForSection } from '@utils/sections'
 import { visit } from '@tests/pages/UserJourneyFactory'
 import { step } from '@tests/fixtures'
 
+const DEFAULT_EXCLUDES = [
+  '[data-netlify-deploy-id]', 'iframe', 'iframe *'
+]
+
 export class A11yUserJourney {
   constructor(readonly page: Page) {}
 
   auditA11y(excludes?: string[]) {
     return step('audit a11y', async () => {
-      const DEFAULT_EXCLUDES = ['[data-netlify-deploy-id]']
       const builder = new AxeBuilder({ page: this.page })
       const exs = excludes ?? DEFAULT_EXCLUDES
       for (const ex of exs) builder.exclude(ex)
+      await this.page.waitForLoadState('load')
       return await builder.analyze()
     })
   }
@@ -38,9 +42,8 @@ export function userInTalkTag(page: Page, locale: UILanguages, tag = 'containers
   return visit(`a user in talk tag ${locale} ${tag}`, page, talksTagRoute, a11yUserJourney)
 }
 
-export function userInTalkDetail(page: Page, locale: UILanguages, postSlug = '2023-09-27-devcontainers') {
-  const talksRoute = getURLForSection('talk', locale)
-  const talksPostRoute = `${talksRoute}/${postSlug}`
+export function userInTalkDetail(page: Page, locale: UILanguages, postSlug: string) {
+  const talksPostRoute = `${getURLForSection('talk', locale)}/${postSlug}`
   return visit(`a user in talk detail ${locale} ${postSlug}`, page, talksPostRoute, a11yUserJourney)
 }
 

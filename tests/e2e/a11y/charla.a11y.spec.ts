@@ -24,12 +24,8 @@ test.describe('A11y - Charlas', { tag: ['@a11y', '@talk'] }, () => {
     })
 
     test(`charla detail a11y (${locale})`, async ({ Given, When, Then, page }) => {
-      const journey = await Given(userInTalkDetail(page, locale))
-      const detailResults = await When(journey.auditA11y([
-        '[data-testid="post-video"]',
-        '[data-testid="post-slide"]',
-        '[data-testid="comments-section"]'
-      ]))
+      const journey = await Given(userInTalkDetail(page, locale, '2023-09-27-devcontainers'))
+      const detailResults = await When(journey.auditA11y())
       await Then(journey.shouldPassAudit(detailResults))
     })
   })
