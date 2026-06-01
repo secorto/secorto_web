@@ -20,13 +20,20 @@ y la lógica de setup queda dispersa en lugar de estar encapsulada en el flujo q
 Adoptar una arquitectura de **tres capas** para los tests E2E:
 
 ```text
-Page (locators)  →  User Journey (flujo + steps)  →  Spec (Given/When/Then)
+Page (locators + pasos atómicos)  →  User Journey (flujo + setup)  →  Spec (Given/When/Then)
 ```
 
 ### Capa 1 — Page (`*Page.ts`)
 
-POM puro: solo `Locator`s y helpers de acceso al DOM.
-No contiene navegación, assertions ni lógica de setup.
+POM de interacción/verificación atómica con dos subtipos:
+
+1) componentes UI atómicos (con `Locator`s y helpers de acceso al DOM),
+2) páginas compuestas/orquestadoras que agregan componentes y exponen pasos de más alto nivel.
+
+Por eso una página como `HomePage` puede no declarar locators directos y delegar en componentes.
+Los pasos (`shouldHave*`, `shouldBe*`, `click*`, etc.) se encapsulan en `step()` o en
+helpers como `Target`.
+No contiene setup de escenario (storage/mocks) ni orquestación de flujos de negocio.
 Ejemplo: `SidebarPage`, `HomePage`.
 
 ### Capa 2 — User Journey (`*UserJourney.ts`)
@@ -34,7 +41,7 @@ Ejemplo: `SidebarPage`, `HomePage`.
 Encapsula un flujo de usuario concreto y cohesivo.
 
 - Compone uno o más Page Objects y `PageHelper`.
-- Expone métodos de alto nivel fuertemente tipados: `shouldHave*`, `toggle*`, `hrefMatches`, etc.
+- Expone métodos de flujo de alto nivel fuertemente tipados, componiendo pasos atómicos de Page.
 - Incluye un factory (`userIn*`) que orquesta el setup completo
   (navegación, mocks de terceros, inyección de estado inicial) y devuelve el Journey listo para usar.
 - Un Journey cubre un flujo; si los métodos divergen significativamente, se crea un Journey separado.
@@ -81,20 +88,17 @@ el compilador garantiza que solo se usan los pasos que corresponden.
 
 ## Implementación
 
-1. `tests/fixtures/index.ts` — barrel con los helpers Gherkin centrales (`step`, `Verify`, `Act`, verbos).
-2. `tests/pages/*Page.ts` — POM puro (locators). Ejemplo: `SidebarPage.ts`, `HomePage.ts`.
-3. `tests/pages/*UserJourney.ts` — Journey con factory. Ejemplos:
-   - `HomePage.ts` exporta `HomeUserJourney` + `userInHome`.
-  - `ThemeLocaleUserJourney.ts` exporta `ThemeLocaleUserJourney` + `userInHomeForColorSwitch` + `userInHomeWithStorageTheme`.
-4. `tests/e2e/**/*.spec.ts` — specs con Given/When/Then sobre el Journey.
+Este ADR fija la decisión arquitectónica.
+
+Los detalles de implementación (estructura de carpetas, convenciones de nombres, ejemplos y evolución del patrón)
+se mantienen en `docs/TESTING_STRATEGY.md` para evitar duplicidad y deriva documental.
+
+Como criterio mínimo de adopción:
+
+1. Mantener el flujo en tres capas: `Page → User Journey → Spec`.
+2. Centralizar setup y estado inicial en factories `userIn*` del Journey.
+3. Mantener los specs libres de locators directos y de lógica de setup.
 
 ## Referencias
 
-- `tests/fixtures/gherkin.ts`
-- `tests/fixtures/index.ts`
-- `tests/pages/SidebarPage.ts`
-- `tests/pages/HomePage.ts` — `HomePage` (locators) + `HomeUserJourney`
-- `tests/pages/ThemeLocaleUserJourney.ts`
-- `tests/e2e/smoke/homepage.spec.ts`
-- `tests/e2e/functional/theme/color-switch.spec.ts`
-- `tests/e2e/functional/theme/theme-persistence.spec.ts`
+- `docs/TESTING_STRATEGY.md`

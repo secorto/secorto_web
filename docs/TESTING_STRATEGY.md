@@ -35,8 +35,10 @@ Para el razonamiento y la justificación de cada elección, ver [ADR 002](./adr/
 
 - Unit tests: `tests/unit/**` (usar TypeScript)
 - E2E tests: `tests/e2e/**`; la lógica de acceso y flujo se organiza en tres capas:
-  - **Page** (`tests/pages/*Page.ts`): POM puro — solo locators y helpers de acceso al DOM, sin acciones complejas.
-  - **User Journey** (`tests/pages/*UserJourney.ts`): encapsula un flujo de usuario concreto;
+  - **Page** (`tests/pages/**/**Page.ts`): POM de UI con dos subtipos:
+    componentes atómicos (locators/helpers) y páginas compuestas/orquestadoras que agregan componentes.
+    Puede incluir pasos atómicos (`shouldHave*`, `shouldBe*`, `click*`) encapsulados en `step()` o `Target`.
+  - **User Journey** (`tests/pages/**/**UserJourney.ts`): encapsula un flujo de usuario concreto;
     compone Pages y `PageHelper`, expone pasos tipados (`shouldHave*`, `toggle*`, etc.) y su propio factory
     (`userIn*`) que incluye navegación, mocks y estado inicial.
   - **Spec** (`tests/e2e/**/*.spec.ts`): orquesta únicamente con Given/When/Then sobre el User Journey devuelto
@@ -56,10 +58,12 @@ Para el razonamiento y la justificación de cada elección, ver [ADR 002](./adr/
 
 - E2E
   - Arquitectura de tres capas: **Page → User Journey → Spec**.
-  - **Page** (`*Page.ts`): solo locators y selectores. No contiene lógica de navegación ni assertions.
+  - **Page** (`*Page.ts`): capa de interacción/verificación atómica.
+    Incluye locators/helpers y puede exponer assertions/interacciones atómicas encapsuladas.
+    No contiene setup de escenario (storage/mocks) ni orquestación del flujo de negocio.
   - **User Journey** (`*UserJourney.ts`): encapsula un flujo de usuario bien definido.
     - Compone uno o más Page Objects y `PageHelper`.
-    - Provee métodos de alto nivel tipados: `shouldHave*`, `toggle*`, `hrefMatches`, etc.
+    - Provee métodos de flujo de alto nivel tipados, componiendo pasos de Page.
     - Incluye un factory (`userIn*`) que orquesta el setup completo (navegación, mocks, estado inicial)
       y devuelve el Journey listo para usar desde el spec.
     - Cada Journey cubre un flujo cohesivo; si los métodos necesarios divergen mucho, crear un Journey separado
@@ -98,12 +102,12 @@ Para el razonamiento y la justificación de cada elección, ver [ADR 002](./adr/
 Evita incluir snippets de implementación en este documento.
 En su lugar, consulta los ejemplos concretos ya existentes en el repositorio:
 
-- Ejemplos de helpers/mocks E2E: `tests/e2e/helpers/mockGiscus.ts`
-- Ejemplos de specs E2E: `tests/e2e/functional/blog.post.spec.ts`, `tests/e2e/a11y/charla.a11y.spec.ts`
-- Ejemplos de tests unitarios y mocks: `tests/unit/i18n/utils.test.ts`, `tests/unit/client/themeToggle.test.ts`
-- Ejemplo de Page (locators): `tests/pages/SidebarPage.ts`, `tests/pages/HomePage.ts`
-- Ejemplo de User Journey: `tests/pages/HomeUserJourney` (en `HomePage.ts`), `tests/pages/ThemeLocaleUserJourney.ts`
-- Spec usando User Journey: `tests/e2e/smoke/homepage.spec.ts`, `tests/e2e/functional/theme/color-switch.spec.ts`
+- Referencias estables:
+  - `docs/adr/012-layered-pom-gherkin.md`
+  - `tests/pages/`
+  - `tests/e2e/`
+  - `tests/e2e/helpers/`
+  - `tests/unit/`
 
 ## Recomendaciones finales
 
