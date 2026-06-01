@@ -1,37 +1,89 @@
-import type { Page, Locator } from '@playwright/test'
+import type { Page } from '@playwright/test'
+import { step } from '@tests/fixtures'
+import { target } from '@tests/pages/components/Target'
+import type { Target as TargetComponent } from '@tests/pages/components/Target'
 
 export class TagsPage {
-  readonly page: Page
+  constructor(
+    readonly page: Page,
+    readonly pageTitle: TargetComponent,
+    readonly pageDescription: TargetComponent,
+    readonly tagGroups: TargetComponent,
+    readonly allTagGroups: TargetComponent,
+    readonly firstTagLink: TargetComponent,
+    readonly pageBody: TargetComponent,
+  ) {}
 
-  constructor(page: Page) {
-    this.page = page
+  shouldHavePageTitle(expected: string) {
+    return this.pageTitle.shouldHaveText(expected)
   }
 
-  pageTitle(): Locator {
-    return this.page.getByTestId('header-title')
+  shouldHavePageDescription(expected: string) {
+    return this.pageDescription.shouldHaveText(expected)
   }
 
-  pageDescription(): Locator {
-    return this.page.getByTestId('tags-description')
+  shouldShowTagGroups() {
+    return this.tagGroups.shouldBeVisible()
   }
 
-  tagGroups(): Locator {
-    return this.page.getByTestId('global-tag-groups')
+  shouldHaveAtLeastOneTagGroup() {
+    return step('tags page should render at least one tag group', async ({ expect }) => {
+      await expect
+        .poll(async () => this.allTagGroups.locator.count())
+        .toBeGreaterThan(0)
+    })
   }
 
-  allTagGroups(): Locator {
-    return this.page.getByTestId(/^global-tag-/)
+  firstTagGroupHeadingShouldBeVisible() {
+    return target(this.allTagGroups.locator.first().locator('h2').first()).shouldBeVisible()
   }
 
-  firstTagGroup(): Locator {
-    return this.allTagGroups().first()
+  shouldHaveAtLeastOneLinkInFirstTagGroup() {
+    return step('first tag group should contain links', async ({ expect }) => {
+      const links = this.allTagGroups.locator.first().locator('a')
+      await expect
+        .poll(async () => links.count())
+        .toBeGreaterThan(0)
+    })
   }
 
-  firstTagLink(): Locator {
-    return this.tagGroups().locator('a').first()
+  firstTagHref() {
+    return step('get first tag href', async () => {
+      return this.firstTagLink.locator.getAttribute('href')
+    })
   }
 
-  getPageBodyText(): Promise<string | null> {
-    return this.page.textContent('body')
+  clickFirstTagAndWaitForUrl(urlRegex: RegExp) {
+    return step('click first tag and wait navigation', async (stepExpect) => {
+      const clickStep = this.firstTagLink.click()
+      await Promise.all([
+        this.page.waitForURL(urlRegex),
+        clickStep.action(stepExpect),
+      ])
+    })
   }
+
+  shouldHaveUrlContaining(locale: string) {
+    return step('url should contain locale and tags segment', async ({ expect }) => {
+      await expect(this.page).toHaveURL(new RegExp(`/${locale}/.+/tags/`))
+    })
+  }
+
+  shouldContainAvailabilityText(expectedText: string) {
+    return step('page should include availability text', async ({ expect }) => {
+      await expect(this.pageBody.locator).toContainText(expectedText)
+    })
+  }
+}
+
+export function tagsPage(page: Page) {
+  return new TagsPage(
+    page,
+    target(page.getByTestId('header-title')),
+    target(page.getByTestId('tags-description')),
+    target(page.getByTestId('global-tag-groups')),
+    target(page.getByTestId(/^global-tag-/)),
+    target(page.getByTestId('global-tag-groups').locator('a').first()),
+    target(page.locator('body')),
+  )
 }

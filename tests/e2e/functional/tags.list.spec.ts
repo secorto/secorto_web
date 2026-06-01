@@ -1,5 +1,5 @@
-import { test, expect } from '@playwright/test'
-import { TagsPage } from '@tests/pages/content/TagsPage'
+import { test, expect } from '@tests/fixtures'
+import { tagsPage } from '@tests/pages/content/TagsPage'
 import { languageKeys, type UILanguages, ui } from '@i18n/ui'
 
 const fixtures: { locale: UILanguages; expectedTitle: string; expectedDescription: string }[] = languageKeys.map((locale) => ({
@@ -14,60 +14,44 @@ for (const f of fixtures) {
       await page.goto(`/${f.locale}/tags`)
     })
 
-    test('shows page title and description', async ({ page }) => {
-      const tags = new TagsPage(page)
-      await expect(tags.pageTitle()).toHaveText(f.expectedTitle)
-      await expect(tags.pageDescription()).toHaveText(f.expectedDescription)
+    test('shows page title and description', async ({ page, Then }) => {
+      const tags = tagsPage(page)
+      await Then(tags.shouldHavePageTitle(f.expectedTitle))
+      await Then(tags.shouldHavePageDescription(f.expectedDescription))
     })
 
-    test('displays tag groups with correct structure', async ({ page }) => {
-      const tags = new TagsPage(page)
-      await expect(tags.tagGroups()).toBeVisible()
-
-      const groupCount = await tags.allTagGroups().count()
-      expect(groupCount).toBeGreaterThan(0)
+    test('displays tag groups with correct structure', async ({ page, Then }) => {
+      const tags = tagsPage(page)
+      await Then(tags.shouldShowTagGroups())
+      await Then(tags.shouldHaveAtLeastOneTagGroup())
     })
 
-    test('tag groups have localized names and links', async ({ page }) => {
-      const tags = new TagsPage(page)
-
-      const firstGroup = tags.firstTagGroup()
-      await expect(firstGroup.locator('h2').first()).toBeVisible()
-
-      const links = firstGroup.locator('a')
-      const linkCount = await links.count()
-      expect(linkCount).toBeGreaterThan(0)
+    test('tag groups have localized names and links', async ({ page, Then }) => {
+      const tags = tagsPage(page)
+      await Then(tags.firstTagGroupHeadingShouldBeVisible())
+      await Then(tags.shouldHaveAtLeastOneLinkInFirstTagGroup())
     })
 
-    test('tag links are valid and navigable', async ({ page }) => {
-      const tags = new TagsPage(page)
-
-      const firstLink = tags.firstTagLink()
-      const href = await firstLink.getAttribute('href')
+    test('tag links are valid and navigable', async ({ page, Then, When }) => {
+      const tags = tagsPage(page)
+      const href = await When(tags.firstTagHref())
 
       expect(href).toBeTruthy()
       expect(href).toMatch(new RegExp(`^/${f.locale}/[a-z]+/tags/`))
 
-      await Promise.all([
-        page.waitForURL(new RegExp(`/${f.locale}/[a-z]+/tags/`)),
-        firstLink.click()
-      ])
-      expect(page.url()).toContain(`/${f.locale}`)
-      expect(page.url()).toContain('/tags/')
+      await When(tags.clickFirstTagAndWaitForUrl(new RegExp(`/${f.locale}/[a-z]+/tags/`)))
+      await Then(tags.shouldHaveUrlContaining(f.locale))
     })
 
-    test('shows "Disponible en" / "Available in" text', async ({ page }) => {
-      const tags = new TagsPage(page)
-      const textContent = await tags.getPageBodyText()
+    test('shows "Disponible en" / "Available in" text', async ({ page, Then }) => {
+      const tags = tagsPage(page)
       const expectedText = f.locale === 'es' ? 'Disponible en' : 'Available in'
-      expect(textContent).toContain(expectedText)
+      await Then(tags.shouldContainAvailabilityText(expectedText))
     })
 
-    test('renders tag groups with proper data-testid attributes', async ({ page }) => {
-      const tags = new TagsPage(page)
-      const groups = await tags.allTagGroups().all()
-
-      expect(groups.length).toBeGreaterThan(0)
+    test('renders tag groups with proper data-testid attributes', async ({ page, Then }) => {
+      const tags = tagsPage(page)
+      await Then(tags.shouldHaveAtLeastOneTagGroup())
     })
   })
 }
