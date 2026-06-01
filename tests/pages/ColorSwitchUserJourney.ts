@@ -4,7 +4,7 @@ import type { SidebarPage } from '@tests/pages/SidebarPage'
 import { sidebarPage } from '@tests/pages/SidebarPage'
 import { target } from '@tests/pages/Target'
 import type { Target as TargetComponent } from '@tests/pages/Target'
-import { step, Verify } from '@tests/fixtures'
+import { step, Act, Verify } from '@tests/fixtures'
 import { mockThirdParty } from '@tests/e2e/helpers/mockThirdParty'
 import { pageHelper } from '@tests/pages/Page'
 import type { PageHelper } from '@tests/pages/Page'
@@ -46,7 +46,7 @@ function colorSwitchJourney(page: Page) {
   )
 }
 
-export const userInHomeForColorSwitch = (page: Page, locale: UILanguages) =>
+export const userInHome = (page: Page, locale: UILanguages) =>
   step(`a user opening home in ${locale} for color switch`, async () => {
     await page.goto(`/${locale}/`)
     await mockThirdParty(page)
@@ -55,10 +55,8 @@ export const userInHomeForColorSwitch = (page: Page, locale: UILanguages) =>
 
 export const userInHomeWithStorageTheme = (page: Page, locale: UILanguages, theme: string) =>
   step(`a user in ${locale} with storage theme ${String(theme)}`, async () => {
-    await Verify(pageHelper(page).injectStorageEntries({ theme }))
-    await page.goto(`/${locale}/`)
-    await mockThirdParty(page)
-    const journey = colorSwitchJourney(page)
+    await Act(pageHelper(page).injectStorageEntries({ theme }))
+    const journey = await Act(userInHome(page, locale))
     await Verify(journey.shouldHaveTheme(theme))
     return journey
   })
