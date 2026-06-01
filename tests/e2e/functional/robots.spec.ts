@@ -1,34 +1,14 @@
-import { test, step } from '@tests/fixtures'
+import { test } from '@tests/fixtures'
 import type { GherkinStepDefinition } from '@tests/fixtures'
+import { createRobotsUserJourney, type RobotsJourney } from '@tests/pages/functional/RobotsUserJourney'
+import type { APIRequestContext } from '@playwright/test'
 
 test.describe('robots.txt endpoint', () => {
-  let userRequestRobots: (path?: string) => GherkinStepDefinition<any>
+  let userRequestRobots: (path?: string) => GherkinStepDefinition<RobotsJourney>
 
   test.beforeEach(async ({ request }) => {
-    userRequestRobots = (path = '/robots.txt') =>
-      step(`a client requests ${path}`, async () => {
-        const response = await request.get(path)
-        const body = await response.text()
-
-        return {
-          response,
-          body,
-          shouldHavePlainText: () =>
-            step('responds with plain text content type', async ({ expect }) => {
-              expect(response.status()).toBe(200)
-              expect(response.headers()['content-type']).toContain('text/plain')
-            }),
-          shouldContainUserAgentAndAllow: () =>
-            step('contains User-agent and Allow', async ({ expect }) => {
-              expect(body).toContain('User-agent: *')
-              expect(body).toContain('Allow: /')
-            }),
-          shouldContainSitemapUrl: () =>
-            step('contains Sitemap URL', async ({ expect }) => {
-              expect(body).toMatch(/Sitemap:\s+https?:\/\/.+\/sitemap-index\.xml/)
-            })
-        }
-      })
+    const req = request as APIRequestContext
+    userRequestRobots = createRobotsUserJourney(req)
   })
 
   test('responds with plain text content type', async ({ Given, Then }) => {
