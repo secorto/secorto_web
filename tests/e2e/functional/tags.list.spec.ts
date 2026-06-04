@@ -1,6 +1,7 @@
 import { test } from '@tests/fixtures'
 import { userIsOnTags } from '@tests/pages/content/TagsUserJourney'
 import { languageKeys, type UILanguages, ui } from '@i18n/ui'
+import { pageHelper } from '@tests/pages/components/PageHelper'
 
 const fixtures: { locale: UILanguages; expectedTitle: string; expectedDescription: string }[] = languageKeys.map((locale) => ({
   locale,
@@ -33,7 +34,7 @@ for (const f of fixtures) {
       await tags.firstTagLinkHrefMatches(new RegExp(`^/${f.locale}/[a-z]+/tags/`))
 
       await tags.clickFirstTagAndWaitForUrl(new RegExp(`/${f.locale}/[a-z]+/tags/`))
-      await tags.shouldHaveUrlContaining(f.locale)
+      await pageHelper(page).shouldHaveURL(new RegExp(`/${f.locale}/.+/tags/`))
     })
 
     test('shows "Disponible en" / "Available in" text', async ({ page }) => {

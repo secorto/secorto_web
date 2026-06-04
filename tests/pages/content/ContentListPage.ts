@@ -47,13 +47,6 @@ export class ContentListPage {
     })
   }
 
-  clickItemAndReturn<T>(href: string, title: string, next: () => T) {
-    return step(title, async () => {
-      await this.itemLinks.get(href).locator.click()
-      return next()
-    })
-  }
-
   shouldHaveTags(ariaSnapshot: string) {
     return step(`${this.name} detail has expected tags`, async ({ expect }) => {
       await expect(this.tags.locator).toMatchAriaSnapshot(ariaSnapshot)

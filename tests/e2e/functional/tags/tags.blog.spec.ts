@@ -6,7 +6,7 @@ for (const locale of languageKeys) {
   test(`Tags - Blog (${locale})`,
     {tag: ['@blog', '@tags', `@${locale}`]},
     async ({ page }) => {
-      const journey = await userInBlogList(page, locale)
-      await journey.verifyTagsForSection()
+      const list = await userInBlogList(page, locale)
+      await list.shouldRenderTagsForSection()
     })
 }

@@ -1,6 +1,8 @@
 import { test } from '@tests/fixtures'
-import { languageKeys, type UILanguages } from '@i18n/ui'
+import { languageKeys, ui, type UILanguages } from '@i18n/ui'
 import { userInTalkList } from '@tests/pages/content/TalkUserJourney'
+import { contentDetailsPath } from '@tests/pages/shared/NavigationPaths'
+import { pageHelper } from '@tests/pages/components/PageHelper'
 
 const SLUG = '2023-09-27-devcontainers'
 
@@ -15,10 +17,13 @@ test.describe('Charlas - flujo de navegación', { tag: ['@flow', '@talk'] }, () 
       page,
     }) => {
       const list = await userInTalkList(page, locale)
+      const expectedSectionTitle = ui[locale]['nav.talks']
       await list.filterByTag('containers')
-      await list.shouldShowFilteredTitle('containers')
-      const detail = await list.clickItem(SLUG)
-      await detail.shouldHaveTitle(expectedTitles[locale])
+      await list.shouldHaveFilteredTitle(expectedSectionTitle, 'containers')
+      const detailPath = contentDetailsPath('talk', locale, SLUG)
+      await list.clickItem(detailPath, `click talk item "${SLUG}"`)
+      await pageHelper(page).shouldHaveURL(detailPath)
+      await list.shouldHaveDetailTitle(expectedTitles[locale])
     })
   }
 })

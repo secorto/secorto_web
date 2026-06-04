@@ -1,6 +1,8 @@
 import { test } from '@tests/fixtures'
 import { languageKeys, type UILanguages } from '@i18n/ui'
 import { userInWorkList } from '@tests/pages/content/WorkUserJourney'
+import { contentDetailsPath } from '@tests/pages/shared/NavigationPaths'
+import { pageHelper } from '@tests/pages/components/PageHelper'
 
 const SLUG = 'perficient'
 
@@ -18,9 +20,11 @@ test.describe('Work - flujo de navegación', { tag: ['@flow', '@work'] }, () => 
   for (const locale of languageKeys) {
     test(`navega de lista a detalle por click (${locale})`, { tag: [`@${locale}`] }, async ({ page }) => {
       const list = await userInWorkList(page, locale)
-      const detail = await list.clickItem(SLUG)
-      await detail.shouldHaveTitle(expectedTitles[locale])
-      await detail.shouldHaveRole(expectedRoles[locale])
+      const detailPath = contentDetailsPath('work', locale, SLUG)
+      await list.clickItem(detailPath, `click work item "${SLUG}"`)
+      await pageHelper(page).shouldHaveURL(detailPath)
+      await list.shouldHaveDetailTitle(expectedTitles[locale])
+      await list.shouldHaveRole(expectedRoles[locale])
     })
   }
 })

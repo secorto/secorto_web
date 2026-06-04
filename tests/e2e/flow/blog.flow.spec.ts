@@ -1,6 +1,8 @@
 import { test } from '@tests/fixtures'
-import { languageKeys, type UILanguages } from '@i18n/ui'
+import { languageKeys, ui, type UILanguages } from '@i18n/ui'
 import { userInBlogList } from '@tests/pages/content/BlogUserJourney'
+import { contentDetailsPath } from '@tests/pages/shared/NavigationPaths'
+import { pageHelper } from '@tests/pages/components/PageHelper'
 
 const SLUG = '2022-07-11-intro-python'
 const TAG = 'python'
@@ -16,12 +18,15 @@ test.describe('Blog - flujo de navegación', { tag: ['@flow', '@blog'] }, () => 
       page,
     }) => {
       const list = await userInBlogList(page, locale)
+      const expectedSectionTitle = ui[locale]['nav.blog']
 
       await list.filterByTag(TAG)
-      await list.shouldShowFilteredTitle(TAG)
+      await list.shouldHaveFilteredTitle(expectedSectionTitle, TAG)
 
-      const detail = await list.clickItem(SLUG)
-      await detail.shouldHaveTitle(expectedTitles[locale])
+      const detailPath = contentDetailsPath('blog', locale, SLUG)
+      await list.clickItem(detailPath, `click blog item "${SLUG}"`)
+      await pageHelper(page).shouldHaveURL(detailPath)
+      await list.shouldHaveDetailTitle(expectedTitles[locale])
     })
   }
 })

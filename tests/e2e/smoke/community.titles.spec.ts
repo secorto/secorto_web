@@ -1,6 +1,12 @@
 import { test } from '@tests/fixtures'
-import type { UILanguages } from '@i18n/ui'
+import { ui, type UILanguages } from '@i18n/ui'
 import { userInCommunityList, userInCommunityDetail } from '@tests/pages/content/CommunityUserJourney'
+import { contentListPath, contentDetailsPath } from '@tests/pages/shared/NavigationPaths'
+import { pageHelper } from '@tests/pages/components/PageHelper'
+
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
 
 type CommunityFixture = { locale: UILanguages; slug: string; title: string; role: string; website: string }
 
@@ -24,17 +30,23 @@ const fixtures: CommunityFixture[] = [
 test.describe('Community', { tag: ['@smoke', '@community'] }, () => {
   for (const locale of ['es', 'en'] as UILanguages[]) {
     test(`community list shows title (${locale})`, { tag: [`@${locale}`] }, async ({ page }) => {
-      const journey = await userInCommunityList(page, locale)
-      await journey.shouldHaveTitle()
+      const list = await userInCommunityList(page, locale)
+      const listPath = contentListPath('community', locale)
+      const expectedHeaderTitle = ui[locale]['nav.community']
+
+      await pageHelper(page).shouldHaveURL(listPath)
+      await pageHelper(page).shouldHaveTitle(new RegExp(`^${escapeRegExp(expectedHeaderTitle)} \\| SeCOrTo$`))
+      await list.shouldHaveListHeaderTitle(expectedHeaderTitle)
     })
   }
 
   for (const f of fixtures) {
     test(`community detail shows title, role and website (${f.locale})`, { tag: [`@${f.locale}`] }, async ({ page }) => {
-      const journey = await userInCommunityDetail(page, f.locale, f.slug)
-      await journey.shouldHaveTitle(f.title)
-      await journey.shouldHaveRole(f.role)
-      await journey.shouldHaveWebsite(f.website)
+      const detail = await userInCommunityDetail(page, f.locale, f.slug)
+      await pageHelper(page).shouldHaveURL(contentDetailsPath('community', f.locale, f.slug))
+      await detail.shouldHaveDetailTitle(f.title)
+      await detail.shouldHaveRole(f.role)
+      await detail.shouldHaveWebsite(f.website)
     })
   }
 })

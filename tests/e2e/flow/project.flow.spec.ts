@@ -1,6 +1,8 @@
 import { test } from '@tests/fixtures'
 import { languageKeys, type UILanguages } from '@i18n/ui'
 import { userInProjectList } from '@tests/pages/content/ProjectUserJourney'
+import { contentDetailsPath } from '@tests/pages/shared/NavigationPaths'
+import { pageHelper } from '@tests/pages/components/PageHelper'
 
 const SLUG = 'scot3004'
 
@@ -18,9 +20,11 @@ test.describe('Projects - flujo de navegación', { tag: ['@flow', '@projects'] }
   for (const locale of languageKeys) {
     test(`navega de lista a detalle por click (${locale})`, { tag: [`@${locale}`] }, async ({ page }) => {
       const list = await userInProjectList(page, locale)
-      const detail = await list.clickItem(SLUG)
-      await detail.shouldHaveTitle(expectedTitles[locale])
-      await detail.shouldHaveRole(expectedRoles[locale])
+      const detailPath = contentDetailsPath('projects', locale, SLUG)
+      await list.clickItem(detailPath, `click project item "${SLUG}"`)
+      await pageHelper(page).shouldHaveURL(detailPath)
+      await list.shouldHaveDetailTitle(expectedTitles[locale])
+      await list.shouldHaveRole(expectedRoles[locale])
     })
   }
 })
