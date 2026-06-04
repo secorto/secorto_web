@@ -1,5 +1,7 @@
+import type { UILanguages } from '@i18n/ui'
 import type { Locator, Page } from '@playwright/test'
 import { step } from '@tests/fixtures'
+import { visit } from '../shared/UserJourneyFactory'
 
 export class FooterPage {
   constructor(
@@ -59,3 +61,7 @@ export function footerPage(page: Page) {
     page.getByTestId('footer-follow'),
   )
 }
+
+export const userInHome = (page: Page, locale: UILanguages) =>
+  visit(`a user opening home in ${locale} for menu flow`, page, locale, footerPage)
+
