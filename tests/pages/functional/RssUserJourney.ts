@@ -7,13 +7,43 @@ const localeCountry = {
   en: 'en-us'
 } as const satisfies Record<UILanguages, string>
 
-export type RSSJourney = {
-  response: APIResponse
-  body: string
-  shouldHaveXmlContentType: () => ReturnType<typeof step>
-  shouldHaveChannelStructure: () => ReturnType<typeof step>
-  shouldHaveAtLeastOneItem: () => ReturnType<typeof step>
-  shouldIncludeLanguageTag: () => ReturnType<typeof step>
+export class RSSJourney {
+  constructor(
+    public readonly response: APIResponse,
+    public readonly body: string,
+    private readonly locale: UILanguages
+  ) {}
+
+  shouldHaveXmlContentType() {
+    return step('responds with XML content type', async ({ expect }) => {
+      expect(this.response.status()).toBe(200)
+      expect(this.response.headers()['content-type']).toContain('xml')
+    })
+  }
+
+  shouldHaveChannelStructure() {
+    return step('contains valid channel structure', async ({ expect }) => {
+      expect(this.body).toContain('<rss')
+      expect(this.body).toContain('<channel>')
+      expect(this.body).toContain('<title>')
+      expect(this.body).toContain('<description>')
+      expect(this.body).toContain('<link>')
+    })
+  }
+
+  shouldHaveAtLeastOneItem() {
+    return step('contains at least one item', async ({ expect }) => {
+      expect(this.body).toContain('<item>')
+      expect(this.body).toContain('<title>')
+      expect(this.body).toContain('<pubDate>')
+    })
+  }
+
+  shouldIncludeLanguageTag() {
+    return step('includes correct language tag', async ({ expect }) => {
+      expect(this.body).toContain(`<language>${localeCountry[this.locale]}</language>`)
+    })
+  }
 }
 
 export const createRssUserJourney = (request: APIRequestContext, locale: UILanguages) => {
@@ -23,32 +53,8 @@ export const createRssUserJourney = (request: APIRequestContext, locale: UILangu
       const response = await request.get(target)
       const body = await response.text()
 
-      return {
-        response,
-        body,
-        shouldHaveXmlContentType: () =>
-          step('responds with XML content type', async ({ expect }) => {
-            expect(response.status()).toBe(200)
-            expect(response.headers()['content-type']).toContain('xml')
-          }),
-        shouldHaveChannelStructure: () =>
-          step('contains valid channel structure', async ({ expect }) => {
-            expect(body).toContain('<rss')
-            expect(body).toContain('<channel>')
-            expect(body).toContain('<title>')
-            expect(body).toContain('<description>')
-            expect(body).toContain('<link>')
-          }),
-        shouldHaveAtLeastOneItem: () =>
-          step('contains at least one item', async ({ expect }) => {
-            expect(body).toContain('<item>')
-            expect(body).toContain('<title>')
-            expect(body).toContain('<pubDate>')
-          }),
-        shouldIncludeLanguageTag: () =>
-          step('includes correct language tag', async ({ expect }) => {
-            expect(body).toContain(`<language>${localeCountry[locale]}</language>`)
-          })
-      }
+      return new RSSJourney(response, body, locale)
     })
 }
+
+export const userReadsRss = createRssUserJourney
