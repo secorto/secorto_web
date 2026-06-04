@@ -4,11 +4,12 @@ import type { SidebarPage } from '@tests/pages/sidebar/SidebarPage'
 import { sidebarPage } from '@tests/pages/sidebar/SidebarPage'
 import { target } from '@tests/pages/components/Target'
 import type { Target as TargetComponent } from '@tests/pages/components/Target'
-import { userInHomeFactory } from '@tests/pages/shared/UserJourneyFactory'
+import { visit } from '@tests/pages/shared/UserJourneyFactory'
 import { pageHelper } from '@tests/pages/components/PageHelper'
 import type { PageHelper } from '@tests/pages/components/PageHelper'
+import { homePath } from '../shared/NavigationPaths'
 
-export class ThemeLocaleUserJourney {
+export class ThemeLocaleHomePage {
   constructor(
     readonly sidebar: SidebarPage,
     readonly themeElement: TargetComponent,
@@ -41,8 +42,8 @@ export class ThemeLocaleUserJourney {
   }
 }
 
-function themeLocaleJourney(page: Page) {
-  return new ThemeLocaleUserJourney(
+function themeLocaleHomePage(page: Page) {
+  return new ThemeLocaleHomePage(
     sidebarPage(page),
     target('html root', page.locator('html')),
     pageHelper(page),
@@ -54,11 +55,11 @@ export const userInHome = (
   locale: UILanguages,
   options?: { theme?: string }
 ) =>
-  userInHomeFactory(
+  visit(
     `a user opening home in ${locale} for theme/locale`,
     page,
-    locale,
-    themeLocaleJourney,
+    homePath(locale),
+    themeLocaleHomePage,
     async (p) => {
       if (options?.theme !== undefined) {
         await pageHelper(p).injectStorageEntries({ theme: options.theme })
