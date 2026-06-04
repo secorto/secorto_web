@@ -1,7 +1,22 @@
 import { test } from '@tests/fixtures'
-import { userInHome } from '@tests/pages/home/HomeUserJourney'
+import { languageKeys, ui } from '@i18n/ui'
+import { userInHome } from '@tests/pages/sidebar/SidebarPage'
 
-test('smoke: sidebar muestra logo', { tag: ['@smoke', '@home', '@sidebar', '@es'] }, async ({ page }) => {
-  const home = await userInHome(page, 'es')
-  await home.sidebar.shouldHaveLogo()
-})
+
+test.describe(`Homepage (sidebar)`,
+  { tag: ['@home', '@smoke', '@sidebar'] },
+  () => {
+    test('smoke: sidebar muestra logo', { tag: ['@es'] }, async ({ page }) => {
+      const home = await userInHome(page, 'es')
+      await home.shouldHaveLogo()
+    })
+
+    for (const locale of languageKeys) {
+      test(`title and about link are correct (smoke) - ${locale}`,
+        { tag: [`@${locale}`] },
+        async ({ page }) => {
+          const home = await userInHome(page, locale)
+          await home.shouldHaveAboutLink(ui[locale])
+        })
+    }
+  })

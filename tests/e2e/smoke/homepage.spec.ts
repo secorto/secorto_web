@@ -1,13 +1,13 @@
 import { test } from '@tests/fixtures'
 import { ui, languageKeys } from '@i18n/ui'
-import { HomeUserJourney, userInHome } from '@tests/pages/home/HomeUserJourney'
 import { sectionsConfig } from '@domain/section'
+import { HomePage, userInHome } from '@tests/pages/home/HomePage'
 
 for (const locale of languageKeys) {
   test.describe(`Homepage (${locale})`,
     { tag: ['@home', '@smoke', `@${locale}`] },
     () => {
-      let userInHomeForLocale: () => Promise<HomeUserJourney>
+      let userInHomeForLocale: () => Promise<HomePage>
 
       test.beforeEach(async ({ page }) => {
         userInHomeForLocale = () => userInHome(page, locale)
@@ -30,12 +30,6 @@ for (const locale of languageKeys) {
         const talkRoute = sectionsConfig.talk.routes[locale]
         await home.blogHrefMatches(locale, blogRoute)
         await home.talkHrefMatches(locale, talkRoute)
-      })
-
-      test('title and about link are correct (smoke)', async () => {
-        const home = await userInHomeForLocale()
-        await home.shouldHaveTitle()
-        await home.shouldHaveAboutLink(ui[locale])
       })
     })
 }

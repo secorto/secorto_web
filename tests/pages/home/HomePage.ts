@@ -3,6 +3,8 @@ import type { Page } from '@playwright/test'
 import type { Target as TargetComponent } from '@tests/pages/components/Target'
 import { homeHighlights } from '@tests/pages/home/HomeHighlights'
 import type { HomeHighlights as HomeHighlightsComponent } from '@tests/pages/home/HomeHighlights'
+import type { UILanguages } from '@i18n/ui'
+import { visit } from '../shared/UserJourneyFactory'
 
 export class HomePage {
   constructor(
@@ -15,6 +17,27 @@ export class HomePage {
   shouldHaveTitle() {
     return this.headerTitle.shouldHaveVisibleText(/\S+/)
   }
+
+
+  shouldHaveAvatar() {
+    return this.avatar.shouldBeVisible()
+  }
+
+  shouldHaveBioText() {
+    return this.bioText.shouldBeVisible()
+  }
+
+  shouldHavePyBAQ(i18n: Record<string, string>) {
+    return this.homeHighlights.pybaq.shouldHavePyBAQ(i18n)
+  }
+
+  blogHrefMatches(locale: string, blogRoute: string) {
+    return this.homeHighlights.blog.hrefMatches(locale, blogRoute)
+  }
+
+  talkHrefMatches(locale: string, talkRoute: string) {
+    return this.homeHighlights.talk.hrefMatches(locale, talkRoute)
+  }
 }
 
 export function homePage(page: Page) {
@@ -25,3 +48,7 @@ export function homePage(page: Page) {
     homeHighlights(page.locator('.highlights')),
   )
 }
+
+export const userInHome = (page: Page, locale: UILanguages) =>
+  visit(`a user opening home in ${locale} for menu flow`, page, locale, homePage)
+
