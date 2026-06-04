@@ -5,7 +5,7 @@ import type { Target as TargetComponent } from '@tests/pages/components/Target'
 import { ThemeToggle, themeToggleFromPage } from '@tests/pages/sidebar/ThemeToggle'
 import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
-import { visit } from '../shared/UserJourneyFactory'
+import { homePath, visit } from '../shared/NavigationPaths'
 
 export class SidebarPage {
   constructor(
@@ -90,4 +90,4 @@ export function sidebarPage(page: Page) {
 }
 
 export const userInHome = (page: Page, locale: UILanguages) =>
-  visit(`a user opening home in ${locale} for menu flow`, page, locale, sidebarPage)
+  visit(`a user opening home in ${locale} for menu flow`, page, homePath(locale), sidebarPage)

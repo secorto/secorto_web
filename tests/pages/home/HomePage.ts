@@ -4,7 +4,7 @@ import type { Target as TargetComponent } from '@tests/pages/components/Target'
 import { homeHighlights } from '@tests/pages/home/HomeHighlights'
 import type { HomeHighlights as HomeHighlightsComponent } from '@tests/pages/home/HomeHighlights'
 import type { UILanguages } from '@i18n/ui'
-import { visit } from '../shared/UserJourneyFactory'
+import { homePath, visit } from '@tests/pages/shared/NavigationPaths'
 
 export class HomePage {
   constructor(
@@ -50,5 +50,5 @@ export function homePage(page: Page) {
 }
 
 export const userInHome = (page: Page, locale: UILanguages) =>
-  visit(`a user opening home in ${locale} for menu flow`, page, locale, homePage)
+  visit(`a user opening home in ${locale} for menu flow`, page, homePath(locale), homePage)
 

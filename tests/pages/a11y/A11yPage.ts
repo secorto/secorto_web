@@ -1,10 +1,9 @@
 import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
 import { AxeBuilder } from '@axe-core/playwright'
-import { visit, userInHomeFactory } from '@tests/pages/shared/UserJourneyFactory'
 import type { SectionType } from '@domain/section'
 import { step } from '@tests/fixtures'
-import { contentDetailsPath, contentListPath, contentTagsPath, tagsPath } from '@tests/pages/shared/NavigationPaths'
+import { contentDetailsPath, contentListPath, contentTagsPath, homePath, tagsPath, visit } from '@tests/pages/shared/NavigationPaths'
 
 const DEFAULT_EXCLUDES = [
   '[data-netlify-deploy-id]', 'iframe', 'iframe *'
@@ -53,7 +52,7 @@ export function userInTags(page: Page, locale: UILanguages) {
 }
 
 export function userInHome(page: Page, locale: UILanguages) {
-  return userInHomeFactory(`a user in home ${locale}`, page, locale, a11yPage)
+  return visit(`a user in home ${locale}`, page, homePath(locale), a11yPage)
 }
 
 export function userInContentList(page: Page, locale: UILanguages, collection: SectionType) {

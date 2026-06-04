@@ -1,9 +1,8 @@
 import type { UILanguages } from '@i18n/ui'
 import type { Page } from '@playwright/test'
-import { visit } from '@tests/pages/shared/UserJourneyFactory'
 import { targetSelector } from '@tests/pages/components/Target'
 import { step } from '@tests/fixtures'
-import { homePath } from '../shared/NavigationPaths'
+import { homePath, visit } from '../shared/NavigationPaths'
 
 export class LangSwitchHomePage {
   constructor(

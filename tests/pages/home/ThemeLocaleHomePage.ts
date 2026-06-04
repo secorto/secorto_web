@@ -4,10 +4,9 @@ import type { SidebarPage } from '@tests/pages/sidebar/SidebarPage'
 import { sidebarPage } from '@tests/pages/sidebar/SidebarPage'
 import { target } from '@tests/pages/components/Target'
 import type { Target as TargetComponent } from '@tests/pages/components/Target'
-import { visit } from '@tests/pages/shared/UserJourneyFactory'
 import { pageHelper } from '@tests/pages/components/PageHelper'
 import type { PageHelper } from '@tests/pages/components/PageHelper'
-import { homePath } from '../shared/NavigationPaths'
+import { homePath, visit } from '@tests/pages/shared/NavigationPaths'
 
 export class ThemeLocaleHomePage {
   constructor(
