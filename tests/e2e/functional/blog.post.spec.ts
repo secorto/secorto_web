@@ -1,8 +1,7 @@
-import { test, expect } from '@playwright/test'
-import { BlogPage } from '@tests/pages/BlogPage'
-import { mockThirdParty } from '@tests/e2e/helpers/mockThirdParty'
-import { openCollectionList, clickLinkItem } from '@tests/actions/ContentListActions'
+import { test } from '@tests/fixtures'
+import { userInBlogPost } from '@tests/pages/content/BlogUserJourney'
 import type { UILanguages } from '@i18n/ui'
+import type { TestInfo } from '@playwright/test'
 
 type PostFixture = { locale: UILanguages, slug: string, postTitle: string }
 
@@ -20,24 +19,15 @@ const postFixtures: PostFixture[] = [
 ]
 
 for (const f of postFixtures) {
-  test.describe(`Blog post (${f.locale})`, () => {
-    test.beforeEach(async ({ page }) => {
-      await mockThirdParty(page)
-      await page.setViewportSize({ width: 480, height: 800 })
-      const blog = new BlogPage(page)
-      await openCollectionList(page, f.locale, 'blog')
-      await clickLinkItem(page, f.locale, 'blog', f.slug)
-      await expect(blog.headerTitle()).toBeVisible()
+  test.describe(`Blog post (${f.locale})`, { tag: ['@functional', '@blog', `@${f.locale}`] }, () => {
+    test('shows post title', async ({ When, Then, page }) => {
+      const journey = await When(userInBlogPost(page, f.locale, f.slug))
+      await Then(journey.shouldHaveTitle(f.postTitle))
     })
 
-    test('shows post title', async ({ page }) => {
-      const blog = new BlogPage(page)
-      await expect(blog.headerTitle()).toHaveText(f.postTitle)
-    })
-
-    test('no horizontal scroll on mobile', async ({ page }, testInfo) => {
-      const { assertNoHorizontalOverflow } = await import('@tests/utils/layout')
-      await assertNoHorizontalOverflow(page, testInfo, f.locale)
+    test('no horizontal scroll on mobile', async ({ When, Then, page }, testInfo: TestInfo) => {
+      const journey = await When(userInBlogPost(page, f.locale, f.slug, { width: 480, height: 800 }))
+      await Then(journey.assertNoHorizontalOverflow(testInfo, f.locale))
     })
   })
 }
