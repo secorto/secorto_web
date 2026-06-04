@@ -8,7 +8,7 @@ const localeCountry = {
   en: 'en-us'
 } as const satisfies Record<UILanguages, string>
 
-export class RSSJourney {
+export class RSSApiResponse {
   constructor(
     public readonly response: APIResponse,
     public readonly body: string,
@@ -54,6 +54,6 @@ export const getRss = async (request: APIRequestContext, locale: UILanguages) =>
     const response = await request.get(target)
     const body = await response.text()
 
-    return new RSSJourney(response, body, locale)
+    return new RSSApiResponse(response, body, locale)
   })
 }
