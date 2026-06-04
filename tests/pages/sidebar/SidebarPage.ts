@@ -3,6 +3,9 @@ import { sidebarToggleFromPage, SidebarToggle } from '@tests/pages/sidebar/Sideb
 import { target } from '@tests/pages/components/Target'
 import type { Target as TargetComponent } from '@tests/pages/components/Target'
 import { ThemeToggle, themeToggleFromPage } from '@tests/pages/sidebar/ThemeToggle'
+import type { Page } from '@playwright/test'
+import type { UILanguages } from '@i18n/ui'
+import { visit } from '../shared/UserJourneyFactory'
 
 export class SidebarPage {
   constructor(
@@ -76,7 +79,7 @@ export class SidebarPage {
   }
 }
 
-export function sidebarPage(page: import('@playwright/test').Page) {
+export function sidebarPage(page: Page) {
   return new SidebarPage(
     sidebarToggleFromPage(page),
     target('sidebar title', page.getByTestId('sidebar-title')),
@@ -85,3 +88,6 @@ export function sidebarPage(page: import('@playwright/test').Page) {
     target('sidebar logo', page.locator('nav.sidebar svg.sidebar-logo')),
   )
 }
+
+export const userInHome = (page: Page, locale: UILanguages) =>
+  visit(`a user opening home in ${locale} for menu flow`, page, locale, sidebarPage)

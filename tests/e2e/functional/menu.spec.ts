@@ -1,11 +1,10 @@
 import { test } from '@tests/fixtures'
-import { userInHome } from '@tests/pages/home/MenuUserJourney'
-import type { MenuUserJourney } from '@tests/pages/home/MenuUserJourney'
+import { SidebarPage, userInHome } from '@tests/pages/sidebar/SidebarPage'
 
 test.describe('Hamburger menu', { tag: ['@functional', '@home', '@menu', '@sidebar', '@es'] }, () => {
   test.use({ viewport: { width: 375, height: 667 } })
 
-  let userInMenuFlow: () => Promise<MenuUserJourney>
+  let userInMenuFlow: () => Promise<SidebarPage>
 
   test.beforeEach(async ({ page }) => {
     userInMenuFlow = () => userInHome(page, 'es')
