@@ -1,6 +1,6 @@
 import { test } from '@tests/fixtures'
 import { ui, type UILanguages } from '@i18n/ui'
-import { userInWorkList, userInWorkDetail } from '@tests/pages/content/WorkUserJourney'
+import { userInWorkList, userInWorkDetail } from '@tests/pages/content/WorkPages'
 import { contentListPath, contentDetailsPath } from '@tests/pages/shared/NavigationPaths'
 import { pageHelper } from '@tests/pages/components/PageHelper'
 

@@ -1,6 +1,6 @@
 import { test } from '@tests/fixtures'
 import { languageKeys, ui, type UILanguages } from '@i18n/ui'
-import { userInTalkList } from '@tests/pages/content/TalkUserJourney'
+import { userInTalkList } from '@tests/pages/content/TalkPages'
 import { contentDetailsPath } from '@tests/pages/shared/NavigationPaths'
 import { pageHelper } from '@tests/pages/components/PageHelper'
 

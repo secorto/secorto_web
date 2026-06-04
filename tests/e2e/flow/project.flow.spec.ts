@@ -1,6 +1,6 @@
 import { test } from '@tests/fixtures'
 import { languageKeys, type UILanguages } from '@i18n/ui'
-import { userInProjectList } from '@tests/pages/content/ProjectUserJourney'
+import { userInProjectList } from '@tests/pages/content/ProjectPages'
 import { contentDetailsPath } from '@tests/pages/shared/NavigationPaths'
 import { pageHelper } from '@tests/pages/components/PageHelper'
 
