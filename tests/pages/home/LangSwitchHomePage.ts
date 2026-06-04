@@ -1,10 +1,11 @@
 import type { UILanguages } from '@i18n/ui'
 import type { Page } from '@playwright/test'
-import { userInHomeFactory } from '@tests/pages/shared/UserJourneyFactory'
+import { visit } from '@tests/pages/shared/UserJourneyFactory'
 import { targetSelector } from '@tests/pages/components/Target'
 import { step } from '@tests/fixtures'
+import { homePath } from '../shared/NavigationPaths'
 
-export class HomeLanguageUserJourney {
+export class LangSwitchHomePage {
   constructor(
     readonly page: Page,
     readonly langLinks: ReturnType<typeof targetSelector<UILanguages>>,
@@ -28,11 +29,11 @@ export class HomeLanguageUserJourney {
 }
 
 export const userInHome = (page: Page, locale: UILanguages) =>
-  userInHomeFactory(
+  visit(
     `a user in ${locale} home for language switch`,
     page,
-    locale,
-    (p) => new HomeLanguageUserJourney(
+    homePath(locale),
+    (p) => new LangSwitchHomePage(
       p,
       targetSelector('language link', (lang: UILanguages) => p.getByTestId(`lang-${lang}`)),
     ),
