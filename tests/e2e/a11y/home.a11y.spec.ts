@@ -6,9 +6,9 @@ import { userInHome } from '@tests/pages/a11y/A11yUserJourney'
 test.describe('A11y - Home', { tag: ['@a11y', '@home'] }, () => {
   languageKeys.forEach((locale) => {
     test(`home page a11y (${locale})`, { tag: [`@${locale}`] }, async ({ page }) => {
-      const journey = await userInHome(page, locale)
-      const results = await journey.auditA11y()
-      await journey.shouldPassAudit(results)
+      const homePage = await userInHome(page, locale)
+      const results = await homePage.auditA11y()
+      await homePage.shouldPassAudit(results)
     })
   })
 })

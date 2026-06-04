@@ -6,27 +6,27 @@ import { userInContentList, userInContentTag, userInContentDetail, userInTags } 
 test.describe('A11y - Charlas', { tag: ['@a11y', '@talk'] }, () => {
   languageKeys.forEach((locale) => {
     test(`tags list a11y (global tags) (${locale})`, { tag: [`@${locale}`] }, async ({ page }) => {
-      const journey = await userInTags(page, locale)
-      const tagsResults = await journey.auditA11y()
-      await journey.shouldPassAudit(tagsResults)
+      const tagsPage = await userInTags(page, locale)
+      const tagsResults = await tagsPage.auditA11y()
+      await tagsPage.shouldPassAudit(tagsResults)
     })
 
     test(`charla list a11y (${locale})`, { tag: [`@${locale}`] }, async ({ page }) => {
-      const journey = await userInContentList(page, locale, 'talk')
-      const listingResults = await journey.auditA11y()
-      await journey.shouldPassAudit(listingResults)
+      const listPage = await userInContentList(page, locale, 'talk')
+      const listingResults = await listPage.auditA11y()
+      await listPage.shouldPassAudit(listingResults)
     })
 
     test(`charla tag a11y (${locale})`, { tag: [`@${locale}`] }, async ({ page }) => {
-      const journey = await userInContentTag(page, locale, 'talk')
-      const tagResults = await journey.auditA11y()
-      await journey.shouldPassAudit(tagResults)
+      const tagPage = await userInContentTag(page, locale, 'talk')
+      const tagResults = await tagPage.auditA11y()
+      await tagPage.shouldPassAudit(tagResults)
     })
 
     test(`charla detail a11y (${locale})`, { tag: [`@${locale}`] }, async ({ page }) => {
-      const journey = await userInContentDetail(page, locale, 'talk', '2023-09-27-devcontainers')
-      const detailResults = await journey.auditA11y()
-      await journey.shouldPassAudit(detailResults)
+      const detailPage = await userInContentDetail(page, locale, 'talk', '2023-09-27-devcontainers')
+      const detailResults = await detailPage.auditA11y()
+      await detailPage.shouldPassAudit(detailResults)
     })
   })
 })

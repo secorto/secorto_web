@@ -1,5 +1,8 @@
 import type { Page } from '@playwright/test'
+import type { UILanguages } from '@i18n/ui'
 import { step } from '@tests/fixtures'
+import { visit } from '@tests/pages/shared/UserJourneyFactory'
+import { tagsPath } from '@tests/pages/shared/NavigationPaths'
 import { link } from '@tests/pages/components/Link'
 import type { Link as LinkComponent } from '@tests/pages/components/Link'
 import { target } from '@tests/pages/components/Target'
@@ -78,3 +81,11 @@ export function tagsPage(page: Page) {
     target('tags page body', page.locator('body')),
   )
 }
+
+export const userIsOnTags = (page: Page, locale: UILanguages) =>
+  visit(
+    `a user in tags ${locale}`,
+    page,
+    tagsPath(locale),
+    (p): TagsPage => tagsPage(p),
+  )

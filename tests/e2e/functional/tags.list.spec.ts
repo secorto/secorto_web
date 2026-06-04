@@ -1,5 +1,5 @@
 import { test } from '@tests/fixtures'
-import { userIsOnTags } from '@tests/pages/content/TagsUserJourney'
+import { userIsOnTags } from '@tests/pages/content/TagsPage'
 import { languageKeys, type UILanguages, ui } from '@i18n/ui'
 import { pageHelper } from '@tests/pages/components/PageHelper'
 
@@ -12,40 +12,40 @@ const fixtures: { locale: UILanguages; expectedTitle: string; expectedDescriptio
 for (const f of fixtures) {
   test.describe(`Tags list (${f.locale})`, { tag: ['@functional', '@tags', `@${f.locale}`] }, () => {
     test('shows page title and description', async ({ page }) => {
-      const tags = await userIsOnTags(page, f.locale)
-      await tags.shouldHavePageTitle(f.expectedTitle)
-      await tags.shouldHavePageDescription(f.expectedDescription)
+      const tagsPage = await userIsOnTags(page, f.locale)
+      await tagsPage.shouldHavePageTitle(f.expectedTitle)
+      await tagsPage.shouldHavePageDescription(f.expectedDescription)
     })
 
     test('displays tag groups with correct structure', async ({ page }) => {
-      const tags = await userIsOnTags(page, f.locale)
-      await tags.shouldShowTagGroups()
-      await tags.shouldHaveAtLeastOneTagGroup()
+      const tagsPage = await userIsOnTags(page, f.locale)
+      await tagsPage.shouldShowTagGroups()
+      await tagsPage.shouldHaveAtLeastOneTagGroup()
     })
 
     test('tag groups have localized names and links', async ({ page }) => {
-      const tags = await userIsOnTags(page, f.locale)
-      await tags.firstTagGroupHeadingShouldBeVisible()
-      await tags.shouldHaveAtLeastOneLinkInFirstTagGroup()
+      const tagsPage = await userIsOnTags(page, f.locale)
+      await tagsPage.firstTagGroupHeadingShouldBeVisible()
+      await tagsPage.shouldHaveAtLeastOneLinkInFirstTagGroup()
     })
 
     test('tag links are valid and navigable', async ({ page }) => {
-      const tags = await userIsOnTags(page, f.locale)
-      await tags.firstTagLinkHrefMatches(new RegExp(`^/${f.locale}/[a-z]+/tags/`))
+      const tagsPage = await userIsOnTags(page, f.locale)
+      await tagsPage.firstTagLinkHrefMatches(new RegExp(`^/${f.locale}/[a-z]+/tags/`))
 
-      await tags.clickFirstTagAndWaitForUrl(new RegExp(`/${f.locale}/[a-z]+/tags/`))
+      await tagsPage.clickFirstTagAndWaitForUrl(new RegExp(`/${f.locale}/[a-z]+/tags/`))
       await pageHelper(page).shouldHaveURL(new RegExp(`/${f.locale}/.+/tags/`))
     })
 
     test('shows "Disponible en" / "Available in" text', async ({ page }) => {
-      const tags = await userIsOnTags(page, f.locale)
+      const tagsPage = await userIsOnTags(page, f.locale)
       const expectedText = f.locale === 'es' ? 'Disponible en' : 'Available in'
-      await tags.shouldContainAvailabilityText(expectedText)
+      await tagsPage.shouldContainAvailabilityText(expectedText)
     })
 
     test('renders tag groups with proper data-testid attributes', async ({ page }) => {
-      const tags = await userIsOnTags(page, f.locale)
-      await tags.shouldHaveAtLeastOneTagGroup()
+      const tagsPage = await userIsOnTags(page, f.locale)
+      await tagsPage.shouldHaveAtLeastOneTagGroup()
     })
   })
 }

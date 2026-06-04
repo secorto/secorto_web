@@ -9,11 +9,11 @@ for (const colorScheme of schemes) {
     () => {
       test.use({ colorScheme })
       test(`toggles between light and dark mode (start ${colorScheme})`, async ({ page }) => {
-        const journey = await userInHome(page, 'en')
-        await journey.shouldHaveTheme(colorScheme)
-        const initialTransform = await journey.getTransformOfThemeToggle()
-        await journey.toggleTheme()
-        await journey.themeToggleShouldBeDifferent(initialTransform)
+        const themePage = await userInHome(page, 'en')
+        await themePage.shouldHaveTheme(colorScheme)
+        const initialTransform = await themePage.getTransformOfThemeToggle()
+        await themePage.toggleTheme()
+        await themePage.themeToggleShouldBeDifferent(initialTransform)
       })
     })
 }
