@@ -4,16 +4,16 @@ import { userInContentList, userInContentDetail } from '@tests/pages/a11y/A11yUs
 
 test.describe('A11y - Projects', { tag: ['@a11y', '@projects'] }, () => {
   languageKeys.forEach((locale) => {
-    test(`projects list a11y (${locale})`, { tag: [`@${locale}`] }, async ({ Given, When, Then, page }) => {
-      const journey = await Given(userInContentList(page, locale, 'projects'))
-      const listingResults = await When(journey.auditA11y())
-      await Then(journey.shouldPassAudit(listingResults))
+    test(`projects list a11y (${locale})`, { tag: [`@${locale}`] }, async ({ page }) => {
+      const journey = await userInContentList(page, locale, 'projects')
+      const listingResults = await journey.auditA11y()
+      await journey.shouldPassAudit(listingResults)
     })
 
-    test(`project detail a11y (${locale})`, { tag: [`@${locale}`] }, async ({ Given, When, Then, page }) => {
-      const journey = await Given(userInContentDetail(page, locale, 'projects', 'scot3004'))
-      const detailResults = await When(journey.auditA11y())
-      await Then(journey.shouldPassAudit(detailResults))
+    test(`project detail a11y (${locale})`, { tag: [`@${locale}`] }, async ({ page }) => {
+      const journey = await userInContentDetail(page, locale, 'projects', 'scot3004')
+      const detailResults = await journey.auditA11y()
+      await journey.shouldPassAudit(detailResults)
     })
   })
 })

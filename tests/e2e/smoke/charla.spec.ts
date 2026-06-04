@@ -30,20 +30,20 @@ const expectedTags: Record<UILanguages, string> = {
 
 test.describe('Charlas', { tag: ['@smoke', '@talk'] }, () => {
   for (const locale of languageKeys) {
-    test(`talk list shows title (${locale})`, { tag: [`@${locale}`] }, async ({ Given, Then, page }) => {
-      const journey = await Given(userInTalkList(page, locale))
-      await Then(journey.shouldHaveTitle())
+    test(`talk list shows title (${locale})`, { tag: [`@${locale}`] }, async ({ page }) => {
+      const journey = await userInTalkList(page, locale)
+      await journey.shouldHaveTitle()
     })
 
-    test(`talk detail shows title and tags (${locale})`, { tag: [`@${locale}`] }, async ({ Given, Then, And, page }) => {
-      const journey = await Given(userInTalkDetail(page, locale, SLUG))
-      await Then(journey.shouldHaveTitle(expectedTitles[locale]))
-      await And(journey.shouldHaveTags(expectedTags[locale]))
+    test(`talk detail shows title and tags (${locale})`, { tag: [`@${locale}`] }, async ({ page }) => {
+      const journey = await userInTalkDetail(page, locale, SLUG)
+      await journey.shouldHaveTitle(expectedTitles[locale])
+      await journey.shouldHaveTags(expectedTags[locale])
     })
 
-    test(`talk detail has comments (${locale})`, { tag: [`@${locale}`] }, async ({ Given, Then, page }) => {
-      const journey = await Given(userInTalkDetail(page, locale, SLUG))
-      await Then(journey.shouldHaveComments())
+    test(`talk detail has comments (${locale})`, { tag: [`@${locale}`] }, async ({ page }) => {
+      const journey = await userInTalkDetail(page, locale, SLUG)
+      await journey.shouldHaveComments()
     })
   }
 })

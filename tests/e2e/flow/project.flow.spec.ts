@@ -16,11 +16,11 @@ const expectedRoles: Record<UILanguages, string> = {
 
 test.describe('Projects - flujo de navegación', { tag: ['@flow', '@projects'] }, () => {
   for (const locale of languageKeys) {
-    test(`navega de lista a detalle por click (${locale})`, { tag: [`@${locale}`] }, async ({ Given, When, Then, And, page }) => {
-      const list = await Given(userInProjectList(page, locale))
-      const detail = await When(list.clickItem(SLUG))
-      await Then(detail.shouldHaveTitle(expectedTitles[locale]))
-      await And(detail.shouldHaveRole(expectedRoles[locale]))
+    test(`navega de lista a detalle por click (${locale})`, { tag: [`@${locale}`] }, async ({ page }) => {
+      const list = await userInProjectList(page, locale)
+      const detail = await list.clickItem(SLUG)
+      await detail.shouldHaveTitle(expectedTitles[locale])
+      await detail.shouldHaveRole(expectedRoles[locale])
     })
   }
 })

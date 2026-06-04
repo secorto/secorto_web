@@ -14,11 +14,11 @@ const fixtures: LocaleSwitchFixture[] = [
 
 test.describe('Homepage language switch', { tag: ['@functional', '@i18n', '@home'] }, () => {
   for (const f of fixtures) {
-    test(`switch from ${f.from} to ${f.to} via UI`, { tag: [`@${f.from}`, `@${f.to}`] }, async ({ Given, When, Then, And, page }) => {
-      const journey = await Given(userInHome(page, f.from))
-      await And(journey.shouldHaveLanguageOption(f.to))
-      await When(journey.switchTo(f.to))
-      await Then(journey.shouldBeInLocale(f.to))
+    test(`switch from ${f.from} to ${f.to} via UI`, { tag: [`@${f.from}`, `@${f.to}`] }, async ({ page }) => {
+      const journey = await userInHome(page, f.from)
+      await journey.shouldHaveLanguageOption(f.to)
+      await journey.switchTo(f.to)
+      await journey.shouldBeInLocale(f.to)
     })
   }
 })

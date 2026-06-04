@@ -1,5 +1,4 @@
 import { test } from '@tests/fixtures'
-import type { GherkinStepDefinition } from '@tests/fixtures'
 import { ui, languageKeys } from '@i18n/ui'
 import { HomeUserJourney, userInHome } from '@tests/pages/home/HomeUserJourney'
 import { sectionsConfig } from '@domain/section'
@@ -8,35 +7,35 @@ for (const locale of languageKeys) {
   test.describe(`Homepage (${locale})`,
     { tag: ['@home', '@smoke', `@${locale}`] },
     () => {
-      let userInHomeForLocale: () => GherkinStepDefinition<HomeUserJourney>
+      let userInHomeForLocale: () => Promise<HomeUserJourney>
 
       test.beforeEach(async ({ page }) => {
         userInHomeForLocale = () => userInHome(page, locale)
       })
 
-      test('renders bio, avatar and highlights', async ({ When, Then, And }) => {
-        const home = await When(userInHomeForLocale())
-        await Then(home.shouldHaveAvatar())
-        await And(home.shouldHaveBioText())
+      test('renders bio, avatar and highlights', async () => {
+        const home = await userInHomeForLocale()
+        await home.shouldHaveAvatar()
+        await home.shouldHaveBioText()
       })
 
-      test('PyBAQ callout uses i18n strings', async ({ When, Then }) => {
-        const home = await When(userInHomeForLocale())
-        await Then(home.shouldHavePyBAQ(ui[locale]))
+      test('PyBAQ callout uses i18n strings', async () => {
+        const home = await userInHomeForLocale()
+        await home.shouldHavePyBAQ(ui[locale])
       })
 
-      test('highlights hrefs match routes', async ({ When, Then, And }) => {
-        const home = await When(userInHomeForLocale())
+      test('highlights hrefs match routes', async () => {
+        const home = await userInHomeForLocale()
         const blogRoute = sectionsConfig.blog.routes[locale]
         const talkRoute = sectionsConfig.talk.routes[locale]
-        await Then(home.blogHrefMatches(locale, blogRoute))
-        await And(home.talkHrefMatches(locale, talkRoute))
+        await home.blogHrefMatches(locale, blogRoute)
+        await home.talkHrefMatches(locale, talkRoute)
       })
 
-      test('title and about link are correct (smoke)', async ({ When, Then, And }) => {
-        const home = await When(userInHomeForLocale())
-        await Then(home.shouldHaveTitle())
-        await And(home.shouldHaveAboutLink(ui[locale]))
+      test('title and about link are correct (smoke)', async () => {
+        const home = await userInHomeForLocale()
+        await home.shouldHaveTitle()
+        await home.shouldHaveAboutLink(ui[locale])
       })
     })
 }

@@ -57,4 +57,3 @@ export const getRss = async (request: APIRequestContext, locale: UILanguages) =>
     return new RSSJourney(response, body, locale)
   })
 }
-

@@ -5,9 +5,9 @@ import { userInProjectList } from '@tests/pages/content/ProjectUserJourney'
 for (const locale of languageKeys) {
   test(`Tags - Project (${locale})`,
     {tag: ['@project', '@tags', `@${locale}`]},
-    async ({ When, Then, page }) => {
-      const journey = await When(userInProjectList(page, locale))
-      await Then(journey.verifyTagsForSection())
+    async ({ page }) => {
+      const journey = await userInProjectList(page, locale)
+      await journey.verifyTagsForSection()
     })
 }
 

@@ -54,11 +54,10 @@ export class TagsPage {
   }
 
   clickFirstTagAndWaitForUrl(urlRegex: RegExp) {
-    return step('click first tag and wait navigation', async (stepExpect) => {
-      const clickStep = this.firstTagLink.click()
+    return step('click first tag and wait navigation', async () => {
       await Promise.all([
         this.page.waitForURL(urlRegex),
-        clickStep.action(stepExpect),
+        this.firstTagLink.click(),
       ])
     })
   }

@@ -5,8 +5,8 @@ import { userInBlogList } from '@tests/pages/content/BlogUserJourney'
 for (const locale of languageKeys) {
   test(`Tags - Blog (${locale})`,
     {tag: ['@blog', '@tags', `@${locale}`]},
-    async ({ When, Then, page }) => {
-      const journey = await When(userInBlogList(page, locale))
-      await Then(journey.verifyTagsForSection())
+    async ({ page }) => {
+      const journey = await userInBlogList(page, locale)
+      await journey.verifyTagsForSection()
     })
 }

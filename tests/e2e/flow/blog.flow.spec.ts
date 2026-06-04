@@ -13,15 +13,15 @@ const expectedTitles: Record<UILanguages, string> = {
 test.describe('Blog - flujo de navegación', { tag: ['@flow', '@blog'] }, () => {
   for (const locale of languageKeys) {
     test(`navega de lista a detalle via tag y click (${locale})`, { tag: [`@${locale}`] }, async ({
-      Given, When, Then, And, page,
+      page,
     }) => {
-      const list = await Given(userInBlogList(page, locale))
+      const list = await userInBlogList(page, locale)
 
-      await When(list.filterByTag(TAG))
-      await And(list.shouldShowFilteredTitle(TAG))
+      await list.filterByTag(TAG)
+      await list.shouldShowFilteredTitle(TAG)
 
-      const detail = await When(list.clickItem(SLUG))
-      await Then(detail.shouldHaveTitle(expectedTitles[locale]))
+      const detail = await list.clickItem(SLUG)
+      await detail.shouldHaveTitle(expectedTitles[locale])
     })
   }
 })

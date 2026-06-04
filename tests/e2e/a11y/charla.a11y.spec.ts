@@ -5,28 +5,28 @@ import { userInContentList, userInContentTag, userInContentDetail, userInTags } 
 
 test.describe('A11y - Charlas', { tag: ['@a11y', '@talk'] }, () => {
   languageKeys.forEach((locale) => {
-    test(`tags list a11y (global tags) (${locale})`, { tag: [`@${locale}`] }, async ({ Given, When, Then, page }) => {
-      const journey = await Given(userInTags(page, locale))
-      const tagsResults = await When(journey.auditA11y())
-      await Then(journey.shouldPassAudit(tagsResults))
+    test(`tags list a11y (global tags) (${locale})`, { tag: [`@${locale}`] }, async ({ page }) => {
+      const journey = await userInTags(page, locale)
+      const tagsResults = await journey.auditA11y()
+      await journey.shouldPassAudit(tagsResults)
     })
 
-    test(`charla list a11y (${locale})`, { tag: [`@${locale}`] }, async ({ Given, When, Then, page }) => {
-      const journey = await Given(userInContentList(page, locale, 'talk'))
-      const listingResults = await When(journey.auditA11y())
-      await Then(journey.shouldPassAudit(listingResults))
+    test(`charla list a11y (${locale})`, { tag: [`@${locale}`] }, async ({ page }) => {
+      const journey = await userInContentList(page, locale, 'talk')
+      const listingResults = await journey.auditA11y()
+      await journey.shouldPassAudit(listingResults)
     })
 
-    test(`charla tag a11y (${locale})`, { tag: [`@${locale}`] }, async ({ Given, When, Then, page }) => {
-      const journey = await Given(userInContentTag(page, locale, 'talk'))
-      const tagResults = await When(journey.auditA11y())
-      await Then(journey.shouldPassAudit(tagResults))
+    test(`charla tag a11y (${locale})`, { tag: [`@${locale}`] }, async ({ page }) => {
+      const journey = await userInContentTag(page, locale, 'talk')
+      const tagResults = await journey.auditA11y()
+      await journey.shouldPassAudit(tagResults)
     })
 
-    test(`charla detail a11y (${locale})`, { tag: [`@${locale}`] }, async ({ Given, When, Then, page }) => {
-      const journey = await Given(userInContentDetail(page, locale, 'talk', '2023-09-27-devcontainers'))
-      const detailResults = await When(journey.auditA11y())
-      await Then(journey.shouldPassAudit(detailResults))
+    test(`charla detail a11y (${locale})`, { tag: [`@${locale}`] }, async ({ page }) => {
+      const journey = await userInContentDetail(page, locale, 'talk', '2023-09-27-devcontainers')
+      const detailResults = await journey.auditA11y()
+      await journey.shouldPassAudit(detailResults)
     })
   })
 })

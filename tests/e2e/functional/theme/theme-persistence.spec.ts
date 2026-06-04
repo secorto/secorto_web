@@ -11,11 +11,11 @@ test.describe('Theme local storage',
 
     for (const { startTheme, toggledTheme } of cases) {
       test(`start ${startTheme} → toggle → ${toggledTheme}`,
-        async ({ page, When, Given, Then, And }) => {
-          const home = await Given(userInHome(page, 'en', { theme: startTheme }))
-          await When(home.toggleTheme())
-          await Then(home.shouldHaveTheme(toggledTheme))
-          await And(home.shouldHaveThemeStorage(toggledTheme))
+        async ({ page }) => {
+          const home = await userInHome(page, 'en', { theme: startTheme })
+          await home.toggleTheme()
+          await home.shouldHaveTheme(toggledTheme)
+          await home.shouldHaveThemeStorage(toggledTheme)
         })
     }
   })

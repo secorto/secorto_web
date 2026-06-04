@@ -23,18 +23,18 @@ const fixtures: CommunityFixture[] = [
 
 test.describe('Community', { tag: ['@smoke', '@community'] }, () => {
   for (const locale of ['es', 'en'] as UILanguages[]) {
-    test(`community list shows title (${locale})`, { tag: [`@${locale}`] }, async ({ Given, Then, page }) => {
-      const journey = await Given(userInCommunityList(page, locale))
-      await Then(journey.shouldHaveTitle())
+    test(`community list shows title (${locale})`, { tag: [`@${locale}`] }, async ({ page }) => {
+      const journey = await userInCommunityList(page, locale)
+      await journey.shouldHaveTitle()
     })
   }
 
   for (const f of fixtures) {
-    test(`community detail shows title, role and website (${f.locale})`, { tag: [`@${f.locale}`] }, async ({ Given, Then, And, page }) => {
-      const journey = await Given(userInCommunityDetail(page, f.locale, f.slug))
-      await Then(journey.shouldHaveTitle(f.title))
-      await And(journey.shouldHaveRole(f.role))
-      await And(journey.shouldHaveWebsite(f.website))
+    test(`community detail shows title, role and website (${f.locale})`, { tag: [`@${f.locale}`] }, async ({ page }) => {
+      const journey = await userInCommunityDetail(page, f.locale, f.slug)
+      await journey.shouldHaveTitle(f.title)
+      await journey.shouldHaveRole(f.role)
+      await journey.shouldHaveWebsite(f.website)
     })
   }
 })

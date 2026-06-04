@@ -20,14 +20,14 @@ const postFixtures: PostFixture[] = [
 
 for (const f of postFixtures) {
   test.describe(`Blog post (${f.locale})`, { tag: ['@functional', '@blog', `@${f.locale}`] }, () => {
-    test('shows post title', async ({ When, Then, page }) => {
-      const journey = await When(userInBlogPost(page, f.locale, f.slug))
-      await Then(journey.shouldHaveTitle(f.postTitle))
+    test('shows post title', async ({ page }) => {
+      const journey = await userInBlogPost(page, f.locale, f.slug)
+      await journey.shouldHaveTitle(f.postTitle)
     })
 
-    test('no horizontal scroll on mobile', async ({ When, Then, page }, testInfo: TestInfo) => {
-      const journey = await When(userInBlogPost(page, f.locale, f.slug, { width: 480, height: 800 }))
-      await Then(journey.assertNoHorizontalOverflow(testInfo, f.locale))
+    test('no horizontal scroll on mobile', async ({ page }, testInfo: TestInfo) => {
+      const journey = await userInBlogPost(page, f.locale, f.slug, { width: 480, height: 800 })
+      await journey.assertNoHorizontalOverflow(testInfo, f.locale)
     })
   })
 }

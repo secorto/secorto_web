@@ -23,12 +23,10 @@ export class ContentListJourney {
   shouldHaveTitle() {
     const expected = ui[this.locale][this.titleKey]
     const expectedPageTitle = new RegExp(`^${escapeRegExp(expected)} \\| SeCOrTo$`)
-    const pageTitleStep = pageHelper(this.page).shouldHaveTitle(expectedPageTitle)
-    const headerStep = this.list.shouldHaveListHeaderTitle(expected)
 
-    return step('list has page title and header', async (stepExpect) => {
-      await pageTitleStep.action(stepExpect)
-      await headerStep.action(stepExpect)
+    return step('list has page title and header', async () => {
+      await pageHelper(this.page).shouldHaveTitle(expectedPageTitle)
+      await this.list.shouldHaveListHeaderTitle(expected)
     })
   }
 
