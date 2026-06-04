@@ -1,5 +1,6 @@
-import { step } from '@tests/fixtures'
+import { step } from '@tests/fixtures/step'
 import type { UILanguages } from '@i18n/ui'
+import { expect } from '@playwright/test'
 import type { APIRequestContext, APIResponse } from '@playwright/test'
 
 const localeCountry = {
@@ -15,14 +16,14 @@ export class RSSJourney {
   ) {}
 
   shouldHaveXmlContentType() {
-    return step('responds with XML content type', async ({ expect }) => {
+    return step('responds with XML content type', async () => {
       expect(this.response.status()).toBe(200)
       expect(this.response.headers()['content-type']).toContain('xml')
     })
   }
 
   shouldHaveChannelStructure() {
-    return step('contains valid channel structure', async ({ expect }) => {
+    return step('contains valid channel structure', async () => {
       expect(this.body).toContain('<rss')
       expect(this.body).toContain('<channel>')
       expect(this.body).toContain('<title>')
@@ -32,7 +33,7 @@ export class RSSJourney {
   }
 
   shouldHaveAtLeastOneItem() {
-    return step('contains at least one item', async ({ expect }) => {
+    return step('contains at least one item', async () => {
       expect(this.body).toContain('<item>')
       expect(this.body).toContain('<title>')
       expect(this.body).toContain('<pubDate>')
@@ -40,21 +41,20 @@ export class RSSJourney {
   }
 
   shouldIncludeLanguageTag() {
-    return step('includes correct language tag', async ({ expect }) => {
+    return step('includes correct language tag', async () => {
       expect(this.body).toContain(`<language>${localeCountry[this.locale]}</language>`)
     })
   }
 }
 
-export const createRssUserJourney = (request: APIRequestContext, locale: UILanguages) => {
-  return (url?: string) =>
-    step(`request RSS ${url ?? ''}`, async () => {
-      const target = url ?? `/${locale}/rss.xml`
-      const response = await request.get(target)
-      const body = await response.text()
+export const getRss = async (request: APIRequestContext, locale: UILanguages) => {
+  const target = `/${locale}/rss.xml`
 
-      return new RSSJourney(response, body, locale)
-    })
+  return step(`request RSS ${target}`, async () => {
+    const response = await request.get(target)
+    const body = await response.text()
+
+    return new RSSJourney(response, body, locale)
+  })
 }
 
-export const userReadsRss = createRssUserJourney
