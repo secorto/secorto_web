@@ -1,6 +1,6 @@
 import { test } from '@playwright/test'
 import { languageKeys } from '@i18n/ui'
-import { getRss } from '@tests/pages/api/RssApiResponse'
+import { getRss } from '@tests/support/api/RssApiResponse'
 
 for (const locale of languageKeys) {
   test.describe(`RSS feed (${locale})`, { tag: ['@api', '@functional', '@rss', `@${locale}`] }, () => {
