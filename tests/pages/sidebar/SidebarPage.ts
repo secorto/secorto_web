@@ -5,7 +5,7 @@ import type { Target as TargetComponent } from '@tests/pages/components/Target'
 import { ThemeToggle, themeToggleFromPage } from '@tests/pages/sidebar/ThemeToggle'
 import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
-import { homePath, visit } from '../shared/NavigationPaths'
+import { homePath, visit } from '@tests/pages/shared/NavigationPaths'
 
 export class SidebarPage {
   constructor(

@@ -2,7 +2,7 @@ import type { UILanguages } from '@i18n/ui'
 import type { Page } from '@playwright/test'
 import { targetSelector } from '@tests/pages/components/Target'
 import { step } from '@tests/fixtures'
-import { homePath, visit } from '../shared/NavigationPaths'
+import { homePath, visit } from '@tests/pages/shared/NavigationPaths'
 
 export class LangSwitchHomePage {
   constructor(
