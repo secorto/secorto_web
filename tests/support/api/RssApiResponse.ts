@@ -1,4 +1,4 @@
-import { step } from '@tests/fixtures/step'
+import { step } from '@tests/fixtures'
 import type { UILanguages } from '@i18n/ui'
 import { expect } from '@playwright/test'
 import type { APIRequestContext, APIResponse } from '@playwright/test'
