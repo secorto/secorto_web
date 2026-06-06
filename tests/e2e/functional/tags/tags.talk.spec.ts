@@ -1,6 +1,6 @@
 import { test } from '@tests/fixtures'
 import { languageKeys } from '@i18n/ui'
-import { userInTalkList } from '@tests/support/pages/content/TalkPages'
+import { userInTalkList } from '@tests/support/ui/content/TalkPages'
 
 for (const locale of languageKeys) {
   test(`Tags - Talk (${locale})`,

@@ -1,6 +1,6 @@
 import { test } from '@tests/fixtures'
 import { languageKeys } from '@i18n/ui'
-import { userInContentList, userInContentDetail } from '@tests/support/pages/a11y/A11yPage'
+import { userInContentList, userInContentDetail } from '@tests/support/ui/a11y/A11yPage'
 
 test.describe('A11y - Work', { tag: ['@a11y', '@work'] }, () => {
   languageKeys.forEach((locale) => {

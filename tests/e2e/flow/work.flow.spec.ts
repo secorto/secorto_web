@@ -1,8 +1,8 @@
 import { test } from '@tests/fixtures'
 import { languageKeys, type UILanguages } from '@i18n/ui'
-import { userInWorkList } from '@tests/support/pages/content/WorkPages'
-import { contentDetailsPath } from '@tests/support/pages/shared/NavigationPaths'
-import { pageHelper } from '@tests/support/pages/components/PageHelper'
+import { userInWorkList } from '@tests/support/ui/content/WorkPages'
+import { contentDetailsPath } from '@tests/support/ui/shared/NavigationPaths'
+import { pageHelper } from '@tests/support/ui/components/PageHelper'
 
 const SLUG = 'perficient'
 

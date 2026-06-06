@@ -1,7 +1,7 @@
 import { test } from '@tests/fixtures'
 import { ui, languageKeys } from '@i18n/ui'
 import { sectionsConfig } from '@domain/section'
-import { HomePage, userInHome } from '@tests/support/pages/home/HomePage'
+import { HomePage, userInHome } from '@tests/support/ui/home/HomePage'
 
 for (const locale of languageKeys) {
   test.describe(`Homepage (${locale})`,

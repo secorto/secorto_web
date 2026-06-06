@@ -1,5 +1,5 @@
 import { test } from '@tests/fixtures'
-import { userInHome } from '@tests/support/pages/home/ThemeLocaleHomePage'
+import { userInHome } from '@tests/support/ui/home/ThemeLocaleHomePage'
 
 const schemes: Array<'light' | 'dark'> = ['light', 'dark']
 

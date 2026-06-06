@@ -1,8 +1,8 @@
 import { test } from '@tests/fixtures'
 import { languageKeys, type UILanguages } from '@i18n/ui'
-import { userInProjectList } from '@tests/support/pages/content/ProjectPages'
-import { contentDetailsPath } from '@tests/support/pages/shared/NavigationPaths'
-import { pageHelper } from '@tests/support/pages/components/PageHelper'
+import { userInProjectList } from '@tests/support/ui/content/ProjectPages'
+import { contentDetailsPath } from '@tests/support/ui/shared/NavigationPaths'
+import { pageHelper } from '@tests/support/ui/components/PageHelper'
 
 const SLUG = 'scot3004'
 

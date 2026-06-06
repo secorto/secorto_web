@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
-import { ContentListPage, contentListPage } from '@tests/support/pages/content/ContentListPage'
-import { contentListPath, contentDetailsPath, visit } from '@tests/support/pages/shared/NavigationPaths'
+import { ContentListPage, contentListPage } from '@tests/support/ui/content/ContentListPage'
+import { contentListPath, contentDetailsPath, visit } from '@tests/support/ui/shared/NavigationPaths'
 
 export const userInWorkList = (page: Page, locale: UILanguages) =>
   visit(

@@ -1,6 +1,6 @@
 import type { Locator } from '@playwright/test'
 import { step } from '@tests/fixtures'
-import { Target } from '@tests/support/pages/components/Target'
+import { Target } from '@tests/support/ui/components/Target'
 
 export class Link extends Target {
   constructor(name: string, locator: Locator) {

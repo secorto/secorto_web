@@ -1,6 +1,6 @@
 import type { Locator } from '@playwright/test'
 import { step } from '@tests/fixtures'
-import { link } from '@tests/support/pages/components/Link'
+import { link } from '@tests/support/ui/components/Link'
 
 export class Highlight {
   constructor(readonly root: Locator) {}

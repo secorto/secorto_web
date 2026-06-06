@@ -1,11 +1,11 @@
 import { step } from '@tests/fixtures'
-import { sidebarToggleFromPage, SidebarToggle } from '@tests/support/pages/sidebar/SidebarToggle'
-import { target } from '@tests/support/pages/components/Target'
-import type { Target as TargetComponent } from '@tests/support/pages/components/Target'
-import { ThemeToggle, themeToggleFromPage } from '@tests/support/pages/sidebar/ThemeToggle'
+import { sidebarToggleFromPage, SidebarToggle } from '@tests/support/ui/sidebar/SidebarToggle'
+import { target } from '@tests/support/ui/components/Target'
+import type { Target as TargetComponent } from '@tests/support/ui/components/Target'
+import { ThemeToggle, themeToggleFromPage } from '@tests/support/ui/sidebar/ThemeToggle'
 import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
-import { homePath, visit } from '@tests/support/pages/shared/NavigationPaths'
+import { homePath, visit } from '@tests/support/ui/shared/NavigationPaths'
 
 export class SidebarPage {
   constructor(

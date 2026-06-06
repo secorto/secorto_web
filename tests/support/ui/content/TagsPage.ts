@@ -1,11 +1,11 @@
 import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
 import { step } from '@tests/fixtures'
-import { tagsPath, visit } from '@tests/support/pages/shared/NavigationPaths'
-import { link } from '@tests/support/pages/components/Link'
-import type { Link as LinkComponent } from '@tests/support/pages/components/Link'
-import { target } from '@tests/support/pages/components/Target'
-import type { Target as TargetComponent } from '@tests/support/pages/components/Target'
+import { tagsPath, visit } from '@tests/support/ui/shared/NavigationPaths'
+import { link } from '@tests/support/ui/components/Link'
+import type { Link as LinkComponent } from '@tests/support/ui/components/Link'
+import { target } from '@tests/support/ui/components/Target'
+import type { Target as TargetComponent } from '@tests/support/ui/components/Target'
 
 export class TagsPage {
   constructor(
