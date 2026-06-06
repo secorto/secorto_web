@@ -1,7 +1,7 @@
 import type { UILanguages } from '@i18n/ui'
 import type { Locator, Page } from '@playwright/test'
 import { step } from '@tests/fixtures'
-import { homePath, visit } from '@tests/pages/shared/NavigationPaths'
+import { homePath, visit } from '@tests/support/pages/shared/NavigationPaths'
 
 export class FooterPage {
   constructor(

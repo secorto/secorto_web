@@ -1,8 +1,8 @@
 import { test } from '@tests/fixtures'
 import { languageKeys, ui, type UILanguages } from '@i18n/ui'
-import { userInTalkList } from '@tests/pages/content/TalkPages'
-import { contentDetailsPath } from '@tests/pages/shared/NavigationPaths'
-import { pageHelper } from '@tests/pages/components/PageHelper'
+import { userInTalkList } from '@tests/support/pages/content/TalkPages'
+import { contentDetailsPath } from '@tests/support/pages/shared/NavigationPaths'
+import { pageHelper } from '@tests/support/pages/components/PageHelper'
 
 const SLUG = '2023-09-27-devcontainers'
 

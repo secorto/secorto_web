@@ -1,8 +1,8 @@
 import { test } from '@tests/fixtures'
 import { languageKeys, ui, type UILanguages } from '@i18n/ui'
-import { userInBlogList } from '@tests/pages/content/BlogPages'
-import { contentDetailsPath } from '@tests/pages/shared/NavigationPaths'
-import { pageHelper } from '@tests/pages/components/PageHelper'
+import { userInBlogList } from '@tests/support/pages/content/BlogPages'
+import { contentDetailsPath } from '@tests/support/pages/shared/NavigationPaths'
+import { pageHelper } from '@tests/support/pages/components/PageHelper'
 
 const SLUG = '2022-07-11-intro-python'
 const TAG = 'python'

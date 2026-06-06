@@ -1,12 +1,12 @@
 import type { UILanguages } from '@i18n/ui'
 import type { Page } from '@playwright/test'
-import type { SidebarPage } from '@tests/pages/sidebar/SidebarPage'
-import { sidebarPage } from '@tests/pages/sidebar/SidebarPage'
-import { target } from '@tests/pages/components/Target'
-import type { Target as TargetComponent } from '@tests/pages/components/Target'
-import { pageHelper } from '@tests/pages/components/PageHelper'
-import type { PageHelper } from '@tests/pages/components/PageHelper'
-import { homePath, visit } from '@tests/pages/shared/NavigationPaths'
+import type { SidebarPage } from '@tests/support/pages/sidebar/SidebarPage'
+import { sidebarPage } from '@tests/support/pages/sidebar/SidebarPage'
+import { target } from '@tests/support/pages/components/Target'
+import type { Target as TargetComponent } from '@tests/support/pages/components/Target'
+import { pageHelper } from '@tests/support/pages/components/PageHelper'
+import type { PageHelper } from '@tests/support/pages/components/PageHelper'
+import { homePath, visit } from '@tests/support/pages/shared/NavigationPaths'
 
 export class ThemeLocaleHomePage {
   constructor(

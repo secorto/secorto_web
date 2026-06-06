@@ -1,6 +1,6 @@
 import { test } from '@tests/fixtures'
 import { languageKeys } from '@i18n/ui'
-import { userInBlogList } from '@tests/pages/content/BlogPages'
+import { userInBlogList } from '@tests/support/pages/content/BlogPages'
 
 for (const locale of languageKeys) {
   test(`Tags - Blog (${locale})`,

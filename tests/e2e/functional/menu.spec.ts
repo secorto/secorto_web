@@ -1,5 +1,5 @@
 import { test } from '@tests/fixtures'
-import { SidebarPage, userInHome } from '@tests/pages/sidebar/SidebarPage'
+import { SidebarPage, userInHome } from '@tests/support/pages/sidebar/SidebarPage'
 
 test.describe('Hamburger menu', { tag: ['@functional', '@home', '@menu', '@sidebar', '@es'] }, () => {
   test.use({ viewport: { width: 375, height: 667 } })

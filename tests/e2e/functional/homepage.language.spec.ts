@@ -1,6 +1,6 @@
 import { test } from '@tests/fixtures'
 import type { UILanguages } from '@i18n/ui'
-import { userInHome } from '@tests/pages/home/LangSwitchHomePage'
+import { userInHome } from '@tests/support/pages/home/LangSwitchHomePage'
 
 type LocaleSwitchFixture = {
   from: UILanguages

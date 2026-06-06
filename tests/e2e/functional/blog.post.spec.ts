@@ -1,8 +1,8 @@
 import { test } from '@tests/fixtures'
-import { userInBlogPost } from '@tests/pages/content/BlogPages'
+import { userInBlogPost } from '@tests/support/pages/content/BlogPages'
 import type { UILanguages } from '@i18n/ui'
 import type { TestInfo } from '@playwright/test'
-import { pageHelper } from '@tests/pages/components/PageHelper'
+import { pageHelper } from '@tests/support/pages/components/PageHelper'
 
 type PostFixture = { locale: UILanguages, slug: string, postTitle: string }
 

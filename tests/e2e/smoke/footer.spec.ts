@@ -1,6 +1,6 @@
 import { test } from '@tests/fixtures'
 import { languageKeys, ui } from '@i18n/ui'
-import { userInHome } from '@tests/pages/home/FooterPage'
+import { userInHome } from '@tests/support/pages/home/FooterPage'
 
 
 test.describe('Footer translations', { tag: ['@smoke', '@home'] }, () => {

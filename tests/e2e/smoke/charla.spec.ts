@@ -1,8 +1,8 @@
 import { test } from '@tests/fixtures'
 import { languageKeys, ui, type UILanguages } from '@i18n/ui'
-import { userInTalkList, userInTalkDetail } from '@tests/pages/content/TalkPages'
-import { contentListPath, contentDetailsPath } from '@tests/pages/shared/NavigationPaths'
-import { pageHelper } from '@tests/pages/components/PageHelper'
+import { userInTalkList, userInTalkDetail } from '@tests/support/pages/content/TalkPages'
+import { contentListPath, contentDetailsPath } from '@tests/support/pages/shared/NavigationPaths'
+import { pageHelper } from '@tests/support/pages/components/PageHelper'
 
 function escapeRegExp(value: string) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')

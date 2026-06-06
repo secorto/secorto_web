@@ -1,6 +1,6 @@
 import { test } from '@tests/fixtures'
 import { languageKeys, ui } from '@i18n/ui'
-import { userInHome } from '@tests/pages/sidebar/SidebarPage'
+import { userInHome } from '@tests/support/pages/sidebar/SidebarPage'
 
 
 test.describe(`Homepage (sidebar)`,

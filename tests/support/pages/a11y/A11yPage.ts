@@ -3,7 +3,7 @@ import type { UILanguages } from '@i18n/ui'
 import { AxeBuilder } from '@axe-core/playwright'
 import type { SectionType } from '@domain/section'
 import { step } from '@tests/fixtures'
-import { contentDetailsPath, contentListPath, contentTagsPath, homePath, tagsPath, visit } from '@tests/pages/shared/NavigationPaths'
+import { contentDetailsPath, contentListPath, contentTagsPath, homePath, tagsPath, visit } from '@tests/support/pages/shared/NavigationPaths'
 
 const DEFAULT_EXCLUDES = [
   '[data-netlify-deploy-id]', 'iframe', 'iframe *'

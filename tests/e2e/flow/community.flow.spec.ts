@@ -1,8 +1,8 @@
 import { test } from '@tests/fixtures'
 import { languageKeys, type UILanguages } from '@i18n/ui'
-import { userInCommunityList } from '@tests/pages/content/CommunityPages'
-import { contentDetailsPath } from '@tests/pages/shared/NavigationPaths'
-import { pageHelper } from '@tests/pages/components/PageHelper'
+import { userInCommunityList } from '@tests/support/pages/content/CommunityPages'
+import { contentDetailsPath } from '@tests/support/pages/shared/NavigationPaths'
+import { pageHelper } from '@tests/support/pages/components/PageHelper'
 
 const SLUG = 'pybaq'
 

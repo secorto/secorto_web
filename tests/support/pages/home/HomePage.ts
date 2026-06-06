@@ -1,10 +1,10 @@
-import { target } from '@tests/pages/components/Target'
+import { target } from '@tests/support/pages/components/Target'
 import type { Page } from '@playwright/test'
-import type { Target as TargetComponent } from '@tests/pages/components/Target'
-import { homeHighlights } from '@tests/pages/home/HomeHighlights'
-import type { HomeHighlights as HomeHighlightsComponent } from '@tests/pages/home/HomeHighlights'
+import type { Target as TargetComponent } from '@tests/support/pages/components/Target'
+import { homeHighlights } from '@tests/support/pages/home/HomeHighlights'
+import type { HomeHighlights as HomeHighlightsComponent } from '@tests/support/pages/home/HomeHighlights'
 import type { UILanguages } from '@i18n/ui'
-import { homePath, visit } from '@tests/pages/shared/NavigationPaths'
+import { homePath, visit } from '@tests/support/pages/shared/NavigationPaths'
 
 export class HomePage {
   constructor(

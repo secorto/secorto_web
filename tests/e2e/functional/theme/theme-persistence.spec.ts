@@ -1,5 +1,5 @@
 import { test } from '@tests/fixtures'
-import { userInHome } from '@tests/pages/home/ThemeLocaleHomePage'
+import { userInHome } from '@tests/support/pages/home/ThemeLocaleHomePage'
 
 test.describe('Theme local storage',
   { tag: ['@theme-local-storage', '@functional'] },

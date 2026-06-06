@@ -1,7 +1,7 @@
 import { test } from '@tests/fixtures'
-import { userIsOnTags } from '@tests/pages/content/TagsPage'
+import { userIsOnTags } from '@tests/support/pages/content/TagsPage'
 import { languageKeys, type UILanguages, ui } from '@i18n/ui'
-import { pageHelper } from '@tests/pages/components/PageHelper'
+import { pageHelper } from '@tests/support/pages/components/PageHelper'
 
 const fixtures: { locale: UILanguages; expectedTitle: string; expectedDescription: string }[] = languageKeys.map((locale) => ({
   locale,
