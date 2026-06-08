@@ -31,10 +31,10 @@ for (const f of fixtures) {
 
     test('tag links are valid and navigable', async ({ page }) => {
       const tagsPage = await userIsOnTags(page, f.locale)
-      await tagsPage.firstTagLinkHrefMatches(new RegExp(`^/${f.locale}/[a-z]+/tags/`))
+      await tagsPage.firstTagLinkHrefMatches(new RegExp(String.raw`^/${f.locale}/[a-z]+/tags/.+`))
 
-      await tagsPage.clickFirstTagAndWaitForUrl(new RegExp(`/${f.locale}/[a-z]+/tags/`))
-      await pageHelper(page).shouldHaveURL(new RegExp(`/${f.locale}/.+/tags/`))
+      await tagsPage.clickFirstTagAndWaitForUrl(new RegExp(String.raw`/${f.locale}/[a-z]+/tags/.+`))
+      await pageHelper(page).shouldHaveURL(new RegExp(String.raw`/${f.locale}/.+/tags/.+\/?$`))
     })
 
     test('shows "Disponible en" / "Available in" text', async ({ page }) => {
