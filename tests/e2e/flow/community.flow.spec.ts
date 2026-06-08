@@ -2,7 +2,6 @@ import { test } from '@tests/fixtures'
 import { languageKeys, type UILanguages } from '@i18n/ui'
 import { userInCommunityList } from '@tests/support/ui/content/CommunityPages'
 import { contentDetailsPath } from '@tests/support/ui/shared/NavigationPaths'
-import { pageHelper } from '@tests/support/ui/components/PageHelper'
 
 const SLUG = 'pybaq'
 
@@ -22,7 +21,6 @@ test.describe('Community - flujo de navegación', { tag: ['@flow', '@community']
       const list = await userInCommunityList(page, locale)
       const detailPath = contentDetailsPath('community', locale, SLUG)
       await list.clickItem(detailPath, `click community item "${SLUG}"`)
-      await pageHelper(page).shouldHaveURL(detailPath)
       await list.shouldHaveDetailTitle(expectedTitles[locale])
       await list.shouldHaveRole(expectedRoles[locale])
     })

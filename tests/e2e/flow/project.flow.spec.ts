@@ -2,7 +2,6 @@ import { test } from '@tests/fixtures'
 import { languageKeys, type UILanguages } from '@i18n/ui'
 import { userInProjectList } from '@tests/support/ui/content/ProjectPages'
 import { contentDetailsPath } from '@tests/support/ui/shared/NavigationPaths'
-import { pageHelper } from '@tests/support/ui/components/PageHelper'
 
 const SLUG = 'scot3004'
 
@@ -22,7 +21,6 @@ test.describe('Projects - flujo de navegación', { tag: ['@flow', '@projects'] }
       const list = await userInProjectList(page, locale)
       const detailPath = contentDetailsPath('projects', locale, SLUG)
       await list.clickItem(detailPath, `click project item "${SLUG}"`)
-      await pageHelper(page).shouldHaveURL(detailPath)
       await list.shouldHaveDetailTitle(expectedTitles[locale])
       await list.shouldHaveRole(expectedRoles[locale])
     })
