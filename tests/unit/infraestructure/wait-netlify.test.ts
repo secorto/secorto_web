@@ -67,11 +67,13 @@ describe('wait-netlify helpers (TS)', () => {
     const m3 = { ssl_url: 'https://ssl.netlify.app' }
     const m4 = { url: 'https://url.netlify.app' }
     const m5 = {}
-    expect(choosePreviewUrl(m1).url).toBe('https://p.netlify.app')
-    expect(choosePreviewUrl(m2).url).toBe('https://alias.netlify.app')
-    expect(choosePreviewUrl(m3).url).toBe('https://ssl.netlify.app')
-    expect(choosePreviewUrl(m4).url).toBe('https://url.netlify.app')
+    const valid = {deploy_url: 'https://deploy.netlify.app'}
+    expect(() => choosePreviewUrl(m1)).toThrow('no preview url available')
+    expect(() => choosePreviewUrl(m2)).toThrow('no preview url available')
+    expect(() => choosePreviewUrl(m3)).toThrow('no preview url available')
+    expect(() => choosePreviewUrl(m4)).toThrow('no preview url available')
     expect(() => choosePreviewUrl(m5)).toThrow('no preview url available')
+    expect(choosePreviewUrl(valid).url).toBe('https://deploy.netlify.app')
   })
 
   it('defensive: when match returns null, returns field value as field', () => {

@@ -8,7 +8,7 @@ const OLD_ENV = { ...process.env }
 // Hoisted mock: mirrors how the module is imported by the script
 vi.mock('@github/lib/wait-netlify-api.js', () => ({
   listDeploys: vi.fn().mockResolvedValue([
-    { id: 'd1', state: 'ready', commit_ref: 'abcd1234', links: { permalink: 'https://p.netlify.app' }, context: 'deploy-preview', branch: 'feat' }
+    { id: 'd1', state: 'ready', commit_ref: 'abcd1234', deploy_url: 'https://p.netlify.app', context: 'deploy-preview', branch: 'feat' }
   ])
 }))
 

@@ -3,7 +3,7 @@ import { pollForPreview } from '@github/scripts/wait-netlify'
 
 describe('pollForPreview', () => {
   it('returns match immediately when deploy matches expected sha', async () => {
-    const deploy = { id: 'd1', state: 'ready', sha: 'aaaa1111', links: { permalink: 'https://p.netlify.app' }, context: 'deploy-preview', branch: 'feat' }
+    const deploy = { id: 'd1', state: 'ready', sha: 'aaaa1111', deploy_url: 'https://p.netlify.app', context: 'deploy-preview', branch: 'feat' }
     const listDeploysFn = vi.fn().mockResolvedValue([deploy])
     const writeUrlFn = vi.fn()
 
@@ -25,7 +25,7 @@ describe('pollForPreview', () => {
 
   it('accepts first ready when commit_ref matches expected sha', async () => {
     const notReady = { id: 'n', state: 'building', context: 'deploy-preview', branch: 'feat' }
-    const ready = { id: 'r', state: 'ready', commit_ref: 'abcd1234', links: { alias: 'https://a.netlify.app' }, context: 'deploy-preview', branch: 'feat' }
+    const ready = { id: 'r', state: 'ready', commit_ref: 'abcd1234', deploy_url: 'https://a.netlify.app', context: 'deploy-preview', branch: 'feat' }
     const listDeploysFn = vi.fn().mockResolvedValue([notReady, ready])
     const writeUrlFn = vi.fn()
 
@@ -50,7 +50,7 @@ describe('pollForPreview', () => {
     const listDeploysFn = vi.fn().mockImplementation(() => {
       calls++
       if (calls === 1) return Promise.resolve([])
-      const deploy = { id: 'r', state: 'ready', sha: 'bbb2222', links: { permalink: 'https://p2.netlify.app' }, context: 'deploy-preview', branch: 'feat' }
+      const deploy = { id: 'r', state: 'ready', sha: 'bbb2222', deploy_url: 'https://p2.netlify.app', context: 'deploy-preview', branch: 'feat' }
       return Promise.resolve([deploy])
     })
     const writeUrlFn = vi.fn()
@@ -77,7 +77,7 @@ describe('pollForPreview', () => {
     const listDeploysFn = vi.fn().mockImplementation(() => {
       calls++
       if (calls === 1) return Promise.reject(new Error('network error'))
-      const deploy = { id: 'r', state: 'ready', sha: 'dead1111', links: { permalink: 'https://p-net.netlify.app' }, context: 'deploy-preview', branch: 'feat' }
+      const deploy = { id: 'r', state: 'ready', sha: 'dead1111', deploy_url: 'https://p-net.netlify.app', context: 'deploy-preview', branch: 'feat' }
       return Promise.resolve([deploy])
     })
     const writeUrlFn = vi.fn()
@@ -143,7 +143,7 @@ describe('pollForPreview', () => {
   it('accepts a deploy with abbreviated SHA when expected is full SHA', async () => {
     const shortSha = 'abcd123'
     const fullExpected = 'abcd12300000000000000000000000000000000' // starts with shortSha
-    const deploy = { id: 'd1', state: 'ready', commit_ref: shortSha, links: { permalink: 'https://p.netlify.app' }, context: 'deploy-preview', branch: 'feat' }
+    const deploy = { id: 'd1', state: 'ready', commit_ref: shortSha, deploy_url: 'https://p.netlify.app', context: 'deploy-preview', branch: 'feat' }
     const listDeploysFn = vi.fn().mockResolvedValue([deploy])
     const writeUrlFn = vi.fn()
 
@@ -165,7 +165,7 @@ describe('pollForPreview', () => {
 
   it('matches exact full SHA when both deploy and expected are full SHAs', async () => {
     const fullSha = 'abcd1234abcd1234abcd1234abcd1234abcd1234' // 40 chars
-    const deploy = { id: 'd-full', state: 'ready', commit_ref: fullSha, links: { permalink: 'https://p-full.netlify.app' }, context: 'deploy-preview', branch: 'feat' }
+    const deploy = { id: 'd-full', state: 'ready', commit_ref: fullSha, deploy_url: 'https://p-full.netlify.app', context: 'deploy-preview', branch: 'feat' }
     const listDeploysFn = vi.fn().mockResolvedValue([deploy])
     const writeUrlFn = vi.fn()
 

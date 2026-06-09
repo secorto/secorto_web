@@ -96,11 +96,7 @@ function findMatchingDeploy(candidates, expectedSha) {
  * @returns {{url:string|null, chosenField:string|null}}
  */
 function choosePreviewUrl(matching) {
-  const links = matching.links || {}
-  if (links.permalink) return { url: links.permalink, chosenField: 'links.permalink' }
-  if (links.alias) return { url: links.alias, chosenField: 'links.alias' }
-  if (matching.ssl_url) return { url: matching.ssl_url, chosenField: 'ssl_url' }
-  if (matching.url) return { url: matching.url, chosenField: 'url' }
+  if (matching.deploy_url) return { url: matching.deploy_url, chosenField: 'deploy_url' }
   throw new Error('no preview url available on deploy')
 }
 
