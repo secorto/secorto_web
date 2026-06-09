@@ -43,12 +43,12 @@ const t = useTranslations(locale)
     <dl>
       {entry.data?.role && (
         <>
-          <dt>{t('post.role')}</dt><dd>{entry.data.role}</dd>
+          <dt>{t('post.role')}</dt><dd data-testid="post-role">{entry.data.role}</dd>
         </>
       )}
       {entry.data?.responsibilities && (
         <>
-          <dt>{t('post.responsibilities')}</dt><dd>{entry.data.responsibilities}</dd>
+          <dt>{t('post.responsibilities')}</dt><dd data-testid="post-responsibilities">{entry.data.responsibilities}</dd>
         </>
       )}
       {entry.data?.startDate && (
@@ -68,7 +68,7 @@ const t = useTranslations(locale)
 )}
 
 {entry.data?.website && (
-  <a href={entry.data.website}>{t('post.website')}</a>
+  <a href={entry.data.website} data-testid="post-website">{t('post.website')}</a>
 )}
 
 <Content />

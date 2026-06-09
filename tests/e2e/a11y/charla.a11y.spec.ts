@@ -1,38 +1,32 @@
-import { test, expect } from '@playwright/test'
-import { checkA11y } from '@tests/actions/A11yActions'
-import { getURLForSection } from '@utils/sections'
+import { test } from '@tests/fixtures'
 import { languageKeys } from '@i18n/ui'
-import { mockThirdParty } from '@tests/e2e/helpers/mockThirdParty'
+import { userInContentList, userInContentTag, userInContentDetail, userInTags } from '@tests/pages/a11y/A11yUserJourney'
 
 
-test.describe('A11y - Charlas', () => {
+test.describe('A11y - Charlas', { tag: ['@a11y', '@talk'] }, () => {
   languageKeys.forEach((locale) => {
-    test(`charla list a11y (${locale})`, async ({ page }) => {
-      await page.goto(getURLForSection('talk', locale))
-      const listingResults = await checkA11y()({page})
-      expect(listingResults.violations).toEqual([])
+    test(`tags list a11y (global tags) (${locale})`, { tag: [`@${locale}`] }, async ({ Given, When, Then, page }) => {
+      const journey = await Given(userInTags(page, locale))
+      const tagsResults = await When(journey.auditA11y())
+      await Then(journey.shouldPassAudit(tagsResults))
     })
 
-    test(`charla tag a11y (${locale})`, async ({ page }) => {
-      const talksTagRoute = `${getURLForSection('talk', locale)}/tags/containers`
-      await page.goto(talksTagRoute)
-
-      const tagResults = await checkA11y()({page})
-      expect(tagResults.violations).toEqual([])
+    test(`charla list a11y (${locale})`, { tag: [`@${locale}`] }, async ({ Given, When, Then, page }) => {
+      const journey = await Given(userInContentList(page, locale, 'talk'))
+      const listingResults = await When(journey.auditA11y())
+      await Then(journey.shouldPassAudit(listingResults))
     })
 
-    test(`charla detail a11y (${locale})`, async ({ page }) => {
-      await mockThirdParty(page)
-      const postSlug = '2023-09-27-devcontainers'
-      const talksRoute = getURLForSection('talk', locale)
-      const talksPostRoute = `${talksRoute}/${postSlug}`
-      await page.goto(talksPostRoute)
-      const detailResults = await checkA11y([
-        '[data-testid="post-video"]',
-        '[data-testid="post-slide"]',
-        '[data-testid="comments-section"]'
-      ])({page})
-      expect(detailResults.violations).toEqual([])
+    test(`charla tag a11y (${locale})`, { tag: [`@${locale}`] }, async ({ Given, When, Then, page }) => {
+      const journey = await Given(userInContentTag(page, locale, 'talk'))
+      const tagResults = await When(journey.auditA11y())
+      await Then(journey.shouldPassAudit(tagResults))
+    })
+
+    test(`charla detail a11y (${locale})`, { tag: [`@${locale}`] }, async ({ Given, When, Then, page }) => {
+      const journey = await Given(userInContentDetail(page, locale, 'talk', '2023-09-27-devcontainers'))
+      const detailResults = await When(journey.auditA11y())
+      await Then(journey.shouldPassAudit(detailResults))
     })
   })
 })

@@ -1,22 +1,40 @@
-import { test, expect } from '@playwright/test'
-import { ContentListPage } from '@tests/pages/ContentListPage'
-import { openCollectionList } from '@tests/actions/ContentListActions'
-import { languageKeys, ui } from '@i18n/ui'
-import { sectionsConfig, type SectionType } from '@domain/section'
+import { test } from '@tests/fixtures'
+import type { UILanguages } from '@i18n/ui'
+import { userInWorkList, userInWorkDetail } from '@tests/pages/content/WorkUserJourney'
 
-const section: SectionType = 'work'
+type WorkFixture = { locale: UILanguages; slug: string; title: string; role: string; website: string }
 
-test.describe('Work list title', () => {
-  languageKeys.forEach((locale) => {
-    test(`work list title is correct (${locale})`, async ({ page }) => {
-      const list = new ContentListPage(page)
-      await openCollectionList(page, locale, section)
+const fixtures: WorkFixture[] = [
+  {
+    locale: 'es',
+    slug: 'perficient',
+    title: 'Perficient Latinoamerica',
+    role: 'Software developer engineer in test',
+    website: 'https://www.perficient.com',
+  },
+  {
+    locale: 'en',
+    slug: 'perficient',
+    title: 'Perficient Latinoamerica',
+    role: 'Senior Technical Consultant',
+    website: 'https://www.perficient.com',
+  },
+]
 
-      const title = list.headerTitle()
-      await expect(title).toBeVisible()
-      const key = sectionsConfig[section].translationKey
-      const expected = ui[locale][key]
-      await expect(title).toHaveText(expected)
+test.describe('Work', { tag: ['@smoke', '@work'] }, () => {
+  for (const locale of ['es', 'en'] as UILanguages[]) {
+    test(`work list shows title (${locale})`, { tag: [`@${locale}`] }, async ({ Given, Then, page }) => {
+      const journey = await Given(userInWorkList(page, locale))
+      await Then(journey.shouldHaveTitle())
     })
-  })
+  }
+
+  for (const f of fixtures) {
+    test(`work detail shows title and role (${f.locale})`, { tag: [`@${f.locale}`] }, async ({ Given, Then, And, page }) => {
+      const journey = await Given(userInWorkDetail(page, f.locale, f.slug))
+      await Then(journey.shouldHaveTitle(f.title))
+      await And(journey.shouldHaveRole(f.role))
+      await And(journey.shouldHaveWebsite(f.website))
+    })
+  }
 })

@@ -1,22 +1,40 @@
-import { test, expect } from '@playwright/test'
-import { ContentListPage } from '@tests/pages/ContentListPage'
-import { openCollectionList } from '@tests/actions/ContentListActions'
-import { languageKeys, ui } from '@i18n/ui'
-import { sectionsConfig, type SectionType } from '@domain/section'
+import { test } from '@tests/fixtures'
+import type { UILanguages } from '@i18n/ui'
+import { userInCommunityList, userInCommunityDetail } from '@tests/pages/content/CommunityUserJourney'
 
-const section: SectionType = 'community'
+type CommunityFixture = { locale: UILanguages; slug: string; title: string; role: string; website: string }
 
-test.describe('Community list title', () => {
-  languageKeys.forEach((locale) => {
-    test(`community list title is correct (${locale})`, async ({ page }) => {
-      const list = new ContentListPage(page)
-      await openCollectionList(page, locale, section)
+const fixtures: CommunityFixture[] = [
+  {
+    locale: 'es',
+    slug: 'pybaq',
+    title: 'Python Barranquilla',
+    role: 'Front-End Developer, QA Speaker',
+    website: 'https://pybaq.co/',
+  },
+  {
+    locale: 'en',
+    slug: 'pybaq',
+    title: 'Python Barranquilla',
+    role: 'Front-End Developer, QA Speaker',
+    website: 'https://pybaq.co/',
+  },
+]
 
-      const title = list.headerTitle()
-      await expect(title).toBeVisible()
-      const key = sectionsConfig[section].translationKey
-      const expected = ui[locale][key]
-      await expect(title).toHaveText(expected)
+test.describe('Community', { tag: ['@smoke', '@community'] }, () => {
+  for (const locale of ['es', 'en'] as UILanguages[]) {
+    test(`community list shows title (${locale})`, { tag: [`@${locale}`] }, async ({ Given, Then, page }) => {
+      const journey = await Given(userInCommunityList(page, locale))
+      await Then(journey.shouldHaveTitle())
     })
-  })
+  }
+
+  for (const f of fixtures) {
+    test(`community detail shows title, role and website (${f.locale})`, { tag: [`@${f.locale}`] }, async ({ Given, Then, And, page }) => {
+      const journey = await Given(userInCommunityDetail(page, f.locale, f.slug))
+      await Then(journey.shouldHaveTitle(f.title))
+      await And(journey.shouldHaveRole(f.role))
+      await And(journey.shouldHaveWebsite(f.website))
+    })
+  }
 })
