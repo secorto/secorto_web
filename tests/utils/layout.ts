@@ -1,17 +1,7 @@
 import { expect, type Page, type TestInfo } from '@playwright/test'
+import { step } from '@tests/fixtures'
 
-/**
- * Comprueba que no exista desbordamiento horizontal en la página.
- * - Espera dos frames para que el layout se estabilice
- * - Calcula `scrollWidth` vs `innerWidth`
- * - Si hay overflow, captura un screenshot en `test-results/` y, si se pasa `testInfo`, lo adjunta al informe
- * - Lanza una aserción usando `expect` con información diagnóstica sobre los elementos que provocan overflow
- *
- * @param page Playwright `Page`
- * @param testInfo (opcional) `TestInfo` para adjuntar screenshots en el reporte
- * @param locale (opcional) cadena para incluir en el nombre del screenshot
- */
-export async function assertNoHorizontalOverflow(page: Page, testInfo?: TestInfo, locale?: string) {
+async function assertNoHorizontalOverflowUtil(page: Page, testInfo?: TestInfo, locale?: string) {
   // Allow layout/paint to settle
   await page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))))
 
@@ -43,4 +33,19 @@ export async function assertNoHorizontalOverflow(page: Page, testInfo?: TestInfo
   expect(overflow.maxW).toBeLessThanOrEqual(overflow.iw)
 }
 
-export default assertNoHorizontalOverflow
+/**
+ * Comprueba que no exista desbordamiento horizontal en la página.
+ * - Espera dos frames para que el layout se estabilice
+ * - Calcula `scrollWidth` vs `innerWidth`
+ * - Si hay overflow, captura un screenshot en `test-results/` y, si se pasa `testInfo`, lo adjunta al informe
+ * - Lanza una aserción usando `expect` con información diagnóstica sobre los elementos que provocan overflow
+ *
+ * @param page Playwright `Page`
+ * @param testInfo (opcional) `TestInfo` para adjuntar screenshots en el reporte
+ * @param locale (opcional) cadena para incluir en el nombre del screenshot
+ */
+export function assertNoHorizontalOverflow(page: Page, testInfo?: TestInfo, locale?: string) {
+  return step('no horizontal scroll on mobile', async () => {
+    await assertNoHorizontalOverflowUtil(page, testInfo, locale)
+  })
+}

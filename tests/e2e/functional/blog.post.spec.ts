@@ -2,7 +2,7 @@ import { test } from '@tests/fixtures'
 import { userInBlogPost } from '@tests/support/ui/content/BlogPages'
 import type { UILanguages } from '@i18n/ui'
 import type { TestInfo } from '@playwright/test'
-import { pageHelper } from '@tests/support/ui/components/PageHelper'
+import { assertNoHorizontalOverflow } from '@tests/utils/layout'
 
 type PostFixture = { locale: UILanguages, slug: string, postTitle: string }
 
@@ -28,7 +28,7 @@ for (const f of postFixtures) {
 
     test('no horizontal scroll on mobile', async ({ page }, testInfo: TestInfo) => {
       await userInBlogPost(page, f.locale, f.slug, { width: 480, height: 800 })
-      await pageHelper(page).assertNoHorizontalOverflow(testInfo, f.locale)
+      await assertNoHorizontalOverflow(page, testInfo, f.locale)
     })
   })
 }
