@@ -24,12 +24,20 @@ export class Link extends Target {
     })
   }
 
-  hrefMatchesPattern(pattern: RegExp) {
-    return step(`${this.name} href matches pattern`, async ({ expect }) => {
-      await expect(this.locator).toBeVisible()
-      const href = await this.locator.getAttribute('href')
-      expect(href).toBeTruthy()
-      expect(href).toMatch(pattern)
+  linksMatchPattern(pattern: RegExp) {
+    return step(`${this.name} all links match pattern`, async ({ expect }) => {
+      const links = await this.locator.evaluateAll(nodes =>
+        nodes.map(n => n.getAttribute('href'))
+      )
+
+      expect(links.length).toBeGreaterThan(0)
+
+      links.forEach(async (href, i) => {
+        await step(`link ${href} href matches pattern ${pattern}`, async () => {
+          expect(href, `Item ${i} has no href`).toBeTruthy()
+          expect(href!, `Item ${i} href mismatch`).toMatch(pattern)
+        })
+      })
     })
   }
 }

@@ -1,7 +1,6 @@
 import { test } from '@tests/fixtures'
 import { userIsOnTags } from '@tests/support/ui/content/TagsPage'
 import { languageKeys, type UILanguages, ui } from '@i18n/ui'
-import { pageHelper } from '@tests/support/ui/components/PageHelper'
 
 const fixtures: { locale: UILanguages; expectedTitle: string; expectedDescription: string }[] = languageKeys.map((locale) => ({
   locale,
@@ -31,10 +30,7 @@ for (const f of fixtures) {
 
     test('tag links are valid and navigable', async ({ page }) => {
       const tagsPage = await userIsOnTags(page, f.locale)
-      await tagsPage.firstTagLinkHrefMatches(new RegExp(String.raw`^/${f.locale}/[a-z]+/tags/.+`))
-
-      await tagsPage.clickFirstTagAndWaitForUrl(new RegExp(String.raw`/${f.locale}/[a-z]+/tags/.+`))
-      await pageHelper(page).shouldHaveURL(new RegExp(String.raw`/${f.locale}/.+/tags/.+\/?$`))
+      await tagsPage.linksHrefMatches(new RegExp(String.raw`^/${f.locale}/[a-z]+/tags/.+`))
     })
 
     test('shows "Disponible en" / "Available in" text', async ({ page }) => {

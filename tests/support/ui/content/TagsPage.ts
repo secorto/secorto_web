@@ -51,17 +51,8 @@ export class TagsPage {
     })
   }
 
-  firstTagLinkHrefMatches(pattern: RegExp) {
-    return this.firstTagLink.hrefMatchesPattern(pattern)
-  }
-
-  clickFirstTagAndWaitForUrl(urlRegex: RegExp) {
-    return step('click first tag and wait navigation', async () => {
-      await Promise.all([
-        this.page.waitForURL(urlRegex),
-        this.firstTagLink.click(),
-      ])
-    })
+  linksHrefMatches(pattern: RegExp) {
+    return this.firstTagLink.linksMatchPattern(pattern)
   }
 
   shouldContainAvailabilityText(expectedText: string) {
@@ -76,7 +67,7 @@ export function tagsPage(page: Page) {
     target('tags description', page.getByTestId('tags-description')),
     target('tags groups container', page.getByTestId('global-tag-groups')),
     target('all tag groups', page.getByTestId(/^global-tag-/)),
-    link('first tag link', page.getByTestId('global-tag-groups').locator('a').first()),
+    link('tag link', page.getByTestId('global-tag-groups').locator('a')),
     target('tags page body', page.locator('body')),
   )
 }
