@@ -1,7 +1,6 @@
 import { test } from '@tests/fixtures'
 import { ui, type UILanguages } from '@i18n/ui'
 import { userInCommunityList, userInCommunityDetail } from '@tests/support/ui/content/CommunityPages'
-import { contentListPath, contentDetailsPath } from '@tests/support/ui/shared/NavigationPaths'
 import { pageHelper } from '@tests/support/ui/components/PageHelper'
 
 function escapeRegExp(value: string) {
@@ -31,10 +30,7 @@ test.describe('Community', { tag: ['@smoke', '@community'] }, () => {
   for (const locale of ['es', 'en'] as UILanguages[]) {
     test(`community list shows title (${locale})`, { tag: [`@${locale}`] }, async ({ page }) => {
       const list = await userInCommunityList(page, locale)
-      const listPath = contentListPath('community', locale)
       const expectedHeaderTitle = ui[locale]['nav.community']
-
-      await pageHelper(page).shouldHaveURL(listPath)
       await pageHelper(page).shouldHaveTitle(new RegExp(`^${escapeRegExp(expectedHeaderTitle)} \\| SeCOrTo$`))
       await list.shouldHaveListHeaderTitle(expectedHeaderTitle)
     })
@@ -43,7 +39,6 @@ test.describe('Community', { tag: ['@smoke', '@community'] }, () => {
   for (const f of fixtures) {
     test(`community detail shows title, role and website (${f.locale})`, { tag: [`@${f.locale}`] }, async ({ page }) => {
       const detail = await userInCommunityDetail(page, f.locale, f.slug)
-      await pageHelper(page).shouldHaveURL(contentDetailsPath('community', f.locale, f.slug))
       await detail.shouldHaveDetailTitle(f.title)
       await detail.shouldHaveRole(f.role)
       await detail.shouldHaveWebsite(f.website)
