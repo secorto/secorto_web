@@ -27,7 +27,8 @@ for (const f of postFixtures) {
     })
 
     test('no horizontal scroll on mobile', async ({ page }, testInfo: TestInfo) => {
-      await userInBlogPost(page, f.locale, f.slug, { width: 480, height: 800 })
+      await page.setViewportSize({ width: 480, height: 800 })
+      await userInBlogPost(page, f.locale, f.slug)
       await assertNoHorizontalOverflow(page, testInfo, f.locale)
     })
   })

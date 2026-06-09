@@ -15,14 +15,10 @@ export const userInBlogPost = (
   page: Page,
   locale: UILanguages,
   slug: string,
-  viewport?: { width: number; height: number },
 ) =>
   visit(
     `a user opening blog post ${slug} in ${locale}`,
     page,
     contentDetailsPath('blog', locale, slug),
-    () => contentListPage(page, 'blog'),
-    async (p: Page) => {
-      if (viewport) await p.setViewportSize(viewport)
-    },
+    () => contentListPage(page, 'blog')
   )
