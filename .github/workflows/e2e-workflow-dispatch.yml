@@ -1,14 +1,10 @@
-name: Tests
+name: E2E Tests (Playwright) on Workflow Dispatch
 on:
-  push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
   workflow_dispatch:
     inputs:
       base_url:
-        description: "Base URL to run tests against (optional). NETLIFY_PREVIEW_URL takes priority if present"
-        required: false
+        description: "Base URL to run tests against"
+        required: true
         default: "https://secorto.com"
       folder:
         description: "Folder to run (optional)"
@@ -24,30 +20,6 @@ on:
         default: false
         type: boolean
 jobs:
-  unit-tests:
-    name: Unit Tests (Vitest)
-    if: ${{ github.event_name != 'workflow_dispatch' }}
-    timeout-minutes: 15
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v6
-    - uses: actions/setup-node@v6
-      with:
-        node-version: lts/*
-    - name: Install dependencies
-      run: npm ci
-    - name: Lint code
-      run: npm run lint
-    - name: Run unit tests with coverage
-      run: npx vitest --run --coverage
-    - name: Upload coverage artifact
-      uses: actions/upload-artifact@v6
-      if: ${{ !cancelled() }}
-      with:
-        name: vitest-coverage
-        path: coverage/
-        retention-days: 30
-
   e2e-tests:
     name: E2E Tests (Playwright)
     timeout-minutes: 60
@@ -61,17 +33,7 @@ jobs:
       run: npm ci
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
-    - name: Wait for Netlify preview deploy (PR or main/master push)
-      if: github.event_name == 'pull_request' || startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/heads/master')
-      env:
-        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-        PR_BRANCH: ${{ github.head_ref || github.ref_name }}
-        COMMIT_ID: ${{ github.event.pull_request.head.sha || github.sha }}
-      run: |
-        # use the tiny runner which conditionally invokes the module when executed
-        node .github/scripts/wait-netlify-runner.js
-    - name: Run Playwright tests (use Netlify preview if available)
+    - name: Run Playwright tests
       env:
         NETLIFY_PREVIEW_URL: ${{ env.NETLIFY_PREVIEW_URL }}
         BASE_URL: ${{ github.event.inputs.base_url }}

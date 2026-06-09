@@ -1,0 +1,34 @@
+name: Playwright E2E Tests on Netlify Deployments
+on:
+  deployment_status:
+
+jobs:
+  e2e-tests:
+    # Only run if the deployment succeeded and it originates from Netlify
+    if: github.event.deployment_status.state == 'success' && contains(github.event.deployment.description, 'Netlify')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright Tests against Netlify Preview
+        env:
+          # Inject the live Netlify preview URL into your Playwright configuration
+          BASE_URL: ${{ github.event.deployment_status.target_url }}
+        run: npx playwright test
+      - name: Upload Playwright Report
+        uses: actions/upload-artifact@v6
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
