@@ -4,15 +4,12 @@ import type { SidebarPage } from '@tests/support/ui/sidebar/SidebarPage'
 import { sidebarPage } from '@tests/support/ui/sidebar/SidebarPage'
 import { target } from '@tests/support/ui/components/Target'
 import type { Target as TargetComponent } from '@tests/support/ui/components/Target'
-import { pageHelper } from '@tests/support/ui/components/PageHelper'
-import type { PageHelper } from '@tests/support/ui/components/PageHelper'
 import { homePath, visit } from '@tests/support/ui/shared/NavigationPaths'
 
 export class ThemeLocaleHomePage {
   constructor(
     readonly sidebar: SidebarPage,
     readonly themeElement: TargetComponent,
-    readonly page: PageHelper,
   ) {}
 
   shouldHaveTheme(theme: string) {
@@ -32,10 +29,6 @@ export class ThemeLocaleHomePage {
     return this.sidebar.themeToggleShouldBeDifferent(initialTransform)
   }
 
-  shouldHaveThemeStorage(theme: string) {
-    return this.page.shouldHaveLocalStorage('theme', theme)
-  }
-
   shouldHaveLang(expected: string) {
     return this.themeElement.shouldHaveAttribute('lang', expected)
   }
@@ -45,23 +38,18 @@ function themeLocaleHomePage(page: Page) {
   return new ThemeLocaleHomePage(
     sidebarPage(page),
     target('html root', page.locator('html')),
-    pageHelper(page),
   )
 }
 
 export const userInHome = (
   page: Page,
   locale: UILanguages,
-  options?: { theme?: string }
+  preAct?: (page: Page) => Promise<void> | void,
 ) =>
   visit(
     `a user opening home in ${locale} for theme/locale`,
     page,
     homePath(locale),
     themeLocaleHomePage,
-    async (p) => {
-      if (options?.theme !== undefined) {
-        await pageHelper(p).injectStorageEntries({ theme: options.theme })
-      }
-    },
+    preAct
   )

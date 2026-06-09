@@ -1,4 +1,5 @@
 import { test } from '@tests/fixtures'
+import { shouldHaveLocalStorage, withThemeInStorage } from '@tests/support/ui/page/local-storage'
 import { userInHome } from '@tests/support/ui/home/ThemeLocaleHomePage'
 
 test.describe('Theme local storage',
@@ -12,10 +13,10 @@ test.describe('Theme local storage',
     for (const { startTheme, toggledTheme } of cases) {
       test(`start ${startTheme} → toggle → ${toggledTheme}`,
         async ({ page }) => {
-          const home = await userInHome(page, 'en', { theme: startTheme })
+          const home = await userInHome(page, 'en', withThemeInStorage(startTheme))
           await home.toggleTheme()
           await home.shouldHaveTheme(toggledTheme)
-          await home.shouldHaveThemeStorage(toggledTheme)
+          await shouldHaveLocalStorage(page, 'theme', toggledTheme)
         })
     }
   })
