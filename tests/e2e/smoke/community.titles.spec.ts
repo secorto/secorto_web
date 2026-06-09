@@ -1,22 +1,47 @@
-import { test, expect } from '@playwright/test'
-import { ContentListPage } from '@tests/pages/ContentListPage'
-import { openCollectionList } from '@tests/actions/ContentListActions'
-import { languageKeys, ui } from '@i18n/ui'
-import { sectionsConfig, type SectionType } from '@domain/section'
+import { test } from '@tests/fixtures'
+import { ui, type UILanguages } from '@i18n/ui'
+import { userInCommunityList, userInCommunityDetail } from '@tests/support/ui/content/CommunityPages'
+import { pageHelper } from '@tests/support/ui/components/PageHelper'
 
-const section: SectionType = 'community'
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
 
-test.describe('Community list title', () => {
-  languageKeys.forEach((locale) => {
-    test(`community list title is correct (${locale})`, async ({ page }) => {
-      const list = new ContentListPage(page)
-      await openCollectionList(page, locale, section)
+type CommunityFixture = { locale: UILanguages; slug: string; title: string; role: string; website: string }
 
-      const title = list.headerTitle()
-      await expect(title).toBeVisible()
-      const key = sectionsConfig[section].translationKey
-      const expected = ui[locale][key]
-      await expect(title).toHaveText(expected)
+const fixtures: CommunityFixture[] = [
+  {
+    locale: 'es',
+    slug: 'pybaq',
+    title: 'Python Barranquilla',
+    role: 'Front-End Developer, QA Speaker',
+    website: 'https://pybaq.co/',
+  },
+  {
+    locale: 'en',
+    slug: 'pybaq',
+    title: 'Python Barranquilla',
+    role: 'Front-End Developer, QA Speaker',
+    website: 'https://pybaq.co/',
+  },
+]
+
+test.describe('Community', { tag: ['@smoke', '@community'] }, () => {
+  for (const locale of ['es', 'en'] as UILanguages[]) {
+    test(`community list shows title (${locale})`, { tag: [`@${locale}`] }, async ({ page }) => {
+      const list = await userInCommunityList(page, locale)
+      const expectedHeaderTitle = ui[locale]['nav.community']
+      await pageHelper(page).shouldHaveTitle(new RegExp(`^${escapeRegExp(expectedHeaderTitle)} \\| SeCOrTo$`))
+      await list.shouldHaveListHeaderTitle(expectedHeaderTitle)
     })
-  })
+  }
+
+  for (const f of fixtures) {
+    test(`community detail shows title, role and website (${f.locale})`, { tag: [`@${f.locale}`] }, async ({ page }) => {
+      const detail = await userInCommunityDetail(page, f.locale, f.slug)
+      await detail.shouldHaveDetailTitle(f.title)
+      await detail.shouldHaveRole(f.role)
+      await detail.shouldHaveWebsite(f.website)
+    })
+  }
 })

@@ -1,29 +1,16 @@
-import { test, expect } from '@playwright/test'
+import { test } from '@tests/fixtures'
 import { languageKeys, ui } from '@i18n/ui'
+import { userInHome } from '@tests/support/ui/home/FooterPage'
 
 
-test.describe('Footer translations', () => {
+test.describe('Footer translations', { tag: ['@smoke', '@home'] }, () => {
   languageKeys.forEach((locale) => {
-    test(`footer texts are correct (${locale})`, async ({ page }) => {
-      await page.goto(`/${locale}/`)
-
-      const expectedAlt = ui[locale]['footer.avatar_alt']
-      const expectedRole = ui[locale]['footer.role']
-      const expectedFollow = ui[locale]['footer.follow']
-      // image alt
-      const img = page.locator('[data-testid="footer-avatar"]')
-      await expect(img).toBeVisible()
-      expect(await img.getAttribute('alt')).toBe(expectedAlt)
-
-      // role text
-      const role = page.getByTestId('footer-role')
-      await expect(role).toBeVisible()
-      await expect(role).toHaveText(expectedRole)
-
-      // follow label
-      const follow = page.getByTestId('footer-follow')
-      await expect(follow).toBeVisible()
-      await expect(follow).toHaveText(expectedFollow)
+    test(`footer texts are correct (${locale})`, { tag: [`@${locale}`] }, async ({ page }) => {
+      const homePage = await userInHome(page, locale)
+      await homePage.shouldHaveAvatarAlt(ui[locale]['footer.avatar_alt'])
+      await homePage.shouldHaveRoleText(ui[locale]['footer.role'])
+      await homePage.shouldHaveFollowText(ui[locale]['footer.follow'])
+      await homePage.shouldHaveAvatarLoaded()
     })
   })
 })

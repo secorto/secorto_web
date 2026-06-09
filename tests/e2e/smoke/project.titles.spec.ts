@@ -1,22 +1,44 @@
-import { test, expect } from '@playwright/test'
-import { ContentListPage } from '@tests/pages/ContentListPage'
-import { openCollectionList } from '@tests/actions/ContentListActions'
-import { languageKeys, ui } from '@i18n/ui'
-import { sectionsConfig, type SectionType } from '@domain/section'
+import { test } from '@tests/fixtures'
+import { ui, type UILanguages } from '@i18n/ui'
+import { userInProjectList, userInProjectDetail } from '@tests/support/ui/content/ProjectPages'
+import { pageHelper } from '@tests/support/ui/components/PageHelper'
 
-const section: SectionType = 'projects'
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
 
-test.describe('Project list title', () => {
-  languageKeys.forEach((locale) => {
-    test(`project list title is correct (${locale})`, async ({ page }) => {
-      const list = new ContentListPage(page)
-      await openCollectionList(page, locale, section)
+type ProjectFixture = { locale: UILanguages; slug: string; title: string; role: string }
 
-      const title = list.headerTitle()
-      await expect(title).toBeVisible()
-      const key = sectionsConfig[section].translationKey
-      const expected = ui[locale][key]
-      await expect(title).toHaveText(expected)
+const fixtures: ProjectFixture[] = [
+  {
+    locale: 'es',
+    slug: 'scot3004',
+    title: 'Sitio web personal',
+    role: 'Ingeniero de desarrollo',
+  },
+  {
+    locale: 'en',
+    slug: 'scot3004',
+    title: 'Personal website',
+    role: 'Development Engineer',
+  },
+]
+
+test.describe('Projects', { tag: ['@smoke', '@projects'] }, () => {
+  for (const locale of ['es', 'en'] as UILanguages[]) {
+    test(`project list shows title (${locale})`, { tag: [`@${locale}`] }, async ({ page }) => {
+      const list = await userInProjectList(page, locale)
+      const expectedHeaderTitle = ui[locale]['nav.projects']
+      await pageHelper(page).shouldHaveTitle(new RegExp(`^${escapeRegExp(expectedHeaderTitle)} \\| SeCOrTo$`))
+      await list.shouldHaveListHeaderTitle(expectedHeaderTitle)
     })
-  })
+  }
+
+  for (const f of fixtures) {
+    test(`project detail shows title and role (${f.locale})`, { tag: [`@${f.locale}`] }, async ({ page }) => {
+      const detail = await userInProjectDetail(page, f.locale, f.slug)
+      await detail.shouldHaveDetailTitle(f.title)
+      await detail.shouldHaveRole(f.role)
+    })
+  }
 })

@@ -9,6 +9,8 @@ const baseUrl = getBaseUrl()
  */
 export default defineConfig({
   testDir: './tests/e2e',
+  /* Max duration for the entire test run */
+  globalTimeout: 10 * 60 * 1000,
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -36,18 +38,26 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
+      name: 'api',
+      use: { ...devices['Desktop Chrome'] },
+      testMatch: ['**/api/**/*.spec.ts'],
+    },
+
+    {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+      testIgnore: ['**/api/**/*.spec.ts'],
     },
 
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
+      testIgnore: ['**/api/**/*.spec.ts'],
     },
-
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
+      testIgnore: ['**/api/**/*.spec.ts'],
     },
   ],
 

@@ -1,72 +1,48 @@
-import { test, expect } from '@playwright/test'
+import { test } from '@tests/fixtures'
+import { SidebarPage, userInHome } from '@tests/support/ui/sidebar/SidebarPage'
 
-test.describe('Hamburger menu', () => {
-  // Forzar viewport móvil para que el hamburger sea visible
+test.describe('Hamburger menu', { tag: ['@functional', '@home', '@menu', '@sidebar', '@es'] }, () => {
   test.use({ viewport: { width: 375, height: 667 } })
 
-  test('hamburger button is visible on mobile', async ({ page }) => {
-    await page.goto('/es/')
+  let userInMenuFlow: () => Promise<SidebarPage>
 
-    const hamburger = page.getByTestId('hamburger')
-    await expect(hamburger).toBeVisible()
+  test.beforeEach(async ({ page }) => {
+    userInMenuFlow = () => userInHome(page, 'es')
   })
 
-  test('clicking hamburger opens sidebar', async ({ page }) => {
-    await page.goto('/es/')
-
-    const hamburger = page.getByTestId('hamburger')
-    const sidebar = page.locator('.sidebar-toggle')
-
-    // Sidebar should not have 'sidebar-open' class initially
-    await expect(sidebar).not.toHaveClass(/sidebar-open/)
-
-    // Click hamburger to open
-    await hamburger.click()
-
-    // Sidebar should now have 'sidebar-open' class
-    await expect(sidebar).toHaveClass(/sidebar-open/)
+  test('hamburger button is visible on mobile', async () => {
+    const menu = await userInMenuFlow()
+    await menu.shouldHaveHamburgerButton()
   })
 
-  test('clicking hamburger again closes sidebar', async ({ page }) => {
-    await page.goto('/es/')
-
-    const hamburger = page.getByTestId('hamburger')
-    const sidebar = page.locator('.sidebar-toggle')
-
-    // Open
-    await hamburger.click()
-    await expect(sidebar).toHaveClass(/sidebar-open/)
-
-    // Close
-    await hamburger.click()
-    await expect(sidebar).not.toHaveClass(/sidebar-open/)
+  test('clicking hamburger opens sidebar', async () => {
+    const menu = await userInMenuFlow()
+    await menu.shouldHaveSidebarClosed()
+    await menu.toggleSidebar()
+    await menu.shouldHaveSidebarOpen()
   })
 
-  test('hamburger button toggles its own sidebar-open class', async ({ page }) => {
-    await page.goto('/es/')
-
-    const hamburger = page.getByTestId('hamburger')
-
-    await expect(hamburger).not.toHaveClass(/sidebar-open/)
-
-    await hamburger.click()
-    await expect(hamburger).toHaveClass(/sidebar-open/)
-
-    await hamburger.click()
-    await expect(hamburger).not.toHaveClass(/sidebar-open/)
+  test('clicking hamburger again closes sidebar', async () => {
+    const menu = await userInMenuFlow()
+    await menu.toggleSidebar()
+    await menu.shouldHaveSidebarOpen()
+    await menu.toggleSidebar()
+    await menu.shouldHaveSidebarClosed()
   })
 
-  test('sidebar contains navigation links', async ({ page }) => {
-    await page.goto('/es/')
+  test('hamburger button toggles its own sidebar-open class', async () => {
+    const menu = await userInMenuFlow()
+    await menu.shouldHaveHamburgerClosedState()
+    await menu.toggleSidebar()
+    await menu.shouldHaveHamburgerOpenState()
+    await menu.toggleSidebar()
+    await menu.shouldHaveHamburgerClosedState()
+  })
 
-    const hamburger = page.getByTestId('hamburger')
-    await hamburger.click()
-
-    const sidebar = page.locator('.sidebar-toggle')
-    await expect(sidebar).toHaveClass(/sidebar-open/)
-
-    // Verify sidebar has nav links
-    const sidebarTitle = page.getByTestId('sidebar-title')
-    await expect(sidebarTitle).toBeVisible()
+  test('sidebar contains navigation links', async () => {
+    const menu = await userInMenuFlow()
+    await menu.toggleSidebar()
+    await menu.shouldHaveSidebarOpen()
+    await menu.shouldShowNavigationLinks()
   })
 })

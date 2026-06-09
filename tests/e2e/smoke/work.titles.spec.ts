@@ -1,22 +1,47 @@
-import { test, expect } from '@playwright/test'
-import { ContentListPage } from '@tests/pages/ContentListPage'
-import { openCollectionList } from '@tests/actions/ContentListActions'
-import { languageKeys, ui } from '@i18n/ui'
-import { sectionsConfig, type SectionType } from '@domain/section'
+import { test } from '@tests/fixtures'
+import { ui, type UILanguages } from '@i18n/ui'
+import { userInWorkList, userInWorkDetail } from '@tests/support/ui/content/WorkPages'
+import { pageHelper } from '@tests/support/ui/components/PageHelper'
 
-const section: SectionType = 'work'
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
 
-test.describe('Work list title', () => {
-  languageKeys.forEach((locale) => {
-    test(`work list title is correct (${locale})`, async ({ page }) => {
-      const list = new ContentListPage(page)
-      await openCollectionList(page, locale, section)
+type WorkFixture = { locale: UILanguages; slug: string; title: string; role: string; website: string }
 
-      const title = list.headerTitle()
-      await expect(title).toBeVisible()
-      const key = sectionsConfig[section].translationKey
-      const expected = ui[locale][key]
-      await expect(title).toHaveText(expected)
+const fixtures: WorkFixture[] = [
+  {
+    locale: 'es',
+    slug: 'perficient',
+    title: 'Perficient Latinoamerica',
+    role: 'Software developer engineer in test',
+    website: 'https://www.perficient.com',
+  },
+  {
+    locale: 'en',
+    slug: 'perficient',
+    title: 'Perficient Latinoamerica',
+    role: 'Senior Technical Consultant',
+    website: 'https://www.perficient.com',
+  },
+]
+
+test.describe('Work', { tag: ['@smoke', '@work'] }, () => {
+  for (const locale of ['es', 'en'] as UILanguages[]) {
+    test(`work list shows title (${locale})`, { tag: [`@${locale}`] }, async ({ page }) => {
+      const list = await userInWorkList(page, locale)
+      const expectedHeaderTitle = ui[locale]['nav.work']
+      await pageHelper(page).shouldHaveTitle(new RegExp(`^${escapeRegExp(expectedHeaderTitle)} \\| SeCOrTo$`))
+      await list.shouldHaveListHeaderTitle(expectedHeaderTitle)
     })
-  })
+  }
+
+  for (const f of fixtures) {
+    test(`work detail shows title and role (${f.locale})`, { tag: [`@${f.locale}`] }, async ({ page }) => {
+      const detail = await userInWorkDetail(page, f.locale, f.slug)
+      await detail.shouldHaveDetailTitle(f.title)
+      await detail.shouldHaveRole(f.role)
+      await detail.shouldHaveWebsite(f.website)
+    })
+  }
 })
