@@ -1,11 +1,12 @@
 name: Playwright E2E Tests on Netlify Deployments
 on:
-  deployment_status:
+  repository_dispatch:
+    # Este nombre de evento lo definiremos en el webhook de Netlify
+    types: [netlify-deploy-success]
 
 jobs:
   e2e-tests:
     # Only run if the deployment succeeded and it originates from Netlify
-    if: github.event.deployment_status.state == 'success' && contains(github.event.deployment.description, 'Netlify')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -23,7 +24,7 @@ jobs:
       - name: Run Playwright Tests against Netlify Preview
         env:
           # Inject the live Netlify preview URL into your Playwright configuration
-          BASE_URL: ${{ github.event.deployment_status.target_url }}
+          BASE_URL: ${{ github.event.client_payload.payload.links.permalink }}
         run: npx playwright test
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v6
