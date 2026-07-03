@@ -52,6 +52,8 @@ jobs:
     name: E2E Tests (Playwright)
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.61.1-focal
     steps:
     - uses: actions/checkout@v6
     - uses: actions/setup-node@v6
