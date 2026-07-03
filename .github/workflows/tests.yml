@@ -53,7 +53,7 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.61.1-focal
+      image: mcr.microsoft.com/playwright:v1.61.1-noble
     steps:
     - uses: actions/checkout@v6
     - uses: actions/setup-node@v6
