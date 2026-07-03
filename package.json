@@ -24,10 +24,10 @@
   },
   "dependencies": {
     "@astrojs/check": "^0.9.9",
-    "@astrojs/rss": "^4.0.18",
+    "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
-    "astro": "^6.4.4",
-    "astro-expressive-code": "0.42.0",
+    "astro": "^7.0.6",
+    "astro-expressive-code": "0.44.0",
     "jsdom": "^29.1.1",
     "photoswipe": "^5.4.4",
     "typescript": "^6.0.3",
