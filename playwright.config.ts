@@ -51,7 +51,15 @@ export default defineConfig({
 
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      use: {
+        ...devices['Desktop Firefox'],
+        launchOptions: {
+          firefoxUserPrefs: {
+            'network.http.http3.enable': false,
+            'privacy.trackingprotection.enabled': false,
+          },
+        },
+      },
       testIgnore: ['**/api/**/*.spec.ts'],
     },
     {
