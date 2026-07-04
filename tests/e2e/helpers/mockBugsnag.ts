@@ -5,11 +5,24 @@ import { whenMocked } from '@tests/e2e/helpers/whenMocked'
  * mockBugsnag
  *
  * Mock para Bugsnag error tracking que Netlify inyecta en deploys de preview.
- * Bloquea (abort) las peticiones a sessions.bugsnag.com para evitar bloqueos en Firefox.
+ * Simula respuestas vacías en lugar de abortar para mejor compatibilidad con Firefox en Playwright 1.61.1+
  */
 export const mockBugsnag = whenMocked(async (page: Page) => {
-  // Bloquear peticiones POST a sessions.bugsnag.com
-  await page.route('**/sessions.bugsnag.com/**', route => route.abort())
-  // Bloquear script de Bugsnag
-  await page.route('**/cdn.bugsnag.com/**', route => route.abort())
+  // Mockear peticiones POST a sessions.bugsnag.com
+  await page.route('**/sessions.bugsnag.com/**', route => {
+    return route.fulfill({
+      status: 202,
+      contentType: 'application/json',
+      body: JSON.stringify({ success: true }),
+    })
+  })
+
+  // Mockear script de Bugsnag si es cargado dinámicamente
+  await page.route('**/cdn.bugsnag.com/**', route => {
+    return route.fulfill({
+      status: 200,
+      contentType: 'application/javascript',
+      body: '/* Bugsnag mocked */',
+    })
+  })
 })
