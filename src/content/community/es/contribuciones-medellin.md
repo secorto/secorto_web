@@ -1,11 +1,9 @@
 ---
 title: "Contribuciones en Medellín"
 excerpt: "Charlas y contribuciones a comunidades de desarrollo en Medellín: JamStack y Node Colombia"
-image: "@assets/img/comunidades/jamstack.png"
+image: "@assets/img/comunidades/nodeco.jpeg"
 role: "Speaker"
 responsibilities: "Charlas sobre tecnologías web y desarrollo moderno"
-location: medellin
-connection: "Python Colombia"
 priority: 35
 translationKey: medellin-contributions
 ---

@@ -9,7 +9,7 @@ tags:
   - ubuntu
   - flisol
 translationKey: fsl-barranquilla
-image: "@assets/img/comunidades/fslbaq.png"
+image: "@assets/img/comunidades/wp-baq.png"
 priority: 40
 ---
 

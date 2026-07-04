@@ -1,7 +1,7 @@
 ---
 title: "Medellin Contributions"
 excerpt: "Talks and contributions to development communities in Medellin: JamStack and Node Colombia"
-image: "@assets/img/comunidades/jamstack.png"
+image: "@assets/img/comunidades/nodeco.jpeg"
 role: "Speaker"
 responsibilities: "Talks on web technologies and modern development"
 location: medellin

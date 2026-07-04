@@ -9,7 +9,7 @@ tags:
   - ubuntu
   - flisol
 translationKey: fsl-barranquilla
-image: "@assets/img/comunidades/fslbaq.png"
+image: "@assets/img/comunidades/wp-baq.png"
 priority: 40
 ---
 
@@ -69,7 +69,7 @@ They taught me:
 
 Today I continue that commitment through:
 
-- [OpenStreetMap](/en/proyecto/contribuciones-gis) — open data for urban mobility
+- [OpenStreetMap](/en/project/contribuciones-gis) — open data for urban mobility
 - [Python Barranquilla](/en/comunidad/pybaq) — active participation in events and site maintenance
 - Participation in software communities (NodeCO, JAMStack)
 
