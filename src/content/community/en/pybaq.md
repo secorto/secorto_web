@@ -1,27 +1,45 @@
 ---
 title: "Python Barranquilla"
-excerpt: "Comunidad de desarrolladores python en la ciudad de Barranquilla."
+excerpt: "Python developers community in the city of Barranquilla. Part of Python Colombia national ecosystem."
 image: "@assets/img/pybaq/members.jpg"
 role: "Front-End Developer, QA Speaker"
-responsibilities: "Mantener actualizado el sitio web de la comunidad, Contribuir con charlas sobre testing"
+responsibilities: "Maintain community website, contribute with testing talks"
 website: https://pybaq.co/
 gallery:
   - image: "@assets/img/pybaq/charlas.png"
-    alt: "Charlas PyBAQ"
+    alt: "PyBAQ Talks"
   - image: "@assets/img/pybaq/contribuir-pybaq.png"
-    alt: "Contribuir PyBAQ"
+    alt: "Contribute to PyBAQ"
   - image: "@assets/img/pybaq/areados.jpeg"
-    alt: "Meetup PyBAQ"
-  - alt: Equipo Python Barranquilla Pycon 2019
+    alt: "PyBAQ Meetup"
+  - alt: Python Barranquilla Team at PyCon 2019
     image: "@assets/img/pybaq/pycon-pybaq-2019.jpg"
-  - alt: Iniciando PyCon 2019
+  - alt: Starting PyCon 2019
     image: "@assets/img/pybaq/pycon-entrada.jpg"
 ---
 
-The Barranquilla Python community has been an excellent opportunity for personal growth. I've learned a great deal from them, and the clearest evidence of this is that my current work focuses on Python test automation. Undoubtedly, belonging to a developer community gives you the opportunity to interact with diverse people, enriching your personal experience. But it's not just a learning opportunity; it's a continuous exchange of knowledge among its members. Furthermore, contributing to open-source projects is a learning opportunity, and more than that, it allows you to apply your skills to projects that help solve people's problems.
+PyBAQ is part of **Python Colombia**, the national network of Python communities.
+This has been fundamental to my growth:
 
-Today, I'm proud to be part of the organizing team, a role in which I'm developing my communication skills.
+Belonging to a developer community gives you access to continuous interactions with people from different backgrounds.
+But PyBAQ is not isolated: it's the local node of a national ecosystem.
 
-Among other things, I've been able to participate in a national event called PyCon, organized by the Python community. In Colombia, it takes place annually on the second weekend of February, and I've had the opportunity to assist with logistics in 2018, 2019, and 2020.
+## National Connection: PyCon and Python Colombia
+
+**PyCon Colombia** is the annual national event of the Python community (second weekend of February).
+I've assisted with logistics in 2018, 2019, 2020, and 2024.
+
+Those events were crucial connection points:
+
+- I met people from Bogotá, Medellín, and other cities
+- That expanded my participation beyond Barranquilla
+- Subsequent contributions in Medellín (JamStack, Node Colombia) emerged from those national connections
+
+**These were not isolated contributions. They were natural extensions of the Python Colombia network.**
+
+## Role at PyBAQ
+
+I'm co-organizer of the technical team: website infrastructure maintenance, web architecture,
+complete end-to-end technical decisions. I also contribute with talks on testing and automation.
 
 For more information, please consult [pybaq website](https://pybaq.co/en)

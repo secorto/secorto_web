@@ -18,10 +18,28 @@ gallery:
     image: "@assets/img/pybaq/pycon-entrada.jpg"
 ---
 
-La comunidad de python Barranquilla ha sido una excelente oportunidad de crecimiento personal, he aprendido un montón gracias a ellos y la evidencia más clara es que mi trabajo actual es sobre automatización de pruebas en python, sin duda pertenecer a una comunidad de desarrolladores te da la oportunidad de interactuar con distintas personas, lo que hace que tu experiencia personal se enriquezca; pero no es sólo una oportunidad de aprendizaje es un intercambio continuo de saberes entre quienes la conforman. Por otro lado, contribuir a proyectos open source es una oportunidad de aprendizaje, y más que eso es poder aplicar tus habilidades en proyectos que contribuyan a resolver los problemas de las personas.
+PyBAQ es parte de **Python Colombia**, la red nacional de comunidades Python.
+Esto fue fundamental para mi crecimiento: he aprendido enormemente gracias a ellos,
 
-Hoy dia puedo celebrar que soy parte del equipo organizador labor con la que estoy desarrollando mis habilidades comunicativas.
+Pertenecer a una comunidad de desarrolladores te da acceso a interacciones continuas con personas de distintos contextos.
+Pero PyBAQ no es aislado: es el nodo local de un ecosistema nacional.
 
-Entre otras cosas he podido participar en un evento a nivel nacional llamado PyCon el cual es un evento realizado por la comunidad Python. En colombia se realiza una vez al año el segundo fin de semana de febrero, he tenido la oportunidad de apoyar en logística los años 2018, 2019 y 2020.
+## Conexión Nacional: PyCon y Python Colombia
+
+**PyCon Colombia** es el evento anual de la comunidad Python nacional (segundo fin de semana de febrero).
+He apoyado en logística los años 2018, 2019, 2020 y 2024.
+
+Esos eventos fueron puntos de conexión cruciales:
+
+- Conocí gente de Bogotá, Medellín y otras ciudades
+- Eso expandió mi participación más allá de Barranquilla
+- Las contribuciones posteriores en Medellín (JamStack, Node Colombia) surgieron de esas conexiones nacionales
+
+**No fueron contribuciones aisladas. Fueron extensiones naturales de la red de Python Colombia.**
+
+## Rol en PyBAQ
+
+Soy co-organizador del equipo técnico: mantenimiento de infraestructura del sitio, arquitectura de la web,
+decisiones técnicas de ciclo completo. También contribuyo con charlas sobre testing y automatización.
 
 Para mas información consulta [el sitio web de pybaq](https://pybaq.co/)
