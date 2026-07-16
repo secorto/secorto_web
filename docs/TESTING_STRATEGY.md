@@ -33,9 +33,72 @@ Para el razonamiento y la justificación de cada elección, ver [ADR 002](./adr/
 
 ## Organización del código de pruebas
 
-- Unit tests: `tests/unit/**` (usar TypeScript)
-- E2E tests: `tests/e2e/**` (usar POM para locators en `tests/pages/` y separar las acciones en `tests/actions/`)
-- Mocks y utilidades de pruebas compartidas: `tests/utils/` o `tests/e2e/helpers/`
+- **Unit tests**: `tests/unit/**` (usar TypeScript)
+- **E2E tests**: `tests/e2e/**` con estructura en capas (ver sección "Modelo Component/Page/Flow")
+  - Componentes: `tests/support/ui/components/`
+  - Pages por dominio: `tests/support/ui/{domain}/`, `tests/support/ui/home/`, `tests/support/ui/sidebar/`, etc.
+  - Flows (secuencias multi-step/multi-page): `tests/support/flows/`
+  - Helpers y mocks: `tests/e2e/helpers/`, `tests/support/ui/shared/`
+- **Mocks y utilidades compartidas**: `tests/utils/` para unit, `tests/e2e/helpers/` y `tests/support/ui/` para E2E
+
+## Modelo Component/Page/Flow (E2E)
+
+La arquitectura E2E en este proyecto sigue un modelo de 3 capas composables:
+
+### Capa 1: Components (Unidades de UI con Comportamiento)
+**Ubicación**: `tests/support/ui/components/`
+
+Abstraen cualquier unidad de UI con un protocolo de interacción o validación esperado:
+- **Primitivos**: `Target` (locator genérico + assertions), `Link` (locator + validaciones de href)
+- **Especializados**: `Comments` (composite: script + iframe), `PageHelper` (utilidades stateless)
+- **Criterio de creación**: ¿Tiene el elemento un "happy path" o protocolo de uso? → Es componente
+- **Responsabilidad**: Encapsular cómo se ve/comporta EL ELEMENTO específico (no el contexto page)
+- **Patrón**: Clase + factory + métodos que retornan `Promise` vía `step()`
+- **Realidad SSG**: En un sitio sin interacciones pesadas, `Target` suele ser suficiente. Pero si existe un Dropdown, Modal, o Tab con open/close/select, ese es un componente formal
+
+### Capa 2: Pages (Orquestadores de Components)
+**Ubicación**: `tests/support/ui/{domain}/` (ej: `home/`, `content/`, `sidebar/`)
+
+Orquestan múltiples components con métodos semánticos que representan el flujo local:
+- **Responsabilidad**: Combinar components para expresar la lógica/validación de una sección
+- **Patrón**: 
+  - Clase con constructor que inyecta components
+  - Factory: `homePage(page: Page): HomePage`
+  - Helper: `userInHome(page: Page): Promise<HomePage>` que invoca `visit()` y retorna factory
+  - Métodos sin `async` si retornan lazy `Promise` (para encadenamiento)
+- **Métodos**: Cada uno encapsulado en `step()`, orquestan 1+ componentes + lógica local
+- **Ejemplo**: `ContentListPage` inyecta `TargetSelector<string>` (items), `TargetSelector<string>` (tags), `Comments` → expone `filterByTag()`, `clickItem()`, `shouldHaveComments()`
+
+### Capa 3: Flows (Secuencias Multi-Step/Multi-Page - OPCIONAL)
+**Ubicación**: `tests/support/flows/` (funciones reutilizables) + `tests/e2e/flow/` (specs)
+
+Encapsulan narrativas complejas que cruzan múltiples pages o requieren coordinación:
+- **Responsabilidad**: Encapsular secuencias que no pertenecen a una sola page
+- **Ejemplo**: "navegar blog → filtrar tag → click post → validar detalle" = flujo (es la narrativa)
+- **Patrón**: Función que recibe `Page` y parámetros, retorna último page accedido para chaining
+- **Internamente**: Cada acción wrapped en `step()`, usa múltiples pages
+- **Cuándo**: Solo para flujos complejos multi-step/multi-page. No sobre-ingenierizar.
+
+**Ejemplo mínimo**:
+```typescript
+// tests/support/flows/blog.flow.ts
+export const navigateBlogFilterAndDetail = async (
+  page: Page,
+  locale: UILanguages,
+  tag: string,
+  slug: string,
+) => {
+  const list = await userInBlogList(page, locale)
+  await step(`filter by "${tag}"`, async () => {
+    await list.filterByTag(tag)
+  })
+  const path = contentDetailsPath('blog', locale, slug)
+  await step(`navigate to detail`, async () => {
+    await list.clickItem(path, `click "${slug}"`)
+  })
+  return list // retorna último page para assertions en test
+}
+```
 
 ## Patrones y buenas prácticas
 
@@ -49,18 +112,15 @@ Para el razonamiento y la justificación de cada elección, ver [ADR 002](./adr/
     para evitar el coste y la fragilidad de mocks que no aportan valor.
 
 - E2E
-  - Page Object Model (POM) con una restricción importante:
-    los Page Objects deben *exponer únicamente* `Locator`s y selectores, **no** contener acciones complejas.
-  - Responsabilidad de los `pages/*`: ofrecer locators y helpers de acceso ubicados en `tests/pages/`.
-  - Las `actions` ubicadas en `tests/actions/` se recomiendan solo cuando hay composiciones reutilizables o flujos complejos:
-    por ejemplo, cuando una secuencia genera un código, maneja iframes,
-    activa callbacks externos o coordina pasos que no se resuelven con una sola llamada a un locator.
-    En esos casos, las `actions` encapsulan la lógica y mantienen los tests legibles.
-  - Localizadores estables: preferir selectores accesibles soportados por Playwright
-    (p. ej. `getByRole` / selectores ARIA). Si no es práctico, usar `data-testid` como atributo estable.
-    Evitar selectores frágiles (clases que cambian)
-  - Mockear recursos externos con `page.route()` o proveedores locales en CI para mantener tests deterministas
-  - Timeouts razonables y checks por visibilidad/atributos en vez de sleeps
+  - **Componentes vs Pages**: Components encapsulan comportamiento de elementos aislados (Target, Dropdown, Comments).
+    Pages combinan components para expresar lógica de sección/dominio. Pages exponen métodos semánticos, NO simples locators.
+  - **Encapsulación en `step()`**: Cada método en components y pages debe retornar `Promise` via `step()` para visibilidad en reportes E2E.
+  - **Inyección de componentes**: Pages reciben components en constructor, no los crean directamente.
+  - **Flows (cuando sea necesario)**: Usa flows para secuencias complejas multi-page; no para toda acción.
+  - **Localizadores estables**: Preferir selectores accesibles por Playwright (`getByRole` / ARIA).
+    Si no es práctico, usar `data-testid` como atributo estable. Evitar selectores frágiles (clases).
+  - **Mocking de terceros**: Mockear recursos externos con `page.route()` o proveedores locales en CI.
+  - **Timeouts razonables**: Usar checks de visibilidad/atributos en lugar de `sleep()`
 
 ## Convenciones de ejecución
 
@@ -83,20 +143,31 @@ Para el razonamiento y la justificación de cada elección, ver [ADR 002](./adr/
 
 ## Ejemplos y referencias
 
-Evita incluir snippets de implementación en este documento.
-En su lugar, consulta los ejemplos concretos ya existentes en el repositorio:
+Consulta los ejemplos concretos en el repositorio, organizados por capa:
 
-- Ejemplos de helpers/mocks E2E: `tests/e2e/helpers/mockGiscus.ts`
-- Ejemplos de specs E2E: `tests/e2e/functional/blog.post.spec.ts`, `tests/e2e/a11y/charla.a11y.spec.ts`
-- Ejemplos de tests unitarios y mocks: `tests/unit/i18n/utils.test.ts`, `tests/unit/client/themeToggle.test.ts`
+**Components** (primitivos y especializados):
+- `tests/support/ui/components/Target.ts` — component primitivo con assertions
+- `tests/support/ui/components/Link.ts` — component que extiende Target
+- `tests/support/ui/content/Comments.ts` — component composite (script + iframe)
+
+**Pages** (por dominio):
+- `tests/support/ui/home/HomePage.ts` — page simple
+- `tests/support/ui/content/ContentListPage.ts` — page compleja con TargetSelector dinámico
+- `tests/support/ui/content/BlogPages.ts` — helper exports con `visit()` (ej: `userInBlogList`)
+
+**Flows** (secuencias):
+- `tests/e2e/flow/blog.flow.spec.ts` — flujo de navegación single-locale (lista → filtro → detalle)
+- `tests/e2e/flow/work.flow.spec.ts`, `tests/e2e/flow/community.flow.spec.ts` — flujos similares por sección
+- `tests/e2e/helpers/mockGiscus.ts` — helpers/mocks compartidos
+- `tests/e2e/functional/blog.post.spec.ts`, `tests/e2e/a11y/charla.a11y.spec.ts` — specs funcionales
+
+**Tests unitarios**:
+- `tests/unit/i18n/utils.test.ts`, `tests/unit/client/themeToggle.test.ts` — ejemplos con mocks
 
 ## Recomendaciones finales
 
-- Mantén las suites unitarias veloces y confiables; reserva E2E para flujos reales.
-- Documenta cualquier test E2E flakey y aisla su ejecución (tag/grep) para no romper CI constantemente.
-- Revisa periódicamente el tamaño de la suite E2E y prioriza rutas críticas.
-
-Si quieres, puedo:
-
-- Añadir plantillas de archivos para `tests/pages/` (POM) y `tests/unit` (estructura mínima), o
-- Añadir el paso de subida de `lcov.info` a Codecov en el job `unit-tests`.
+- **Mantén las suites unitarias veloces y confiables**; reserva E2E para flujos reales.
+- **Documenta cualquier test E2E flakey** y aísla su ejecución (tag/grep) para no romper CI.
+- **Revisa periódicamente** el tamaño de la suite E2E y prioriza rutas críticas.
+- **No sobre-ingenierices**: Si un componente simple resuelve el need, usa Target. Si un flow es single-step, hazlo inline en el spec.
+- **Composición sobre herencia**: Prefiere inyectar components en pages que crear jerarquías de herencia.
