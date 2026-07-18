@@ -6,10 +6,14 @@ import type { TargetSelector } from '@tests/support/ui/components/Target'
 import { ContentPage, createContentPage } from '@tests/support/ui/content/ContentPage'
 
 /**
- * Page Object for content list views (blog list, work list, etc.).
- * Handles list-specific interactions like filtering and navigation.
+ * Page Object for content tag filter views (blog tagged, work tagged, etc.).
+ * Handles tag-specific interactions and displays filtered content by tags.
+ * 
+ * Note: Currently integrated into ContentListPage. This class represents
+ * a potential future separation of concerns if filtering behavior becomes
+ * significantly different from listing behavior.
  */
-export class ContentListPage extends ContentPage {
+export class ContentTagsPage extends ContentPage {
   constructor(
     name: string,
     headerTitle: TargetComponent,
@@ -20,21 +24,8 @@ export class ContentListPage extends ContentPage {
     super(name, headerTitle, tags, null)
   }
 
-  shouldHaveListHeaderTitle(expected: string) {
-    return this.headerTitle.shouldHaveText(expected)
-  }
-
   shouldHaveFilteredTitle(expectedSectionTitle: string, tag: string) {
     return this.headerTitle.shouldHaveText(`${expectedSectionTitle} - ${tag}`)
-  }
-
-  filterByTag(tag: string) {
-    return step(`filter ${this.name} list by tag "${tag}"`, async ({ expect }) => {
-      const tagLink = this.tagLinks.get(tag)
-      await expect(tagLink.locator).not.toHaveClass(/active/)
-      await tagLink.locator.click()
-      await expect(tagLink.locator).toHaveClass(/active/)
-    })
   }
 
   clickItem(href: string, title: string) {
@@ -44,7 +35,7 @@ export class ContentListPage extends ContentPage {
   }
 
   shouldRenderTagsForSection() {
-    return step(`${this.name} list renders available tags`, async ({ expect }) => {
+    return step(`${this.name} tags renders available tags`, async ({ expect }) => {
       await expect(this.tags.locator).toBeVisible()
 
       const tagLinks = this.tags.locator.locator('[data-testid^="tag-link-"]')
@@ -55,9 +46,13 @@ export class ContentListPage extends ContentPage {
   }
 }
 
-export function contentListPage(page: Page, name: string): ContentListPage {
+/**
+ * Factory for creating ContentTagsPage.
+ * Used when filtering content by tags within a section.
+ */
+export function contentTagsPage(page: Page, name: string): ContentTagsPage {
   const basePage = createContentPage(page, name)
-  return new ContentListPage(
+  return new ContentTagsPage(
     basePage.name,
     basePage.headerTitle,
     basePage.tags,
