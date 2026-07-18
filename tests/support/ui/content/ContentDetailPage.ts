@@ -3,6 +3,8 @@ import type { UILanguages } from '@i18n/ui'
 import { step } from '@tests/fixtures'
 import { target } from '@tests/support/ui/components/Target'
 import type { Target as TargetComponent } from '@tests/support/ui/components/Target'
+import { comments } from '@tests/support/ui/content/Comments'
+import type { Comments as CommentsComponent } from '@tests/support/ui/content/Comments'
 import { ContentPage, createContentPage } from '@tests/support/ui/content/ContentPage'
 
 /**
@@ -14,11 +16,12 @@ export class ContentDetailPage extends ContentPage {
     name: string,
     headerTitle: TargetComponent,
     tags: TargetComponent,
+    readonly comments: CommentsComponent,
     readonly postRole?: TargetComponent,
     readonly postResponsibilities?: TargetComponent,
     readonly postWebsite?: TargetComponent,
   ) {
-    super(name, headerTitle, tags, null)
+    super(name, headerTitle, tags)
   }
 
   shouldHaveDetailTitle(expected: string) {
@@ -32,9 +35,6 @@ export class ContentDetailPage extends ContentPage {
   }
 
   shouldHaveComments(locale: UILanguages) {
-    if (!this.comments) {
-      throw new Error(`${this.name} detail page does not have comments`)
-    }
     return this.comments.shouldBeReady(locale)
   }
 
@@ -70,6 +70,10 @@ export function contentDetailPage(page: Page, name: string): ContentDetailPage {
     basePage.name,
     basePage.headerTitle,
     basePage.tags,
+    comments(
+      page.locator('.comments script[src*="giscus.app"]'),
+      page.locator('iframe.giscus-frame'),
+    ),
     target(`${name} role`, page.getByTestId('post-role')),
     target(`${name} responsibilities`, page.getByTestId('post-responsibilities')),
     target(`${name} website`, page.getByTestId('post-website')),
@@ -86,5 +90,9 @@ export function contentDetailPageMinimal(page: Page, name: string): ContentDetai
     basePage.name,
     basePage.headerTitle,
     basePage.tags,
+    comments(
+      page.locator('.comments script[src*="giscus.app"]'),
+      page.locator('iframe.giscus-frame'),
+    ),
   )
 }

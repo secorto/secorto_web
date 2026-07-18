@@ -52,8 +52,7 @@ Jerarquía clara basada en el patrón Strategy + Template Method:
 ContentPage (base)
 │   ├── name: string
 │   ├── headerTitle: TargetComponent
-│   ├── tags: TargetComponent
-│   └── comments: CommentsComponent | null
+│   └── tags: TargetComponent
 │
 ├── ContentListPage
 │   ├── tagLinks: TargetSelector<string>
@@ -65,6 +64,7 @@ ContentPage (base)
 │   └── shouldHaveFilteredTitle()
 │
 ├── ContentDetailPage
+│   ├── comments: CommentsComponent
 │   ├── postRole?: TargetComponent
 │   ├── postResponsibilities?: TargetComponent
 │   ├── postWebsite?: TargetComponent
@@ -95,7 +95,6 @@ export class ContentPage {
     readonly name: string,
     readonly headerTitle: TargetComponent,
     readonly tags: TargetComponent,
-    readonly comments: CommentsComponent | null = null,
   ) {}
 }
 
@@ -107,7 +106,7 @@ export function createContentPage(page: Page, name: string): ContentPage {
 **Beneficios**:
 - Base común para todas las páginas de contenido
 - Factory centralizado para elementos compartidos
-- `comments` es opcional (null en lista)
+- `comments` solo en ContentDetailPage (donde se necesita)
 
 ### 2. Refactorización de ContentListPage
 
@@ -141,11 +140,12 @@ export class ContentDetailPage extends ContentPage {
     name: string,
     headerTitle: TargetComponent,
     tags: TargetComponent,
+    readonly comments: CommentsComponent,
     readonly postRole?: TargetComponent,
     readonly postResponsibilities?: TargetComponent,
     readonly postWebsite?: TargetComponent,
   ) {
-    super(name, headerTitle, tags, null)
+    super(name, headerTitle, tags)
   }
 
   shouldHaveDetailTitle(expected: string) { ... }
@@ -158,6 +158,7 @@ export class ContentDetailPage extends ContentPage {
 
 **Beneficios**:
 - Métodos específicos para detalles
+- `comments` requerido (no null), eliminando el smell de null
 - Validaciones de campos opcionales
 - Dos factories: `contentDetailPage()` y `contentDetailPageMinimal()`
 

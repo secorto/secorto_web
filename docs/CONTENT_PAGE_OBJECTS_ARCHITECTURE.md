@@ -10,7 +10,6 @@
 │  • name: string                                                         │
 │  • headerTitle: TargetComponent                                         │
 │  • tags: TargetComponent                                                │
-│  • comments: CommentsComponent | null                                   │
 │                                                                         │
 │ Factory: createContentPage(page: Page, name: string)                   │
 └─────────────────────────────────────────────────────────────────────────┘
@@ -21,13 +20,13 @@
         │ ContentListPage  │   │ContentDetailPage│  │ ContentTagsPage│
         ├──────────────────┤   ├──────────────────┤  ├─────────────────┤
         │ Plus:            │   │ Plus:            │  │ Plus:           │
-        │ • tagLinks       │   │ • postRole?      │  │ • tagLinks      │
-        │ • itemLinks      │   │ • postResp?      │  │ • itemLinks     │
-        │                  │   │ • postWebsite?   │  │                 │
-        │ Methods:         │   │                  │  │ Methods:        │
-        │ • filterByTag()  │   │ Methods:         │  │ • clickItem()   │
-        │ • clickItem()    │   │ • shouldHave     │  │ • shouldHave    │
-        │ • shouldHaveList │   │   DetailTitle()  │  │   FilteredTitle │
+        │ • tagLinks       │   │ • comments:      │  │ • tagLinks      │
+        │ • itemLinks      │   │   CommentsComp   │  │ • itemLinks     │
+        │                  │   │ • postRole?      │  │                 │
+        │ Methods:         │   │ • postResp?      │  │ Methods:        │
+        │ • filterByTag()  │   │ • postWebsite?   │  │ • clickItem()   │
+        │ • clickItem()    │   │                  │  │ • shouldHave    │
+        │ • shouldHaveList │   │ Methods:         │  │   FilteredTitle │
         │   HeaderTitle()  │   │ • shouldHave     │  │ ()              │
         │ • shouldRender   │   │   Comments()     │  │                 │
         │   TagsForSection │   │ • shouldHaveRole │  │                 │

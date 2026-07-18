@@ -17,7 +17,7 @@ export class ContentListPage extends ContentPage {
     readonly tagLinks: TargetSelector<string>,
     readonly itemLinks: TargetSelector<string>,
   ) {
-    super(name, headerTitle, tags, null)
+    super(name, headerTitle, tags)
   }
 
   shouldHaveListHeaderTitle(expected: string) {
