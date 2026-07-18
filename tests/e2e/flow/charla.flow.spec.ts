@@ -21,7 +21,7 @@ test.describe('Charlas - flujo de navegación', { tag: ['@flow', '@talk'] }, () 
       await list.shouldHaveFilteredTitle(expectedSectionTitle, 'containers')
       const detailPath = contentDetailsPath('talk', locale, SLUG)
       await list.clickItem(detailPath, `click talk item "${SLUG}"`)
-      await list.shouldHaveDetailTitle(expectedTitles[locale])
+      await list.shouldHaveHeaderTitle(expectedTitles[locale])
     })
   }
 })

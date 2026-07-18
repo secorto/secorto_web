@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
 import { ContentListPage, contentListPage } from '@tests/support/ui/content/ContentListPage'
-import { ContentDetailPage, contentDetailPage } from '@tests/support/ui/content/ContentDetailPage'
+import { ContentExperienceDetailPage, contentExperienceDetailPage } from '@tests/support/ui/content/ContentExperienceDetailPage'
 import { contentListPath, contentDetailsPath, visit } from '@tests/support/ui/shared/NavigationPaths'
 
 export const userInWorkList = (page: Page, locale: UILanguages) =>
@@ -17,5 +17,5 @@ export const userInWorkDetail = (page: Page, locale: UILanguages, slug: string) 
     `a user in work detail ${locale} ${slug}`,
     page,
     contentDetailsPath('work', locale, slug),
-    (p): ContentDetailPage => contentDetailPage(p, 'work'),
+    (p): ContentExperienceDetailPage => contentExperienceDetailPage(p, 'work'),
   )

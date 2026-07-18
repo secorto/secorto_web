@@ -17,7 +17,6 @@ export class A11yPage {
       const builder = new AxeBuilder({ page: this.page })
       const exs = excludes ?? DEFAULT_EXCLUDES
       for (const ex of exs) builder.exclude(ex)
-      await this.page.waitForLoadState('networkidle')
       return await builder.analyze()
     })
   }

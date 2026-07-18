@@ -52,7 +52,9 @@ Jerarquía clara basada en el patrón Strategy + Template Method:
 ContentPage (base)
 │   ├── name: string
 │   ├── headerTitle: TargetComponent
-│   └── tags: TargetComponent
+│   ├── tags: TargetComponent
+│   ├── shouldHaveHeaderTitle(expected: string)
+│   └── shouldHaveTags(ariaSnapshot: string)
 │
 ├── ContentListPage
 │   ├── tagLinks: TargetSelector<string>
@@ -63,14 +65,16 @@ ContentPage (base)
 │   ├── shouldRenderTagsForSection()
 │   └── shouldHaveFilteredTitle()
 │
-├── ContentDetailPage
+├── ContentPostDetailPage (blog, talk)
 │   ├── comments: CommentsComponent
-│   ├── postRole?: TargetComponent
-│   ├── postResponsibilities?: TargetComponent
-│   ├── postWebsite?: TargetComponent
 │   ├── shouldHaveDetailTitle()
-│   ├── shouldHaveTags()
-│   ├── shouldHaveComments()
+│   └── shouldHaveComments()
+│
+├── ContentExperienceDetailPage (work, projects, community)
+│   ├── postRole: TargetComponent
+│   ├── postResponsibilities: TargetComponent
+│   ├── postWebsite: TargetComponent
+│   ├── shouldHaveDetailTitle()
 │   ├── shouldHaveRole()
 │   ├── shouldHaveResponsibilities()
 │   └── shouldHaveWebsite()
@@ -106,7 +110,8 @@ export function createContentPage(page: Page, name: string): ContentPage {
 **Beneficios**:
 - Base común para todas las páginas de contenido
 - Factory centralizado para elementos compartidos
-- `comments` solo en ContentDetailPage (donde se necesita)
+- `comments` solo en ContentPostDetailPage (donde se necesita)
+- `postRole`, `postResponsibilities`, `postWebsite` solo en ContentExperienceDetailPage
 
 ### 2. Refactorización de ContentListPage
 
@@ -130,39 +135,59 @@ await list.shouldHaveListHeaderTitle()  // ✅ Correcto
 await list.filterByTag('python')         // ✅ Filtrado
 ```
 
-### 3. Creación de ContentDetailPage
+### 3. Creación de ContentPostDetailPage
 
-**Archivo**: `tests/support/ui/content/ContentDetailPage.ts`
+**Archivo**: `tests/support/ui/content/ContentPostDetailPage.ts`
+
+Especialización para contenido con comentarios (blog, talk):
 
 ```typescript
-export class ContentDetailPage extends ContentPage {
+export class ContentPostDetailPage extends ContentPage {
   constructor(
     name: string,
     headerTitle: TargetComponent,
     tags: TargetComponent,
     readonly comments: CommentsComponent,
-    readonly postRole?: TargetComponent,
-    readonly postResponsibilities?: TargetComponent,
-    readonly postWebsite?: TargetComponent,
   ) {
     super(name, headerTitle, tags)
   }
 
   shouldHaveDetailTitle(expected: string) { ... }
   shouldHaveComments(locale: UILanguages) { ... }
-  shouldHaveRole(expected: string) { ... }
-  shouldHaveResponsibilities(expected: string) { ... }
-  shouldHaveWebsite(expected: string) { ... }
+  // shouldHaveTags() se hereda de ContentPage
 }
 ```
 
-**Beneficios**:
-- Métodos específicos para detalles
-- `comments` requerido (no null), eliminando el smell de null
-- Validaciones de campos opcionales
-- Dos factories: `contentDetailPage()` y `contentDetailPageMinimal()`
+**Factory**: `contentPostDetailPage()`
 
-### 4. Creación de ContentTagsPage (Opcional)
+### 4. Creación de ContentExperienceDetailPage
+
+**Archivo**: `tests/support/ui/content/ContentExperienceDetailPage.ts`
+
+Especialización para contenido profesional (work, projects, community):
+
+```typescript
+export class ContentExperienceDetailPage extends ContentPage {
+  constructor(
+    name: string,
+    headerTitle: TargetComponent,
+    tags: TargetComponent,
+    readonly postRole: TargetComponent,
+    readonly postResponsibilities: TargetComponent,
+    readonly postWebsite: TargetComponent,
+  ) {
+    super(name, headerTitle, tags)
+  }
+
+  shouldHaveDetailTitle(expected: string) { ... }
+  shouldHaveRole(expected: string) { ... }
+  shouldHaveResponsibilities(expected: string) { ... }
+  shouldHaveWebsite(expected: string) { ... }
+  // shouldHaveTags() se hereda de ContentPage
+}
+```
+
+**Factory**: `contentExperienceDetailPage()`
 
 **Archivo**: `tests/support/ui/content/ContentTagsPage.ts`
 
@@ -172,22 +197,32 @@ Proporciona una clase especializada para vistas filtradas por tags (actualmente 
 
 Cambios en archivos de helpers:
 
-- **BlogPages.ts**: `userInBlogPost()` retorna `ContentDetailPage`
-- **TalkPages.ts**: `userInTalkDetail()` retorna `ContentDetailPage`
-- **WorkPages.ts**: `userInWorkDetail()` retorna `ContentDetailPage`
-- **ProjectPages.ts**: `userInProjectDetail()` retorna `ContentDetailPage`
-- **CommunityPages.ts**: `userInCommunityDetail()` retorna `ContentDetailPage`
+- **BlogPages.ts**: `userInBlogPost()` retorna `ContentPostDetailPage`
+- **TalkPages.ts**: `userInTalkDetail()` retorna `ContentPostDetailPage`
+- **WorkPages.ts**: `userInWorkDetail()` retorna `ContentExperienceDetailPage`
+- **ProjectPages.ts**: `userInProjectDetail()` retorna `ContentExperienceDetailPage`
+- **CommunityPages.ts**: `userInCommunityDetail()` retorna `ContentExperienceDetailPage`
 
 **Antes**:
 ```typescript
+// Blog y Talk retornaban ContentDetailPage (genérica)
 export const userInBlogPost = () => 
-  visit(..., contentDetailsPath(...), () => contentListPage(page, 'blog'))  // ❌ Tipo incorrecto
+  visit(..., contentDetailsPath(...), () => contentDetailPage(page, 'blog'))
+
+// Work, projects y community también ContentDetailPage (con campos opcionales)
+export const userInWorkDetail = () => 
+  visit(..., contentDetailsPath(...), () => contentDetailPage(page, 'work'))
 ```
 
 **Después**:
 ```typescript
+// Blog y Talk retornan ContentPostDetailPage (especializada)
 export const userInBlogPost = () => 
-  visit(..., contentDetailsPath(...), () => contentDetailPage(page, 'blog'))  // ✅ Tipo correcto
+  visit(..., contentDetailsPath(...), () => contentPostDetailPage(page, 'blog'))
+
+// Work, projects y community retornan ContentExperienceDetailPage (especializada)
+export const userInWorkDetail = () => 
+  visit(..., contentDetailsPath(...), () => contentExperienceDetailPage(page, 'work'))
 ```
 
 ## Impacto en Tests
@@ -234,11 +269,17 @@ await detail.shouldHaveComments('es')
 
 ✅ **Escalabilidad**
 - ContentTagsPage disponible para refactorización futura
-- Factories flexibles: `contentDetailPage()` vs `contentDetailPageMinimal()`
+- Especializaciones claras: `ContentPostDetailPage` vs `ContentExperienceDetailPage`
 
 ✅ **Documentación de Intención**
 - El tipo de retorno comunica claramente qué página se está testeando
+- Nombre de clase (`ContentPostDetailPage` vs `ContentExperienceDetailPage`) explica la especialización
 - Métodos disponibles son evidentes desde el IDE
+
+✅ **Type Safety Completo**
+- Campos especializados son requeridos (no opcionales)
+- Compiler valida disponibilidad de métodos
+- Sin validaciones manuales de null/undefined
 
 ## Próximas Mejoras Sugeridas
 

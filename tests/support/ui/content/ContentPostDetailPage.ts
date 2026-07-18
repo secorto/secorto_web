@@ -9,7 +9,7 @@ import type { Target as TargetComponent } from '@tests/support/ui/components/Tar
  * Page Object for content detail views with comments (blog post, talk detail).
  * Specialization of ContentPage that provides comment interactions and assertions.
  */
-export class ContentDetailPage extends ContentPage {
+export class ContentPostDetailPage extends ContentPage {
   constructor(
     name: string,
     headerTitle: TargetComponent,
@@ -19,22 +19,18 @@ export class ContentDetailPage extends ContentPage {
     super(name, headerTitle, tags)
   }
 
-  shouldHaveDetailTitle(expected: string) {
-    return this.headerTitle.shouldHaveText(expected)
-  }
-
   shouldHaveComments(locale: UILanguages) {
     return this.comments.shouldBeReady(locale)
   }
 }
 
 /**
- * Factory for creating ContentDetailPage with comment support.
+ * Factory for creating ContentPostDetailPage with comment support.
  * Used for content types with comments (blog, talk).
  */
-export function contentDetailPage(page: Page, name: string): ContentDetailPage {
+export function contentPostDetailPage(page: Page, name: string): ContentPostDetailPage {
   const basePage = createContentPage(page, name)
-  return new ContentDetailPage(
+  return new ContentPostDetailPage(
     basePage.name,
     basePage.headerTitle,
     basePage.tags,

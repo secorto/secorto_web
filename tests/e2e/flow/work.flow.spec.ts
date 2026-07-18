@@ -1,6 +1,6 @@
 import { test } from '@tests/fixtures'
 import { languageKeys, type UILanguages } from '@i18n/ui'
-import { userInWorkList } from '@tests/support/ui/content/WorkPages'
+import { userInWorkList, userInWorkDetail } from '@tests/support/ui/content/WorkPages'
 import { contentDetailsPath } from '@tests/support/ui/shared/NavigationPaths'
 
 const SLUG = 'perficient'
@@ -21,8 +21,9 @@ test.describe('Work - flujo de navegación', { tag: ['@flow', '@work'] }, () => 
       const list = await userInWorkList(page, locale)
       const detailPath = contentDetailsPath('work', locale, SLUG)
       await list.clickItem(detailPath, `click work item "${SLUG}"`)
-      await list.shouldHaveDetailTitle(expectedTitles[locale])
-      await list.shouldHaveRole(expectedRoles[locale])
+      const detail = await userInWorkDetail(page, locale, SLUG)
+      await detail.shouldHaveHeaderTitle(expectedTitles[locale])
+      await detail.shouldHaveRole(expectedRoles[locale])
     })
   }
 })

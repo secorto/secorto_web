@@ -23,7 +23,7 @@ for (const f of postFixtures) {
   test.describe(`Blog post (${f.locale})`, { tag: ['@functional', '@blog', `@${f.locale}`] }, () => {
     test('shows post title', async ({ page }) => {
       const detail = await userInBlogPost(page, f.locale, f.slug)
-      await detail.shouldHaveDetailTitle(f.postTitle)
+      await detail.shouldHaveHeaderTitle(f.postTitle)
     })
 
     test('no horizontal scroll on mobile', async ({ page }, testInfo: TestInfo) => {

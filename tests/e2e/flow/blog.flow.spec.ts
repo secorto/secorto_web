@@ -24,7 +24,7 @@ test.describe('Blog - flujo de navegación', { tag: ['@flow', '@blog'] }, () => 
 
       const detailPath = contentDetailsPath('blog', locale, SLUG)
       await list.clickItem(detailPath, `click blog item "${SLUG}"`)
-      await list.shouldHaveDetailTitle(expectedTitles[locale])
+      await list.shouldHaveHeaderTitle(expectedTitles[locale])
     })
   }
 })

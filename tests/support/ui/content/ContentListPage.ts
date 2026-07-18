@@ -20,10 +20,6 @@ export class ContentListPage extends ContentPage {
     super(name, headerTitle, tags)
   }
 
-  shouldHaveListHeaderTitle(expected: string) {
-    return this.headerTitle.shouldHaveText(expected)
-  }
-
   shouldHaveFilteredTitle(expectedSectionTitle: string, tag: string) {
     return this.headerTitle.shouldHaveText(`${expectedSectionTitle} - ${tag}`)
   }

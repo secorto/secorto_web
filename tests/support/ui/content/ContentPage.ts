@@ -1,4 +1,5 @@
 import type { Page } from '@playwright/test'
+import { step } from '@tests/fixtures'
 import { target } from '@tests/support/ui/components/Target'
 import type { Target as TargetComponent } from '@tests/support/ui/components/Target'
 
@@ -12,6 +13,16 @@ export class ContentPage {
     readonly headerTitle: TargetComponent,
     readonly tags: TargetComponent,
   ) {}
+
+  shouldHaveHeaderTitle(expected: string) {
+    return this.headerTitle.shouldHaveText(expected)
+  }
+
+  shouldHaveTags(ariaSnapshot: string) {
+    return step(`${this.name} has expected tags`, async ({ expect }) => {
+      await expect(this.tags.locator).toMatchAriaSnapshot(ariaSnapshot)
+    })
+  }
 }
 
 export function createContentPage(page: Page, name: string): ContentPage {

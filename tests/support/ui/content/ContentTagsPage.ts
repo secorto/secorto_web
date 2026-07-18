@@ -8,10 +8,6 @@ import { ContentPage, createContentPage } from '@tests/support/ui/content/Conten
 /**
  * Page Object for content tag filter views (blog tagged, work tagged, etc.).
  * Handles tag-specific interactions and displays filtered content by tags.
- * 
- * Note: Currently integrated into ContentListPage. This class represents
- * a potential future separation of concerns if filtering behavior becomes
- * significantly different from listing behavior.
  */
 export class ContentTagsPage extends ContentPage {
   constructor(
@@ -21,7 +17,7 @@ export class ContentTagsPage extends ContentPage {
     readonly tagLinks: TargetSelector<string>,
     readonly itemLinks: TargetSelector<string>,
   ) {
-    super(name, headerTitle, tags, null)
+    super(name, headerTitle, tags)
   }
 
   shouldHaveFilteredTitle(expectedSectionTitle: string, tag: string) {
