@@ -23,6 +23,12 @@ export class ContentPage {
       await expect(this.tags.locator).toMatchAriaSnapshot(ariaSnapshot)
     })
   }
+
+  clickTag(tag: string, title: string = `navigate to ${tag} tag`) {
+    return step(title, async () => {
+      await this.tags.locator.locator(`[href*="/tags/${tag}"]`).click()
+    })
+  }
 }
 
 export function createContentPage(page: Page, name: string): ContentPage {
