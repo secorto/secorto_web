@@ -7,10 +7,10 @@ según [ADR 007: Unificación de dominio e i18n](../../007-domain-i18n-unificaci
 
 ### Cambios en Identificadores
 
-| Anterior      | Nuevo                | Contexto                                                           |
-| ------------- | -------------------- | ------------------------------------------------------------------ |
-| `canonicalId` | `postId`             | Identificador único que agrupa todas las traducciones de entrada   |
-| Implícito     | `locale` obligatorio | Extraído explícitamente en `{ id, locale }`                       |
+| Anterior      | Nuevo                | Contexto                                             |
+| ------------- | -------------------- | ---------------------------------------------------- |
+| `canonicalId` | `postId`             | Identificador único que agrupa traducciones          |
+| Implícito     | `locale` obligatorio | Extraído explícitamente en `{ id, locale }`          |
 
 ### Cambios en APIs
 
@@ -66,12 +66,12 @@ buildLocaleEntryMap(entries: Collection[]): Record<postId, AvailableLocales>
 
 ## Trade-offs Técnicos
 
-| Aspecto                | Impacto                                 | Mitigación                      |
-| ---------------------- | --------------------------------------- | ------------------------------- |
-| **Rigidez**            | Corregir contenido antes del build      | Migración única; después auto   |
-| **Curva aprendizaje**  | Developers entienden `postId`           | Documentación + ejemplos        |
-| **Cambio de API**      | Code refactoring en call-sites          | Scripts migración, grep         |
-| **Seguridad > Permiso** | Falla en lugar de silenciar errores     | Behavior intencional (fail-fast)|
+| Aspecto               | Impacto                             | Mitigación                       |
+| --------------------- | ----------------------------------- | -------------------------------- |
+| **Rigidez**           | Corregir contenido antes del build  | Migración única; después auto    |
+| **Curva aprendizaje** | Developers entienden `postId`       | Documentación + ejemplos         |
+| **Cambio de API**     | Code refactoring en call-sites      | Scripts migración, grep          |
+| **Seguridad**         | Falla en lugar de silenciar errores | Behavior intencional (fail-fast) |
 
 ## Checklist de Migración
 
