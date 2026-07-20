@@ -9,93 +9,100 @@ categories:
 
 ## Contexto
 
-El mantenimiento de los plugins `eslint-plugin-import` y `eslint-plugin-jsx-a11y`
-estaba retrasando la actualización del core de ESLint: los PRs de
-compatibilidad llevaban meses estancados y provocaban ruido en la
-configuración. En este repositorio en particular los PRs relevantes han
-estado esperando actualizaciones desde febrero de 2026, lo que bloqueó la
-posibilidad de migrar a **ESLint 10**.
+Algunos plugins de linting tienen versiones desactualizadas con actualizaciones
+pendientes en repositorios upstream, bloqueando la migración del core de linting
+a una versión más reciente. Esto crea un trade-off:
 
-La decisión central fue si seguir esperando a que esos plugins se actualicen
-o priorizar la migración del core a ESLint 10. Se eligió priorizar la
-actualización del core debido a sus beneficios transversales y al coste de
-mantener plugins desactualizados. La eliminación temporal de `import` y
-`jsx-a11y` fue un efecto secundario de esta elección, no la intención inicial.
+- **Opción A:** Esperar a que todos los plugins se actualicen (incierto, tiempo
+  indeterminado).
+- **Opción B:** Priorizar la actualización del core, removiendo temporalmente
+  los plugins desactualizados hasta que existan versiones compatibles o
+  alternativas.
+
+Se eligó la opción B porque:
+- La actualización del core ofrece beneficios transversales (seguridad,
+  compatibilidad, rendimiento).
+- El valor de ciertos plugins es redundante con otras herramientas del proyecto
+  (type checking, tests E2E).
+- Mantener el core actualizado reduce deuda técnica a largo plazo.
 
 ## Decisión
 
-Priorizar la migración a **ESLint 10** y, como medida temporal y reversible,
-remover las reglas dependientes de `eslint-plugin-import` y
-`eslint-plugin-jsx-a11y` para desbloquear la actualización.
+**Priorizar la actualización del core de linting** sobre mantener plugins
+desactualizados, removiendo temporalmente aquellos que bloqueen la
+migración.
 
-Se removieron temporalmente las siguientes dependencias/reglas:
+### Características clave
 
-- `eslint-plugin-import` (p. ej. `import/no-unresolved`, `import/no-extraneous-dependencies`)
-- `eslint-plugin-jsx-a11y` (reglas de accesibilidad para JSX/Frontmatter)
+- Eliminar dependencias desactualizadas que bloquean la actualización del core.
+- La eliminación es **temporal y reversible** (no permanente).
+- Mitigar la pérdida de funcionalidad con:
+  - Herramientas alternativas existentes (type checkers, test frameworks).
+  - Revisiones manuales en áreas críticas (accesibilidad, imports).
+  - Reglas nativas del core actualizado.
+- Documentar criterios claros para **reincorporar plugins** en el futuro.
 
-Motivación resumida:
+---
 
-- Los PRs upstream de estos plugins han estado estancados desde febrero de 2026
-  en este proyecto y no ofrecen una ventana clara de resolución.
-- La actualización a ESLint 10 aporta parches de seguridad, mejoras en la API y
-  compatibilidad con herramientas modernas (TypeScript, parsers), beneficios
-  que afectan a todo el repositorio.
-- El valor práctico de las reglas de esos plugins en este repositorio es
-  limitado o parcialmente redundante con `tsc` y pruebas existentes, por lo
-  que el coste de mantenerlos desactualizados supera su beneficio inmediato.
+## Alternativas consideradas
 
-## Por qué priorizar ESLint 10 sobre mantener estos plugins
+- **Mantener plugins desactualizados indefinidamente:** rechazado por acumular
+  deuda técnica y bloquear mejoras del core.
+- **Esperar pasivamente a que se actualicen:** rechazado por incertidumbre y
+  riesgo de estancamiento.
+- **Usar alternativas de plugins diferentes:** considerado si existen, pero
+  preferentemente eliminación temporal.
 
-- Actualizar el core a ESLint 10 ofrece beneficios transversales: parches de
-  seguridad, mejoras de rendimiento, y compatibilidad con nuevas versiones de
-  parsers y herramientas (TypeScript, plugins futuros). Mantener el core
-  actualizado reduce deuda técnica a largo plazo.
-- Los plugins eliminados aportaban valor real pero limitado respecto a lo que
-  ya cubren otras herramientas del proyecto: `import/no-unresolved` se
-  solapa en muchos casos con las comprobaciones de TypeScript/`tsc`, y las
-  comprobaciones de accesibilidad de `jsx-a11y` pueden complementarse con
-  revisiones manuales o E2E focalizadas mientras se estabiliza la migración.
-- Mantener plugins desactualizados bloquea el progreso del resto del
-  ecosistema y genera fricción en PRs; priorizar el core permite avanzar con
-  mejoras que benefician a todo el proyecto.
+---
 
-## Compensaciones y mitigaciones
+## Consecuencias
 
-- Riesgo: pérdida de reglas automatizadas para accesibilidad y verificación
-  de imports. Mitigación:
-  - Mantener `@typescript-eslint` y reglas clave (`no-explicit-any`, `no-unused-vars`).
-  - Añadir comprobaciones en CI: `tsc --noEmit` para validar imports y scripts
-    de validación de imports si procede.
-  - Para accesibilidad, mantener controles E2E/axe en pruebas críticas y
-    priorizar revisiones manuales de componentes hasta reincorporar o
-    reemplazar las reglas.
+### Positivas
 
-- Reversibilidad: la eliminación es temporal y puede revertirse una vez que los
-  plugins ofrezcan soporte compatible con ESLint 10 o exista una alternativa
-  de bajo mantenimiento.
+- Desbloqueada la actualización del core: beneficios transversales (seguridad,
+  compatibilidad, rendimiento).
+- Reducida complejidad operativa: menos dependencias desactualizadas.
+- Establece precedente: core siempre actualizado, plugins secundarios se
+  reincorporan solo si añaden valor neto.
 
-## Plan de migración sugerido
+### Consideraciones
 
-1. Crear una rama y actualizar `eslint` a v10.
-2. Actualizar parser y dependencias relacionadas (`@typescript-eslint`, etc.).
-3. Ejecutar `tsc --noEmit` y la suite de tests; corregir errores reportados.
-4. Adaptar reglas faltantes mediante reglas nativas o scripts de CI (p. ej.
-   validación de imports) y documentar las diferencias.
-5. Reintroducir plugins solo si son compatibles con ESLint 10 o existen
-   alternativas de bajo mantenimiento.
-6. Añadir checks en CI para `eslint --ext .ts,.astro` y `tsc --noEmit`.
+- Pérdida temporal de reglas automatizadas en áreas específicas (imports,
+  accesibilidad).
+- Requiere compensación mediante herramientas alternativas (type checking,
+  tests E2E, revisiones manuales).
+- Mayor disciplina en revisin de código en áreas antes automatizadas.
+
+---
+
+## Mitigaciones propuestas
+
+- Usar type checking nativo (TypeScript) para validación de imports.
+- Mantener tests E2E y validaciones de accesibilidad en tests críticos.
+- Priorizar revisiones manuales en componentes y configuración hasta
+  reincorporar reglas.
+- Documentar el estado y criterios de reincorporación (ver «Criterios para
+  reincorporar plugins» abajo).
+
+---
 
 ## Criterios para reincorporar plugins
 
-- El plugin ofrece una versión compatible y estable para ESLint 10.
-- La versión nueva no introduce cambios incompatibles que bloqueen otras
-  dependencias críticas.
-- El valor neto de las reglas del plugin supera el coste de mantenimiento.
+- El plugin ofrece versión compatible y estable con la versión actual del
+  core.
+- La reincorporación no introduce cambios incompatibles.
+- El valor neto (reglas útiles - costo de mantenimiento) es positivo.
 
-## Relación con otros ADRs
+## Referencias y detalles de implementación
 
-Este cambio complementa y aclara decisiones de `ADR 004` (Linting, `any` y
-convenciones). Ver también:
+Para detalles operativos de la migración, scripts de CI, configuración y
+validación: ver documentación de arquitectura y archivos de configuración del
+proyecto.
 
-- [ADR 004: Linting, tipo `any` y convenciones de estilo](004-linting-any-ban-style-conventions.md)
-- [ADR 012: Formateo y herramienta de estilo propuesta](012-formatting-proposal.md)
+### Relación con otros ADRs
+
+Este cambio complementa y aclara decisiones de [ADR 004 - Linting, tipo `any` y
+convenciones de estilo](004-linting-any-ban-style-conventions.md) y se
+coordiná con:
+
+- [ADR 012 - Formateo y herramienta de estilo propuesta](012-formatting-proposal.md)

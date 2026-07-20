@@ -9,84 +9,101 @@ categories:
 
 ## Contexto
 
-La discusión sobre formateo se encontraba parcialmente dentro de `ADR 004`,
-pero el cuerpo estaba mezclado con decisiones y cambios ya aplicados. Este ADR
-extrae la propuesta de formateo para tomar una decisión independiente y clara.
+El proyecto ha crecido con inconsistencias en formateo de código (espacios,
+comillas, trailing commas, indentación). Esto genera fricción en reviews y
+retrasa PRs por cambios estéticos que podrían automatizarse.
 
-Problemas detectados:
+**Problema central:** mantener reglas de estilo de forma manual es propenso a
+inconsistencias y consume tiempo en reviews que debería enfocarse en lógica.
 
-- Inconsistencia en `;`, `quotes`, `trailing commas` y longitud de línea
-- Código generado por herramientas (`playwright codegen`) con estilo distinto
-- Sobrecarga de mantener reglas de estilo manualmente en revisiones
-
-### Perfil del desarrollador
-
-El mantenedor principal viene de **Python**, donde:
-
-- No existen los `;` al final de sentencia
-- La legibilidad sin ruido sintáctico es un valor
-- El formateo lo resuelve una sola herramienta (`black` / `ruff format`)
-
-En el entorno laboral se usa `;` por convención de equipo. En este proyecto
-personal, la preferencia es **omitir semicolons** para mantener el código
-más limpio y cercano al estilo natural del autor.
+---
 
 ## Opciones evaluadas
 
-- **Prettier** (recomendado por comunidad): opinionado, fácil integración con
-  `prettier-plugin-astro`, requiere `eslint-config-prettier` para evitar
-  conflictos con ESLint.
-- **ESLint Stylistic**: un único tool (ESLint) para lint + formato; mayor
-  granularidad pero requiere más configuración manual.
-- **Mantener convención manual**: baja fricción a corto plazo, pero propenso a
-  inconsistencias.
+- **Usar herramienta de formateo opinionada:** establece reglas
+  centralizadas, reduciendo fricción en reviews y automatizando decisiones
+  estéticas.
+- **Usar linter extensible:** mayor granularidad pero requiere más configuración
+  manual para cada regla.
+- **Mantener convención manual:** baja fricción inicial, pero propenso a
+  inconsistencias y ruido en reviews.
 
-## Propuesta
+## Decisión
 
-1. Adoptar **Prettier** con `prettier-plugin-astro` y configurar `eslint-config-prettier`.
-2. Establecer reglas de estilo mínimas en ESLint (indentación, no-explicit-any,
-   etc.) y delegar el formateo estético a Prettier.
-3. Añadir tarea en CI para ejecutar `prettier --check` y `prettier --write` en PRs
+Adoptar una **estrategia centralizada de formateo** que:
 
-## Reglas y convenciones propuestas
+1. **Delega decisiones estéticas a una herramienta automatizada** (semicolons,
+   comillas, trailing commas, indentación).
+2. **Mantiene linter independiente** para reglas semánticas (imports, typing,
+   patterns específicos del proyecto).
+3. **Establece convenciones claras** documentadas en guías de proyecto.
+4. **Automatiza correcciones** en CI y localmente para evitar fricción.
 
-### Omitir semicolons — convención con posible migración a formateador
+### Características clave de la propuesta
 
-**Decisión propuesta:** omitir `;` al final de sentencias en todo el código del
-proyecto.
+- Formateo opinionado y centralizado.
+- Compatibilidad con múltiples lenguajes (TypeScript, Astro, Markdown, etc.).
+- Autofix automático en CI y local.
+- Configuración mínima para reducir bikeshedding.
+- Documentación clara de excepciones (p. ej. código generado).
 
-**Estado actual / transición:** la convención se documentará en
-`.github/copilot-instructions.md` y, cuando se adopte Prettier, se aplicará
-automáticamente. Temporalmente puede mantenerse como convención manual hasta
-que la migración a Prettier se complete.
+---
 
-**Excepción conocida:** el código generado por `npx playwright codegen`
-incluye `;` automáticamente. Flujo recomendado:
+## Convenciones propuestas
 
-1. Generar código con `playwright codegen`
-2. Copiar al test
-3. Ejecutar `prettier --write` o eliminar `;` manualmente antes de commitear
+### Omisión de semicolons — preferencia del proyecto
 
-### Indentación a 2 espacios — enforceada
+Se propone **omitir `;` al final de sentencias** como convención de estilo
+del proyecto. Beneficios:
 
-Proponemos enforcear la indentación a 2 espacios en ESLint:
+- Reduce "ruido sintáctico" y mejora legibilidad.
+- Compatible con convenciones de lenguajes modernos.
+- Puede aplicarse automáticamente por la herramienta de formateo elegida.
 
-```javascript
-'indent': ['error', 2, { SwitchCase: 1 }]
-```
+### Indentación y espaciado
 
-Esta regla deberá aplicarse a nivel `error` y habilitarse el autofix (`--fix`) en
-scripts/CI para correcciones automáticas.
+Se propone **indentación consistente** (p. ej. 2 espacios) enforceable en
+linter y formateo automático.
+
+---
+
+## Alternativas consideradas
+
+- **Dos herramientas separadas (formateo + linting):** adoptada como la más
+  flexible; requiere integración clara.
+- **Una sola herramienta (linter con formateo integrado):** más simple pero
+  menos granularidad.
+- **Convención manual:** rechazado por alto costo en maintenance y reviews.
+
+---
 
 ## Consecuencias
 
-- +Compatibilidad mejorada con editores y herramientas de terceros.
-- +Decisiones de estilo centralizadas y aplicadas automáticamente.
-- +Pequeño incremento en toolchain (instalar Prettier y plugin), pero menor
-  fricción en reviews.
+### Positivas
 
-## Siguientes pasos
+- Reducción de ruido en PRs relacionado con formato.
+- Consistencia automática en todos los archivos.
+- Menor carga cognitiva en reviews (enfoque en lógica, no en estilo).
+- Facilita onboarding: nuevos colaboradores heredan estilo automáticamente.
 
-1. Probar Prettier con `prettier-plugin-astro` en una rama experimental.
-2. Ajustar `package.json` scripts y CI para `prettier --check`.
-3. Documentar la decisión y marcar este ADR como `accepted` cuando se implemente.
+### Consideraciones
+
+- Pequeño incremento en dependencias dev.
+- Curva de aprendizaje inicial para desarrolladores acostumbrados a otros
+  estilos.
+- Necesidad de documentación clara de excepciones.
+
+---
+
+## Plan de implementación
+
+1. Seleccionar y configurar herramientas elegidas.
+2. Aplicar formateo automático a toda la codebase.
+3. Integrar en CI para validación y autofix.
+4. Documentar convenciones en guías del proyecto.
+5. Marcar ADR como `accepted` una vez completada la implementación.
+
+## Referencias y detalles operativos
+
+Para configuración específica de herramientas, scripts de CI y ejemplos:
+ver documentación de proyecto y archivos de configuración.

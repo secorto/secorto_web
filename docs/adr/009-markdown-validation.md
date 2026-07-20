@@ -8,52 +8,65 @@ categories:
   - Tooling
 ---
 
-**Alcance:** Este ADR cubre la adopción e integración de `markdownlint-cli2`
-como herramienta de validación sintáctica y de estilo de Markdown.
+**Alcance:** Este ADR cubre la adopción de herramientas de validación
+sintáctica y de estilo de Markdown con reglas reproducibles.
 
 ## Contexto
 
-En los últimos cambios se han recibido numerosos comentarios en PRs por mal formato en Markdown
-(encabezados inconsistentes, código sin fences adecuados,
-line endings/whitespace, URLs desnudas, etc.).
-El problema principal a resolver es operativo y de comunicación:
-reducir el ruido en PRs aplicando reglas reproducibles
-que eviten correcciones manuales repetidas.
+En los cambios recientes se han recibido numerosos comentarios en PRs por
+formato inconsistente en Markdown (encabezados, fence code, line endings,
+URLs, etc.). El problema principal es operativo: reducir el ruido en PRs
+mediante reglas reproducibles y automáticas que eviten correcciones manuales
+repetidas.
 
 ## Decisión
 
-Usar `markdownlint-cli2` con un archivo de reglas (`.markdownlint.jsonc`)
-y un archivo de opciones para la CLI (`.markdownlint-cli2.jsonc`) que controle patterns/exclusiones; ambos
-archivos serán consumidos por CI cuando el pipeline ejecute `markdownlint-cli2` (por ejemplo vía
-`npm run lint:md`), de modo que las mismas reglas se apliquen en CI y localmente.
+Adoptar un sistema de validación de Markdown con herramientas automatizadas
+que:
 
-## Implementación
+1. **Define reglas de estilo** centralizadas aplicables en CI y localmente.
+2. **Ejecuta validación** en ambos contextos (developer machine y CI) con
+   las mismas reglas.
+3. **Permite correcciones automáticas** cuando sea posible (autofix).
+4. **Documentan excepciones** para casos específicos (p. ej. código generado).
 
-- Mantener dos archivos de configuración consumidos por CI y localmente:
-  - `.markdownlint.jsonc` — reglas y `severity`
-  - `.markdownlint-cli2.jsonc` — globs/exclusiones y opciones de ejecución
-- Añadir scripts en `package.json`:
-  - `npm run lint:md` — validar markdown
-  - `npm run lint:md:fix` — correcciones automáticas
-- Documentar en [docs/MARKDOWN_VALIDATION.md](../MARKDOWN_VALIDATION.md) los comandos mínimos y enlace al ADR
+### Características clave
+
+- Reglas consistentes entre CI y local.
+- Capacidad de autofix para correcciones automáticas.
+- Flexibilidad en severidad (error vs warning) por regla.
+- Compatibilidad con globbing y exclusiones de archivos.
+
+---
 
 ## Alternativas consideradas
 
-- **Dos archivos de reglas distintas (local vs CI)**:
-  - ❌ Rechazada: provoca deriva de reglas y bloqueos inesperados
-  - ❌ Motivo: `severity` permite la flexibilidad necesaria sin duplicar reglas
+- **Mantener validación manual:** rechazado por alta fricción en reviews y
+  propenso a inconsistencias.
+- **Solo linters en editor:** rechazado por no garantizar calidad en CI ni
+  ser obligatorio.
+- **Dos conjuntos de reglas distintos (local vs CI):** rechazado por riesgo
+  de deriva y bloqueos inesperados.
 
-- **Separar reglas vs patterns/CLI (adoptada)** (`.markdownlint.jsonc` + `.markdownlint-cli2.jsonc`):
-  - ✅ Ventaja: reglas centralizadas y patterns ajustables por entorno
-  - ⚠️ Desventaja: requiere documentación y controles para evitar confusiones
+---
 
-- **Solo linters en editor**:
-  - ❌ Rechazada: reduce errores locales pero no garantiza calidad en CI
-  - ⚠️ Desventaja: depende de la configuración individual y no es obligatorio en CI
+## Consecuencias
 
-## Criterios de aceptación
+### Positivas
 
-- `npm run lint:md` y `npm run lint:md:fix` funcionan localmente
-- `.markdownlint.jsonc` existe y contiene reglas con `severity`
-- `.markdownlint-cli2.jsonc` contiene las reglas de ejecución, por ejemplo patrones a ignorar
-- `docs/MARKDOWN_VALIDATION.md` muestra los comandos mínimos y enlaza al ADR
+- Validación consistente: mismas reglas en local y CI.
+- Autofix reduce fricción en development.
+- Reglas centralizadas y fáciles de auditar y actualizar.
+
+### Consideraciones
+
+- Requiere configuración y mantenimiento de archivos de reglas.
+- Puede necesitar ajustes iniciales en archivos existentes.
+- Requiere que los desarrolladores instalen herramientas localmente.
+
+---
+
+## Referencias y detalles operativos
+
+Para configuración específica, scripts de CI, archivos de reglas y comandos:
+ver [docs/MARKDOWN_VALIDATION.md](../MARKDOWN_VALIDATION.md).

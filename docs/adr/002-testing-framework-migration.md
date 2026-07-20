@@ -81,44 +81,23 @@ unitario, manteniendo Cypress temporalmente hasta completar la migración.
 
 ---
 
-## CI
-
-El workflow `Tests` (`.github/workflows/tests.yml`) ejecuta dos jobs en
-paralelo:
-
-```text
-unit-tests:    vitest --run --coverage  → artifact vitest-coverage
-e2e-tests:     playwright test          → artifact playwright-report
-```
-
-- **`unit-tests`** se ejecuta en push/PR (no en `workflow_dispatch`)
-- **`e2e-tests`** se ejecuta siempre, incluyendo `workflow_dispatch` para
-  validar entornos de preview con un `base_url` configurable
-- **Sin límite de ejecuciones:** a diferencia de Cypress Cloud, no hay
-  restricción en el número de runs mensuales
-
----
-
 ## Comparación directa
 
 | Criterio | Cypress | Playwright |
 | --- | --- | --- |
-| Límite mensual CI | **500 ejecuciones** (Cloud) | **Sin límite** |
-| Navegadores | Chromium, Firefox | Chromium, Firefox, **WebKit** |
-| Interceptación de red | `cy.intercept()` | `page.route()` (más flexible) |
+| Límite mensual CI | Limitado (SaaS) | Sin límite (open-source) |
+| Navegadores | 2 | 3 (+ WebKit/Safari) |
+| Interceptación de red | Básica | Avanzada con control fino |
 | Multi-tab/ventana | ❌ | ✅ |
-| Traces/debugging | Video + screenshots (~pesados) | Trace ZIP (~livianos) |
 | Page Object Model | Manual | Fixtures nativos |
-| Coste (CI recording) | Gratis limitado / pago | Gratis ilimitado |
-| API de mocking | Limitada | `route.fulfill()` con body, headers, status |
+| Coste CI | Gratis limitado / pago | Gratis ilimitado |
 
-| Criterio | — (sin framework) | Vitest |
+| Criterio | Sin framework | Vitest |
 | --- | --- | --- |
-| Tests unitarios | No existían | 165+ tests |
-| Cobertura | No medible | 100 % (statements, branches, functions, lines) |
-| Velocidad | — | < 1 s toda la suite |
-| Mocking | — | `vi.mock()`, `vi.fn()`, `vi.spyOn()` |
-| TypeScript | — | Nativo |
+| Tests unitarios | No existían | Cobertura mensurable |
+| Velocidad | — | Rápida (< 1 s suite completa) |
+| Mocking de módulos | — | Nativo |
+| TypeScript | — | Soporte nativo |
 
 ---
 
@@ -126,18 +105,28 @@ e2e-tests:     playwright test          → artifact playwright-report
 
 ### Positivas
 
-- **Sin techo de ejecuciones:** CI nunca se queda sin presupuesto de tests
-- **Cobertura unitaria:** la lógica de negocio (router, i18n, paths, tags)
-  está cubierta al 100 % con tests rápidos
-- **Multi-navegador:** WebKit/Safari cubierto en la suite E2E
-- **Mocks superiores:** `page.route()` permite el sistema de mocks
-  documentado en [ADR 003](003-third-party-mocks.md)
-- **Un solo ecosistema:** Vitest + Playwright comparten configuración
-  TypeScript y convenciones
+- **Escalabilidad de CI:** framework E2E sin límites de ejecuciones en CI
+  (SaaS o runner open-source).
+- **Cobertura unitaria:** cobertura de lógica crítica con tests deterministas
+  y rápidos.
+- **Multi-navegador:** soporte para múltiples navegadores (Chromium, Firefox,
+  WebKit) en una sola suite.
+- **Mocks superiores:** interceptación de red avanzada para aislar dependencias
+  externas (ver [ADR 003](003-third-party-mocks.md)).
+- **Ecosistema unificado:** ambos frameworks comparten TypeScript y toolchain.
 
-### Anexos
+### Consideraciones
 
-Los siguientes son los anexos de este adr:
+- Mayor número de dependencias dev a mantener.
+- Requiere disciplina en estructura de tests para mantener separación entre
+  unitarios y E2E.
+
+## Referencias y detalles de implementación
+
+Para configuración específica de CI, estructura de directorios, comandos y
+artefactos:
+ver [docs/architecture/TESTING_STRATEGY.md](../../architecture/TESTING_STRATEGY.md)
+y anexos:
 
 - [Fase de convivencia](./anexos/002-testing-framework-migration/convivencia.md)
   Se agregó Playwright; ambos runners E2E se ejecutaron en CI durante la fase de convivencia

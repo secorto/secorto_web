@@ -30,15 +30,15 @@ clara para indicar que un archivo no debe aparecer en listados ni indexarse.
 ## Decisión
 
 Adoptar un único campo explícito en frontmatter: `draft: true` para indicar
-borradores. Cambios concretos:
+borradores. Cambios conceptuales:
 
-- El esquema de contenido (`src/content.config.ts`) incluirá `draft?: boolean`.
-- Las funciones que generan listados y paths (`src/utils/paths.ts`) solo
-  filtrarán por `data.draft === true` para excluir borradores.
-- La lógica de canonical/noindex y avisos se basará en `draft` y en los helpers del dominio;
-  no se recomienda inferir borradores desde `translation_status`.
-- `translation_status` podrá permanecer como metadata histórica/auxiliar,
-  pero ya no se usará para inferir el estado de borrador.
+- Esquema de contenido acepta `draft?: boolean` como campo opcional.
+- Utilidades que generan listados y paths filtran por `draft === true`
+  para excluir borradores.
+- Lógica de visibilidad (canonical, noindex, avisos) se basa en `draft`,
+  no en inferencias desde metadata histórica.
+- `translation_status` puede permanecer como metadata auxiliar, pero **no**
+  se usa para inferir estado de borrador.
 
 ---
 
@@ -60,81 +60,21 @@ borradores. Cambios concretos:
 - Simplicidad y claridad en frontmatter (`draft: true` es explícito e
   evidente).
 - Menos lógica dispersa en templates y utilidades; más fácil razonar sobre
-  visibilidad y SEO (noindex/canonical).
-- Proceso de migración sencillo: transformar `translation_status: 'draft'`
-  a `draft: true` en los casos necesarios.
+  visibilidad y SEO.
+- Comportamiento determinista: solo `draft === true` controla visibilidad.
 
 ### Negativas / Trade-offs
 
-- Requiere convertir algunos archivos antiguos si existieran valores de
-  `translation_status` relevantes (script de migración recomendado).
-- `translation_status` permanece en los archivos como metadata potencialmente
-  obsoleta; conviene limpiar a futuro.
+- Requiere migrar archivos si existieran valores de `translation_status`
+  relevantes.
+- `translation_status` puede permanecer como metadata obsoleta en algunos
+  archivos.
 
 ---
 
-## Plan de migración
+## Referencias y detalles de implementación
 
-1. Actualizar el schema (`src/content.config.ts`) para aceptar `draft?: boolean`.
-2. Actualizar utilidades y plantillas para usar `draft` (ya aplicado en el
-   código base actual).
-3. Ejecutar un script que identifique archivos con `translation_status: 'draft'`
-   y proponga (o aplique con turno manual) `draft: true`.
-4. Actualizar la documentación (`docs/CONTENT_POLICY.md`) para reflejar
-   la nueva convención.
+Para detalles técnicos, plan de migración paso a paso, cambios en archivos
+específicos y notas de implementación:
+ver [anexos/006-unificacion-manejo-borradores/IMPLEMENTATION_DETAILS.md](./anexos/006-unificacion-manejo-borradores/IMPLEMENTATION_DETAILS.md)
 
----
-
-## Referencias
-
-- `src/content.config.ts` — campo `draft` añadido al schema base
-- `src/utils/paths.ts` — filtrado por `draft`
-- `src/domain/post.ts` — helpers de dominio (p. ej. `getSeoDescription`) y tipos relacionados;
-  las extracciones simples de metadata también pueden encontrarse inline en las plantillas o centralizadas en estos helpers.
-- `docs/CONTENT_POLICY.md` — guía actualizada
-
----
-
-## Implementación (observaciones)
-
-Cambios aplicados durante la implementación para reducir la complejidad
-accidental y asegurar comportamiento consistente:
-
-- `src/content.config.ts`: el schema base ya expone `draft?: boolean`, lo
-  que permite que todas las colecciones acepten el campo sin cambios
-  manuales en cada post.
-- `src/utils/paths.ts`: se actualizó el filtrado para excluir entradas con
-  `data.draft === true`. Se eliminaron casts inseguros y se usan comprobaciones
-  en tiempo de ejecución sobre `Record<string, unknown>` para evitar `any`.
-- `src/domain/post.ts`: los helpers de dominio (por ejemplo `getSeoDescription`)
-  y la lógica de SEO/canonical/noindex se concentran aquí o se dejan inline en
-  las plantillas. Se simplificó la lógica para depender únicamente de `draft`
-  (frontmatter: `entry.data.draft`) y evitar inferencias desde `translation_status`.
-  Se eliminaron inferencias automáticas sobre `translation_status` en el
-  flujo principal (la metadata histórica puede permanecer en archivos).
-- `src/pages/[locale]/[section]/[...id].astro`: la plantilla de detalle ahora
-  muestra el aviso de borrador únicamente cuando `entry.data.draft` es true;
-  se eliminó la lógica condicional que intentaba inferir borradores desde
-  estados de traducción.
-- Tipado: se añadió `draft?: boolean` en el tipo local `BaseEntryData` para
-  evitar casteos y reflejar el campo en las páginas que renderizan entradas.
-- Tests: las pruebas unitarias se adaptaron para usar `draft` (`entry.data.draft`) como
-  fuente de verdad y se eliminó la dependencia en el helper de compatibilidad
-  (o se reescribieron para cubrir la nueva interfaz). La suite local pasa
-  completamente tras los cambios.
-
-Notas importantes:
-
-- Se priorizó eliminar compatibilidad retro en el runtime para evitar
-  lógica dispersa y ambigua. Si se necesita, se puede crear un script de
-  migración que proponga `draft: true` en archivos con
-  `translation_status: 'draft'` (modo preview recomendado antes de aplicar).
-- Eliminamos `any` y casts inseguros en puntos críticos (`paths.ts`,
-  plantillas) para mejorar la seguridad de tipos y la mantenibilidad.
-- Resultado: comportamiento determinista — solo `draft: true` controla la
-  visibilidad y SEO (noindex/canonical) en la web.
-
----
-
-Decisión tomada por: autor del repositorio (Sergio Orozco) tras revisión del
-historial y necesidad de reducir complejidad accidental.
