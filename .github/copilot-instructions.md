@@ -1,12 +1,17 @@
 # Copilot — Instrucciones Breves
 
+**PUNTO DE ENTRADA:** [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md) — principios, navegación a toda la documentación
+
+## Stack & Convenciones
+
 - Proyecto: TypeScript + Astro
 - Tests: Vitest (unit) y Playwright (E2E)
 - Estilo: sin punto y coma salvo necesario; evitar `any`
-- Contenido / frontmatter: ver [docs/CONTENT_POLICY.md](../docs/CONTENT_POLICY.md)
-- Guías técnicas: [docs/CODING_GUIDELINES.md](../docs/CODING_GUIDELINES.md) y
-[docs/TESTING_STRATEGY.md](../docs/TESTING_STRATEGY.md)
-- ADRs relevantes: [docs/adr/001-i18n-router-framework.md](../docs/adr/001-i18n-router-framework.md),
-[docs/adr/006-unificacion-manejo-borradores.md](../docs/adr/006-unificacion-manejo-borradores.md),
-[docs/adr/007-domain-i18n-unificacion.md](../docs/adr/007-domain-i18n-unificacion.md)
-- Antes de PR: validar el código (markdown y javascript) con el linter y ejecutar tests
+
+## Workflow Pre-PR
+
+1. Asegura que el código sigue [docs/CODING_GUIDELINES.md](../docs/CODING_GUIDELINES.md)
+2. Ejecuta: `npm run lint` (typescript, eslint, markdownlint)
+3. Ejecuta: `npm run test:unit` (cobertura 100% en código nuevo)
+4. Ejecuta: `npm run test:e2e` (validar flujos de usuario)
+5. Asegura que todo cumple [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md)
