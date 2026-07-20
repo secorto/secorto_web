@@ -1,6 +1,6 @@
 import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
-import { step } from '@tests/fixtures'
+import { verifyStep } from '@tests/fixtures'
 import { tagsPath, visit } from '@tests/support/ui/shared/NavigationPaths'
 import { link } from '@tests/support/ui/components/Link'
 import type { Link as LinkComponent } from '@tests/support/ui/components/Link'
@@ -31,7 +31,7 @@ export class TagsPage {
   }
 
   shouldHaveAtLeastOneTagGroup() {
-    return step('tags page should render at least one tag group', async ({ expect }) => {
+    return verifyStep('tags page should render at least one tag group', async ({ expect }) => {
       await expect
         .poll(async () => this.allTagGroups.locator.count())
         .toBeGreaterThan(0)
@@ -43,7 +43,7 @@ export class TagsPage {
   }
 
   shouldHaveAtLeastOneLinkInFirstTagGroup() {
-    return step('first tag group should contain links', async ({ expect }) => {
+    return verifyStep('first tag group should contain links', async ({ expect }) => {
       const links = this.allTagGroups.locator.first().locator('a')
       await expect
         .poll(async () => links.count())

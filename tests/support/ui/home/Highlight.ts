@@ -1,5 +1,5 @@
 import type { Locator } from '@playwright/test'
-import { step } from '@tests/fixtures'
+import { verifyStep } from '@tests/fixtures'
 import { link } from '@tests/support/ui/components/Link'
 
 export class Highlight {
@@ -11,7 +11,7 @@ export class Highlight {
   }
 
   shouldBeVisible() {
-    return step('highlight should be visible', async ({ expect }) => {
+    return verifyStep('highlight should be visible', async ({ expect }) => {
       await expect(this.root).toBeVisible()
     })
   }

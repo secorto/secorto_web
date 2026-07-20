@@ -1,4 +1,4 @@
-import { step } from '@tests/fixtures'
+import { verifyStep, step } from '@tests/fixtures'
 import { target } from '@tests/support/ui/components/Target'
 import type { Target as TargetComponent } from '@tests/support/ui/components/Target'
 import type { Page } from '@playwright/test'
@@ -22,7 +22,7 @@ export class ThemeToggle {
   }
 
   shouldBeDifferent(initialTransform: string) {
-    return step('theme toggle icon transform should be changed', async ({ expect }) => {
+    return verifyStep('theme toggle icon transform should be changed', async ({ expect }) => {
       const themeCircle = this.toggle.locator.locator('svg circle')
       await expect.poll(async () => {
         return await themeCircle.evaluate((el: Element) => getComputedStyle(el).transform)

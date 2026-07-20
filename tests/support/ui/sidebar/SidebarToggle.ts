@@ -1,4 +1,4 @@
-import { step } from '@tests/fixtures'
+import { verifyStep, step } from '@tests/fixtures'
 import { target } from '@tests/support/ui/components/Target'
 import type { Target as TargetComponent } from '@tests/support/ui/components/Target'
 import type { Page } from '@playwright/test'
@@ -19,7 +19,7 @@ export class SidebarToggle {
   }
 
   shouldBeClosed() {
-    return step('sidebar should be closed', async ({ expect }) => {
+    return verifyStep('sidebar should be closed', async ({ expect }) => {
       await expect(this.sidebar.locator).not.toHaveClass(/sidebar-open/)
     })
   }
@@ -29,13 +29,13 @@ export class SidebarToggle {
   }
 
   hamburgerShouldHaveClosedState() {
-    return step('hamburger should not have open state class', async ({ expect }) => {
+    return verifyStep('hamburger should not have open state class', async ({ expect }) => {
       await expect(this.hamburger.locator).not.toHaveClass(/sidebar-open/)
     })
   }
 
   showNavigationLinks() {
-    return step('sidebar shows navigation links', async ({ expect }) => {
+    return verifyStep('sidebar shows navigation links', async ({ expect }) => {
       await expect(this.sidebar.locator.locator('[data-testid="sidebar-title"]')).toBeVisible()
     })
   }

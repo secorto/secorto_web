@@ -1,5 +1,5 @@
 import type { Page } from "@playwright/test"
-import { step } from "@tests/fixtures"
+import { verifyStep, step } from "@tests/fixtures"
 
 /**
  * Asserts that a given key in localStorage has the expected value,
@@ -13,7 +13,7 @@ import { step } from "@tests/fixtures"
  * @returns step for validating local storage
  */
 export function shouldHaveLocalStorage(page: Page, key: string, value: string | null, timeout = 2000, interval = 100) {
-  return step(`localStorage ${key} should be ${String(value)}`, async ({ expect }) => {
+  return verifyStep(`localStorage ${key} should be ${String(value)}`, async ({ expect }) => {
     await expect.poll(() => page.evaluate((k: string) => window.localStorage.getItem(k), key), { timeout, intervals: [interval] }).toBe(value)
   })
 }

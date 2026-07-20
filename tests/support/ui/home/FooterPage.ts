@@ -1,6 +1,6 @@
 import type { UILanguages } from '@i18n/ui'
 import type { Locator, Page } from '@playwright/test'
-import { step } from '@tests/fixtures'
+import { verifyStep } from '@tests/fixtures'
 import { homePath, visit } from '@tests/support/ui/shared/NavigationPaths'
 
 export class FooterPage {
@@ -12,28 +12,28 @@ export class FooterPage {
   ) {}
 
   shouldHaveAvatarAlt(expectedAlt: string) {
-    return step('footer avatar has localized alt text', async ({ expect }) => {
+    return verifyStep('footer avatar has localized alt text', async ({ expect }) => {
       await expect(this.avatar).toBeVisible()
       await expect(this.avatar).toHaveAttribute('alt', expectedAlt)
     })
   }
 
   shouldHaveRoleText(expectedRole: string) {
-    return step('footer role text is localized', async ({ expect }) => {
+    return verifyStep('footer role text is localized', async ({ expect }) => {
       await expect(this.role).toBeVisible()
       await expect(this.role).toHaveText(expectedRole)
     })
   }
 
   shouldHaveFollowText(expectedFollow: string) {
-    return step('footer follow label is localized', async ({ expect }) => {
+    return verifyStep('footer follow label is localized', async ({ expect }) => {
       await expect(this.follow).toBeVisible()
       await expect(this.follow).toHaveText(expectedFollow)
     })
   }
 
   shouldHaveAvatarLoaded() {
-    return step('footer avatar is present and loaded', async ({ expect }) => {
+    return verifyStep('footer avatar is present and loaded', async ({ expect }) => {
       await expect(this.avatar).toBeVisible()
       await expect(this.avatar).toHaveCount(1)
 

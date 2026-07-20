@@ -9,19 +9,12 @@ for (const locale of languageKeys) {
       await list.shouldRenderTagsForSection()
     })
 
-    test('filtering by tag updates page title', async ({ page }) => {
+    test('filtering by tag updates page title and shows filtered results', async ({ page }) => {
       const list = await userInTalkList(page, locale)
       const expectedSectionTitle = ui[locale]['nav.talks']
-
       await list.filterByTag('containers')
-      await list.shouldHaveFilteredTitle(expectedSectionTitle, 'containers')
-    })
-
-    test('filtered talks exist after tag selection', async ({ page }) => {
-      const list = await userInTalkList(page, locale)
-
-      await list.filterByTag('containers')
-      await list.shouldHaveFilteredResults()
+      await list.shouldHaveFilteredTitle(expectedSectionTitle, 'containers').soft()
+      await list.shouldHaveFilteredResults().soft()
     })
   })
 }

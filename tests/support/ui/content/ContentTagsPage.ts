@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test'
-import { step } from '@tests/fixtures'
+import { verifyStep, step } from '@tests/fixtures'
 import { targetSelector } from '@tests/support/ui/components/Target'
 import type { Target as TargetComponent } from '@tests/support/ui/components/Target'
 import type { TargetSelector } from '@tests/support/ui/components/Target'
@@ -44,7 +44,7 @@ export class ContentTagsPage extends ContentPage {
    * Assert that all available tags for the section are rendered.
    */
   shouldRenderTagsForSection() {
-    return step(`${this.name} tags renders available tags`, async ({ expect }) => {
+    return verifyStep(`${this.name} tags renders available tags`, async ({ expect }) => {
       await expect(this.tags.locator).toBeVisible()
 
       const tagLinks = this.tags.locator.locator('[data-testid^="tag-link-"]')
