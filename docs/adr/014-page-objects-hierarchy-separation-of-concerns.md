@@ -122,24 +122,8 @@ comunica exactamente qué contexto se está probando.
 
 - El patrón es independiente de nombres concretos, aplicable en cualquier dominio
 
-## Implementación realizada
-
-**Mapeo concreto** (en `tests/support/ui/content/`):
-
-| Objetivo Abstracto | Implementación Concreta | Responsabilidad |
-| --- | --- | --- |
-| Base compartida | `ContentPage.ts` | Propiedades comunes (`name`, `headerTitle`, `tags`); métodos transversales (`shouldHaveHeaderTitle`, `clickTag`) |
-| Vista de Lista | `ContentListPage.ts` | Listar items, filtrar, navegar |
-| Vista de Detalle (Comentarios) | `ContentPostDetailPage.ts` | Validar contenido, interactuar con comentarios (blogs, talks) |
-| Vista de Detalle (Metadata) | `ContentExperienceDetailPage.ts` | Validar metadata profesional (rol, responsabilidades, links) |
-| Vista de Filtrado | `ContentTagsPage.ts` | Filtrar por tags, navegar, validar resultados |
-
-**Actualización de helpers**: `BlogPages.ts`, `WorkPages.ts`, `TalkPages.ts`, etc. retornan tipos específicos.
-
-Cada método incluye JSDoc explicando su responsabilidad, parámetros y comportamiento esperado.
-
 ## Referencias
 
 - [PAGE_OBJECTS.md](../architecture/PAGE_OBJECTS.md) — referencia de arquitectura E2E
-  con modelo genérico Component/Page/Flow
+  con modelo genérico Component/Page/Flow, incluye implementación concreta de esta decisión
 - [TESTING_STRATEGY.md](../architecture/TESTING_STRATEGY.md) — estrategia general de testing E2E
