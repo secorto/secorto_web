@@ -20,6 +20,7 @@ a una versión más reciente. Esto crea un trade-off:
   alternativas.
 
 Se eligó la opción B porque:
+
 - La actualización del core ofrece beneficios transversales (seguridad,
   compatibilidad, rendimiento).
 - El valor de ciertos plugins es redundante con otras herramientas del proyecto

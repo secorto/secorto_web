@@ -20,41 +20,41 @@ para indicar borradores.
 
 ### Fase 2: Actualizar Utilidades y Plantillas
 
-2. Actualizar `src/utils/paths.ts` para filtrar por `draft === true`:
+1. Actualizar `src/utils/paths.ts` para filtrar por `draft === true`:
    - Excluir entradas donde `data.draft === true` de listados públicos.
    - Eliminar casts inseguros (evitar `any`).
    - Usar comprobaciones en tiempo de ejecución sobre `Record<string, unknown>`.
 
-3. Actualizar `src/domain/post.ts`:
+2. Actualizar `src/domain/post.ts`:
    - Helpers de dominio (p. ej. `getSeoDescription`) y lógica de SEO deben
      depender únicamente de `draft`, no de `translation_status`.
    - Eliminar inferencias automáticas sobre `translation_status` en el flujo
      principal.
 
-4. Actualizar plantillas de vista:
+3. Actualizar plantillas de vista:
    - `src/pages/[locale]/[section]/[...id].astro`: mostrar aviso de borrador
      únicamente cuando `entry.data.draft === true`.
    - Eliminar lógica condicional que inferira borradores desde `translation_status`.
 
-5. Tipado: añadir `draft?: boolean` en el tipo local `BaseEntryData` para
+4. Tipado: añadir `draft?: boolean` en el tipo local `BaseEntryData` para
    evitar casteos.
 
 ### Fase 3: Tests
 
-6. Adaptar pruebas unitarias para usar `draft` (`entry.data.draft`) como
+1. Adaptar pruebas unitarias para usar `draft` (`entry.data.draft`) como
    fuente de verdad.
    - Eliminar dependencia en helpers de compatibilidad.
    - Reescribir tests para cubrir la nueva interfaz.
 
 ### Fase 4: Migración de Datos
 
-7. Ejecutar un script que identifique archivos con `translation_status: 'draft'`
+1. Ejecutar un script que identifique archivos con `translation_status: 'draft'`
    y proponga (o aplique con turno manual) `draft: true`.
    - Modo preview recomendado antes de aplicar cambios masivos.
 
 ### Fase 5: Documentación
 
-8. Actualizar `docs/CONTENT_POLICY.md` para reflejar la nueva convención.
+1. Actualizar `docs/CONTENT_POLICY.md` para reflejar la nueva convención.
 
 ---
 
@@ -77,6 +77,7 @@ para indicar borradores.
   - Índices generados.
 - **Tipado:** usar comprobaciones en tiempo de ejecución para evitar `any`.
   Ejemplo:
+
   ```typescript
   if (typeof entry.data === 'object' && entry.data !== null && entry.data.draft === true) {
     // Filtrar este entry
@@ -99,6 +100,7 @@ para indicar borradores.
 - **Cambio:** renderizar aviso de borrador solo si `entry.data.draft === true`.
 - **Efecto:** UI clara y consistente.
 - **Ejemplo:**
+
   ```astro
   {entry.data.draft && <DraftWarning />}
   ```
@@ -108,6 +110,7 @@ para indicar borradores.
 - **Cambio:** añadir campo `draft?: boolean`.
 - **Efecto:** type safety en templates y helpers.
 - **Ejemplo:**
+
   ```typescript
   export interface BaseEntryData {
     draft?: boolean
@@ -121,6 +124,7 @@ para indicar borradores.
   assertions.
 - **Efecto:** suite pasa completamente tras los cambios.
 - **Ejemplo:**
+
   ```typescript
   const entry = { data: { draft: true } }
   expect(paths.isVisible(entry)).toBe(false)

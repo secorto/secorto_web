@@ -77,4 +77,3 @@ borradores. Cambios conceptuales:
 Para detalles técnicos, plan de migración paso a paso, cambios en archivos
 específicos y notas de implementación:
 ver [anexos/006-unificacion-manejo-borradores/IMPLEMENTATION_DETAILS.md](./anexos/006-unificacion-manejo-borradores/IMPLEMENTATION_DETAILS.md)
-
