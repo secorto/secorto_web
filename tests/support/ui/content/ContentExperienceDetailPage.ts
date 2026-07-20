@@ -20,14 +20,26 @@ export class ContentExperienceDetailPage extends ContentPage {
     super(name, headerTitle, tags)
   }
 
+  /**
+   * Verify the role/position title matches the expected value.
+   * @param expected - The role text to match
+   */
   shouldHaveRole(expected: string) {
     return this.postRole.shouldHaveText(expected)
   }
 
+  /**
+   * Verify the responsibilities description matches the expected value.
+   * @param expected - The responsibilities text to match
+   */
   shouldHaveResponsibilities(expected: string) {
     return this.postResponsibilities.shouldHaveText(expected)
   }
 
+  /**
+   * Verify the website link points to the expected URL.
+   * @param expected - The website URL to match
+   */
   shouldHaveWebsite(expected: string) {
     return this.postWebsite.shouldHaveAttribute('href', expected)
   }

@@ -20,16 +20,29 @@ export class ContentTagsPage extends ContentPage {
     super(name, headerTitle, tags)
   }
 
+  /**
+   * Verify the tags page title includes both section name and filter tag.
+   * @param expectedSectionTitle - The section name (e.g., "Blog")
+   * @param tag - The tag name being displayed
+   */
   shouldHaveFilteredTitle(expectedSectionTitle: string, tag: string) {
     return this.headerTitle.shouldHaveText(`${expectedSectionTitle} - ${tag}`)
   }
 
+  /**
+   * Click on a tagged item to navigate to its detail view.
+   * @param href - The item's URL path
+   * @param title - Display name for the step
+   */
   clickItem(href: string, title: string) {
     return step(title, async () => {
       await this.itemLinks.get(href).locator.click()
     })
   }
 
+  /**
+   * Assert that all available tags for the section are rendered.
+   */
   shouldRenderTagsForSection() {
     return step(`${this.name} tags renders available tags`, async ({ expect }) => {
       await expect(this.tags.locator).toBeVisible()

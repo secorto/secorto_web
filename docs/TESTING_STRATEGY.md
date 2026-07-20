@@ -46,9 +46,11 @@ Para el razonamiento y la justificación de cada elección, ver [ADR 002](./adr/
 La arquitectura E2E en este proyecto sigue un modelo de 3 capas composables:
 
 ### Capa 1: Components (Unidades de UI con Comportamiento)
+
 **Ubicación**: `tests/support/ui/components/`
 
 Abstraen cualquier unidad de UI con un protocolo de interacción o validación esperado:
+
 - **Primitivos**: `Target` (locator genérico + assertions), `Link` (locator + validaciones de href)
 - **Especializados**: `Comments` (composite: script + iframe), `PageHelper` (utilidades stateless)
 - **Criterio de creación**: ¿Tiene el elemento un "happy path" o protocolo de uso? → Es componente
@@ -57,11 +59,13 @@ Abstraen cualquier unidad de UI con un protocolo de interacción o validación e
 - **Realidad SSG**: En un sitio sin interacciones pesadas, `Target` suele ser suficiente. Pero si existe un Dropdown, Modal, o Tab con open/close/select, ese es un componente formal
 
 ### Capa 2: Pages (Orquestadores de Components)
+
 **Ubicación**: `tests/support/ui/{domain}/` (ej: `home/`, `content/`, `sidebar/`)
 
 Orquestan múltiples components con métodos semánticos que representan el flujo local:
+
 - **Responsabilidad**: Combinar components para expresar la lógica/validación de una sección
-- **Patrón**: 
+- **Patrón**:
   - Clase con constructor que inyecta components
   - Factory: `homePage(page: Page): HomePage`
   - Helper: `userInHome(page: Page): Promise<HomePage>` que invoca `visit()` y retorna factory
@@ -70,9 +74,11 @@ Orquestan múltiples components con métodos semánticos que representan el fluj
 - **Ejemplo**: `ContentListPage` inyecta `TargetSelector<string>` (items), `TargetSelector<string>` (tags), `Comments` → expone `filterByTag()`, `clickItem()`, `shouldHaveComments()`
 
 ### Capa 3: Flows (Secuencias Multi-Step/Multi-Page - OPCIONAL)
+
 **Ubicación**: `tests/support/flows/` (funciones reutilizables) + `tests/e2e/flow/` (specs)
 
 Encapsulan narrativas complejas que cruzan múltiples pages o requieren coordinación:
+
 - **Responsabilidad**: Encapsular secuencias que no pertenecen a una sola page
 - **Ejemplo**: "navegar blog → filtrar tag → click post → validar detalle" = flujo (es la narrativa)
 - **Patrón**: Función que recibe `Page` y parámetros, retorna último page accedido para chaining
@@ -80,6 +86,7 @@ Encapsulan narrativas complejas que cruzan múltiples pages o requieren coordina
 - **Cuándo**: Solo para flujos complejos multi-step/multi-page. No sobre-ingenierizar.
 
 **Ejemplo mínimo**:
+
 ```typescript
 // tests/support/flows/blog.flow.ts
 export const navigateBlogFilterAndDetail = async (

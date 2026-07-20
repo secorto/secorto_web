@@ -34,6 +34,10 @@ completa del proyecto a través de tres reescrituras en diferentes frameworks.
 | [008](008-client-scripts-unit-testing.md) | Estrategia de pruebas client-side y reorganización del cliente | Aceptada | 2026-04 |
 | [009](009-markdown-validation.md) | Validación de Markdown (formato y sincronización de documentación) | Aceptada | 2026-05 |
 | [010](010-plantilla-estandar-adr.md) | Plantilla estándar de ADRs | Propuesta | 2026-05 |
+| [011](011-i18n-translationkey.md) | `translationKey` como llave canónica | Aceptada | 2026-05 |
+| [012](012-formatting-proposal.md) | Formateo y herramienta de estilo propuesta | Propuesta | 2026-05 |
+| [013](013-lint-rule-changes.md) | Actualización a ESLint 10 y eliminación temporal de plugins | Aceptada | 2026-05 |
+| [014](014-page-objects-hierarchy-separation-of-concerns.md) | Jerarquía de Page Objects con separación clara de responsabilidades | Aceptada | 2026-07 |
 
 ## Convenciones
 
