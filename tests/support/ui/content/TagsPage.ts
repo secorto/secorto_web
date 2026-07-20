@@ -1,6 +1,7 @@
 import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
-import { step } from '@tests/fixtures'
+import { ui } from '@i18n/ui'
+import { verifyStep } from '@tests/fixtures'
 import { tagsPath, visit } from '@tests/support/ui/shared/NavigationPaths'
 import { link } from '@tests/support/ui/components/Link'
 import type { Link as LinkComponent } from '@tests/support/ui/components/Link'
@@ -9,7 +10,6 @@ import type { Target as TargetComponent } from '@tests/support/ui/components/Tar
 
 export class TagsPage {
   constructor(
-    readonly page: Page,
     readonly pageTitle: TargetComponent,
     readonly pageDescription: TargetComponent,
     readonly tagGroups: TargetComponent,
@@ -17,6 +17,24 @@ export class TagsPage {
     readonly firstTagLink: LinkComponent,
     readonly pageBody: TargetComponent,
   ) {}
+
+  shouldBeLoaded(locale: UILanguages) {
+    const expectedTitle = ui[locale]['tags.index_title']
+    const expectedDescription = ui[locale]['tags.index_description']
+    const availabilityText = ui[locale]['tags.available_in']
+    const hrefPattern = new RegExp(String.raw`^/${locale}/[a-z]+/tags/.+`)
+
+    return verifyStep('tags page is loaded correctly', async ({ expect }) => {
+      await this.shouldHavePageTitle(expectedTitle).with(expect)
+      await this.shouldHavePageDescription(expectedDescription).with(expect)
+      await this.shouldShowTagGroups().with(expect)
+      await this.shouldHaveAtLeastOneTagGroup().with(expect)
+      await this.firstTagGroupHeadingShouldBeVisible().with(expect)
+      await this.shouldHaveAtLeastOneLinkInFirstTagGroup().with(expect)
+      await this.linksHrefMatches(hrefPattern).with(expect)
+      await this.shouldContainAvailabilityText(availabilityText).with(expect)
+    })
+  }
 
   shouldHavePageTitle(expected: string) {
     return this.pageTitle.shouldHaveText(expected)
@@ -31,7 +49,7 @@ export class TagsPage {
   }
 
   shouldHaveAtLeastOneTagGroup() {
-    return step('tags page should render at least one tag group', async ({ expect }) => {
+    return verifyStep('tags page should render at least one tag group', async ({ expect }) => {
       await expect
         .poll(async () => this.allTagGroups.locator.count())
         .toBeGreaterThan(0)
@@ -43,7 +61,7 @@ export class TagsPage {
   }
 
   shouldHaveAtLeastOneLinkInFirstTagGroup() {
-    return step('first tag group should contain links', async ({ expect }) => {
+    return verifyStep('first tag group should contain links', async ({ expect }) => {
       const links = this.allTagGroups.locator.first().locator('a')
       await expect
         .poll(async () => links.count())
@@ -62,7 +80,6 @@ export class TagsPage {
 
 export function tagsPage(page: Page) {
   return new TagsPage(
-    page,
     target('tags header title', page.getByTestId('header-title')),
     target('tags description', page.getByTestId('tags-description')),
     target('tags groups container', page.getByTestId('global-tag-groups')),

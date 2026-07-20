@@ -2,7 +2,7 @@ import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
 import { AxeBuilder } from '@axe-core/playwright'
 import type { SectionType } from '@domain/section'
-import { step } from '@tests/fixtures'
+import { verifyStep, step } from '@tests/fixtures'
 import { contentDetailsPath, contentListPath, contentTagsPath, homePath, tagsPath, visit } from '@tests/support/ui/shared/NavigationPaths'
 
 const DEFAULT_EXCLUDES = [
@@ -22,7 +22,7 @@ export class A11yPage {
   }
 
   shouldPassAudit(results: { violations?: unknown[] }) {
-    return step('should pass accessibility audit', async ({ expect }) => {
+    return verifyStep('should pass accessibility audit', async ({ expect }) => {
       expect(results.violations ?? []).toEqual([])
     })
   }

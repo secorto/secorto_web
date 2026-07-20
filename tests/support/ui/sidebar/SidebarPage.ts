@@ -1,4 +1,4 @@
-import { step } from '@tests/fixtures'
+import { verifyStep } from '@tests/fixtures'
 import { sidebarToggleFromPage, SidebarToggle } from '@tests/support/ui/sidebar/SidebarToggle'
 import { target } from '@tests/support/ui/components/Target'
 import type { Target as TargetComponent } from '@tests/support/ui/components/Target'
@@ -45,14 +45,14 @@ export class SidebarPage {
   }
 
   shouldBeReady() {
-    return step('sidebar should be ready', async ({ expect }) => {
+    return verifyStep('sidebar should be ready', async ({ expect }) => {
       await expect(this.sidebarTitle.locator).toBeVisible()
       await expect(this.toggle.hamburger.locator).toBeVisible()
     })
   }
 
   shouldHaveAboutLink(i18n: Record<string, string>) {
-    return step('sidebar shows about link text', async ({ expect }) => {
+    return verifyStep('sidebar shows about link text', async ({ expect }) => {
       await expect(this.aboutLink.locator).toBeVisible()
       await expect(this.aboutLink.locator).toHaveText(i18n['nav.about'])
     })

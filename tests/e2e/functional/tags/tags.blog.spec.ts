@@ -9,19 +9,12 @@ for (const locale of languageKeys) {
       await list.shouldRenderTagsForSection()
     })
 
-    test('filtering by tag updates page title', async ({ page }) => {
+    test('filtering by tag updates page title and shows filtered results', async ({ page }) => {
       const list = await userInBlogList(page, locale)
       const expectedSectionTitle = ui[locale]['nav.blog']
-
       await list.filterByTag('python')
-      await list.shouldHaveFilteredTitle(expectedSectionTitle, 'python')
-    })
-
-    test('filtered posts exist after tag selection', async ({ page }) => {
-      const list = await userInBlogList(page, locale)
-
-      await list.filterByTag('python')
-      await list.shouldHaveFilteredResults()
+      await list.shouldHaveFilteredTitle(expectedSectionTitle, 'python').soft()
+      await list.shouldHaveFilteredResults().soft()
     })
   })
 }

@@ -1,7 +1,7 @@
 import type { UILanguages } from '@i18n/ui'
 import type { Page } from '@playwright/test'
 import { targetSelector } from '@tests/support/ui/components/Target'
-import { step } from '@tests/fixtures'
+import { verifyStep, step } from '@tests/fixtures'
 import { homePath, visit } from '@tests/support/ui/shared/NavigationPaths'
 
 export class LangSwitchHomePage {
@@ -21,7 +21,7 @@ export class LangSwitchHomePage {
   }
 
   shouldBeInLocale(locale: UILanguages) {
-    return step(`url should be in locale ${locale}`, async ({ expect }) => {
+    return verifyStep(`url should be in locale ${locale}`, async ({ expect }) => {
       await expect(this.page).toHaveURL(new RegExp(`/${locale}(/|$)`))
     })
   }

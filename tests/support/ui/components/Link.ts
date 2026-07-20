@@ -1,5 +1,5 @@
 import type { Locator } from '@playwright/test'
-import { step } from '@tests/fixtures'
+import { verifyStep, step } from '@tests/fixtures'
 import { Target } from '@tests/support/ui/components/Target'
 
 export class Link extends Target {
@@ -8,14 +8,14 @@ export class Link extends Target {
   }
 
   click() {
-    return step(`click ${this.name}`, async ({ expect }) => {
+    return verifyStep(`click ${this.name}`, async ({ expect }) => {
       await expect(this.locator).toBeVisible()
       await this.locator.click()
     })
   }
 
   hrefMatches(locale: string, route: string) {
-    return step(`${this.name} href matches route`, async ({ expect }) => {
+    return verifyStep(`${this.name} href matches route`, async ({ expect }) => {
       const el = this.locator
       await expect(el).toBeVisible()
       const href = await el.getAttribute('href')
@@ -25,7 +25,7 @@ export class Link extends Target {
   }
 
   linksMatchPattern(pattern: RegExp) {
-    return step(`${this.name} all links match pattern`, async ({ expect }) => {
+    return verifyStep(`${this.name} all links match pattern`, async ({ expect }) => {
       const links = await this.locator.evaluateAll(nodes =>
         nodes.map(n => n.getAttribute('href'))
       )

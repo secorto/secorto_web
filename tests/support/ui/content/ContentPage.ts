@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test'
-import { step } from '@tests/fixtures'
+import { verifyStep, step } from '@tests/fixtures'
 import { target } from '@tests/support/ui/components/Target'
 import type { Target as TargetComponent } from '@tests/support/ui/components/Target'
 
@@ -27,7 +27,7 @@ export class ContentPage {
    * @param ariaSnapshot - The expected aria-snapshot string to match
    */
   shouldHaveTags(ariaSnapshot: string) {
-    return step(`${this.name} has expected tags`, async ({ expect }) => {
+    return verifyStep(`${this.name} has expected tags`, async ({ expect }) => {
       await expect(this.tags.locator).toMatchAriaSnapshot(ariaSnapshot)
     })
   }
