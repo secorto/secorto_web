@@ -147,5 +147,6 @@ Workflow `Tests` (archivo `.github/workflows/tests.yml`) ejecuta en el siguiente
 - **Mantén las suites unitarias veloces y confiables**; reserva E2E para flujos reales.
 - **Documenta cualquier test E2E flakey** y aísla su ejecución (tag/grep) para no romper CI.
 - **Revisa periódicamente** el tamaño de la suite E2E y prioriza rutas críticas.
+- **Consulta [E2E_CONSOLIDATION.md](E2E_CONSOLIDATION.md)** para el patrón de consolidación de aserciones con soft expect.
 - **No sobre-ingenierices**: Usa componentes simples cuando aplique.
   Si un flow es single-step, hazlo inline en el spec.
