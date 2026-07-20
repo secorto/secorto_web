@@ -57,8 +57,7 @@ export class Target {
   }
 }
 
-export function target(name: string, locator: Locator): Target
-export function target(name: string, locator: Locator) {
+export function target(name: string, locator: Locator): Target {
   return new Target(name, locator)
 }
 

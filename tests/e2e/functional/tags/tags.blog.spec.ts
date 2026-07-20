@@ -1,4 +1,4 @@
-import { test, expect } from '@tests/fixtures'
+import { test } from '@tests/fixtures'
 import { languageKeys, ui } from '@i18n/ui'
 import { userInBlogList } from '@tests/support/ui/content/BlogPages'
 
