@@ -32,14 +32,14 @@ test.describe('Community', { tag: ['@smoke', '@community'] }, () => {
       const list = await userInCommunityList(page, locale)
       const expectedHeaderTitle = ui[locale]['nav.community']
       await pageHelper(page).shouldHaveTitle(new RegExp(`^${escapeRegExp(expectedHeaderTitle)} \\| SeCOrTo$`))
-      await list.shouldHaveListHeaderTitle(expectedHeaderTitle)
+      await list.shouldHaveHeaderTitle(expectedHeaderTitle)
     })
   }
 
   for (const f of fixtures) {
     test(`community detail shows title, role and website (${f.locale})`, { tag: [`@${f.locale}`] }, async ({ page }) => {
       const detail = await userInCommunityDetail(page, f.locale, f.slug)
-      await detail.shouldHaveDetailTitle(f.title)
+      await detail.shouldHaveHeaderTitle(f.title)
       await detail.shouldHaveRole(f.role)
       await detail.shouldHaveWebsite(f.website)
     })

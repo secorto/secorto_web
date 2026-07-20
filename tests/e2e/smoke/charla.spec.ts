@@ -39,12 +39,12 @@ test.describe('Charlas', { tag: ['@smoke', '@talk'] }, () => {
       const list = await userInTalkList(page, locale)
       const expectedHeaderTitle = ui[locale]['nav.talks']
       await pageHelper(page).shouldHaveTitle(new RegExp(`^${escapeRegExp(expectedHeaderTitle)} \\| SeCOrTo$`))
-      await list.shouldHaveListHeaderTitle(expectedHeaderTitle)
+      await list.shouldHaveHeaderTitle(expectedHeaderTitle)
     })
 
     test(`talk detail shows title and tags (${locale})`, { tag: [`@${locale}`] }, async ({ page }) => {
       const detail = await userInTalkDetail(page, locale, SLUG)
-      await detail.shouldHaveDetailTitle(expectedTitles[locale])
+      await detail.shouldHaveHeaderTitle(expectedTitles[locale])
       await detail.shouldHaveTags(expectedTags[locale])
     })
 

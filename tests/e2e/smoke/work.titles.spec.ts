@@ -32,14 +32,14 @@ test.describe('Work', { tag: ['@smoke', '@work'] }, () => {
       const list = await userInWorkList(page, locale)
       const expectedHeaderTitle = ui[locale]['nav.work']
       await pageHelper(page).shouldHaveTitle(new RegExp(`^${escapeRegExp(expectedHeaderTitle)} \\| SeCOrTo$`))
-      await list.shouldHaveListHeaderTitle(expectedHeaderTitle)
+      await list.shouldHaveHeaderTitle(expectedHeaderTitle)
     })
   }
 
   for (const f of fixtures) {
     test(`work detail shows title and role (${f.locale})`, { tag: [`@${f.locale}`] }, async ({ page }) => {
       const detail = await userInWorkDetail(page, f.locale, f.slug)
-      await detail.shouldHaveDetailTitle(f.title)
+      await detail.shouldHaveHeaderTitle(f.title)
       await detail.shouldHaveRole(f.role)
       await detail.shouldHaveWebsite(f.website)
     })

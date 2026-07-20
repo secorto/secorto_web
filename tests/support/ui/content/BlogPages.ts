@@ -1,6 +1,7 @@
 import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
 import { ContentListPage, contentListPage } from '@tests/support/ui/content/ContentListPage'
+import { contentPostDetailPage } from '@tests/support/ui/content/ContentPostDetailPage'
 import { contentListPath, contentDetailsPath, visit } from '@tests/support/ui/shared/NavigationPaths'
 
 export const userInBlogList = (page: Page, locale: UILanguages) =>
@@ -20,5 +21,5 @@ export const userInBlogPost = (
     `a user opening blog post ${slug} in ${locale}`,
     page,
     contentDetailsPath('blog', locale, slug),
-    () => contentListPage(page, 'blog')
+    () => contentPostDetailPage(page, 'blog'),
   )
