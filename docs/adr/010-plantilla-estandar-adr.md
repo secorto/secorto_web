@@ -53,10 +53,28 @@ secciones obligatorias y metadatos normalizados (`frontmatter` YAML).
       (string, preferiblemente filename relativo, p.ej. `R03-migracion-gatsby-a-astro.md`).
   - Secciones obligatorias: Contexto, Objetivo, Decisión, Implementación,
     Consecuencias (Positivas / A tener en cuenta), Referencias.
-- Actualizar `docs/adr/README.md` — sección **Convenciones** — para documentar el nuevo formato
-  `frontmatter` YAML como fuente única de verdad para autores humanos.
-- Normalizar ADRs existentes en PRs separados y claramente marcados (commits de
-  formato que **reemplazan completamente** `blockquotes` por `frontmatter` YAML,
+  - **Guía de contenido por sección:** Los ADRs deben mantener la decisión
+    **agnóstica a detalles de implementación concretos**:
+    - **Contexto:** problema abstracto (p.ej. "múltiples responsabilidades en
+      una clase"), no nombres de archivos o clases específicas
+    - **Decisión:** estructura o patrón abstracto (p.ej. "especialización por
+      responsabilidad", "Vista de Lista vs Vista de Detalle"), no
+      identificadores de implementación
+    - **Implementación:** descripción de cómo se aplicó, referencias a
+      documentos de arquitectura (docs/architecture/) donde vive el mapeo
+      concreto a clases/archivos reales
+    - **Consecuencias:** impacto conceptual (mantenibilidad, complejidad,
+      claridad), no detalles técnicos de clases específicas
+    - **Razón:** ADRs permanecen válidos como referencias incluso cuando
+      cambia la implementación. Detalles concretos van en archivos de
+      arquitectura específicos (docs/architecture/) que pueden evolucionar
+      sin invalidar la decisión.
+- Actualizar `docs/adr/README.md` — sección **Convenciones** — para
+  documentar el nuevo formato `frontmatter` YAML como fuente única de verdad
+  para autores humanos.
+- Normalizar ADRs existentes en PRs separados y claramente marcados (commits
+  de formato que **reemplazan completamente** `blockquotes` por `frontmatter`
+  YAML,
   sin mezcla de ambos formatos).
 - Actualizar `.github/copilot-instructions.md` para que asistentes IA generen ADRs conformes
   con `frontmatter` YAML desde el inicio.
