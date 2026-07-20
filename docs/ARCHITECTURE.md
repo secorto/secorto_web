@@ -30,5 +30,5 @@ Testing no es añadido posterior; es manifestación de cómo pensamos el sistema
 | **Escribir código nuevo** | [CODING_GUIDELINES.md](CODING_GUIDELINES.md) | Estilo, tipos, modularidad, fail-fast, testing obligatorio |
 | **Crear tests** | [architecture/TESTING_STRATEGY.md](architecture/TESTING_STRATEGY.md) | Unit (Vitest) + E2E (Playwright); capas Component/Page/Flow |
 | **Entender vistas de detalle** | [architecture/DETAIL_VIEW_COMPONENTS.md](architecture/DETAIL_VIEW_COMPONENTS.md) | Estrategia de componentes reutilizables |
-| **Escribir tests E2E** | [architecture/CONTENT_PAGE_OBJECTS.md](architecture/CONTENT_PAGE_OBJECTS.md) | Page Objects, separación de responsabilidades, type safety |
+| **Escribir tests E2E** | [architecture/PAGE_OBJECTS.md](architecture/PAGE_OBJECTS.md) | Arquitectura E2E, separación de responsabilidades, type safety |
 | **Configurar E2E en CI** | [architecture/E2E_PARAMS.md](architecture/E2E_PARAMS.md) | Parámetros del workflow, Netlify preview, `base_url`, `real_third_party` |

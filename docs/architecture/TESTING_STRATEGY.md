@@ -111,72 +111,8 @@ Aplican a **Unit** y **E2E**:
 ### Organización (E2E)
 
 - **Ubicación**: `tests/e2e/**` + soporte en capas
-- **Estructura en capas** (ver sección "Modelo Component/Page/Flow"):
-  - Componentes: `tests/support/ui/components/`
-  - Pages por dominio: `tests/support/ui/{domain}/`, `tests/support/ui/home/`, `tests/support/ui/sidebar/`, etc.
-  - Flows (opcional): `tests/support/flows/`
-  - Helpers y mocks: `tests/e2e/helpers/`, `tests/support/ui/shared/`
-
-### Modelo Component/Page/Flow (Arquitectura en Capas)
-
-La arquitectura E2E en este proyecto sigue un modelo de 3 capas composables:
-
-#### Capa 1: Components (Unidades de UI con Comportamiento)
-
-**Ubicación**: `tests/support/ui/components/`
-
-Abstraen cualquier unidad de UI con un protocolo de interacción o validación esperado:
-
-- **Primitivos**: `Target` (locator genérico + assertions), `Link` (locator + validaciones de href)
-- **Especializados**: `Comments` (composite: script + iframe), `PageHelper` (utilidades stateless)
-- **Criterio de creación**: ¿Tiene el elemento un "happy path" o protocolo de uso? → Es componente
-- **Responsabilidad**: Encapsular cómo se ve/comporta EL ELEMENTO específico (no el contexto page)
-- **Patrón**: Clase + factory + métodos que retornan `Promise` vía `step()`
-- **Realidad SSG**: En un sitio sin interacciones pesadas, `Target` suele ser
-  suficiente. Pero si existe un Dropdown, Modal, o Tab con open/close/select,
-  ese es un componente formal
-
-#### Capa 2: Pages (Orquestadores de Components)
-
-**Ubicación**: `tests/support/ui/{domain}/` (ej: `home/`, `content/`, `sidebar/`)
-
-Orquestan múltiples components con métodos semánticos que representan el flujo local:
-
-- **Responsabilidad**: Combinar components para expresar la lógica/validación de una sección
-- **Patrón**:
-  - Clase con constructor que inyecta components
-  - Factory: `homePage(page: Page): HomePage`
-  - Helper: `userInHome(page: Page): Promise<HomePage>` que invoca `visit()` y retorna factory
-  - Métodos sin `async` si retornan lazy `Promise` (para encadenamiento)
-- **Métodos**: Cada uno encapsulado en `step()`, orquestan 1+ componentes + lógica local
-- **Ejemplo**: `ContentListPage` inyecta múltiples `TargetSelector<string>`,
-  `Comments` → expone métodos semánticos (`filterByTag`, `clickItem`, etc.)
-
-#### Capa 3: Flows (Secuencias Multi-Step/Multi-Page - OPCIONAL)
-
-**Ubicación**: `tests/support/flows/`
-
-Encapsulan narrativas complejas que cruzan múltiples pages o requieren coordinación:
-
-- **Responsabilidad**: Encapsular secuencias que no pertenecen a una sola page
-- **Por qué**: Permite reutilizar narrativas complejas en múltiples tests sin duplicación
-  (ej: "iniciar sesión → navegar → filtrar → validar").
-- **Cuándo**: Solo cuando necesites la **misma secuencia multi-page en múltiples tests**.
-  Si es una secuencia única, hazla inline en el spec.
-- **Estructura**: UN único `step()` raíz; cada acción delega a métodos de Page que contienen sus propios `step()`
-
-### Patrones Específicos (E2E)
-
-- **Componentes vs Pages**: Components encapsulan comportamiento de elementos aislados
-  (Target, Dropdown, Comments). Pages combinan components para expresar lógica de sección/dominio.
-  Pages exponen métodos semánticos, NO simples locators.
-- **Encapsulación en `step()`**: Cada método retorna `Promise` via `step()` para visibilidad en reportes E2E.
-- **Inyección de componentes**: Pages reciben components en constructor, no los crean directamente.
-- **Flows (cuando sea necesario)**: Usa flows para secuencias complejas multi-page; no para toda acción.
-- **Localizadores estables**: Preferir selectores accesibles por Playwright (`getByRole` / ARIA).
-  Si no es práctico, usar `data-testid` como atributo estable. Evitar selectores frágiles (clases).
-- **Mocking de terceros**: Mockear recursos externos con `page.route()` o proveedores locales en CI.
-- **Timeouts razonables**: Usar checks de visibilidad/atributos en lugar de `sleep()`
+- **Estructura**: Usa el modelo de 3 capas composables (Components, Pages, Flows)
+- **Detalles**: Ver [PAGE_OBJECTS.md](PAGE_OBJECTS.md) para la arquitectura completa, patrones e ilustraciones
 
 ### Convenciones de Ejecución (E2E)
 
@@ -213,4 +149,3 @@ Workflow `Tests` (archivo `.github/workflows/tests.yml`) ejecuta en el siguiente
 - **Revisa periódicamente** el tamaño de la suite E2E y prioriza rutas críticas.
 - **No sobre-ingenierices**: Usa componentes simples cuando aplique.
   Si un flow es single-step, hazlo inline en el spec.
-- **Composición sobre herencia**: Prefiere inyectar components en pages que crear jerarquías de herencia.

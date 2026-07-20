@@ -137,6 +137,6 @@ Cada método incluye JSDoc explicando su responsabilidad, parámetros y comporta
 
 ## Referencias
 
-- [CONTENT_PAGE_OBJECTS_ARCHITECTURE.md](../CONTENT_PAGE_OBJECTS_ARCHITECTURE.md) — referencia
+- [PAGE_OBJECTS.md](../architecture/PAGE_OBJECTS.md) — referencia de arquitectura E2E
   arquitectónica de alto nivel
 - [TESTING_STRATEGY.md](../TESTING_STRATEGY.md) — estrategia general de testing E2E
