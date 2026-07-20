@@ -21,10 +21,7 @@ for (const locale of languageKeys) {
       const list = await userInTalkList(page, locale)
 
       await list.filterByTag('containers')
-
-      // Verify that filtered results have at least one talk
-      const itemCount = await list.itemLinks.all().locator.count()
-      expect(itemCount).toBeGreaterThan(0)
+      await list.shouldHaveFilteredResults()
     })
   })
 }

@@ -67,15 +67,10 @@ export class TargetSelector<T> {
     readonly parent: string,
     readonly resolve: (value: T) => Locator,
     readonly valueLabel: (value: T) => string,
-    readonly allResolver: () => Locator,
   ) {}
 
   get(value: T) {
     return target(`${this.parent} "${this.valueLabel(value)}"`, this.resolve(value))
-  }
-
-  all() {
-    return target(`all ${this.parent}`, this.allResolver())
   }
 }
 
@@ -83,7 +78,6 @@ export function targetSelector<T>(
   parent: string,
   resolve: (value: T) => Locator,
   valueLabel: (value: T) => string = (value: T) => `"${String(value)}"`,
-  allResolver: () => Locator,
 ) {
-  return new TargetSelector(parent, resolve, valueLabel, allResolver)
+  return new TargetSelector(parent, resolve, valueLabel)
 }
