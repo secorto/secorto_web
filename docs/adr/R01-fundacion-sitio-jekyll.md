@@ -1,5 +1,5 @@
 ---
-title: ADR R01: Fundación del sitio personal con Jekyll
+title: ADR R01 - Fundación del sitio personal con Jekyll
 status: replaced
 date: 2016-04
 last_updated: null

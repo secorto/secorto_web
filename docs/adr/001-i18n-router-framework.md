@@ -1,14 +1,13 @@
 ---
-title: ADR 001: Framework i18n y router polimórfico de secciones
-status: superseded
+title: ADR 001 - Router polimórfico con configuración centralizada
+status: accepted
 date: 2025-06
-last_updated: 2026-05-18
+last_updated: 2026-07-20
 categories:
   - Architecture
   - i18n
   - Routing
-superseded_by:
-  - 007
+supersedes: []
 ---
 
 ## Contexto
@@ -35,178 +34,74 @@ construirse.
 
 ## Decisión
 
-Construir un **framework de routing polimórfico** sobre Astro usando tres
-pilares:
+Implementar un **router polimórfico con configuración centralizada** que:
 
-### 1. Configuración centralizada — `src/config/sections.ts`
+1. **Centraliza la definición de secciones** en una única fuente de verdad (registro tipado) que define:
+   - Mapeos de sección → colección de contenido
+   - Aliases de ruta por idioma (p. ej. `charla` en es ↔ `talk` en en)
+   - Propiedades y comportamiento específico por sección (p. ej. si soporta tags)
+   - Componentes de vista reutilizables polimórficos
 
-Un registro tipado (`Record<SectionType, SectionConfig>`) que define para
-cada sección:
+2. **Genera rutas estáticas dinámicamente** a partir de la configuración centralizada durante build time,
+   eliminando la necesidad de mantener rutas manuales por sección e idioma.
 
-```typescript
-interface SectionConfig {
-  collection: CollectionKey       // colección Astro
-  translationKey: TranslationKey  // clave i18n del título
-  hasTags: boolean                // si soporta tags
-  taggedKey?: TranslationKey      // clave i18n para "tagged with"
-  routes: Record<UILanguages, string>  // alias por idioma
-  listComponent: 'ListPost' | 'ListWork'
-  detailComponent: 'BlogTalkPostView' | 'WorkProjectCommunityView'
-  showFeaturedImage: boolean
-}
-```
+3. **Reutiliza componentes de vista** para múltiples secciones (polimorfismo), reduciendo código duplicado
+   y permitiendo cambios transversales en un solo lugar.
 
-Ejemplo:
+### Flujo conceptual
 
-```typescript
-talk: {
-  collection: 'talk',
-  translationKey: 'nav.talks',
-  hasTags: true,
-  routes: { es: 'charla', en: 'talk' },  // ← aliasing
-  listComponent: 'ListPost',
-  detailComponent: 'BlogTalkPostView',
-  showFeaturedImage: true
-}
-```
+**Configuración centralizada** → **Generador de rutas estáticas** → **Router universal** → **Vistas polimórficas**
 
-### 2. Router universal — páginas dinámicas de Astro
+## Alternativas consideradas
 
-Tres archivos `.astro` reemplazan a los ~8 originales:
+1. **Mantener rutas manuales por sección**
+   - ✅ Simple de entender inicialmente
+   - ❌ Duplicación masiva (copiar código por sección × idioma)
+   - ❌ Escala O(n): agregar sección requiere crear múltiples archivos
+   - ❌ Fragilidad: cambios deben replicarse manualmente en cada sección
 
-```bash
-src/pages/[locale]/[section]/
-├── index.astro       ← índice de sección (5 secciones × 2 idiomas = 10 rutas)
-├── [...id].astro     ← detalle de entrada (todas las entradas × 2 idiomas)
-└── tags/[tag].astro  ← página de tag (secciones con hasTags × tags × 2 idiomas)
-```
+2. **Framework i18n de terceros**
+   - ✅ Comunidad y soporte
+   - ❌ No resuelve aliasing de rutas por sección
+   - ❌ No maneja polimorfismo de componentes
+   - ❌ Agrega dependencia externa
 
-Cada uno usa `getStaticPaths()` alimentado por `staticPathsBuilder.ts` que
-itera la configuración centralizada para generar todas las rutas en build time.
+3. **Configuración centralizada + router dinámico (elegida)**
+   - ✅ Cero duplicación
+   - ✅ Escala O(1): agregar sección = cambiar configuración únicamente
+   - ✅ Type-safe
+   - ✅ Aliasing nativo por idioma
+   - ✅ Reutilización de componentes
+   - ⚠️ Requiere entender la indirección de configuración
 
-### 3. Capa de datos — funciones de carga
+## Razonamiento
 
-| Archivo | Responsabilidad |
-| --- | --- |
-| `sectionLoader.ts` | Cargar datos de sección por ruta URL |
-| `sectionContext.ts` | Construir contexto de página (índice, tags, detalle) |
-| `staticPathsBuilder.ts` | Generar paths estáticos para `getStaticPaths` |
-| `paths.ts` | Utilidades de filtrado/ordenación por locale y colección |
-| `ids.ts` | Extraer clean IDs de las entradas |
-
-## Arquitectura resultante
-
-Resumen: la solución centraliza la definición de secciones en `src/config/sections.ts`,
-expone un router universal en `src/pages/[locale]/[section]/index.astro`
-que delega la carga de datos a `sectionLoader.ts` y el renderizado a `SectionRenderer.astro`.
-Esto elimina la duplicación previa y permite generar rutas estáticas automáticamente a partir de la configuración.
-
-Para diagramas, snippets de generación de rutas y la comparación detallada antes/después, ver los anexos técnicos:
-
-- [ARCHITECTURE_SECTIONS.md](./anexos/001-i18n-router-framework/ARCHITECTURE_SECTIONS.md)
-- [ARCHITECTURE_DIAGRAM.md](./anexos/001-i18n-router-framework/ARCHITECTURE_DIAGRAM.md)
-- [BEFORE_AFTER_COMPARISON.md](./anexos/001-i18n-router-framework/BEFORE_AFTER_COMPARISON.md)
-- [MIGRATION_GUIDE.md](./anexos/001-i18n-router-framework/MIGRATION_GUIDE.md)
-
-### A. Mantener rutas manuales por sección
-
-- ✅ Simple de entender para un desarrollador nuevo
-- ❌ 95 % de duplicación al copiar lógica por sección
-- ❌ Escala O(n): añadir sección implica replicar varios archivos por idioma
-- ❌ Fragilidad: cambios transversales deben replicarse manualmente
-
-### B. Usar un framework i18n de terceros (e.g. astro-i18next)
-
-- ✅ Comunidad y soporte
-- ❌ No resuelve el aliasing de rutas por sección (`charla` ↔ `talk`)
-- ❌ Agrega una dependencia con su propio modelo mental
-- ❌ No maneja el polimorfismo de componentes por tipo de sección
-
-### C. Configuración centralizada + router dinámico (elegida)
-
-- ✅ Cero duplicación
-- ✅ Escala O(1): agregar sección = agregar ~6 líneas en `sections.ts`
-- ✅ Type-safe: TypeScript valida todas las claves y configuraciones
-- ✅ Aliasing nativo por idioma
-- ✅ Dos componentes de detalle cubren 5 colecciones distintas
-- ⚠️ Requiere entender la indirección de configuración
-
----
-
-## Métricas de impacto
-
-| Métrica | Antes | Después | Mejora |
-| --- | --- | --- | --- |
-| Duplicación | 95 % | 0 % | Eliminada |
-| Archivos de routing | 8 | 3 | −63 % |
-| Puntos de cambio | 5+ | 1 | −80 % |
-| Complejidad | O(n) | O(1) | Constante |
-| Tiempo para agregar sección | ~40 min | ~4 min | −90 % |
-
-## Componentes del sistema
-
-### Configuración
-
-- `src/config/sections.ts` — Registro centralizado de secciones: define por sección la colección, alias por idioma (`routes`),
-componentes de lista/detalle y flags (e.g. `hasTags`) de forma type-safe
-- `src/i18n/ui.ts` — Claves UI y utilidades de traducción usadas por vistas y componentes
-
-### Router
-
-- `src/pages/[locale]/[section]/index.astro` — Router universal para índices de sección;
-construye contexto y delega el renderizado a `SectionRenderer`
-- `src/pages/[locale]/[section]/[...id].astro` — Página de detalle universal;
-resuelve entradas y selecciona la vista de detalle correspondiente
-- `src/pages/[locale]/[section]/tags/[tag].astro` — Página de tags:
-filtra por tag y renderiza listado cuando aplica
-
-### Capa de datos
-
-- `src/utils/staticPathsBuilder.ts` — Generador de `getStaticPaths` a partir de la configuración, respetando locales y alias
-- `src/utils/sectionLoader.ts` — Encapsula la lógica de obtención y normalización de datos (colección, locale, fallbacks)
-- `src/utils/sectionContext.ts` — Construye el objeto de contexto para páginas
- (metadatos, listados, paginación, enlaces relacionados)
-- `src/utils/paths.ts` — Utilidades para mapear ids (clean IDs) y filtrar por locale/collection
-
-### Vistas
-
-- `SectionRenderer.astro` — Componente polimórfico que selecciona el `listComponent`
-según la configuración y aplica layout común
-- `BlogTalkPostView` — Vista de detalle para entradas de blog y charlas (meta, contenido, comentarios, related)
-- `WorkProjectCommunityView` — Vista de detalle para trabajos, proyectos y páginas de comunidad
+- **Cero duplicación:** Centralizar la definición permite generar todas las rutas y vistas
+  a partir de una única fuente, eliminando copiar/pegar.
+- **Escala O(1):** Agregar nueva sección requiere actualizar la configuración centralizada,
+  no replicar código en múltiples archivos/idiomas.
+- **Aliasing multi-idioma:** Nombres de ruta distintos por idioma se resuelven sin hacks,
+  solo configuración.
+- **Tipo-seguro:** Compilación valida todas las referencias (colecciones, componentes, claves).
+- **Reutilización:** Componentes polimórficos reducen duplicidad de vistas.
+- **Agnóstico a cambios internos:** Cambiar estructura o IDs internos de colecciones no afecta
+  rutas públicas (están en la configuración).
 
 ## Consecuencias
 
 ### Positivas
 
-- **Single Source of Truth:** toda la configuración de secciones vive en un
-  solo archivo type-safe.
-- **Aliasing multi-idioma nativo:** `charla` (es) ↔ `talk` (en) resuelto por
-   configuración, sin redirecciones ni hacks; añadir o ajustar entradas en
-   `sectionsConfig` y, según el caso, registrar nuevos `listComponent` y/o
-   `detailComponent`.
-- **Testabilidad:** `staticPathsBuilder` usa inyección de dependencias para facilitar pruebas unitarias
+- Configuración centralizada como única fuente de verdad
+- Eliminación de duplicación masiva
+- Escala constante al agregar nuevas secciones
+- Aliasing de rutas por idioma integrado, no mediante redirecciones
 
-### A tener en cuenta
+### Costos
 
-- La indirección (ruta URL → config → colección → datos)
-puede ser confusa para alguien que ve el código por primera vez;
-la documentación en los anexos del ADR (`docs/adr/anexos/001-i18n-router-framework/`) mitiga esto.
-- Si Astro introduce un sistema nativo de aliasing de rutas i18n en el
-  futuro, evaluar si simplifica o reemplaza este framework.
-
-## Documentación extendida
-
-- [ARCHITECTURE_SECTIONS.md](./anexos/001-i18n-router-framework/ARCHITECTURE_SECTIONS.md) — Arquitectura técnica detallada
-- [ARCHITECTURE_DIAGRAM.md](./anexos/001-i18n-router-framework/ARCHITECTURE_DIAGRAM.md) — Diagramas de flujo
-- [BEFORE_AFTER_COMPARISON.md](./anexos/001-i18n-router-framework/BEFORE_AFTER_COMPARISON.md) — Comparación antes/después
-- [MIGRATION_GUIDE.md](./anexos/001-i18n-router-framework/MIGRATION_GUIDE.md) — Guía de migración
-- [DETAIL_VIEW_ARCHITECTURE.md](../DETAIL_VIEW_ARCHITECTURE.md) — Arquitectura de vistas de detalle
-
----
+- Requiere entender la indirección: configuración → rutas estáticas → vistas polimórficas
+- Curva de aprendizaje inicial para nuevos desarrolladores
 
 ## Referencias
 
-- [Astro Content Collections](https://docs.astro.build/en/guides/content-collections/)
-- [Astro i18n Routing](https://docs.astro.build/en/guides/internationalization/)
-- [Configuration-Driven Design](https://martinfowler.com/articles/bduf-lenses.html)
+- Relacionado con: [ADR 007: Unificación de dominio e i18n](./007-domain-i18n-unificacion.md)
+- Anexos históricos: [docs/adr/anexos/001-i18n-router-framework/](./anexos/001-i18n-router-framework/)

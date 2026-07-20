@@ -1,5 +1,5 @@
 ---
-title: ADR 002: Migración de Cypress a Playwright + Vitest
+title: ADR 002 - Migración de Cypress a Playwright + Vitest
 status: accepted
 date: 2025-07
 last_updated: null

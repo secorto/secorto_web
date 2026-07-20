@@ -1,5 +1,5 @@
 ---
-title: ADR R02: Migración de Jekyll a Gatsby
+title: ADR R02 - Migración de Jekyll a Gatsby
 status: replaced
 date: 2021-03
 last_updated: null

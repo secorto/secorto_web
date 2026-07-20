@@ -1,8 +1,8 @@
 ---
-title: ADR 010: Plantilla estándar de ADRs
-status: proposed
+title: ADR 010 - Plantilla estándar de ADRs
+status: accepted
 date: 2026-05-01
-last_updated: null
+last_updated: 2026-07-20
 categories:
   - Content
   - Tooling

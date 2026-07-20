@@ -1,5 +1,5 @@
 ---
-title: ADR 009: Validación de Markdown (formato y sincronización de documentación)
+title: ADR 009 - Validación de Markdown (formato y sincronización de documentación)
 status: accepted
 date: 2026-05-01
 last_updated: 2026-05-02

@@ -1,5 +1,5 @@
 ---
-title: ADR R03: Migración de Gatsby a Astro
+title: ADR R03 - Migración de Gatsby a Astro
 status: accepted
 date: 2024-05
 categories:

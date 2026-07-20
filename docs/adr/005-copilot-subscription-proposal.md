@@ -1,5 +1,5 @@
 ---
-title: ADR 005: Evaluación de suscripción a GitHub Copilot
+title: ADR 005 - Evaluación de suscripción a GitHub Copilot
 status: proposed
 date: 2026-01
 last_updated: null

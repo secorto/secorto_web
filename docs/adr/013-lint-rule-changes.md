@@ -1,5 +1,5 @@
 ---
-title: ADR 013: Actualización a ESLint 10 y eliminación temporal de plugins
+title: ADR 013 - Actualización a ESLint 10 y eliminación temporal de plugins
 status: accepted
 date: 2026-05-21
 categories:

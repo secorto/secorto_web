@@ -24,13 +24,13 @@ completa del proyecto a través de tres reescrituras en diferentes frameworks.
 
 | # | Título | Temática | Estado | Fecha |
 | --- | --- | --- | --- | --- |
-| [001](001-i18n-router-framework.md) | Framework i18n y router polimórfico de secciones | Router & i18n | Aceptada | 2025-06 |
+| [001](001-i18n-router-framework.md) | Router polimórfico con configuración centralizada | Router & i18n | Aceptada | 2025-06 |
 | [002](002-testing-framework-migration.md) | Migración de Cypress a Playwright + Vitest | Testing & QA | Aceptada | 2025-07 |
 | [003](003-third-party-mocks.md) | Mocks de servicios de terceros en tests E2E | Testing & QA | Aceptada | 2025-07 |
 | [004](004-linting-any-ban-style-conventions.md) | Linting, prohibición de `any` y convenciones de estilo | Código & Calidad | Parcial | 2025-07 |
 | [005](005-copilot-subscription-proposal.md) | Propuesta: suscripción a GitHub Copilot | Proceso | Propuesta | 2025-07 |
 | [006](006-unificacion-manejo-borradores.md) | Unificación del manejo de borradores (`draft`) | Contenido & Traducciones | Aceptada | 2026-02 |
-| [007](007-domain-i18n-unificacion.md) | Unificación de dominio e i18n — `postId`, mapas de locales y SEO centralizado | Router & i18n | Aceptada | 2026-03 |
+| [007](007-domain-i18n-unificacion.md) | Unificación de dominio e i18n — normalización centralizada y SEO | Router & i18n | Aceptada | 2026-03 |
 | [008](008-client-scripts-unit-testing.md) | Estrategia de pruebas client-side y reorganización del cliente | Testing & QA | Aceptada | 2026-04 |
 | [009](009-markdown-validation.md) | Validación de Markdown (formato y sincronización de documentación) | Código & Calidad | Aceptada | 2026-05 |
 | [010](010-plantilla-estandar-adr.md) | Plantilla estándar de ADRs | Proceso | Propuesta | 2026-05 |

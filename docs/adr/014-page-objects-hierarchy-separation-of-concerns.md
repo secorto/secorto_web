@@ -1,5 +1,5 @@
 ---
-title: ADR 014: Jerarquía de Page Objects con separación clara de responsabilidades
+title: ADR 014 - Jerarquía de Page Objects con separación clara de responsabilidades
 status: accepted
 date: 2026-07-20
 categories:

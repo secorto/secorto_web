@@ -1,5 +1,5 @@
 ---
-title: ADR 006: Unificación del manejo de borradores (`draft`)
+title: ADR 006 - Unificación del manejo de borradores (`draft`)
 status: accepted
 date: 2026-02-13
 last_updated: null
