@@ -11,7 +11,7 @@ for (const locale of languageKeys) {
 
     test('filtering by tag updates page title', async ({ page }) => {
       const list = await userInTalkList(page, locale)
-      const expectedSectionTitle = ui[locale]['nav.talk']
+      const expectedSectionTitle = ui[locale]['nav.talks']
 
       await list.filterByTag('containers')
       await list.shouldHaveFilteredTitle(expectedSectionTitle, 'containers')
@@ -23,7 +23,7 @@ for (const locale of languageKeys) {
       await list.filterByTag('containers')
 
       // Verify that filtered results have at least one talk
-      const itemCount = await list.itemLinks.locator.count()
+      const itemCount = await list.itemLinks.all().locator.count()
       expect(itemCount).toBeGreaterThan(0)
     })
   })

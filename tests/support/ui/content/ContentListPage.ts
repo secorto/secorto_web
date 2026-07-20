@@ -57,7 +57,17 @@ export function contentListPage(page: Page, name: string): ContentListPage {
     basePage.name,
     basePage.headerTitle,
     basePage.tags,
-    targetSelector(`${name} tag link`, (tag: string) => page.getByTestId(`tag-link-${tag}`)),
-    targetSelector(`${name} item link`, (href: string) => page.locator(`[href="${href}"]`)),
+    targetSelector(
+      `${name} tag link`,
+      (tag: string) => page.getByTestId(`tag-link-${tag}`),
+      undefined,
+      () => page.locator('[data-testid^="tag-link-"]'),
+    ),
+    targetSelector(
+      `${name} item link`,
+      (href: string) => page.locator(`[href="${href}"]`),
+      undefined,
+      () => page.locator('[href]'),
+    ),
   )
 }

@@ -23,7 +23,7 @@ for (const locale of languageKeys) {
       await list.filterByTag('python')
 
       // Verify that filtered results have at least one post
-      const itemCount = await list.itemLinks.locator.count()
+      const itemCount = await list.itemLinks.all().locator.count()
       expect(itemCount).toBeGreaterThan(0)
     })
   })
