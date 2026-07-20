@@ -4,7 +4,10 @@ import type { Target as TargetComponent } from '@tests/support/ui/components/Tar
 import { homeHighlights } from '@tests/support/ui/home/HomeHighlights'
 import type { HomeHighlights as HomeHighlightsComponent } from '@tests/support/ui/home/HomeHighlights'
 import type { UILanguages } from '@i18n/ui'
+import { ui } from '@i18n/ui'
 import { homePath, visit } from '@tests/support/ui/shared/NavigationPaths'
+import { verifyStep } from '@tests/fixtures'
+import { sectionsConfig } from '@domain/section'
 
 export class HomePage {
   constructor(
@@ -13,6 +16,21 @@ export class HomePage {
     readonly bioText: TargetComponent,
     readonly homeHighlights: HomeHighlightsComponent,
   ) {}
+
+  shouldBeLoaded(locale: UILanguages) {
+    const i18n = ui[locale]
+    const blogRoute = sectionsConfig.blog.routes[locale]
+    const talkRoute = sectionsConfig.talk.routes[locale]
+
+    return verifyStep('homepage is loaded correctly', async ({ expect }) => {
+      await this.shouldHaveTitle().with(expect)
+      await this.shouldHaveAvatar().with(expect)
+      await this.shouldHaveBioText().with(expect)
+      await this.shouldHavePyBAQ(i18n).with(expect)
+      await this.blogHrefMatches(locale, blogRoute).with(expect)
+      await this.talkHrefMatches(locale, talkRoute).with(expect)
+    })
+  }
 
   shouldHaveTitle() {
     return this.headerTitle.shouldHaveVisibleText(/\S+/)
