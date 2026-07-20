@@ -1,4 +1,6 @@
-# Arquitectura de Page Objects de Contenido
+# Modelo de Page Objects para Content E2E
+
+Especialización del modelo Component/Page/Flow de [TESTING_STRATEGY.md](TESTING_STRATEGY.md) aplicado a testing de contenido.
 
 ## Diagrama de Clases
 
@@ -91,9 +93,11 @@ Esta separación mantiene selectores centralizados y facilita refactorización s
 
 ### Detalles de Uso
 
-Cada método de los Page Objects incluye JSDoc con descripción, parámetros y comportamiento esperado. Ver los archivos específicos para detalles de qué hace cada método:
+Cada método incluye JSDoc. Ver detalles en archivos específicos:
 
-- [ContentPage.ts](../../tests/support/ui/content/ContentPage.ts) — métodos comunes (`shouldHaveHeaderTitle`, `shouldHaveTags`, `clickTag`)
+- [ContentPage.ts](../../tests/support/ui/content/ContentPage.ts) —
+  métodos comunes
+  (`shouldHaveHeaderTitle`, `shouldHaveTags`, `clickTag`)
 - [ContentListPage.ts](../../tests/support/ui/content/ContentListPage.ts) —
   navegación y filtrado por tags
 - [ContentPostDetailPage.ts](../../tests/support/ui/content/ContentPostDetailPage.ts) —
