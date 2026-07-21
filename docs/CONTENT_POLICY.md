@@ -1,5 +1,12 @@
 # Convención para nombrar posts y hoja de ruta de actualización
 
+## ¿Qué necesitas?
+
+- **Publicar blog post** → Sigue leyendo, especialmente secciones "Estructura de archivos" y "Reglas generales"
+- **Traducir contenido** → [ADR 011 — i18n TranslationKey](adr/011-i18n-translationkey.md) para contexto, luego sigue leyendo
+- **Entender rutas dinámicas y i18n** → [ADR 001 — i18n Router Framework](adr/001-i18n-router-framework.md)
+- **Reglas de estilo** → [CODING_GUIDELINES.md](CODING_GUIDELINES.md)
+
 ## Estructura de archivos
 
 Todo el contenido reside en (`/src/content`)

@@ -2,6 +2,13 @@
 
 Este documento contiene las reglas y convenciones de codificación del proyecto en español.
 
+## ¿Qué necesitas?
+
+- **Escribir código nuevo** → Sigue leyendo (pero antes lee [COMMON_AI_MISTAKES.md](COMMON_AI_MISTAKES.md) si usas IA)
+- **Escribir tests** → Ve a [TESTING_STRATEGY.md](architecture/TESTING_STRATEGY.md)
+- **Publicar contenido** → Ve a [CONTENT_POLICY.md](CONTENT_POLICY.md)
+- **Manejar excepciones de tipos** → Sección "TypeScript: ignores y referencias triple-slash" más abajo
+
 - **Lenguaje:** Usar TypeScript para código nuevo y refactors cuando sea posible
 - **Tipos:** Preferir tipos e interfaces explícitas y específicas; evitar `any` salvo justificación documentada
 - **Punto y coma:** Omitir punto y coma (`;`) al final de sentencias, salvo cuando la sintaxis o herramientas lo requieran

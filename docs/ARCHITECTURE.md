@@ -25,6 +25,7 @@ Testing no es añadido posterior; es manifestación de cómo pensamos el sistema
 
 | Necesidad | Documento | Por qué |
 | --- | --- | --- |
+| **Entender workflow completo** | [architecture/DEVELOPMENT_WORKFLOW.md](architecture/DEVELOPMENT_WORKFLOW.md) | Visualiza cómo el desarrollo valida los 3 principios (Quality by Design) |
 | **Entender decisiones arquitectónicas** | [adr/README.md](adr/README.md) | Registro formal de decisiones: contexto, alternativas, consecuencias |
 | **Agregar contenido / traducción** | [CONTENT_POLICY.md](CONTENT_POLICY.md) | Reglas de nombrado, frontmatter, `draft`, `translationKey` |
 | **Escribir código nuevo** | [CODING_GUIDELINES.md](CODING_GUIDELINES.md) | Estilo, tipos, modularidad, fail-fast, testing obligatorio |
