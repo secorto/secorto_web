@@ -235,7 +235,7 @@ irrelevantes; métodos muertos; dificultad para nuevas especializaciones.
 
 ### La solución
 
-- - **Patrón:** Jerarquía de Page Objects con especialización clara
+- **Patrón:** Jerarquía de Page Objects con especialización clara
 - **Principio SRP:** Cada clase = responsabilidad única (lista/detalle
   separado)
 
