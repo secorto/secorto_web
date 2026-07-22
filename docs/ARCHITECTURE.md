@@ -35,4 +35,4 @@ Testing no es añadido posterior; es manifestación de cómo pensamos el sistema
 | **Configurar E2E en CI** | [architecture/E2E_PARAMS.md](architecture/E2E_PARAMS.md) | Parámetros del workflow, Netlify preview, `base_url`, `real_third_party` |
 | **Entender política de IA en desarrollo** | [adr/005-ia-development-integration.md](adr/005-ia-development-integration.md) | Decisión arquitectónica: IA integrada con guardrails explícitos y Quality by Design |
 | **Evitar antipatrones comunes con IA** | [COMMON_AI_MISTAKES.md](COMMON_AI_MISTAKES.md) | Patrones a evitar y por qué; validaciones en cada fase |
-| **Usar IA en tareas específicas** | [.github/copilot-instructions.md](.github/copilot-instructions.md) | Guías integradas para desarrolladores sobre cómo usar IA de forma efectiva |
+| **Usar IA en tareas específicas** | [.github/copilot-instructions.md](../.github/copilot-instructions.md) | Guías integradas para desarrolladores sobre cómo usar IA de forma efectiva |

@@ -171,7 +171,7 @@ Con esta decisión:
 
 - [x] Documentar guardrails en [copilot-instructions.md](../../.github/copilot-instructions.md)
 - [x] Crear [COMMON_AI_MISTAKES.md](../COMMON_AI_MISTAKES.md) con antipatrones
-- [x] Integrar IA en [DEVELOPMENT_WORKFLOW.md](./architecture/DEVELOPMENT_WORKFLOW.md)
+- [x] Integrar IA en [DEVELOPMENT_WORKFLOW.md](../architecture/DEVELOPMENT_WORKFLOW.md)
 - [ ] Actualizar onboarding con política de IA
 - [ ] Revisar este ADR en 3 meses; ajustar guardrails según aprendizajes
 - [ ] Si se adoptan herramientas de IA nuevas, referenciar este ADR en decisiones
