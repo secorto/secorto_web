@@ -63,7 +63,7 @@ graph TD
     style Approved fill:#d32f2f,color:#fff
 ```
 
-**Legenda:**
+**Leyenda:**
 - 🟣 **Lectura & Retroalimentación** (púrpura) — Contexto inicial y bucles de corrección
 - 🔷 **Generación** (cyan) — Corazón del flujo (código + tests)
 - 🔵 **Type Check + Linting** (azul) — Validación **estática** (sin ejecutar código)

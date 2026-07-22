@@ -9,6 +9,8 @@ Este documento contiene las reglas y convenciones de codificación del proyecto 
 - **Publicar contenido** → Ve a [CONTENT_POLICY.md](CONTENT_POLICY.md)
 - **Manejar excepciones de tipos** → Sección "TypeScript: ignores y referencias triple-slash" más abajo
 
+## Reglas generales de código
+
 - **Lenguaje:** Usar TypeScript para código nuevo y refactors cuando sea posible
 - **Tipos:** Preferir tipos e interfaces explícitas y específicas; evitar `any` salvo justificación documentada
 - **Punto y coma:** Omitir punto y coma (`;`) al final de sentencias, salvo cuando la sintaxis o herramientas lo requieran
