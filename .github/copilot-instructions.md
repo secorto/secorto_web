@@ -14,11 +14,14 @@
 
 ## Workflow Pre-PR
 
+**Ver checklist completo:** [docs/architecture/DEVELOPMENT_WORKFLOW.md](../docs/architecture/DEVELOPMENT_WORKFLOW.md#-checklist-antes-de-pr)
+
+En resumen, antes de proponer PR:
+
 1. Asegura que el código sigue [docs/CODING_GUIDELINES.md](../docs/CODING_GUIDELINES.md)
-2. Ejecuta: `npm run lint` (typescript, eslint, markdownlint)
-3. Ejecuta: `npm run test:unit` (cobertura 100% en código nuevo)
-4. Ejecuta: `npm run test:e2e` (validar flujos de usuario)
-5. Asegura que todo cumple [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md)
+2. Asegura que todo cumple [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md)
+3. Ejecuta el pipeline de validación (comandos en DEVELOPMENT_WORKFLOW.md)
+4. Si IA generó código, revisa [docs/COMMON_AI_MISTAKES.md](../docs/COMMON_AI_MISTAKES.md) para evitar antipatrones
 
 ## Errores comunes — Lee esto primero
 
