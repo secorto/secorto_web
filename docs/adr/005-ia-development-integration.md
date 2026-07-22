@@ -19,6 +19,7 @@ Durante la fase de evaluación se validó que asistentes IA (Copilot y similares
 - Aceleración de tareas repetitivas (boilerplate, imports)
 
 El proyecto ahora necesita **sistematizar cómo se integran asistentes IA** como parte del flujo de desarrollo. Esto implica:
+
 - Definir guardrails y antipatrones documentados
 - Establecer validaciones explícitas en cada fase (QbD)
 - Clarificar principios de uso para contribuidores
@@ -61,12 +62,14 @@ Adoptar asistentes IA como herramientas integradas en el flujo de desarrollo, si
 ### B. Integrar IA con guardrails explícitos (decisión elegida)
 
 **Pros:**
+
 - Acelera tareas validadas sin sacrificar calidad
 - Documentación de antipatrones beneficia a todo el equipo
 - Claridad para contribuidores sobre qué es y qué no es "desarrollo IA-first"
 - IA como herramienta, no como decisor arquitectónico
 
 **Contras:**
+
 - Requiere documentación adicional y mantenimiento
 - Review de código más riguroso
 - Riesgo de confianza excesiva si no se comunican bien los guardrails
@@ -74,10 +77,12 @@ Adoptar asistentes IA como herramientas integradas en el flujo de desarrollo, si
 ### A. No integrar IA formalmente
 
 **Pros:**
+
 - Evita complejidad adicional en onboarding
 - Todos sabemos que el código viene de humanos
 
 **Contras:**
+
 - Uso ad-hoc y inconsistente
 - Antipatrones repetidos entre contribuidores
 - Se pierde valor demostrado en tests y documentación
@@ -86,10 +91,12 @@ Adoptar asistentes IA como herramientas integradas en el flujo de desarrollo, si
 ### C. Permitir IA sin validación
 
 **Pros:**
+
 - Máxima velocidad en tareas repetitivas
 - Sin overhead de review
 
 **Contras:**
+
 - Riesgo alto de código inseguro, con licencias no conformes, o que no cumple ADRs
 - Imposible revertir si IA "alucina" algo arquitectónico
 - Violación de Quality by Design
@@ -106,6 +113,7 @@ La evaluación inicial validó que IA acelera tareas específicas. Sin embargo, 
 - Difícil explicar a nuevos contribuidores la política de uso
 
 Con esta decisión:
+
 - Se formaliza que IA es parte del flujo, pero **subordinada a Quality by Design**
 - Se documentan antipatrones ([COMMON_AI_MISTAKES.md](../COMMON_AI_MISTAKES.md)) para evitarlos
 - Se clarifica en [copilot-instructions.md](../../.github/copilot-instructions.md) qué esperar de IA
@@ -117,11 +125,15 @@ Con esta decisión:
 
 ### Riesgo: IA sugiere código que viola ADRs
 
-- **Mitigación:** Enfatizar en [copilot-instructions.md](../../.github/copilot-instructions.md) los ADRs clave. Validar con linters y tests (Quality by Design).
+- **Mitigación:** Enfatizar ADRs clave en
+  [copilot-instructions.md](../../.github/copilot-instructions.md). Validar con
+  linters y tests (Quality by Design).
 
 ### Riesgo: Contribuidores confían excesivamente en sugerencias
 
-- **Mitigación:** Documentar en [COMMON_AI_MISTAKES.md](../COMMON_AI_MISTAKES.md) los errores frecuentes y por qué ocurren. Requerir review humano obligatorio.
+- **Mitigación:** Documentar errores frecuentes en
+  [COMMON_AI_MISTAKES.md](../COMMON_AI_MISTAKES.md). Requerir review humano
+  obligatorio.
 
 ### Riesgo: Código generado por IA con licencias no conformes
 
@@ -129,7 +141,8 @@ Con esta decisión:
 
 ### Riesgo: Secretos filtrados a proveedores de IA
 
-- **Mitigación:** Documentar políticas en [CONTENT_POLICY.md](../CONTENT_POLICY.md). No incluir `.env` en workspace de IA. Usar `.gitignore` para archivos locales.
+- **Mitigación:** Documentar políticas en [CONTENT_POLICY.md](../CONTENT_POLICY.md).
+  No incluir `.env` en workspace de IA. Usar `.gitignore` para archivos locales.
 
 ### Riesgo: IA genera documentación incompleta o inconsistente
 
@@ -140,12 +153,14 @@ Con esta decisión:
 ## Consecuencias
 
 **Positivas:**
+
 - Consistencia en cómo se usa IA entre contribuidores
 - Documentación clara reduce fricción en onboarding
 - Quality by Design se fortalece con validaciones explícitas
 - Trazabilidad de decisiones (ADRs documenten si IA fue factor)
 
 **Negativas:**
+
 - Requiere mantenimiento activo de copilot-instructions y COMMON_AI_MISTAKES
 - Review de código puede ser más riguroso (tiempo adicional)
 - Educación de contribuidores sobre política de IA

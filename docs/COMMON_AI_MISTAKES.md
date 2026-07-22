@@ -7,17 +7,20 @@ Cataloga patrones reales de errores que la IA ha cometido en este repositorio, b
 ## Flujo de trabajo
 
 ### 1. Antes de pedir a IA que genere
+
 - Sabes qué necesitas (código TS / Markdown / tests / docs / ADRs)?
 - **Busca el patrón relevante** aquí para entender qué errores evitar
 - Comunica a IA: "evita patrón X, haz como patrón Y"
 
 ### 2. Mientras desarrollas con IA
+
 - Cada generación: **consulta sección relevante**
 - Generaste Page Object? → leer **patrón 5** (responsabilidades mezcladas)
 - Generaste Markdown? → leer **patrón 3** (formato inconsistente)
 - Generaste documentación? → leer **patrón 7** (duplicación)
 
 ### 3. Antes de PR
+
 - Ejecuta validadores ([CODING_GUIDELINES.md](./CODING_GUIDELINES.md))
 - Si falla, **busca patrón correspondiente** aquí
 - Si pasa pero huele raro → busca **patrón 7** (duplicación de docs)
@@ -60,6 +63,7 @@ const parseEntry = (entry: EntryData): Computed => { /* ... */ }
 ```
 
 **Referencias:**
+
 - [ADR 004: Linting, tipo `any` y convenciones](./adr/004-linting-any-ban-style-conventions.md)
 - [copilot-instructions.md](../.github/copilot-instructions.md) — "Avoid `any` type"
 
@@ -93,10 +97,12 @@ import { buildLocaleEntryMap } from '@/i18n/builders'  // verificado
 ```
 
 **En este repo:**
+
 - `postId` para i18n (no `canonicalId`)
 - Helpers en `src/i18n/`, domain logic en `src/domain/`
 
 **Referencias:**
+
 - [ADR 007: Unificación dominio + i18n](./adr/007-domain-i18n-unificacion.md)
 - [docs/CONTENT_POLICY.md](./CONTENT_POLICY.md) — postId, traducción de contenido
 
@@ -114,7 +120,9 @@ La IA genera Markdown con formato inconsistente:
 ## Subtítulo (pero hay líneas en blanco inconsistentes)
 
 ```
+
 código sin cierre
+
 ```
 
 [URLs desnudas](https://example.com sin descripción legible)
@@ -153,6 +161,7 @@ Ver [Documentación oficial](https://example.com) para más.
 ```
 
 **Referencias:**
+
 - [ADR 009: Validación Markdown](./adr/009-markdown-validation.md)
 
 ---
@@ -187,6 +196,7 @@ no hay validación automática de estructura.
   - ❌ "Crear clase `ContentListPage` que herede de `BasePage`" (concreto)
 
 **Referencias:**
+
 - [ADR 010: Plantilla estándar ADRs](./adr/010-plantilla-estandar-adr.md)
 - [.github/copilot-instructions.md](../.github/copilot-instructions.md) — ADR guidelines
 
@@ -239,6 +249,7 @@ class DetailPage extends BasePage {
 ```
 
 **Referencias:**
+
 - [ADR 014: Jerarquía Page Objects + SRP](./adr/014-page-objects-hierarchy-separation-of-concerns.md)
 - [docs/architecture/PAGE_OBJECTS.md](./architecture/PAGE_OBJECTS.md)
 
@@ -281,14 +292,17 @@ const { locale, id: postId } = extractCleanId(entry.id)
 ```
 
 **Checklist:**
+
 - Buscar duplicación con `Ctrl+F` regex
 - Extraer a `src/domain/` o `src/i18n/` (100% cobertura unitaria)
 
 **Referencias:**
+
 - [docs/CODING_GUIDELINES.md](./CODING_GUIDELINES.md) — DRY, domain layer
 - [docs/architecture/DETAIL_VIEW_COMPONENTS.md](./architecture/DETAIL_VIEW_COMPONENTS.md)
 
 ---
+
 ## 7. Documentación duplicada
 
 ### El problema
@@ -330,6 +344,7 @@ Resumen: cada clase = una responsabilidad (lista/detalle/filtrado separado).
 **Regla clara:** Una decisión = Un lugar. Explicación en ADR. Detalles de implementación en `architecture/`. Referencias cruzadas entre docs.
 
 **Referencias:**
+
 - [CONTRIBUTING.md](./CONTRIBUTING.md) — cómo escribir documentación
 - [ADR 010: Plantilla ADRs](./adr/010-plantilla-estandar-adr.md)
 
@@ -360,6 +375,7 @@ const x = parsePostId(entry)  // runtime error: import failed
 - **Patrón:** Validar con `Ctrl+Click` en IDE antes de confiar en import
 
 **Referencias:**
+
 - [ADR 007: Centralización dominio + i18n](./adr/007-domain-i18n-unificacion.md)
 - [docs/architecture/](./architecture/) — dónde vive cada tipo de lógica
 
@@ -368,6 +384,7 @@ const x = parsePostId(entry)  // runtime error: import failed
 ## Cómo usar este documento
 
 **Cada patrón tiene:**
+
 - El problema (❌)
 - Por qué ocurre
 - La solución (✅)

@@ -64,6 +64,7 @@ graph TD
 ```
 
 **Leyenda:**
+
 - 🟣 **Lectura & Retroalimentación** (púrpura) — Contexto inicial y bucles de corrección
 - 🔷 **Generación** (cyan) — Corazón del flujo (código + tests)
 - 🔵 **Type Check + Linting** (azul) — Validación **estática** (sin ejecutar código)
@@ -78,7 +79,7 @@ graph TD
 ### 1️⃣ Separación de Responsabilidades
 
 | Validación | Herramienta | Qué Verifica |
-|---|---|---|
+| --- | --- | --- |
 | **Lógica pura en `src/domain/`** | Vitest (unit) | Domain logic 100% testeable sin dependencias de framework |
 | **Componentes puros** | Vitest (component) | Props tipadas, renderizado consistente |
 | **Navegación/rutas** | Playwright (page) | Rutas dinámicas, parámetros, redirecciones |
@@ -91,7 +92,7 @@ graph TD
 ### 2️⃣ DRY (Una Fuente de Verdad)
 
 | Validación | Herramienta | Qué Verifica |
-|---|---|---|
+| --- | --- | --- |
 | **Imports centralizados** | TypeScript `tsconfig.paths` + ESLint | Path aliases (`@/domain`, `@/components`, etc.) evitan duplicación |
 | **Configuración centralizada** | `src/content.config.ts` + Vitest | Rutas dinámicas, tipos, validación compartida |
 | **Tipos únicos** | `tsc --noEmit` + ESLint | `TranslationKey`, `SectionType` validados en build + tests |
@@ -104,7 +105,7 @@ graph TD
 ### 3️⃣ Type Safety & Determinismo
 
 | Validación | Herramienta | Qué Verifica |
-|---|---|---|
+| --- | --- | --- |
 | **Análisis estático código** | ESLint (TypeScript/JS/Astro) | Código fuente cumple reglas (tipos explícitos, imports válidos, etc.) |
 | **Análisis estático docs** | Markdownlint | Documentación cumple formato (encabezados, listas, URLs, etc.) |
 | **Build-time validation** | `astro check` + `tsc --strict` | Tipos inválidos fallan antes de tests |
