@@ -1,8 +1,12 @@
+<!-- markdownlint-disable MD024 -->
+
 # Common AI Mistakes — Lecciones del repositorio
 
-**Este documento es tu checklist durante desarrollo con IA.** Consulta los patrones ANTES de generar, DURANTE el desarrollo, y DESPUÉS para validar.
+**Este documento es tu checklist durante desarrollo con IA.** Consulta los
+patrones ANTES de generar, DURANTE el desarrollo, y DESPUÉS para validar.
 
-Cataloga patrones reales de errores que la IA ha cometido en este repositorio, basados en commits de reparación, issues y ADRs de decisión.
+Cataloga patrones reales de errores que la IA ha cometido en este repositorio,
+basados en commits de reparación, issues y ADRs de decisión.
 
 ## Flujo de trabajo
 
@@ -43,7 +47,7 @@ const parseEntry = (entry: any) => { /* ... */ }
 const getData = (): any => {}
 ```
 
-**Por qué ocurre:** Es más rápido en generación, evita inferencias complejas de tipos.
+**Por qué ocurre:** Es más rápido en generación, evita inferencias complejas.
 
 **Impacto real:** Se pierden beneficios de TypeScript en compile-time; errores se detectan en tests E2E lentos.
 
@@ -80,8 +84,8 @@ La IA genera imports/referencias a archivos que no existen o tienen nombres lige
 import { extractSection } from '@/domain/sections'
 ```
 
-**Por qué ocurre:** El LLM alucinó basado en patrones similares en el corpus de entrenamiento
-(nombres pluralizados, estructura similar de directorios en otros proyectos).
+**Por qué ocurre:** El LLM alucina basado en patrones similares en el corpus
+de entrenamiento (nombres pluralizados, directorios similares en otros proyectos).
 
 **Impacto real:** Build falla o tests descubren el error tarde.
 
@@ -114,35 +118,33 @@ import { buildLocaleEntryMap } from '@/i18n/builders'  // verificado
 
 La IA genera Markdown con formato inconsistente:
 
+- Encabezados inconsistentes
+- Líneas en blanco extras/faltantes
+- Bloques de código sin cerrar o sin lenguaje
+- URLs sin descripción legible
+- Listas con formato inconsistente
+
+**Ejemplo de errores:**
+
 ```markdown
 # Título
 
-## Subtítulo (pero hay líneas en blanco inconsistentes)
+## Subtítulo
 
+```code
+sin cierre ni lenguaje
 ```
 
-código sin cierre
-
-```
-
-[URLs desnudas](https://example.com sin descripción legible)
-
-- Lista
-- sin espacios
-
-1. Lista numerada
-2) con formato inconsistente
-```
-
-**Por qué ocurre:** Generación rápida sin pasar por validadores; patrones de Markdown
-en el corpus de entrenamiento son variados y no siempre cumplen estándar.
+**Por qué ocurre:** Generación rápida sin validadores; patrones de Markdown
+en el corpus son variados y no siempre cumplen estándar.
 
 **Impacto real:** Reviews grandes con correcciones de formato; CI falla por `markdownlint-cli2`.
 
 ### La solución
 
 - **Herramienta:** `markdownlint-cli2` valida formato
-- **Reglas clave:** Encabezados ATX, listas `1.`, código fenced, URLs descritas, LF line-endings
+- **Reglas clave:** Encabezados ATX, listas numeradas, código fenced, URLs
+  descritas, LF line-endings
 
 ```markdown
 # Correcto
@@ -182,18 +184,19 @@ Esto es la decisión porque:
 Alternativas: podríamos hacer X, Y, Z.
 ```
 
-**Por qué ocurre:** Sin plantilla clara, el LLM improvisa estructura basado en ADRs
-genéricos de otros proyectos (Michael Nygard, etc.) que tienen formatos distintos.
+**Por qué ocurre:** Sin plantilla clara, el LLM improvisa estructura basado en
+ADRs genéricos de otros proyectos (Michael Nygard, etc.) con formatos distintos.
 
 **Impacto real:** Reviews en ADRs lentas; falta secciones críticas (Contexto, Motivación, Consecuencias);
 no hay validación automática de estructura.
 
 ### La solución
 
-- **Usa la plantilla:** [ADR 010: Plantilla estándar](./adr/010-plantilla-estandar-adr.md) — debe incluir frontmatter YAML + secciones obligatorias
+- **Usa la plantilla:** [ADR 010: Plantilla estándar](./adr/010-plantilla-estandar-adr.md)
+  — incluir frontmatter YAML + secciones obligatorias
 - **Patrón crítico:** Decisión **agnóstica a implementación**:
-  - ✅ "Especialización por responsabilidad" (concepto abstracto)
-  - ❌ "Crear clase `ContentListPage` que herede de `BasePage`" (concreto)
+  - ✅ "Especialización por responsabilidad" (abstracto)
+  - ❌ "Clase `ContentListPage` hereda `BasePage`" (concreto)
 
 **Referencias:**
 
@@ -224,16 +227,17 @@ class ContentListPage {
 }
 ```
 
-**Por qué ocurre:** El LLM generaliza basado en ejemplos amplios; no respeta SRP (Single Responsibility Principle)
-en el contexto específico del proyecto.
+**Por qué ocurre:** El LLM generaliza basado en ejemplos amplios; no respeta
+SRP en el contexto específico del proyecto.
 
-**Impacto real:** Tests confusos; autocompletar IDE ofrece métodos irrelevantes; métodos muertos;
-dificultad para agregar nuevas especializaciones.
+**Impacto real:** Tests confusos; autocompletar IDE ofrece métodos
+irrelevantes; métodos muertos; dificultad para nuevas especializaciones.
 
 ### La solución
 
-- **Patrón:** Jerarquía de Page Objects con especialización clara
-- **Principio SRP:** Cada clase = una responsabilidad (lista/detalle/filtrado separado)
+- - **Patrón:** Jerarquía de Page Objects con especialización clara
+- **Principio SRP:** Cada clase = responsabilidad única (lista/detalle
+  separado)
 
 ```typescript
 // ✅ Correcto
@@ -294,7 +298,7 @@ const { locale, id: postId } = extractCleanId(entry.id)
 **Checklist:**
 
 - Buscar duplicación con `Ctrl+F` regex
-- Extraer a `src/domain/` o `src/i18n/` (100% cobertura unitaria)
+- Extraer a `src/domain/` o `src/i18n/` (cobertura unitaria)
 
 **Referencias:**
 
@@ -307,23 +311,26 @@ const { locale, id: postId } = extractCleanId(entry.id)
 
 ### El problema
 
-La IA genera documentación que ya existe en otro archivo/sección, sin revisar qué está documentado:
+La IA genera documentación que ya existe en otro archivo, sin revisar
+qué está documentado:
 
 ```markdown
 # CODING_GUIDELINES.md
 
 ## Page Objects
 
-Page Objects son clases que representan vistas de página para tests E2E.
+Page Objects son clases que representan vistas para tests E2E.
 Cada Page Object debe representar una vista específica (lista, detalle, etc).
-La estructura es: base compartida + especializaciones...
+La estructura es: base compartida + especializaciones.
 
-// Pero esto ya está explicado en ADR 014 + PAGE_OBJECTS.md
+Pero esto ya está en ADR 014 + PAGE_OBJECTS.md
 ```
 
-**Por qué ocurre:** El LLM no tiene contexto de dónde vive cada explicación; genera basado en patrones genéricos sin búsqueda en docs.
+**Por qué ocurre:** El LLM no tiene contexto de ubicación; genera basado en
+patrones genéricos sin búsqueda en docs.
 
-**Impacto real:** Documentación desincronizada (se actualiza un lugar pero no el otro), confusión sobre fuente de verdad, reviews enormes de "ya está documentado aquí".
+**Impacto real:** Documentación desincronizada, confusión sobre fuente de
+verdad, reviews con "ya está documentado aquí".
 
 ### La solución
 
@@ -336,12 +343,15 @@ La estructura es: base compartida + especializaciones...
 
 ## Page Objects
 
-Para jerarquía y especialización de Page Objects, ver [ADR 014](./adr/014-page-objects-hierarchy-separation-of-concerns.md) y [PAGE_OBJECTS.md](./architecture/PAGE_OBJECTS.md).
+Para jerarquía y especialización de Page Objects, ver:
+- [ADR 014](./adr/014-page-objects-hierarchy-separation-of-concerns.md)
+- [PAGE_OBJECTS.md](./architecture/PAGE_OBJECTS.md)
 
-Resumen: cada clase = una responsabilidad (lista/detalle/filtrado separado).
+Resumen: cada clase = responsabilidad única (lista/detalle separado).
 ```
 
-**Regla clara:** Una decisión = Un lugar. Explicación en ADR. Detalles de implementación en `architecture/`. Referencias cruzadas entre docs.
+**Regla clara:** Una decisión = Un lugar. Explicación en ADR.
+Detalles en `architecture/`. Referencias cruzadas entre docs.
 
 **Referencias:**
 
@@ -354,7 +364,8 @@ Resumen: cada clase = una responsabilidad (lista/detalle/filtrado separado).
 
 ### El problema
 
-La IA referencia funciones, tipos o módulos que no existen, generando imports a rutas muertas:
+La IA referencia funciones, tipos o módulos inexistentes, generando
+imports a rutas muertas:
 
 ```typescript
 // ❌ IA generó esto
@@ -367,7 +378,8 @@ const x = parsePostId(entry)  // runtime error: import failed
 
 **Por qué ocurre:** LLM alucinó basado en convenciones genéricas; no validó que existan en el repo.
 
-**Impacto real:** Build falla; tests descubren en E2E; tiempo perdido debuggeando.
+**Impacto real:** Build falla; tests descubren en E2E; tiempo perdido
+debuggeando.
 
 ### La solución
 
@@ -390,7 +402,9 @@ const x = parsePostId(entry)  // runtime error: import failed
 - La solución (✅)
 - Referencias a ADRs y documentación
 
-**Antes de PR:** revisa las secciones relevantes a lo que generaste (código TS, Markdown, tests, docs, ADRs) y ejecuta los comandos de validación en [CODING_GUIDELINES.md](./CODING_GUIDELINES.md).
+**Antes de PR:** revisa secciones relevantes a lo que generaste
+(código TS, Markdown, tests, docs, ADRs) y ejecuta validadores en
+[CODING_GUIDELINES.md](./CODING_GUIDELINES.md).
 
 ## Referencias cruzadas
 
