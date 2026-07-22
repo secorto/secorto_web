@@ -23,7 +23,7 @@
 ## Errores comunes — Lee esto primero
 
 Antes de abrir PR, revisa [docs/COMMON_AI_MISTAKES.md](../docs/COMMON_AI_MISTAKES.md).
-Documenta 6 patrones reales de errores que evitar (cualquier `any`, referencias rotas, Markdown malformateado, etc.).
+Documenta patrones reales de errores que evitar (cualquier `any`, referencias rotas, Markdown malformateado, etc.).
 
 ## Cuando escribas ADRs
 

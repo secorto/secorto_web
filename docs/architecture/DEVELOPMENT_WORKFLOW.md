@@ -14,19 +14,17 @@ Este documento visualiza cómo el workflow de desarrollo implementa los 3 princi
 graph TD
     Start["👤 Developer / 🤖 AI"]
     
-    Start --> Read["📖 Lee contexto"]
-    Read --> Reads1["ARCHITECTURE.md<br/>CODING_GUIDELINES.md<br/>ADR relevante"]
+    Start --> Reads["📖 Lee contexto<br/>ARCHITECTURE.md<br/>CODING_GUIDELINES.md<br/>ADR relevante"]
     
-    Reads1 --> Generate["✍️ Genera Código<br/>+ Tests"]
-    Generate --> Gen1["Type-safe<br/>Unit tests (Vitest)<br/>E2E tests (Playwright)"]
+    Reads --> Generate["✍️ Genera Código<br/>+ Tests"]
     
-    Gen1 --> Validate["✅ Pipeline Local de Validación"]
+    Generate --> Validate["✅ Pipeline Local de Validación"]
     
-    Validate --> TypeCheck["Type Check<br/>tsc --noEmit"]
-    Validate --> ESLint["ESLint<br/>@typescript-eslint/no-any<br/>reglas custom"]
-    Validate --> Markdown["Markdownlint<br/>si documentación"]
-    Validate --> Unit["Unit Tests<br/>Vitest<br/>Cobertura 100%"]
-    Validate --> E2E["E2E Tests<br/>Playwright<br/>Page Objects"]
+    Validate --> TypeCheck["Type Checking<br/>TypeScript<br/>Validación tipos"]
+    Validate --> ESLint["Análisis estático<br/>ESLint<br/>Código fuente"]
+    Validate --> Markdown["Análisis estático<br/>Markdownlint<br/>Documentación"]
+    Validate --> Unit["Unit Tests<br/>Vitest<br/>Lógica pura"]
+    Validate --> E2E["E2E Tests<br/>Playwright<br/>Flujos usuario"]
     
     TypeCheck --> Results{"¿TODO<br/>PASA?"}
     ESLint --> Results
@@ -47,24 +45,31 @@ graph TD
     Approved -->|Sí| Merge["🎉 Merged<br/>a main"]
     Merge --> End["✨ Desplegado"]
     
+    style Start fill:#7b1fa2,color:#fff
+    style Reads fill:#7b1fa2,color:#fff
+    style Generate fill:#17A2B8,color:#fff
+    style Fix fill:#7b1fa2,color:#fff
+    style Feedback fill:#7b1fa2,color:#fff
     style TypeCheck fill:#1e88e5,color:#fff
     style ESLint fill:#1e88e5,color:#fff
     style Markdown fill:#1e88e5,color:#fff
     style Unit fill:#f57c00,color:#fff
     style E2E fill:#f57c00,color:#fff
-    style Start fill:#7b1fa2,color:#fff
     style PR fill:#388e3c,color:#fff
     style Review fill:#388e3c,color:#fff
     style Merge fill:#2e7d32,color:#fff
+    style End fill:#1b5e20,color:#fff
     style Results fill:#d32f2f,color:#fff
     style Approved fill:#d32f2f,color:#fff
 ```
 
 **Legenda:**
+- 🟣 **Lectura & Retroalimentación** (púrpura) — Contexto inicial y bucles de corrección
+- 🔷 **Generación** (cyan) — Corazón del flujo (código + tests)
 - 🔵 **Type Check + Linting** (azul) — Validación **estática** (sin ejecutar código)
 - 🟠 **Unit + E2E Tests** (naranja) — Validación **dinámica** (ejecutable)
-- 🟣 **Inicio** (púrpura) — Dev o IA
-- 🟢 **Review + Merge** (verde) — Humano
+- 🔴 **Puntos de decisión** (rojo) — Bifurcaciones (¿pasa validación? ¿aprobado?)
+- 🟢 **Review + Merge + Deploy** (verde) — Humano aprueba, despliega y cierra
 
 ---
 
@@ -100,10 +105,10 @@ graph TD
 
 | Validación | Herramienta | Qué Verifica |
 |---|---|---|
-| **Tipos explícitos** | `@typescript-eslint/no-explicit-any: error` | Prohibido `any`; tipos concretos obligatorios |
+| **Análisis estático código** | ESLint (TypeScript/JS/Astro) | Código fuente cumple reglas (tipos explícitos, imports válidos, etc.) |
+| **Análisis estático docs** | Markdownlint | Documentación cumple formato (encabezados, listas, URLs, etc.) |
 | **Build-time validation** | `astro check` + `tsc --strict` | Tipos inválidos fallan antes de tests |
 | **Runtime determinismo** | Playwright (E2E) | Entrada determinística → Output determinístico (sin race conditions) |
-| **Comportamiento predecible** | Vitest snapshots (si aplica) | Output consistente bajo mismas condiciones |
 
 **Resultado:** Errores = detectados en compile-time (rápido), no en producción.
 

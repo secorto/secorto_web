@@ -2,7 +2,7 @@
 
 **Este documento es tu checklist durante desarrollo con IA.** Consulta los patrones ANTES de generar, DURANTE el desarrollo, y DESPUÉS para validar.
 
-Cataloga **8 errores reales** que la IA ha cometido en este repositorio, basados en commits de reparación, issues y ADRs de decisión.
+Cataloga patrones reales de errores que la IA ha cometido en este repositorio, basados en commits de reparación, issues y ADRs de decisión.
 
 ## Flujo de trabajo
 
@@ -143,11 +143,6 @@ en el corpus de entrenamiento son variados y no siempre cumplen estándar.
 
 Párrafo normal.
 
-```typescript
-// Código correcto con fence
-const x = 1
-```
-
 - Lista con espacios
 - Entre items
 
@@ -186,14 +181,13 @@ no hay validación automática de estructura.
 
 ### La solución
 
-- **Usa la plantilla:** [docs/adr/TEMPLATE.md](./adr/TEMPLATE.md) — debe incluir frontmatter YAML + secciones obligatorias
+- **Usa la plantilla:** [ADR 010: Plantilla estándar](./adr/010-plantilla-estandar-adr.md) — debe incluir frontmatter YAML + secciones obligatorias
 - **Patrón crítico:** Decisión **agnóstica a implementación**:
   - ✅ "Especialización por responsabilidad" (concepto abstracto)
   - ❌ "Crear clase `ContentListPage` que herede de `BasePage`" (concreto)
 
 **Referencias:**
 - [ADR 010: Plantilla estándar ADRs](./adr/010-plantilla-estandar-adr.md)
-- [docs/adr/TEMPLATE.md](./adr/TEMPLATE.md)
 - [.github/copilot-instructions.md](../.github/copilot-instructions.md) — ADR guidelines
 
 ---
