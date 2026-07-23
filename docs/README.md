@@ -2,6 +2,9 @@
 
 En esta carpeta `docs/` se agrupan guías, recursos técnicos y registros de decisiones del proyecto.
 
+**¿Es tu primera vez?** Comienza en [ARCHITECTURE.md](ARCHITECTURE.md) para entender principios.  
+**¿Necesitas hacer algo específico?** Busca en la sección temática abajo. Cada documento se auto-referencia a sus documentos relacionados.
+
 ## Índice por sección
 
 ### Fundamentales
@@ -16,6 +19,7 @@ En esta carpeta `docs/` se agrupan guías, recursos técnicos y registros de dec
 
 ### Procesos y flujos
 
+- [COMMON_AI_MISTAKES.md](COMMON_AI_MISTAKES.md) — 6 patrones reales de errores que la IA ha cometido y cómo evitarlos
 - [TESTING_STRATEGY.md](TESTING_STRATEGY.md) — Estrategia de pruebas (E2E con Playwright, unitarias con Vitest)
 - [CONTENT_POLICY.md](CONTENT_POLICY.md) — Convenciones sobre el contenido del sitio
 - [MARKDOWN_VALIDATION.md](MARKDOWN_VALIDATION.md) — Validación de Markdown (linting y reglas de formato)

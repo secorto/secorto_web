@@ -4,6 +4,14 @@ Este documento explica el enfoque de testing en este repositorio:
 análisis estático (primera línea de defensa) + pruebas unitarias y E2E (pruebas dinámicas).
 Incluye elección de frameworks, patrones recomendados y cómo ejecutar cada tipo localmente y en CI.
 
+## ¿Por dónde empiezo?
+
+- **Escribir test E2E (Playwright)** → Sigue leyendo, luego ve a [PAGE_OBJECTS.md](PAGE_OBJECTS.md) para patrón de Page Object Model
+- **Escribir test unitario (Vitest)** → Sigue leyendo sección "Pruebas Unitarias"
+- **Entender por qué estos frameworks** → [ADR 002 — Testing Framework Migration](../adr/002-testing-framework-migration.md)
+- **Usar soft assertions en E2E** → [ADR 015 — Consolidated E2E Assertions](../adr/015-consolidated-e2e-assertions-soft-expect.md)
+- **Reglas de estilo** → [CODING_GUIDELINES.md](../CODING_GUIDELINES.md)
+
 ## Principios Generales
 
 **Tres capas de validación**:

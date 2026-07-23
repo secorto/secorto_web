@@ -125,11 +125,22 @@ Las pruebas son parte clave de cualquier proceso de desarrollo.
 
 Este proyecto se basa en una estrategia de pruebas documentada en [Testing Strategy](./TESTING_STRATEGY.md)
 
-La ejecución de todas las pruebas se hace con:
+## Antes de enviar un PR
 
-```bash
-npm test
-```
+Consulta el checklist completo en [architecture/DEVELOPMENT_WORKFLOW.md](./architecture/DEVELOPMENT_WORKFLOW.md#-checklist-antes-de-pr).
+
+En resumen, asegúrate de:
+
+1. **Leer los principios** — [ARCHITECTURE.md](./ARCHITECTURE.md) explica Quality by Design
+2. **Seguir convenciones** — [CODING_GUIDELINES.md](./CODING_GUIDELINES.md)
+3. **Evitar antipatrones** — [COMMON_AI_MISTAKES.md](./COMMON_AI_MISTAKES.md) (crítico si usas IA)
+4. **Ejecutar validaciones** — ver comandos en [DEVELOPMENT_WORKFLOW.md](./architecture/DEVELOPMENT_WORKFLOW.md#-comandos-de-validación-local)
+
+Si usas asistentes de IA (GitHub Copilot, Claude, etc.):
+
+- Lee [adr/005-ia-development-integration.md](./adr/005-ia-development-integration.md) — política de integración
+- Consulta [.github/copilot-instructions.md](../.github/copilot-instructions.md) — guías específicas
+- Recuerda: **IA es acelerador, no decisor** — toda sugerencia requiere review y validación
 
 ## Pull Requests
 
