@@ -1,6 +1,6 @@
 import { test } from '@tests/fixtures'
 import { ui, type UILanguages } from '@i18n/ui'
-import { userInCommunityList, userInCommunityDetail } from '@tests/support/ui/content/CommunityPages'
+import { userInCommunityList, userInCommunityDetail } from '@tests/support/ui/content/flows/CommunityFlow'
 import { pageHelper } from '@tests/support/ui/components/PageHelper'
 
 function escapeRegExp(value: string) {

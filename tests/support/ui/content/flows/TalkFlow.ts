@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
-import { ContentListPage, contentListPage } from '@tests/support/ui/content/ContentListPage'
-import { ContentPostDetailPage, contentPostDetailPage } from '@tests/support/ui/content/ContentPostDetailPage'
+import { ContentListPage, contentListPage } from '@tests/support/ui/content/pages/ContentListPage'
+import { ContentPostDetailPage, contentPostDetailPage } from '@tests/support/ui/content/pages/ContentPostDetailPage'
 import { contentListPath, contentDetailsPath, visit } from '@tests/support/ui/shared/NavigationPaths'
 
 export const userInTalkList = (page: Page, locale: UILanguages) =>

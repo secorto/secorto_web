@@ -1,6 +1,6 @@
 import { test } from '@tests/fixtures'
 import { languageKeys, ui } from '@i18n/ui'
-import { userInTalkList } from '@tests/support/ui/content/TalkPages'
+import { userInTalkList } from '@tests/support/ui/content/flows/TalkFlow'
 
 for (const locale of languageKeys) {
   test.describe(`Talk - Tags (${locale})`, { tag: ['@talk', '@tags', `@${locale}`] }, () => {

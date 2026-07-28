@@ -3,7 +3,7 @@ import { verifyStep, step } from '@tests/fixtures'
 import { targetSelector } from '@tests/support/ui/components/Target'
 import type { Target as TargetComponent } from '@tests/support/ui/components/Target'
 import type { TargetSelector } from '@tests/support/ui/components/Target'
-import { ContentPage, createContentPage } from '@tests/support/ui/content/ContentPage'
+import { ContentPage, createContentPage } from './ContentPage'
 
 /**
  * Page Object for content list views (blog list, work list, etc.).

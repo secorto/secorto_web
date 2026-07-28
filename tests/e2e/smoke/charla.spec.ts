@@ -1,6 +1,6 @@
 import { test } from '@tests/fixtures'
 import { languageKeys, ui, type UILanguages } from '@i18n/ui'
-import { userInTalkList, userInTalkDetail } from '@tests/support/ui/content/TalkPages'
+import { userInTalkList, userInTalkDetail } from '@tests/support/ui/content/flows/TalkFlow'
 import { pageHelper } from '@tests/support/ui/components/PageHelper'
 
 function escapeRegExp(value: string) {

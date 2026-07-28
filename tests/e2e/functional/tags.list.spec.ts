@@ -1,5 +1,5 @@
 import { test } from '@tests/fixtures'
-import { userIsOnTags } from '@tests/support/ui/content/TagsPage'
+import { userIsOnTags } from '@tests/support/ui/content/pages/TagsPage'
 import { languageKeys, type UILanguages } from '@i18n/ui'
 
 const fixtures: UILanguages[] = languageKeys

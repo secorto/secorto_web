@@ -1,6 +1,6 @@
 import { test } from '@tests/fixtures'
 import { languageKeys, ui } from '@i18n/ui'
-import { userInBlogList } from '@tests/support/ui/content/BlogPages'
+import { userInBlogList } from '@tests/support/ui/content/flows/BlogFlow'
 
 for (const locale of languageKeys) {
   test.describe(`Blog - Tags (${locale})`, { tag: ['@blog', '@tags', `@${locale}`] }, () => {

@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test'
 import { target } from '@tests/support/ui/components/Target'
 import type { Target as TargetComponent } from '@tests/support/ui/components/Target'
-import { ContentPage, createContentPage } from '@tests/support/ui/content/ContentPage'
+import { ContentPage, createContentPage } from './ContentPage'
 
 /**
  * Page Object for content detail views with professional experience metadata

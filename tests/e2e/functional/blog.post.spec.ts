@@ -1,5 +1,5 @@
 import { test } from '@tests/fixtures'
-import { userInBlogPost } from '@tests/support/ui/content/BlogPages'
+import { userInBlogPost } from '@tests/support/ui/content/flows/BlogFlow'
 import type { UILanguages } from '@i18n/ui'
 import type { TestInfo } from '@playwright/test'
 import { assertNoHorizontalOverflow } from '@tests/utils/layout'

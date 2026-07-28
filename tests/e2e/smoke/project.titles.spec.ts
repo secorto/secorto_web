@@ -1,6 +1,6 @@
 import { test } from '@tests/fixtures'
 import { ui, type UILanguages } from '@i18n/ui'
-import { userInProjectList, userInProjectDetail } from '@tests/support/ui/content/ProjectPages'
+import { userInProjectList, userInProjectDetail } from '@tests/support/ui/content/flows/ProjectFlow'
 import { pageHelper } from '@tests/support/ui/components/PageHelper'
 
 function escapeRegExp(value: string) {

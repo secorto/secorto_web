@@ -2,7 +2,7 @@ import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
 import { comments } from '@tests/support/ui/content/Comments'
 import type { Comments as CommentsComponent } from '@tests/support/ui/content/Comments'
-import { ContentPage, createContentPage } from '@tests/support/ui/content/ContentPage'
+import { ContentPage, createContentPage } from './ContentPage'
 import type { Target as TargetComponent } from '@tests/support/ui/components/Target'
 
 /**
