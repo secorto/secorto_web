@@ -1,8 +1,14 @@
 # Page Objects (POM) – Guía Rápida
 
-**Concepto clave:** FLOW
+**Conceptos clave:** FLOW + STEP
 
-> **Flow = función que usa `step()` o `verifyStep()` para encapsular comportamiento a una intención**
+> **Flow = unidad de composición, reutilización y significado**
+>
+> **Step (`step()` / `verifyStep()`) = unidad de ejecución y observabilidad en runtime**
+
+En esta base de código:
+- Escribes tests en términos de **flows**
+- Los flows se materializan en **steps** observables en reportes
 
 ---
 
@@ -14,11 +20,11 @@
 // content.spec.ts
 test('filter blog by tag', async ({ page }) => {
   await page.goto('/blog')
-  
+
   await step('filter by typescript', async () => {
     await page.locator('[data-testid="tag-link-typescript"]').click()
   })
-  
+
   await verifyStep('filtered results visible', async ({ expect }) => {
     const items = page.locator('[href*="/blog/"]')
     const count = await items.count()
@@ -31,27 +37,39 @@ test('filter blog by tag', async ({ page }) => {
 
 ### Paso 2: Cuando Repites → Extrae a Component o Page
 
-Si necesitas el mismo patrón en otro test → es un Flow. Agrúpalo donde tenga sentido.
+Si necesitas el mismo patrón en otro test, ya es un **flow**. Agrúpalo donde tenga sentido.
 
 **Si es sobre 1 elemento:**  
 Ubicación: `tests/support/ui/components/`  
-Ej: [Target.ts](../../tests/support/ui/components/Target.ts) expone métodos que son flows
+Ej: [Target.ts](../../tests/support/ui/components/Target.ts) expone métodos (flows) sobre un selector
 
 **Si es sobre 1 vista:**  
 Ubicación: `tests/support/ui/content/pages/`  
-Ej: [ContentListPage.ts](../../tests/support/ui/content/pages/ContentListPage.ts) expone métodos como `filterByTag()`, cada uno es un flow
+Ej: [ContentListPage.ts](../../tests/support/ui/content/pages/ContentListPage.ts) expone métodos como `filterByTag()`, cada uno un flow
 
-✅ **Ganancia**: Flow reutilizable, reportable, 1 lugar para cambiar selectores.
+✅ **Ganancia**: Flow reusable + Steps reportables + 1 lugar para cambiar selectores.
 
 ### Paso 3: Cuando Orquestas Múltiples Vistas → Support Flows
 
-Si tu test orquesta lógica que cruza múltiples Pages:
+Si tu test cruza múltiples Pages:
 
 Ubicación: `tests/support/ui/content/flows/`  
-Patrón: Función con `step()` que orquesta pages  
+Patrón: función con `step()` que orquesta pages  
 Ej: [BlogFlow.ts](../../tests/support/ui/content/flows/BlogFlow.ts) expone `userInBlogList()`, `userInBlogPost()`
 
-✅ **Ganancia**: Flow reutilizable independiente del modelo CPOM.
+✅ **Ganancia**: Flow reusable independiente del modelo CPOM.
+
+---
+
+## 🧭 Regla Operativa
+
+- **Test**: compone flows (`await userInBlogList()`)
+- **Flow**: expresa intención (`filterByTag`, `openPost`, `shouldHaveTags`)
+- **Step**: hace observable esa intención en reporte (`step`, `verifyStep`)
+
+Atajo mental:
+- **Flow = qué significa**
+- **Step = cómo se ejecuta y cómo se observa**
 
 ---
 
@@ -69,4 +87,4 @@ Ej: [BlogFlow.ts](../../tests/support/ui/content/flows/BlogFlow.ts) expone `user
 
 - [Target.ts](../../tests/support/ui/components/Target.ts) – component (flows sobre selectores)
 - [ContentListPage.ts](../../tests/support/ui/content/pages/ContentListPage.ts) – page (flows sobre vista)
-- [BlogFlow.ts](../../tests/support/ui/content/flows/BlogFlow.ts) – flow (flows que orquestan pages)
+- [BlogFlow.ts](../../tests/support/ui/content/flows/BlogFlow.ts) – flow (orquesta pages)
