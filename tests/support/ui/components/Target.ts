@@ -14,26 +14,26 @@ export class Target {
   }
 
   shouldHaveText(textOrRegex: string | RegExp) {
-    return verifyStep(`${this.name} should have text`, async ({ expect }) => {
+    return verifyStep(`${this.name} should have text ${textOrRegex}`, async ({ expect }) => {
       await expect(this.locator).toHaveText(textOrRegex)
     })
   }
 
   shouldContainText(textOrRegex: string | RegExp) {
-    return verifyStep(`${this.name} should contain text`, async ({ expect }) => {
+    return verifyStep(`${this.name} should contain text ${textOrRegex}`, async ({ expect }) => {
       await expect(this.locator).toContainText(textOrRegex)
     })
   }
 
   shouldHaveVisibleText(textOrRegex: string | RegExp) {
-    return verifyStep(`${this.name} visible and has text`, async ({ expect }) => {
+    return verifyStep(`${this.name} visible and has text ${textOrRegex}`, async ({ expect }) => {
       await expect(this.locator).toBeVisible()
       await expect(this.locator).toHaveText(textOrRegex)
     })
   }
 
   shouldHaveClass(re: RegExp) {
-    return verifyStep(`${this.name} should have class`, async ({ expect }) => {
+    return verifyStep(`${this.name} should have class ${re}`, async ({ expect }) => {
       await expect(this.locator).toHaveClass(re)
     })
   }
