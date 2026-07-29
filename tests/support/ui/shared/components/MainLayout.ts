@@ -20,6 +20,7 @@ export class MainLayoutComponent<T = void> implements LocalizedPage<T> {
   shouldBeLoaded(locale: UILanguages) {
     return verifyStep('main layout is loaded', async ({ expect }) => {
       await this.root.shouldBeVisible().with(expect)
+      await this.root.shouldHaveAttribute('lang', locale).with(expect)
       await this.headerTitle.shouldHaveVisibleText(/\S+/).with(expect)
       await this.footer.shouldBeLoaded(locale).with(expect)
       await this.sidebar.shouldBeLoaded(locale).with(expect)
