@@ -4,7 +4,7 @@ import { target } from '@tests/support/ui/components/Target'
 import type { Target as TargetComponent } from '@tests/support/ui/components/Target'
 import { ThemeToggle, themeToggleFromPage } from '@tests/support/ui/sidebar/ThemeToggle'
 import type { Page } from '@playwright/test'
-import type { LocalizedPage } from '@tests/support/ui/shared/contracts/LocalizedPage'
+import type { LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
 import { ui, type UILanguages } from '@i18n/ui'
 import { homePath, visit } from '@tests/support/ui/shared/NavigationPaths'
 

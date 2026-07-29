@@ -1,9 +1,9 @@
 import type { UILanguages } from "@i18n/ui"
-import type { LocalizedPage } from "@tests/support/ui/shared/contracts/LocalizedPage"
-import { verifyStep } from "@tests/fixtures"
+import type { LocalizedPage } from "@tests/support/ui/shared/contracts/localization"
+import { step, verifyStep } from "@tests/fixtures"
 import type { FooterComponent } from "@tests/support/ui/home/component/FooterComponent"
 import type { SidebarPage } from "@tests/support/ui/sidebar/SidebarPage"
-import type { Target } from "@tests/support/ui/components/Target"
+import type { Target, TargetSelector } from "@tests/support/ui/components/Target"
 
 export class MainLayoutComponent<T = void> implements LocalizedPage<T> {
   constructor(
@@ -11,7 +11,9 @@ export class MainLayoutComponent<T = void> implements LocalizedPage<T> {
     readonly headerTitle: Target,
     readonly sidebar: SidebarPage,
     readonly footer: FooterComponent,
-    readonly main: LocalizedPage<T>
+    readonly main: LocalizedPage<T>,
+    readonly langLinks: TargetSelector<UILanguages>,
+
   ) {}
 
   shouldBeLoaded(locale: UILanguages) {
@@ -40,6 +42,17 @@ export class MainLayoutComponent<T = void> implements LocalizedPage<T> {
   themeToggleShouldBeDifferent(initialTransform: string) {
     return this.sidebar.themeToggleShouldBeDifferent(initialTransform)
   }
+
+
+  shouldHaveLanguageOption(locale: UILanguages) {
+    return this.langLinks.get(locale).shouldBeVisible()
+  }
+
+  switchTo(locale: UILanguages) {
+    return step(`switch language to ${locale}`, async () => {
+      await this.langLinks.get(locale).locator.click()
+    })
+  }
 }
 
 export function mainLayout({
@@ -47,13 +60,15 @@ export function mainLayout({
   headerTitle,
   sidebar,
   footer,
-  main
+  main,
+  langLinks
 }: {
   root: Target,
   headerTitle: Target,
   sidebar: SidebarPage,
   main: LocalizedPage,
   footer: FooterComponent,
+  langLinks: TargetSelector<UILanguages>
 }) {
-  return new MainLayoutComponent(root, headerTitle, sidebar, footer, main)
+  return new MainLayoutComponent(root, headerTitle, sidebar, footer, main, langLinks)
 }

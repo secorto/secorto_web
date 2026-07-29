@@ -1,4 +1,4 @@
-import { target } from '@tests/support/ui/components/Target'
+import { target, targetSelector } from '@tests/support/ui/components/Target'
 import type { Page } from '@playwright/test'
 import type { Target as TargetComponent } from '@tests/support/ui/components/Target'
 import { footerPage } from '@tests/support/ui/home/component/FooterComponent'
@@ -8,10 +8,11 @@ import type { HomeHighlights as HomeHighlightsComponent } from '@tests/support/u
 import type { UILanguages } from '@i18n/ui'
 import { ui } from '@i18n/ui'
 import { homePath, visit } from '@tests/support/ui/shared/NavigationPaths'
-import { verifyStep } from '@tests/fixtures'
+import { verifyStep, type Verification } from '@tests/fixtures'
 import { sectionsConfig } from '@domain/section'
 import { mainLayout, type MainLayoutComponent } from '@tests/support/ui/shared/components/MainLayout'
-import type { LocalizedPage } from '../../shared/contracts/LocalizedPage'
+import type { LocalizedPage, LocalizedUrl } from '@tests/support/ui/shared/contracts/localization'
+import { urlValidator } from '@tests/support/ui/shared/flows/urlValidator'
 
 export class HomePageMain implements LocalizedPage<void> {
   constructor(
@@ -33,15 +34,21 @@ export class HomePageMain implements LocalizedPage<void> {
   }
 }
 
-export class HomePage {
+export class HomePage implements LocalizedPage<void>, LocalizedUrl {
   constructor(
     readonly mainLayout: MainLayoutComponent,
+    readonly validateUrl: (expected: string | RegExp) => Verification<void> ,
   ) {}
 
   shouldBeLoaded(locale: UILanguages) {
     return verifyStep('homepage is loaded correctly', async ({ expect }) => {
       await this.mainLayout.shouldBeLoaded(locale).with(expect)
     })
+  }
+
+  shouldBeInLocale(locale: UILanguages) {
+    const expected = new RegExp(`/${locale}(/|$)`)
+    return this.validateUrl(expected)
   }
 }
 
@@ -58,7 +65,9 @@ export function homePage(page: Page) {
       main: main,
       sidebar: sidebarPage(page),
       footer: footerPage(page),
-    })
+      langLinks: targetSelector('language link', (lang: UILanguages) => page.getByTestId(`lang-${lang}`)),
+    }),
+    urlValidator(page),
   )
 }
 
