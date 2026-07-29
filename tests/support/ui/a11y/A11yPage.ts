@@ -3,7 +3,7 @@ import type { UILanguages } from '@i18n/ui'
 import { AxeBuilder } from '@axe-core/playwright'
 import type { SectionType } from '@domain/section'
 import { verifyStep, step } from '@tests/fixtures'
-import { contentDetailsPath, contentListPath, contentTagsPath, homePath, tagsPath, visit } from '@tests/support/ui/shared/NavigationPaths'
+import { contentDetailsPath, contentListPath, contentTagsPath, tagsPath, visit } from '@tests/support/ui/shared/NavigationPaths'
 
 const DEFAULT_EXCLUDES = [
   '[data-netlify-deploy-id]', 'iframe', 'iframe *'
@@ -48,10 +48,6 @@ export function userInTalkDetail(page: Page, locale: UILanguages, postSlug: stri
 
 export function userInTags(page: Page, locale: UILanguages) {
   return visit(`a user in tags ${locale}`, page, tagsPath(locale), a11yPage)
-}
-
-export function userInHome(page: Page, locale: UILanguages) {
-  return visit(`a user in home ${locale}`, page, homePath(locale), a11yPage)
 }
 
 export function userInContentList(page: Page, locale: UILanguages, collection: SectionType) {

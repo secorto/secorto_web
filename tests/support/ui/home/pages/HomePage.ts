@@ -14,6 +14,7 @@ import { mainLayout, type MainLayoutComponent } from '@tests/support/ui/shared/c
 import type { LocalizedPage, LocalizedUrl } from '@tests/support/ui/shared/contracts/localization'
 import { urlValidator } from '@tests/support/ui/shared/flows/urlValidator'
 import { themeToggleFromPage } from '@tests/support/ui/shared/components/ThemeToggle'
+import { a11yFlow, type A11y } from '@tests/support/ui/shared/flows/a11y'
 
 export class HomePageMain implements LocalizedPage<void> {
   constructor(
@@ -39,6 +40,7 @@ export class HomePage implements LocalizedPage<void>, LocalizedUrl {
   constructor(
     readonly mainLayout: MainLayoutComponent,
     readonly validateUrl: (expected: string | RegExp) => Verification<void> ,
+    readonly a11y: A11y,
   ) {}
 
   shouldBeLoaded(locale: UILanguages) {
@@ -50,6 +52,10 @@ export class HomePage implements LocalizedPage<void>, LocalizedUrl {
   shouldBeInLocale(locale: UILanguages) {
     const expected = new RegExp(`/${locale}(/|$)`)
     return this.validateUrl(expected)
+  }
+
+  async auditA11y() {
+    await this.a11y.audit()
   }
 }
 
@@ -70,6 +76,7 @@ export function homePage(page: Page) {
       themeToggle: themeToggleFromPage(page),
     }),
     urlValidator(page),
+    a11yFlow(page),
   )
 }
 
