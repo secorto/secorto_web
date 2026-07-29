@@ -24,8 +24,8 @@ export class SidebarComponent implements LocalizedPage<void> {
 
   shouldBeLoaded(locale: UILanguages) {
     return verifyStep('sidebar is loaded correctly', async ({ expect }) => {
-      await expect(this.sidebarTitle.locator).toBeVisible()
-      await expect(this.aboutLink.locator).toHaveText(ui[locale]['nav.about'])
+      await this.sidebarTitle.shouldBeVisible().with(expect)
+      await this.aboutLink.shouldHaveVisibleText(ui[locale]['nav.about']).with(expect)
       await this.logo.shouldHaveCount(1).with(expect)
     })
   }

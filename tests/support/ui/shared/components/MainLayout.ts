@@ -60,7 +60,7 @@ export class MainLayoutComponent<T = void> implements LocalizedPage<T> {
   }
 }
 
-export function mainLayout({
+export function mainLayout<T>({
   root,
   headerTitle,
   sidebar,
@@ -72,10 +72,10 @@ export function mainLayout({
   root: Target,
   headerTitle: Target,
   sidebar: SidebarComponent,
-  main: LocalizedPage,
+  main: LocalizedPage<T>,
   footer: FooterComponent,
   langLinks: TargetSelector<UILanguages>,
-  themeToggle: ThemeToggle
+  themeToggle: ThemeToggle,
 }) {
   return new MainLayoutComponent(root, headerTitle, sidebar, footer, main, langLinks, themeToggle)
 }

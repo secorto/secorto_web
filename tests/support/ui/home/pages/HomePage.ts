@@ -36,7 +36,7 @@ export class HomePageMain implements LocalizedPage<void> {
 export class HomePage implements LocalizedPage<void>, LocalizedUrl {
   constructor(
     readonly mainLayout: MainLayoutComponent,
-    readonly validateUrl: (expected: string | RegExp) => Verification<void> ,
+    readonly validateUrl: (expected: string | RegExp) => Verification<void>,
     readonly a11y: A11y,
   ) {}
 
