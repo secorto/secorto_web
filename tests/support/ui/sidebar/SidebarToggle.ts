@@ -1,13 +1,13 @@
 import { verifyStep } from '@tests/fixtures'
-import { target } from '@tests/support/ui/components/Target'
-import type { Target as TargetComponent } from '@tests/support/ui/components/Target'
-import type { Page } from '@playwright/test'
+import type { Locator, Page } from '@playwright/test'
 
 export class SidebarToggle {
-  constructor(readonly hamburger: TargetComponent, readonly sidebar: TargetComponent) {}
+  constructor(readonly hamburger: Locator, readonly sidebar: Locator) {}
 
   shouldHaveHamburgerButton() {
-    return this.hamburger.shouldBeVisible()
+    return verifyStep('hamburger button should be visible', async ({ expect }) => {
+      await expect(this.hamburger).toBeVisible()
+    })
   }
 
   toggle() {
@@ -15,36 +15,33 @@ export class SidebarToggle {
   }
 
   shouldBeOpen() {
-    return this.sidebar.shouldHaveClass(/sidebar-open/)
+    return verifyStep('sidebar should be open', async ({ expect }) => {
+      await expect(this.hamburger).toBeVisible()
+      await expect(this.sidebar).toHaveClass(/sidebar-open/)
+      await expect(this.hamburger).toHaveClass(/sidebar-open/)
+    })
   }
 
   shouldBeClosed() {
     return verifyStep('sidebar should be closed', async ({ expect }) => {
-      await expect(this.sidebar.locator).not.toHaveClass(/sidebar-open/)
+      await expect(this.hamburger).toBeVisible()
+      await expect(this.sidebar).not.toHaveClass(/sidebar-open/)
+      await expect(this.hamburger).not.toHaveClass(/sidebar-open/)
     })
   }
 
-  hamburgerShouldHaveOpenState() {
-    return this.hamburger.shouldHaveClass(/sidebar-open/)
-  }
-
-  hamburgerShouldHaveClosedState() {
-    return verifyStep('hamburger should not have open state class', async ({ expect }) => {
-      await expect(this.hamburger.locator).not.toHaveClass(/sidebar-open/)
-    })
-  }
-
-  showNavigationLinks() {
-    return verifyStep('sidebar shows navigation links', async ({ expect }) => {
-      await expect(this.sidebar.locator.locator('[data-testid="sidebar-title"]')).toBeVisible()
+  shouldBePermanentlyOpen() {
+    return verifyStep('sidebar should be permanently open', async ({ expect }) => {
+      await expect(this.sidebar).toBeVisible()
+      await expect(this.hamburger).not.toBeVisible()
     })
   }
 }
 
-export function sidebarToggle(hamburgerLocator: import('@playwright/test').Locator, sidebarLocator: import('@playwright/test').Locator) {
+export function sidebarToggle(hamburgerLocator: Locator, sidebarLocator: Locator) {
   return new SidebarToggle(
-    target('sidebar hamburger', hamburgerLocator),
-    target('sidebar panel', sidebarLocator),
+    hamburgerLocator,
+    sidebarLocator,
   )
 }
 

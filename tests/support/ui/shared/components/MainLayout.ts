@@ -2,7 +2,7 @@ import type { UILanguages } from "@i18n/ui"
 import type { LocalizedPage } from "@tests/support/ui/shared/contracts/localization"
 import { step, verifyStep } from "@tests/fixtures"
 import type { FooterComponent } from "@tests/support/ui/home/component/FooterComponent"
-import type { SidebarPage } from "@tests/support/ui/sidebar/SidebarPage"
+import type { SidebarComponent } from "@tests/support/ui/sidebar/SidebarComponent"
 import type { Target, TargetSelector } from "@tests/support/ui/components/Target"
 import type { ThemeToggle } from "./ThemeToggle"
 
@@ -10,7 +10,7 @@ export class MainLayoutComponent<T = void> implements LocalizedPage<T> {
   constructor(
     readonly root: Target,
     readonly headerTitle: Target,
-    readonly sidebar: SidebarPage,
+    readonly sidebar: SidebarComponent,
     readonly footer: FooterComponent,
     readonly main: LocalizedPage<T>,
     readonly langLinks: TargetSelector<UILanguages>,
@@ -68,7 +68,7 @@ export function mainLayout({
 }: {
   root: Target,
   headerTitle: Target,
-  sidebar: SidebarPage,
+  sidebar: SidebarComponent,
   main: LocalizedPage,
   footer: FooterComponent,
   langLinks: TargetSelector<UILanguages>,

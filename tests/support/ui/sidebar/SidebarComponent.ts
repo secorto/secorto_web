@@ -6,7 +6,7 @@ import type { Page } from '@playwright/test'
 import type { LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
 import { ui, type UILanguages } from '@i18n/ui'
 
-export class SidebarPage implements LocalizedPage<void> {
+export class SidebarComponent implements LocalizedPage<void> {
   constructor(
     readonly toggle: SidebarToggle,
     readonly sidebarTitle: TargetComponent,
@@ -22,33 +22,6 @@ export class SidebarPage implements LocalizedPage<void> {
     return this.toggle.toggle()
   }
 
-  shouldHaveSidebarOpen() {
-    return this.toggle.shouldBeOpen()
-  }
-
-  shouldHaveSidebarClosed() {
-    return this.toggle.shouldBeClosed()
-  }
-
-  shouldHaveHamburgerOpenState() {
-    return this.toggle.hamburgerShouldHaveOpenState()
-  }
-
-  shouldHaveHamburgerClosedState() {
-    return this.toggle.hamburgerShouldHaveClosedState()
-  }
-
-  shouldShowNavigationLinks() {
-    return this.toggle.showNavigationLinks()
-  }
-
-  shouldBeReady() {
-    return verifyStep('sidebar should be ready', async ({ expect }) => {
-      await expect(this.sidebarTitle.locator).toBeVisible()
-      await expect(this.toggle.hamburger.locator).toBeVisible()
-    })
-  }
-
   shouldBeLoaded(locale: UILanguages) {
     return verifyStep('sidebar is loaded correctly', async ({ expect }) => {
       await expect(this.sidebarTitle.locator).toBeVisible()
@@ -59,7 +32,7 @@ export class SidebarPage implements LocalizedPage<void> {
 }
 
 export function sidebarPage(page: Page) {
-  return new SidebarPage(
+  return new SidebarComponent(
     sidebarToggleFromPage(page),
     target('sidebar title', page.getByTestId('sidebar-title')),
     target('sidebar about link', page.getByTestId('sidebar-about')),
