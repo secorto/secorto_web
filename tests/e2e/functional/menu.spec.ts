@@ -1,5 +1,6 @@
 import { test } from '@tests/fixtures'
-import { SidebarPage, userInHome } from '@tests/support/ui/sidebar/SidebarPage'
+import { SidebarPage } from '@tests/support/ui/sidebar/SidebarPage'
+import { userInHome } from '@tests/support/ui/home/pages/HomePage'
 
 test.describe('Hamburger menu', { tag: ['@functional', '@home', '@menu', '@sidebar', '@es'] }, () => {
   test.use({ viewport: { width: 375, height: 667 } })
@@ -7,7 +8,10 @@ test.describe('Hamburger menu', { tag: ['@functional', '@home', '@menu', '@sideb
   let userInMenuFlow: () => Promise<SidebarPage>
 
   test.beforeEach(async ({ page }) => {
-    userInMenuFlow = () => userInHome(page, 'es')
+    userInMenuFlow = async () => {
+      const homePage = await userInHome(page, 'es')
+      return homePage.mainLayout.sidebar
+    }
   })
 
   test('hamburger button is visible on mobile', async () => {

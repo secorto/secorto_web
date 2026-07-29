@@ -6,7 +6,6 @@ import { ThemeToggle, themeToggleFromPage } from '@tests/support/ui/sidebar/Them
 import type { Page } from '@playwright/test'
 import type { LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
 import { ui, type UILanguages } from '@i18n/ui'
-import { homePath, visit } from '@tests/support/ui/shared/NavigationPaths'
 
 export class SidebarPage implements LocalizedPage<void> {
   constructor(
@@ -52,14 +51,6 @@ export class SidebarPage implements LocalizedPage<void> {
     })
   }
 
-  shouldHaveLogo() {
-    return this.logo.shouldHaveCount(1)
-  }
-
-  shouldHaveThemeToggle() {
-    return this.themeToggle.shouldBeVisible()
-  }
-
   toggleTheme() {
     return this.themeToggle.toggleTheme()
   }
@@ -76,7 +67,7 @@ export class SidebarPage implements LocalizedPage<void> {
     return verifyStep('sidebar is loaded correctly', async ({ expect }) => {
       await expect(this.sidebarTitle.locator).toBeVisible()
       await expect(this.aboutLink.locator).toHaveText(ui[locale]['nav.about'])
-      await this.shouldHaveLogo().with(expect)
+      await this.logo.shouldHaveCount(1).with(expect)
       await this.themeToggle.shouldBeVisible()
     })
   }
@@ -91,6 +82,3 @@ export function sidebarPage(page: Page) {
     target('sidebar logo', page.locator('nav.sidebar svg.sidebar-logo')),
   )
 }
-
-export const userInHome = (page: Page, locale: UILanguages) =>
-  visit(`a user opening home in ${locale} for menu flow`, page, homePath(locale), sidebarPage)
