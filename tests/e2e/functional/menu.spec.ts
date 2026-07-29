@@ -1,48 +1,31 @@
 import { test } from '@tests/fixtures'
-import { SidebarPage, userInHome } from '@tests/support/ui/sidebar/SidebarPage'
+import { userInHome } from '@tests/support/ui/home/pages/HomePage'
 
-test.describe('Hamburger menu', { tag: ['@functional', '@home', '@menu', '@sidebar', '@es'] }, () => {
+test.describe('Mobile sidebar toggle', { tag: ['@functional', '@home', '@sidebar', '@mobile'] }, () => {
   test.use({ viewport: { width: 375, height: 667 } })
 
-  let userInMenuFlow: () => Promise<SidebarPage>
+  test('hamburger menu interaction flow', async ({page}) => {
+    const homePage = await userInHome(page, 'es')
 
-  test.beforeEach(async ({ page }) => {
-    userInMenuFlow = () => userInHome(page, 'es')
+    const menu = homePage.mainLayout.sidebar
+    await menu.toggle.shouldBeClosed()
+
+    await menu.toggleSidebar()
+    await menu.toggle.shouldBeOpen()
+    await menu.sidebarTitle.shouldBeVisible()
+
+    await menu.toggleSidebar()
+    await menu.toggle.shouldBeClosed()
   })
+})
 
-  test('hamburger button is visible on mobile', async () => {
-    const menu = await userInMenuFlow()
-    await menu.shouldHaveHamburgerButton()
-  })
+test.describe('Desktop sidebar toggle', { tag: ['@functional', '@home', '@sidebar', '@desktop'] }, () => {
+  test.use({ viewport: { width: 1280, height: 720 } })
 
-  test('clicking hamburger opens sidebar', async () => {
-    const menu = await userInMenuFlow()
-    await menu.shouldHaveSidebarClosed()
-    await menu.toggleSidebar()
-    await menu.shouldHaveSidebarOpen()
-  })
-
-  test('clicking hamburger again closes sidebar', async () => {
-    const menu = await userInMenuFlow()
-    await menu.toggleSidebar()
-    await menu.shouldHaveSidebarOpen()
-    await menu.toggleSidebar()
-    await menu.shouldHaveSidebarClosed()
-  })
-
-  test('hamburger button toggles its own sidebar-open class', async () => {
-    const menu = await userInMenuFlow()
-    await menu.shouldHaveHamburgerClosedState()
-    await menu.toggleSidebar()
-    await menu.shouldHaveHamburgerOpenState()
-    await menu.toggleSidebar()
-    await menu.shouldHaveHamburgerClosedState()
-  })
-
-  test('sidebar contains navigation links', async () => {
-    const menu = await userInMenuFlow()
-    await menu.toggleSidebar()
-    await menu.shouldHaveSidebarOpen()
-    await menu.shouldShowNavigationLinks()
+  test('sidebar is always open on desktop', async ({page}) => {
+    const homePage = await userInHome(page, 'es')
+    const menu = homePage.mainLayout.sidebar
+    await menu.toggle.shouldBePermanentlyOpen()
+    await menu.sidebarTitle.shouldBeVisible()
   })
 })

@@ -7,15 +7,8 @@ export class Link extends Target {
     super(name, locator)
   }
 
-  click() {
-    return verifyStep(`click ${this.name}`, async ({ expect }) => {
-      await expect(this.locator).toBeVisible()
-      await this.locator.click()
-    })
-  }
-
   hrefMatches(locale: string, route: string) {
-    return verifyStep(`${this.name} href matches route`, async ({ expect }) => {
+    return verifyStep(`${this.name} href matches route ${route}`, async ({ expect }) => {
       const el = this.locator
       await expect(el).toBeVisible()
       const href = await el.getAttribute('href')
@@ -25,7 +18,7 @@ export class Link extends Target {
   }
 
   linksMatchPattern(pattern: RegExp) {
-    return verifyStep(`${this.name} all links match pattern`, async ({ expect }) => {
+    return verifyStep(`${this.name} all links match pattern ${pattern}`, async ({ expect }) => {
       const links = await this.locator.evaluateAll(nodes =>
         nodes.map(n => n.getAttribute('href'))
       )

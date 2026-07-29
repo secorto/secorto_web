@@ -1,58 +1,84 @@
 import { test, expect } from '@playwright/test'
 
-type ExpectType = typeof expect | typeof expect.soft
-type StepExpect = { expect: ExpectType }
-
-interface SoftableAssertion<T> extends Promise<T> {
-  /**
-   * Execute with a specific expect variant: hard or soft.
-   * Use inside verifyStep to respect parent's mode.
-   */
-  with(expectFn: ExpectType): Promise<T>
-  /**
-   * Execute with soft expects: all failures are collected without early exit.
-   */
-  soft(): Promise<T>
+export interface Step<T> extends Promise<T> {
+  kind: 'action'
 }
 
 /**
- * Wrap action steps (navigation, clicks, state changes).
- * Does not inject expect; use for orchestration logic only.
+ * Defines a step
+ * @param title Title of the step
+ * @param action Action to be executed
+ * @returns Return value of the action
  */
 export const step = <T>(
   title: string,
   action: () => T | Promise<T>
-) => test.step(title, action)
+): Step<T> => {
+  const run = () => test.step(title, action)
 
-/**
- * Wrap assertion/verification steps that support soft expects.
- * Returns SoftableAssertion with .with() for explicit expect variant and .soft() for grouped failures.
- * Only use when multiple independent assertions belong together in one verification.
- */
-const verifyStepFn = <T>(
-  title: string,
-  action: (args: StepExpect) => T | Promise<T>
-): SoftableAssertion<T> => {
   return {
-    then: <TResult1 = T, TResult2 = never>(
-      onFulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | null | undefined,
-      onRejected?: ((reason: unknown) => TResult2 | PromiseLike<TResult2>) | null | undefined
-    ) =>
-      test.step(title, () => action({ expect })).then(onFulfilled, onRejected),
-    catch: <TResult = never>(
-      onRejected?: ((reason: unknown) => TResult | PromiseLike<TResult>) | null | undefined
-    ) =>
-      test.step(title, () => action({ expect })).catch(onRejected),
-    finally: (onFinally?: () => void | PromiseLike<void>) =>
-      test.step(title, () => action({ expect })).finally(onFinally),
-    with: (expectFn: ExpectType) =>
-      test.step(title, () => action({ expect: expectFn })),
-    soft: () =>
-      test.step(`${title} (soft)`, () => action({ expect: expect.soft }))
-  } as SoftableAssertion<T>
+    kind: 'action',
+
+    then: (onFulfilled, onRejected) => run().then(onFulfilled, onRejected),
+    catch: (onRejected) => run().catch(onRejected),
+    finally: (onFinally) => run().finally(onFinally)
+  } as Step<T>
 }
 
-export const verifyStep = verifyStepFn
+
+type ExpectType = typeof expect | typeof expect.soft
+type StepExpect = { expect: ExpectType }
+
+export interface Verification<T> extends Promise<T> {
+  kind: 'verification'
+  expect: ExpectType
+  /**
+   * Execute with a specific expect variant: hard or soft.
+   * Use inside verifyStep to respect parent's mode.
+   */
+  with(expectFn: ExpectType): Verification<T>
+  /**
+   * Execute with soft expects: all failures are collected without early exit.
+   */
+  soft(): Verification<T>
+}
+
+const buildVerification = <T>(
+  title: string,
+  action: (args: StepExpect) => T | Promise<T>,
+  expectFn: ExpectType
+): Verification<T> => {
+
+  const run = () =>
+    test.step(title, () => action({ expect: expectFn }))
+
+  return {
+    kind: 'verification',
+    expect: expectFn,
+
+    then: (onFulfilled, onRejected) => run().then(onFulfilled, onRejected),
+    catch: (onRejected) => run().catch(onRejected),
+    finally: (onFinally) => run().finally(onFinally),
+
+    soft() {
+      return buildVerification(`${title} (soft)`, action, expect.soft)
+    },
+
+    with(newExpect) {
+      return buildVerification(title, action, newExpect)
+    }
+  } as Verification<T>
+}
+
+/**
+ * Defines a verification step that can be executed with hard or soft expects.
+ * @param title Title of verification
+ * @param action Verification to be executed
+ * @returns value of the action parameter
+ */
+export const verifyStep = <T>(
+  title: string,
+  action: (args: StepExpect) => T | Promise<T>
+): Verification<T> => buildVerification(title, action, expect)
 
 export { test, expect }
-
