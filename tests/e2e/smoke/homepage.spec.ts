@@ -1,6 +1,6 @@
 import { test } from '@tests/fixtures'
 import { languageKeys } from '@i18n/ui'
-import { userInHome } from '@tests/support/ui/home/HomePage'
+import { userInHome } from '@tests/support/ui/home/pages/HomePage'
 
 for (const locale of languageKeys) {
   test.describe(`Homepage (${locale})`,

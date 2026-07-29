@@ -39,7 +39,7 @@ export class Target {
   }
 
   shouldHaveAttribute(name: string, value: string) {
-    return verifyStep(`${this.name} should have attribute ${name}`, async ({ expect }) => {
+    return verifyStep(`${this.name} should have attribute ${name} with value ${value}`, async ({ expect }) => {
       await expect(this.locator).toHaveAttribute(name, value)
     })
   }
