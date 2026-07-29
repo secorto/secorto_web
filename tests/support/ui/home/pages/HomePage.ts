@@ -1,8 +1,6 @@
-import { target, targetSelector } from '@tests/support/ui/components/Target'
+import { target } from '@tests/support/ui/components/Target'
 import type { Page } from '@playwright/test'
 import type { Target as TargetComponent } from '@tests/support/ui/components/Target'
-import { footerPage } from '@tests/support/ui/home/component/FooterComponent'
-import { sidebarPage } from '@tests/support/ui/sidebar/SidebarComponent'
 import { homeHighlights } from '@tests/support/ui/home/HomeHighlights'
 import type { HomeHighlights as HomeHighlightsComponent } from '@tests/support/ui/home/HomeHighlights'
 import type { UILanguages } from '@i18n/ui'
@@ -10,10 +8,9 @@ import { ui } from '@i18n/ui'
 import { homePath, visit } from '@tests/support/ui/shared/NavigationPaths'
 import { verifyStep, type Verification } from '@tests/fixtures'
 import { sectionsConfig } from '@domain/section'
-import { mainLayout, type MainLayoutComponent } from '@tests/support/ui/shared/components/MainLayout'
+import { defaultMainLayout, mainLayout, type MainLayoutComponent } from '@tests/support/ui/shared/components/MainLayout'
 import type { LocalizedPage, LocalizedUrl } from '@tests/support/ui/shared/contracts/localization'
 import { urlValidator } from '@tests/support/ui/shared/flows/urlValidator'
-import { themeToggleFromPage } from '@tests/support/ui/shared/components/ThemeToggle'
 import { a11yFlow, type A11y } from '@tests/support/ui/shared/flows/a11y'
 
 export class HomePageMain implements LocalizedPage<void> {
@@ -67,13 +64,9 @@ export function homePage(page: Page) {
   )
   return new HomePage(
     mainLayout({
-      root: target('html root', page.locator('html')),
+      ...defaultMainLayout(page),
       headerTitle: target('home header title', page.getByRole('heading', { level: 1 })),
       main: main,
-      sidebar: sidebarPage(page),
-      footer: footerPage(page),
-      langLinks: targetSelector('language link', (lang: UILanguages) => page.getByTestId(`lang-${lang}`)),
-      themeToggle: themeToggleFromPage(page),
     }),
     urlValidator(page),
     a11yFlow(page),
