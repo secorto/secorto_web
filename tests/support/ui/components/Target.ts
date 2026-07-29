@@ -38,8 +38,8 @@ export class Target {
     })
   }
 
-  shouldHaveAttribute(name: string, value: string) {
-    return verifyStep(`${this.name} should have attribute ${name}`, async ({ expect }) => {
+  shouldHaveAttribute(name: string, value: string | RegExp) {
+    return verifyStep(`${this.name} should have attribute ${name} matching ${value}`, async ({ expect }) => {
       await expect(this.locator).toHaveAttribute(name, value)
     })
   }
