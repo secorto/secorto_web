@@ -13,6 +13,7 @@ import { sectionsConfig } from '@domain/section'
 import { mainLayout, type MainLayoutComponent } from '@tests/support/ui/shared/components/MainLayout'
 import type { LocalizedPage, LocalizedUrl } from '@tests/support/ui/shared/contracts/localization'
 import { urlValidator } from '@tests/support/ui/shared/flows/urlValidator'
+import { themeToggleFromPage } from '@tests/support/ui/shared/components/ThemeToggle'
 
 export class HomePageMain implements LocalizedPage<void> {
   constructor(
@@ -66,6 +67,7 @@ export function homePage(page: Page) {
       sidebar: sidebarPage(page),
       footer: footerPage(page),
       langLinks: targetSelector('language link', (lang: UILanguages) => page.getByTestId(`lang-${lang}`)),
+      themeToggle: themeToggleFromPage(page),
     }),
     urlValidator(page),
   )

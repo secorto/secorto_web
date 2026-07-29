@@ -2,7 +2,6 @@ import { verifyStep } from '@tests/fixtures'
 import { sidebarToggleFromPage, SidebarToggle } from '@tests/support/ui/sidebar/SidebarToggle'
 import { target } from '@tests/support/ui/components/Target'
 import type { Target as TargetComponent } from '@tests/support/ui/components/Target'
-import { ThemeToggle, themeToggleFromPage } from '@tests/support/ui/sidebar/ThemeToggle'
 import type { Page } from '@playwright/test'
 import type { LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
 import { ui, type UILanguages } from '@i18n/ui'
@@ -11,7 +10,6 @@ export class SidebarPage implements LocalizedPage<void> {
   constructor(
     readonly toggle: SidebarToggle,
     readonly sidebarTitle: TargetComponent,
-    readonly themeToggle: ThemeToggle,
     readonly aboutLink: TargetComponent,
     readonly logo: TargetComponent,
   ) {}
@@ -51,24 +49,11 @@ export class SidebarPage implements LocalizedPage<void> {
     })
   }
 
-  toggleTheme() {
-    return this.themeToggle.toggleTheme()
-  }
-
-  getTransformOfThemeToggle() {
-    return this.themeToggle.getTransform()
-  }
-
-  themeToggleShouldBeDifferent(initialTransform: string) {
-    return this.themeToggle.shouldBeDifferent(initialTransform)
-  }
-
   shouldBeLoaded(locale: UILanguages) {
     return verifyStep('sidebar is loaded correctly', async ({ expect }) => {
       await expect(this.sidebarTitle.locator).toBeVisible()
       await expect(this.aboutLink.locator).toHaveText(ui[locale]['nav.about'])
       await this.logo.shouldHaveCount(1).with(expect)
-      await this.themeToggle.shouldBeVisible()
     })
   }
 }
@@ -77,7 +62,6 @@ export function sidebarPage(page: Page) {
   return new SidebarPage(
     sidebarToggleFromPage(page),
     target('sidebar title', page.getByTestId('sidebar-title')),
-    themeToggleFromPage(page),
     target('sidebar about link', page.getByTestId('sidebar-about')),
     target('sidebar logo', page.locator('nav.sidebar svg.sidebar-logo')),
   )

@@ -4,6 +4,7 @@ import { step, verifyStep } from "@tests/fixtures"
 import type { FooterComponent } from "@tests/support/ui/home/component/FooterComponent"
 import type { SidebarPage } from "@tests/support/ui/sidebar/SidebarPage"
 import type { Target, TargetSelector } from "@tests/support/ui/components/Target"
+import type { ThemeToggle } from "./ThemeToggle"
 
 export class MainLayoutComponent<T = void> implements LocalizedPage<T> {
   constructor(
@@ -13,7 +14,7 @@ export class MainLayoutComponent<T = void> implements LocalizedPage<T> {
     readonly footer: FooterComponent,
     readonly main: LocalizedPage<T>,
     readonly langLinks: TargetSelector<UILanguages>,
-
+    readonly themeToggle: ThemeToggle,
   ) {}
 
   shouldBeLoaded(locale: UILanguages) {
@@ -22,6 +23,7 @@ export class MainLayoutComponent<T = void> implements LocalizedPage<T> {
       await this.headerTitle.shouldHaveVisibleText(/\S+/).with(expect)
       await this.footer.shouldBeLoaded(locale).with(expect)
       await this.sidebar.shouldBeLoaded(locale).with(expect)
+      await this.themeToggle.shouldBeVisible().with(expect)
       return this.main.shouldBeLoaded(locale).with(expect)
     })
   }
@@ -32,15 +34,15 @@ export class MainLayoutComponent<T = void> implements LocalizedPage<T> {
   }
 
   toggleTheme() {
-    return this.sidebar.toggleTheme()
+    return this.themeToggle.toggleTheme()
   }
 
   getTransformOfThemeToggle() {
-    return this.sidebar.getTransformOfThemeToggle()
+    return this.themeToggle.getTransform()
   }
 
   themeToggleShouldBeDifferent(initialTransform: string) {
-    return this.sidebar.themeToggleShouldBeDifferent(initialTransform)
+    return this.themeToggle.shouldBeDifferent(initialTransform)
   }
 
 
@@ -61,14 +63,16 @@ export function mainLayout({
   sidebar,
   footer,
   main,
-  langLinks
+  langLinks,
+  themeToggle,
 }: {
   root: Target,
   headerTitle: Target,
   sidebar: SidebarPage,
   main: LocalizedPage,
   footer: FooterComponent,
-  langLinks: TargetSelector<UILanguages>
+  langLinks: TargetSelector<UILanguages>,
+  themeToggle: ThemeToggle
 }) {
-  return new MainLayoutComponent(root, headerTitle, sidebar, footer, main, langLinks)
+  return new MainLayoutComponent(root, headerTitle, sidebar, footer, main, langLinks, themeToggle)
 }
