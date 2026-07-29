@@ -1,4 +1,4 @@
-import { verifyStep } from "@tests/fixtures"
+import { verifyStep } from '@tests/fixtures'
 import type { Page } from '@playwright/test'
 import type { Verification } from '@tests/fixtures'
 

@@ -1,11 +1,11 @@
-import type { UILanguages } from "@i18n/ui"
-import type { LocalizedPage } from "@tests/support/ui/shared/contracts/localization"
-import { step, verifyStep } from "@tests/fixtures"
-import { footerPage, type FooterComponent } from "@tests/support/ui/home/component/FooterComponent"
-import { sidebarPage, type SidebarComponent } from "@tests/support/ui/sidebar/SidebarComponent"
-import { target, targetSelector, type Target, type TargetSelector } from "@tests/support/ui/components/Target"
-import { themeToggleFromPage, type ThemeToggle } from "./ThemeToggle"
-import type { Page } from "@playwright/test"
+import type { UILanguages } from '@i18n/ui'
+import type { LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
+import { step, verifyStep } from '@tests/fixtures'
+import { footerPage, type FooterComponent } from '@tests/support/ui/home/component/FooterComponent'
+import { sidebarPage, type SidebarComponent } from '@tests/support/ui/sidebar/SidebarComponent'
+import { target, targetSelector, type Target, type TargetSelector } from '@tests/support/ui/components/Target'
+import { themeToggleFromPage, type ThemeToggle } from './ThemeToggle'
+import type { Page } from '@playwright/test'
 
 
 export class MainLayoutComponent<T = void> implements LocalizedPage<T> {
@@ -17,7 +17,7 @@ export class MainLayoutComponent<T = void> implements LocalizedPage<T> {
     readonly main: LocalizedPage<T>,
     readonly langLinks: TargetSelector<UILanguages>,
     readonly themeToggle: ThemeToggle,
-  ) {}
+  ) { }
 
   shouldBeLoaded(locale: UILanguages) {
     return verifyStep('main layout is loaded', async ({ expect }) => {

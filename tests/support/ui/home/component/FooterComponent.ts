@@ -18,6 +18,7 @@ export class FooterComponent {
       await this.avatar.shouldBeLoaded().with(expect)
       await this.role.shouldHaveVisibleText(i18n['footer.role']).with(expect)
       await this.follow.shouldHaveVisibleText(i18n['footer.follow']).with(expect)
+      await this.avatar.shouldHaveAttribute('alt', i18n['footer.avatar_alt']).with(expect)
     })
   }
 }
