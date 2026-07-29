@@ -50,10 +50,7 @@ const buildVerification = <T>(
 ): Verification<T> => {
 
   const run = () =>
-    test.step(
-      expectFn === expect.soft ? `${title} (soft)` : title,
-      () => action({ expect: expectFn })
-    )
+    test.step(title, () => action({ expect: expectFn }))
 
   return {
     kind: 'verification',
