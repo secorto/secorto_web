@@ -4,10 +4,11 @@ import { target } from '@tests/support/ui/components/Target'
 import type { Target as TargetComponent } from '@tests/support/ui/components/Target'
 import { ThemeToggle, themeToggleFromPage } from '@tests/support/ui/sidebar/ThemeToggle'
 import type { Page } from '@playwright/test'
-import type { UILanguages } from '@i18n/ui'
+import type { LocalizedPage } from '@tests/support/ui/shared/contracts/LocalizedPage'
+import { ui, type UILanguages } from '@i18n/ui'
 import { homePath, visit } from '@tests/support/ui/shared/NavigationPaths'
 
-export class SidebarPage {
+export class SidebarPage implements LocalizedPage<void> {
   constructor(
     readonly toggle: SidebarToggle,
     readonly sidebarTitle: TargetComponent,
@@ -51,13 +52,6 @@ export class SidebarPage {
     })
   }
 
-  shouldHaveAboutLink(i18n: Record<string, string>) {
-    return verifyStep('sidebar shows about link text', async ({ expect }) => {
-      await expect(this.aboutLink.locator).toBeVisible()
-      await expect(this.aboutLink.locator).toHaveText(i18n['nav.about'])
-    })
-  }
-
   shouldHaveLogo() {
     return this.logo.shouldHaveCount(1)
   }
@@ -76,6 +70,15 @@ export class SidebarPage {
 
   themeToggleShouldBeDifferent(initialTransform: string) {
     return this.themeToggle.shouldBeDifferent(initialTransform)
+  }
+
+  shouldBeLoaded(locale: UILanguages) {
+    return verifyStep('sidebar is loaded correctly', async ({ expect }) => {
+      await expect(this.sidebarTitle.locator).toBeVisible()
+      await expect(this.aboutLink.locator).toHaveText(ui[locale]['nav.about'])
+      await this.shouldHaveLogo().with(expect)
+      await this.themeToggle.shouldBeVisible()
+    })
   }
 }
 
