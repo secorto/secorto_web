@@ -41,9 +41,7 @@ export class HomePage implements LocalizedPage<void>, LocalizedUrl {
   ) {}
 
   shouldBeLoaded(locale: UILanguages) {
-    return verifyStep('homepage is loaded correctly', async ({ expect }) => {
-      await this.mainLayout.shouldBeLoaded(locale).with(expect)
-    })
+    return this.mainLayout.shouldBeLoaded(locale)
   }
 
   shouldBeInLocale(locale: UILanguages) {
@@ -65,6 +63,7 @@ export function homePage(page: Page) {
   return new HomePage(
     mainLayout({
       ...defaultMainLayout(page),
+      name: 'home',
       headerTitle: target('home header title', page.getByRole('heading', { level: 1 })),
       main: main,
     }),
