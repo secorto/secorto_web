@@ -10,6 +10,7 @@ import type { Page } from '@playwright/test'
 
 export class MainLayoutComponent<T = void> implements LocalizedPage<T> {
   constructor(
+    readonly name: string,
     readonly root: Target,
     readonly headerTitle: Target,
     readonly sidebar: SidebarComponent,
@@ -20,7 +21,7 @@ export class MainLayoutComponent<T = void> implements LocalizedPage<T> {
   ) { }
 
   shouldBeLoaded(locale: UILanguages) {
-    return verifyStep('main layout is loaded', async ({ expect }) => {
+    return verifyStep(`${this.name} is loaded`, async ({ expect }) => {
       await this.root.shouldBeVisible().with(expect)
       await this.root.shouldHaveAttribute('lang', locale).with(expect)
       await this.headerTitle.shouldHaveVisibleText(/\S+/).with(expect)
@@ -61,6 +62,7 @@ export class MainLayoutComponent<T = void> implements LocalizedPage<T> {
 }
 
 export function mainLayout<T>({
+  name,
   root,
   headerTitle,
   sidebar,
@@ -69,6 +71,7 @@ export function mainLayout<T>({
   langLinks,
   themeToggle,
 }: {
+  name: string,
   root: Target,
   headerTitle: Target,
   sidebar: SidebarComponent,
@@ -77,7 +80,7 @@ export function mainLayout<T>({
   langLinks: TargetSelector<UILanguages>,
   themeToggle: ThemeToggle,
 }) {
-  return new MainLayoutComponent(root, headerTitle, sidebar, footer, main, langLinks, themeToggle)
+  return new MainLayoutComponent(name, root, headerTitle, sidebar, footer, main, langLinks, themeToggle)
 }
 
 export function defaultMainLayout(page: Page) {

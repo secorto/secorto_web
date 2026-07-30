@@ -1,132 +1,188 @@
-# Page Objects: Arquitectura E2E en 3 Capas
+# Arquitectura E2E: Flujos + Pasos
 
-Modelo de arquitectura para estructurar tests E2E usando una jerarquía composable de Components, Pages y Flows (opcional).
+## Conceptos Fundamentales
 
-## Modelo Genérico: Component/Page/Flow
+> **Flow (Flujo) = unidad de composición y significado**
+>
+> **Step (Paso) = unidad de ejecución y observabilidad**
 
-La arquitectura E2E en este proyecto sigue un modelo de **3 capas composables**:
-
-### Capa 1: Components (Unidades de UI con Comportamiento)
-
-**Ubicación**: `tests/support/ui/components/`
-
-Abstraen cualquier unidad de UI con un protocolo de interacción o validación esperado:
-
-- **Primitivos**: `Target` (locator genérico + assertions), `Link` (locator + validaciones de href)
-- **Especializados**: `Comments` (composite: script + iframe), `PageHelper` (utilidades stateless)
-- **Criterio de creación**: ¿Tiene el elemento un "happy path" o protocolo de uso? → Es componente
-- **Responsabilidad**: Encapsular cómo se ve/comporta EL ELEMENTO específico (no el contexto page)
-- **Patrón**: Clase + factory + métodos que retornan `Promise` vía `step()`
-- **Realidad SSG**: En un sitio sin interacciones pesadas, `Target` suele ser
-  suficiente. Pero si existe un Dropdown, Modal, o Tab con open/close/select,
-  ese es un componente formal
-
-### Capa 2: Pages (Orquestadores de Components)
-
-**Ubicación**: `tests/support/ui/{domain}/` (ej: `home/`, `content/`, `sidebar/`)
-
-Orquestan múltiples components con métodos semánticos que representan el flujo local:
-
-- **Responsabilidad**: Combinar components para expresar la lógica/validación de una sección
-- **Patrón**:
-  - Clase con constructor que inyecta components
-  - Factory: `homePage(page: Page): HomePage`
-  - Helper: `userInHome(page: Page): Promise<HomePage>` que invoca `visit()` y retorna factory
-  - Métodos sin `async` si retornan lazy `Promise` (para encadenamiento)
-- **Métodos**: Cada uno encapsulado en `step()`, orquestan 1+ componentes + lógica local
-- **Exportación**: Cada Page Object expone métodos semánticos, NO simples locators
-
-### Capa 3: Flows (Secuencias Multi-Step/Multi-Page - OPCIONAL)
-
-**Ubicación**: `tests/support/flows/`
-
-Encapsulan narrativas complejas que cruzan múltiples pages o requieren coordinación:
-
-- **Responsabilidad**: Encapsular secuencias que no pertenecen a una sola page
-- **Por qué**: Permite reutilizar narrativas complejas en múltiples tests sin duplicación
-  (ej: "iniciar sesión → navegar → filtrar → validar").
-- **Cuándo**: Solo cuando necesites la **misma secuencia multi-page en múltiples tests**.
-  Si es una secuencia única, hazla inline en el spec.
-- **Estructura**: UN único `step()` raíz; cada acción delega a métodos de Page que contienen sus propios `step()`
-
-## Patrones y Principios
-
-- **Componentes vs Pages**: Components encapsulan comportamiento de elementos aislados
-  (Target, Dropdown, Comments). Pages combinan components para expresar lógica de sección/dominio.
-  Pages exponen métodos semánticos, NO simples locators.
-- **Encapsulación en `step()`**: Cada método retorna `Promise` via `step()` para visibilidad en reportes E2E.
-- **Inyección de componentes**: Pages reciben components en constructor, no los crean directamente.
-- **Flows (cuando sea necesario)**: Usa flows para secuencias complejas multi-page; no para toda acción.
-- **Localizadores estables**: Preferir selectores accesibles por Playwright (`getByRole` / ARIA).
-  Si no es práctico, usar `data-testid` como atributo estable. Evitar selectores frágiles (clases).
-- **Mocking de terceros**: Mockear recursos externos con `page.route()` o proveedores locales en CI.
-- **Timeouts razonables**: Usar checks de visibilidad/atributos en lugar de `sleep()`
-- **Composición sobre herencia**: Prefiere inyectar components en pages que crear jerarquías de herencia.
+```text
+Prueba (Test)
+↓
+Flujo (Flow)
+↓
+Paso (Step)
+↓
+Playwright
+```
 
 ---
 
-## Ejemplo: Modelo de Page Objects para Content
+## Flujo (Flow)
 
-Aplicación concreta del modelo genérico al testing de contenido (blogs, talks, trabajos, etc.).
+Un Flujo expone una única intención.
 
-**Para el contexto de decisión, justificación y tabla de responsabilidades**, ver [ADR 014: Jerarquía de Page Objects](../adr/014-page-objects-hierarchy-separation-of-concerns.md).
+Ejemplos:
 
-### Diagrama de Clases
-
-```mermaid
-classDiagram
-    class ContentPage {
-        -name: string
-        -headerTitle: TargetComponent
-        -tags: TargetComponent
-        +shouldHaveHeaderTitle(expected: string)
-        +shouldHaveTags(ariaSnapshot: string)
-        +clickTag(tag: string, title?: string)
-    }
-
-    class ContentListPage {
-        -tagLinks: TargetSelector
-        -itemLinks: TargetSelector
-        +shouldHaveFilteredTitle(section: string, tag: string)
-        +shouldHaveFilteredResults()
-        +filterByTag(tag: string)
-        +clickItem(href: string, title: string)
-        +shouldRenderTagsForSection()
-    }
-
-    class ContentPostDetailPage {
-        -comments: CommentsComponent
-        +shouldHaveComments(locale: UILanguages)
-    }
-
-    class ContentExperienceDetailPage {
-        -postRole: TargetComponent
-        -postResponsibilities: TargetComponent
-        -postWebsite: TargetComponent
-        +shouldHaveRole(expected: string)
-        +shouldHaveResponsibilities(expected: string)
-        +shouldHaveWebsite(expected: string)
-    }
-
-    class ContentTagsPage {
-        -tagLinks: TargetSelector
-        -itemLinks: TargetSelector
-        +shouldHaveFilteredTitle(section: string, tag: string)
-        +clickItem(href: string, title: string)
-        +shouldRenderTagsForSection()
-    }
-
-    ContentPage <|-- ContentListPage
-    ContentPage <|-- ContentPostDetailPage
-    ContentPage <|-- ContentExperienceDetailPage
-    ContentPage <|-- ContentTagsPage
+```ts
+userInHome()
+openPost()
+filterByTag()
+shouldBeLoaded()
+auditA11y()
 ```
 
-### Archivos de Implementación
+Un Flujo puede:
 
-Las implementaciones de cada Page Object y sus factories están en [tests/support/ui/content/](../../tests/support/ui/content/):
+- Delegar la implementación
+- Llamar a otro Flujo
+- Componer funciones reutilizables
+- Ocultar detalles de implementación
 
-- **Base compartida**: [ContentPage.ts](../../tests/support/ui/content/ContentPage.ts)
-- **Listas**: [ContentListPage.ts](../../tests/support/ui/content/ContentListPage.ts), [BlogPages.ts](../../tests/support/ui/content/BlogPages.ts), [WorkPages.ts](../../tests/support/ui/content/WorkPages.ts), etc.
-- **Detalles**: [ContentPostDetailPage.ts](../../tests/support/ui/content/ContentPostDetailPage.ts), [ContentExperienceDetailPage.ts](../../tests/support/ui/content/ContentExperienceDetailPage.ts)
-- **Filtrado**: [ContentTagsPage.ts](../../tests/support/ui/content/ContentTagsPage.ts)
+Por ejemplo:
+
+```ts
+async auditA11y() {
+  await this.a11y.audit()
+}
+```
+
+La delegación es irrelevante.
+
+Lo importante es que el consumidor vea una única intención.
+
+### Regla del Flujo
+
+Un Flujo sigue siendo un Flujo siempre que:
+
+1. Exponga una única intención.
+2. Materialice esa intención mediante un único Paso observable.
+
+---
+
+## Paso (Step)
+
+Un Paso es el artefacto de ejecución que realiza trabajo y aparece en los reportes.
+
+```ts
+return verifyStep('la página principal se cargó correctamente', async ({ expect }) => {
+  // validaciones
+})
+```
+
+Solo los Pasos aparecen en los reportes.
+
+Los Pasos proporcionan:
+
+- Observabilidad
+- Diagnóstico
+- Trazabilidad
+- Narrativa para reportes
+
+---
+
+## Delegación
+
+Los Flujos pueden delegar la implementación.
+
+✅ Correcto
+
+```ts
+async auditA11y() {
+  await this.a11y.audit()
+}
+```
+
+```text
+auditA11y()
+↓
+a11y.audit()
+↓
+Step
+```
+
+La intención observable sigue siendo la misma.
+
+### Nunca Delegues la Intención
+
+❌ Incorrecto
+
+```ts
+async shouldBeLoaded() {
+  await verifyRoot()
+  await verifyFooter()
+  await verifySidebar()
+}
+```
+
+El Flujo expone:
+
+```text
+la página principal se cargó correctamente
+```
+
+Por lo tanto, el propio Flujo debe materializar esa intención:
+
+✅ Correcto
+
+```ts
+shouldBeLoaded() {
+  return verifyStep('la página principal se cargó correctamente', async ({ expect }) => {
+    await verifyRoot(expect)
+    await verifyFooter(expect)
+    await verifySidebar(expect)
+  })
+}
+```
+
+La implementación puede delegarse.
+
+La intención no.
+
+---
+
+## Organización
+
+### Componentes
+
+```text
+tests/support/ui/components/
+```
+
+Conocimiento específico de la interfaz de usuario (UI).
+
+### Páginas
+
+```text
+tests/support/ui/**/pages/
+```
+
+Conocimiento específico de cada vista.
+
+### Flujos de Soporte
+
+```text
+tests/support/ui/**/flows/
+```
+
+Intenciones que abarcan múltiples páginas o componentes.
+
+---
+
+## Resumen
+
+```text
+Las pruebas componen Flujos.
+
+Los Flujos exponen intención.
+Los Flujos pueden delegar implementación.
+Los Flujos pueden llamar a otros Flujos.
+
+Un Flujo debe materializar su propia intención.
+
+Delega la implementación.
+Nunca delegues la intención.
+
+Los Pasos proporcionan observabilidad.
+Solo los Pasos aparecen en los reportes.
+```
