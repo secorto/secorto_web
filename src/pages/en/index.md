@@ -3,7 +3,15 @@ layout: "@layouts/HomeLayout.astro"
 locale: "en"
 title: "Homepage"
 subTitle: "I'm Sergio Carlos Orozco Torres"
-pybaqUrl: "https://pybaq.co/en/nosotros/sergio-orozco/"
+highlights:
+  - section: blog
+    slug: 2026-04-25-my-first-steps-in-linux
+  - section: talk
+    slug: 2023-09-27-devcontainers
+  - section: community
+    slug: pybaq
+  - section: work
+    slug: perficient
 ---
 
 Software developer based in Itagüí, Colombia.

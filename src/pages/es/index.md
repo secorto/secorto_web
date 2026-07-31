@@ -3,7 +3,15 @@ layout: "@layouts/HomeLayout.astro"
 locale: "es"
 title: "Página de inicio"
 subTitle: "Soy Sergio Carlos Orozco Torres"
-pybaqUrl: "https://pybaq.co/nosotros/sergio-orozco/"
+highlights:
+  - section: blog
+    slug: 2026-04-25-mis-primeros-pasos-en-linux
+  - section: talk
+    slug: 2023-09-27-devcontainers
+  - section: community
+    slug: pybaq
+  - section: work
+    slug: perficient
 ---
 
 Desarrollador de software radicado en Itagüí, Colombia.

@@ -1,6 +1,6 @@
 import type { UILanguages } from '@i18n/ui'
 import type { CollectionKey } from 'astro:content'
-import { sectionsConfig, type SectionConfig, type SectionType } from '@domain/section'
+import { sectionsConfig, type SectionConfig } from '@domain/section'
 
 
 /**

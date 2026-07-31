@@ -6,46 +6,25 @@ import LanguagePicker from '@components/LanguagePicker.astro'
 import HomeHighlights from '@components/HomeHighlights.astro'
 
 import intro from '@assets/img/intro.inline.svg?raw'
-import { getRelativeLocaleUrl } from 'astro:i18n'
-import { useTranslations } from '@i18n/utils'
-import { getPostsByLocale } from '@utils/paths'
-import { getEntryURL, sectionsConfig } from '@domain/section'
-import type { UILanguages } from '@i18n/ui'
+import { buildHomeLinks } from '@i18n/languagePickerUtils'
+import { HomeFrontmatterSchema, type HomeFrontmatter } from '@domain/home'
 
-type Props = MarkdownLayoutProps<{
-  title: string
-  subTitle: string
-  locale: UILanguages
-  pybaqUrl: string
-  draft?: boolean
-}>
+type Props = MarkdownLayoutProps<HomeFrontmatter>
 
 const { frontmatter } = Astro.props
-const { title, subTitle, locale, pybaqUrl, draft } = frontmatter
+const parsed = HomeFrontmatterSchema.parse(frontmatter)
+
+const { title, subTitle, locale, highlights, draft } = parsed
 
 const links = buildHomeLinks()
-const t = useTranslations(locale)
 
-const [blogPosts, talkPosts] = await Promise.all([
-  getPostsByLocale('blog', locale),
-  getPostsByLocale('talk', locale),
-])
-
-const latestBlog = blogPosts[0]
-const latestTalk = talkPosts[0]
-
-if (!latestBlog || !latestTalk) {
-  throw new Error(`Homepage build requires at least one blog post and one talk post (${locale})`)
-}
 
 import '../styles/home.css'
-import { buildHomeLinks } from '@i18n/languagePickerUtils'
-
 ---
 
 <BaseLayout pageTitle={title}>
-  <LanguagePicker slot="langpicker" links={links} />
   <SEOHead slot="seo-head" links={links} noindex={Boolean(draft)} />
+  <LanguagePicker slot="langpicker" links={links} />
 
   <section class="home-bio">
     <div class="home-avatar" set:html={intro} />
@@ -57,28 +36,5 @@ import { buildHomeLinks } from '@i18n/languagePickerUtils'
     </div>
   </section>
 
-  <HomeHighlights
-    blog={{
-      sectionLabel: t(sectionsConfig.blog.translationKey),
-      title: latestBlog.data.title,
-      excerpt: latestBlog.data.excerpt ?? '',
-      url: getEntryURL('blog', locale, latestBlog.cleanId),
-      cta: t(sectionsConfig.blog.ctaKey)
-    }}
-    talk={{
-      sectionLabel: t(sectionsConfig.talk.translationKey),
-      title: latestTalk.data.title,
-      excerpt: latestTalk.data.excerpt ?? '',
-      url: getEntryURL('talk', locale, latestTalk.cleanId),
-      cta: t(sectionsConfig.talk.ctaKey)
-    }}
-    pybaq={{
-      label: t('home.pybaq_label'),
-      role: t('home.pybaq_role'),
-      since: t('home.pybaq_since'),
-      description: t('home.pybaq_desc'),
-      url: pybaqUrl,
-      cta: t('home.pybaq_cta')
-    }}
-  />
+  <HomeHighlights highlights={highlights} locale={locale} />
 </BaseLayout>
