@@ -126,7 +126,6 @@
   color: var(--colors-sidebar-hover);
   margin-top: 0.25rem;
 }
-
 .home-bio {
   display: flex;
   flex-wrap: wrap;
@@ -135,6 +134,7 @@
   padding: 1rem 0 0;
 }
 
+/* Avatar */
 .home-avatar {
   flex: 0 1 16.5rem;
   min-width: 10rem;
@@ -147,19 +147,31 @@
   height: 100%;
 }
 
+/* Texto principal */
 .home-bio-text {
   flex: 1 1 20rem;
   min-width: 0;
+  display: flex;              /* ← necesario */
+  flex-direction: column;     /* ← necesario */
 }
 
-.home-bio-text h2 {
+/* Subtítulo */
+.home-bio-subtitle {
   margin: 0 0 0.5rem;
   font-size: 1.3rem;
   color: var(--colors-heading);
 }
 
-.home-bio-text p {
-  margin: 0 0 0.5rem;
+/* Contenido del bio */
+.home-bio-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;               /* ← evita colapsos */
+}
+
+.home-bio-content p {
+  margin: 0;
   font-size: 0.95rem;
   line-height: 1.6;
 }
