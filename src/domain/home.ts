@@ -1,12 +1,12 @@
 import { z } from 'zod'
 import { sectionsConfig, type SectionType } from '@domain/section'
-import { languageKeys } from '@i18n/ui'
+import { languageKeys, type UILanguages } from '@i18n/ui'
 
 export const SectionTypeSchema = z.enum(
   Object.keys(sectionsConfig) as [SectionType, ...SectionType[]]
 );
 
-export const UILanguagesSchema = z.enum(languageKeys)
+export const UILanguagesSchema = z.enum(languageKeys as [UILanguages, ...UILanguages[]])
 
 export const HighlightSchema = z.object({
   section: SectionTypeSchema,

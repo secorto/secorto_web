@@ -12,8 +12,10 @@ export class HighlightCards {
 
   shouldBeValid() {
     return verifyStep('highlight cards are valid', async ({ expect }) => {
-      const cardLocators = await this.parent.locator.all()
-      for (const card of cardLocators) {
+      const cardCount = await this.parent.locator.count()
+      expect(cardCount).toBeGreaterThan(0)
+      for (let i = 0; i < cardCount; i++) {
+        const card = this.parent.locator.nth(i)
         await this.shouldHaveValidCard(card).with(expect)
       }
     })
@@ -30,7 +32,7 @@ export class HighlightCards {
 
 export function highlightCards(containerLocator: Locator) {
   return new HighlightCards(
-    target('container for hightlight', containerLocator),
+    target('container for highlight', containerLocator),
     targetSelector('highlight card title', (containerLocator) => containerLocator.locator('.highlight-title')),
     targetSelector('highlight card excerpt', (containerLocator) => containerLocator.locator('.highlight-excerpt')),
     targetSelector('highlight card cta', (containerLocator) => containerLocator.locator('.highlight-cta')),

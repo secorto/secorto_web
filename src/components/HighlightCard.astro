@@ -25,7 +25,7 @@ const t = useTranslations(locale)
 ---
 
 <a class="highlight-card" href={getEntryURL(section, locale, entry.cleanId)}>
-  <span class="highlight-label">{sectionConfig.name}</span>
+  <span class="highlight-label">{t(sectionConfig.translationKey)}</span>
   <h2 class="highlight-title">{entry.data.title}</h2>
   {entry.data.excerpt && <p class="highlight-excerpt">{entry.data.excerpt}</p>}
   <span class="highlight-cta">{t(sectionConfig.ctaKey)}</span>
