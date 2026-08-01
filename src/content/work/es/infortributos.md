@@ -1,14 +1,25 @@
 ---
 title: Informática y Tributos
-excerpt: "Soluciones informáticas"
+excerpt: "Desarrollo web empresarial con Java, JSF, JasperReports y bases de datos Oracle"
 image: "@assets/img/work/infortributos.jpg"
 role: "Software developer"
 responsibilities: "Desarrollo de aplicaciones web con java"
 website: https://www.infortributos.com
+tags:
+  - dev
+  - java
 startDate: 2013-11-01
 endDate: 2016-05-01
 ---
 
-Dentro de las cosas que alcance a hacer en esta empresa fue el manejo de jsf, una tecnología que se basa en java y permite interacciones con ui, y tiene un lenguaje xhtml para la creación de las plantillas el cual se le agregan algunos componentes propios del lenguaje, entre las bibliotecas java que aprendí en esta experiencia fue la creación de reportes con JasperReports, y como framework visual PrimeFaces, ademas de eso tuve la oportunidad de conocer personas muy tesas en el manejo de bases de datos oracle donde aprendí a crear queries complejas y procedimientos almacenados
+En Informática y Tributos, desarrollé aplicaciones web empresariales utilizando tecnologías basadas en Java.
+Adquirí experiencia con JSF (JavaServer Faces) para interacciones de UI, plantillas XHTML y diversas
+librerías Java para reportes y visualización.
 
-En esta empresa aprendí que los errores no se deben dejar pasar por delante, y lo que parece un comportamiento extraño puede convertirse en un gran problema
+Logros y aprendizajes clave:
+
+- Desarrollé aplicaciones web usando JSF, XHTML y componentes personalizados
+- Implementé soluciones de reportes con JasperReports
+- Apliqué marcos visuales como PrimeFaces para desarrollo de interfaces de usuario
+- Trabajé con bases de datos Oracle: diseñé queries complejos y procedimientos almacenados
+- Aprendí la importancia de pruebas exhaustivas y manejo de errores en sistemas empresariales

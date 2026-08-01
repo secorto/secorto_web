@@ -1,10 +1,13 @@
 ---
 title: "Perficient Latinoamerica"
-excerpt: "Our passion is coding the future"
+excerpt: "Experiencia en aseguramiento de calidad y automatización de pruebas empresariales"
 image: "@assets/img/perficient/psl_2pc.jpg"
 role: "Software developer engineer in test"
 responsibilities: "Automatización de pruebas y aseguramiento de calidad"
 website: https://www.perficient.com
+tags:
+  - dev
+  - testing
 gallery:
   - image: "@assets/img/perficient/perficient_gift.jpg"
     alt: "Regalo de perficient por logro"
@@ -13,11 +16,13 @@ gallery:
 startDate: 2018-04-01
 ---
 
-Considero esta empresa el lugar donde mi carrera profesional tomo un giro orientandola al testing.
+En Perficient, me especializé en aseguramiento de calidad y automatización de pruebas, desarrollando
+estrategias integrales para garantizar la confiabilidad de los productos. Este rol me permitió realizar
+la transición de desarrollo a QA, adquiriendo experiencia en SDET (Software Development Engineer in Test).
 
-Aca he aprendido muchisimas cosas sobre estrategias de pruebas, habilidades blandas, automatización de pruebas y todavia aprendiendo muchas cosas mas.
+Logros y aprendizajes clave:
 
-En esta experiencia destaco la oportunidad de crear mi propio path de carrera y pasar de desarrollador a Quality Assurance (SDET es una rama de QA en la cual se requiere conocimientos tecnicos en desarrollo)
-Y aprendi la importancia que tiene desarrollar unas buenas pruebas en una aplicación y que se requiere para decir que una aplicación cumple o no con las expectativas de los clientes, ademas de la importancia que tiene la comunicación para tener equipos efectivos.
-
-O bien puedes [aplicar para trabajar en perficient](https://nearshore.perficient.com/careers/)
+- Desarrollé e implementé estrategias de automatización de pruebas en múltiples proyectos
+- Apliqué habilidades blandas y comunicación efectiva en equipos multifuncionales
+- Adquirí profundo entendimiento de métricas de calidad y gestión de expectativas del cliente
+- Construí suites de pruebas automatizadas utilizando herramientas y marcos estándar de la industria

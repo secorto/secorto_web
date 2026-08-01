@@ -1,15 +1,26 @@
 ---
 title: Corporación Universitaria Americana
-excerpt: "Unlock Your Gateway to Exceptional Product Development "
+excerpt: "First professional experience in infrastructure and Linux administration"
 image: "@assets/img/work/coruniamericana.jpg"
 website: https://americana.edu.co/barranquilla
 role: Student
 responsibilities: Server maintenance, support, web development
+tags:
+  - dev
+  - linux
 startDate: 2013-01-01
 endDate: 2013-04-01
 ---
 
-This was my first work experience, through the university's job placement program.
-In this experience, I learned to set up proxy servers, configure Linux machines, perform server maintenance, set up web servers, and use PHP.
+My first professional experience came through the university's internship program. I was exposed to
+infrastructure and systems administration, gaining foundational knowledge in server management, Linux
+administration, and web technologies.
 
-At the university, I participated in a research group and learned about research methodologies and structuring research projects. With the university's research group, we participated in a national conference of research groups where we presented a project about the game "La Cuarta." The featured photo is from when I was at the hotel before presenting the project at the national conference held in Montería, Colombia.
+Key achievements and learnings:
+
+- Configured and maintained proxy servers
+- Managed Linux systems and performed server maintenance
+- Set up and administered web servers
+- Learned PHP for web development
+- Participated in research group activities focused on game theory (La Cuarta project)
+- Presented research findings at a national conference in Montería, Colombia
