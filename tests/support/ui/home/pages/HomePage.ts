@@ -1,6 +1,6 @@
 import { target } from '@tests/support/ui/components/Target'
-import { shouldHaveValidHighlightCards } from '@tests/support/ui/components/HighlightCard'
-import type { Page, Locator } from '@playwright/test'
+import { highlightCards, HighlightCards } from '@tests/support/ui/components/HighlightCard'
+import type { Page } from '@playwright/test'
 import type { Target as TargetComponent } from '@tests/support/ui/components/Target'
 import type { UILanguages } from '@i18n/ui'
 import { homePath, visit } from '@tests/support/ui/shared/NavigationPaths'
@@ -14,14 +14,14 @@ export class HomePageMain implements LocalizedPage<void> {
   constructor(
     readonly avatar: TargetComponent,
     readonly bioText: TargetComponent,
-    readonly highlightCardLocator: Locator,
+    readonly highlightCards: HighlightCards,
   ) {}
 
   shouldBeLoaded(_locale: UILanguages) {
     return verifyStep('homepage main is loaded correctly', async ({ expect }) => {
       await this.avatar.shouldBeVisible().with(expect)
       await this.bioText.shouldBeVisible().with(expect)
-      await shouldHaveValidHighlightCards(this.highlightCardLocator).with(expect)
+      await this.highlightCards.shouldBeValid().with(expect)
     })
   }
 }
@@ -51,7 +51,7 @@ export function homePage(page: Page) {
   const main = new HomePageMain(
     target('home avatar', page.locator('.home-avatar svg')),
     target('home bio text', page.locator('.home-bio-text')),
-    page.locator('.highlight-card'),
+    highlightCards(page.locator('.highlight-card')),
   )
   return new HomePage(
     mainLayout({
