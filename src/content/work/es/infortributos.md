@@ -3,7 +3,7 @@ title: Informática y Tributos
 excerpt: "Desarrollo web empresarial con Java, JSF, JasperReports y bases de datos Oracle"
 image: "@assets/img/work/infortributos.jpg"
 role: "Software developer"
-responsibilities: "Desarrollo de aplicaciones web con java"
+responsibilities: "Desarrollo de aplicaciones web con Java"
 website: https://www.infortributos.com
 tags:
   - dev

@@ -16,7 +16,7 @@ gallery:
 startDate: 2018-04-01
 ---
 
-En Perficient, me especializé en aseguramiento de calidad y automatización de pruebas, desarrollando
+En Perficient, me especialicé en aseguramiento de calidad y automatización de pruebas, desarrollando
 estrategias integrales para garantizar la confiabilidad de los productos. Este rol me permitió realizar
 la transición de desarrollo a QA, adquiriendo experiencia en SDET (Software Development Engineer in Test).
 

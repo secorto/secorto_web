@@ -3,7 +3,7 @@ title: Joonik
 excerpt: "Desarrollo front-end y automatización de pruebas E2E en múltiples plataformas web"
 image: "@assets/img/work/joonik.jpg"
 role: "Front-end developer"
-responsibilities: "Desarrollo de aplicaciones web con java"
+responsibilities: "Desarrollo de aplicaciones web con Java"
 website: https://joonik.com
 tags:
   - dev

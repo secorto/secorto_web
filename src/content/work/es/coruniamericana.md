@@ -3,7 +3,7 @@ title: Corporación Universitaria Americana
 excerpt: "Primera experiencia profesional en infraestructura y administración Linux"
 image: "@assets/img/work/coruniamericana.jpg"
 website: https://americana.edu.co/barranquilla
-role: Estudiante en practicas
+role: Estudiante en prácticas
 responsibilities: Mantenimiento de servidores, soporte, desarrollo web
 tags:
   - dev
