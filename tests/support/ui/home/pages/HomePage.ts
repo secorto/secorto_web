@@ -1,13 +1,10 @@
 import { target } from '@tests/support/ui/components/Target'
+import { highlightCards, HighlightCards } from '@tests/support/ui/components/HighlightCard'
 import type { Page } from '@playwright/test'
 import type { Target as TargetComponent } from '@tests/support/ui/components/Target'
-import { homeHighlights } from '@tests/support/ui/home/HomeHighlights'
-import type { HomeHighlights as HomeHighlightsComponent } from '@tests/support/ui/home/HomeHighlights'
 import type { UILanguages } from '@i18n/ui'
-import { ui } from '@i18n/ui'
 import { homePath, visit } from '@tests/support/ui/shared/NavigationPaths'
 import { verifyStep, type Verification } from '@tests/fixtures'
-import { sectionsConfig } from '@domain/section'
 import { defaultMainLayout, mainLayout, type MainLayoutComponent } from '@tests/support/ui/shared/components/MainLayout'
 import type { LocalizedPage, LocalizedUrl } from '@tests/support/ui/shared/contracts/localization'
 import { urlValidator } from '@tests/support/ui/shared/flows/urlValidator'
@@ -17,18 +14,14 @@ export class HomePageMain implements LocalizedPage<void> {
   constructor(
     readonly avatar: TargetComponent,
     readonly bioText: TargetComponent,
-    readonly homeHighlights: HomeHighlightsComponent,
+    readonly highlightCards: HighlightCards,
   ) {}
 
-  shouldBeLoaded(locale: UILanguages) {
+  shouldBeLoaded(_locale: UILanguages) {
     return verifyStep('homepage main is loaded correctly', async ({ expect }) => {
-      const blogRoute = sectionsConfig.blog.routes[locale]
-      const talkRoute = sectionsConfig.talk.routes[locale]
       await this.avatar.shouldBeVisible().with(expect)
       await this.bioText.shouldBeVisible().with(expect)
-      await this.homeHighlights.pybaq.shouldHavePyBAQ(ui[locale]).with(expect)
-      await this.homeHighlights.blog.hrefMatches(locale, blogRoute).with(expect)
-      await this.homeHighlights.talk.hrefMatches(locale, talkRoute).with(expect)
+      await this.highlightCards.shouldBeValid().with(expect)
     })
   }
 }
@@ -58,7 +51,7 @@ export function homePage(page: Page) {
   const main = new HomePageMain(
     target('home avatar', page.locator('.home-avatar svg')),
     target('home bio text', page.locator('.home-bio-text')),
-    homeHighlights(page.locator('.highlights')),
+    highlightCards(page.locator('.highlight-card')),
   )
   return new HomePage(
     mainLayout({

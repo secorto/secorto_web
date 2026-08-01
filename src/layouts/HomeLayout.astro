@@ -1,0 +1,40 @@
+---
+import type { MarkdownLayoutProps } from 'astro'
+import BaseLayout from "@layouts/BaseLayout.astro"
+import SEOHead from '@components/SEOHead.astro'
+import LanguagePicker from '@components/LanguagePicker.astro'
+import HomeHighlights from '@components/HomeHighlights.astro'
+
+import intro from '@assets/img/intro.inline.svg?raw'
+import { buildHomeLinks } from '@i18n/languagePickerUtils'
+import { HomeFrontmatterSchema, type HomeFrontmatter } from '@domain/home'
+
+type Props = MarkdownLayoutProps<HomeFrontmatter>
+
+const { frontmatter } = Astro.props
+const parsed = HomeFrontmatterSchema.parse(frontmatter)
+
+const { title, subTitle, locale, highlights, draft } = parsed
+
+const links = buildHomeLinks()
+
+
+import '../styles/home.css'
+---
+
+<BaseLayout pageTitle={title}>
+  <SEOHead slot="seo-head" links={links} noindex={Boolean(draft)} />
+  <LanguagePicker slot="langpicker" links={links} />
+
+  <section class="home-bio">
+    <div class="home-avatar" set:html={intro} />
+    <div class="home-bio-text">
+      <h2 class="home-bio-subtitle">{subTitle}</h2>
+      <div class="home-bio-content">
+        <slot />
+      </div>
+    </div>
+  </section>
+
+  <HomeHighlights highlights={highlights} locale={locale} />
+</BaseLayout>

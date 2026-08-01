@@ -1,0 +1,32 @@
+---
+import { getEntryURL, sectionsConfig, type SectionType } from '@domain/section'
+import { type UILanguages } from '@i18n/ui'
+import { useTranslations } from '@i18n/utils'
+import { adaptToDomainEntry } from '@utils/entryAdapter'
+import { getEntry } from 'astro:content'
+
+interface Props {
+  slug: string,
+  section: SectionType,
+  locale: UILanguages
+}
+
+const { slug, section, locale } = Astro.props
+const rawEntry = await getEntry(section, `${locale}/${slug}`)
+
+if(!rawEntry) {
+  throw new Error(`Cannot render highlight for entry ${slug} with section ${section} and locale ${locale}`)
+}
+
+const entry = adaptToDomainEntry(rawEntry)
+
+const sectionConfig = sectionsConfig[section]
+const t = useTranslations(locale)
+---
+
+<a class="highlight-card" href={getEntryURL(section, locale, entry.cleanId)}>
+  <span class="highlight-label">{t(sectionConfig.translationKey)}</span>
+  <h2 class="highlight-title">{entry.data.title}</h2>
+  {entry.data.excerpt && <p class="highlight-excerpt">{entry.data.excerpt}</p>}
+  <span class="highlight-cta">{t(sectionConfig.ctaKey)}</span>
+</a>
