@@ -4,14 +4,14 @@ locale: "en"
 title: "Homepage"
 subTitle: "I'm Sergio Carlos Orozco Torres"
 highlights:
+  - section: work
+    slug: perficient
+  - section: community
+    slug: pybaq
   - section: blog
     slug: 2026-04-25-my-first-steps-in-linux
   - section: talk
     slug: 2023-09-27-devcontainers
-  - section: community
-    slug: pybaq
-  - section: work
-    slug: perficient
 ---
 
 Software developer based in Itagüí, Colombia.
