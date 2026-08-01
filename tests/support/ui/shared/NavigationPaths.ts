@@ -1,6 +1,5 @@
 import type { UILanguages } from '@i18n/ui'
 import { type SectionType, getEntryTagURL, getEntryURL, getURLForSection } from '@domain/section'
-import {  } from '@utils/sections'
 import type { Page } from '@playwright/test'
 import { step } from '@tests/fixtures'
 import { mockThirdParty } from '@tests/e2e/helpers/mockThirdParty'
