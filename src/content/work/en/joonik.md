@@ -1,16 +1,25 @@
 ---
 title: Joonik
-excerpt: "Unlock Your Gateway to Exceptional Product Development "
+excerpt: "Front-end development and E2E test automation across multiple web platforms"
 image: "@assets/img/work/joonik.jpg"
 role: "Front-end developer"
 responsibilities: "Develop websites integrating wordpress, prestashop or jekyll"
 website: https://joonik.com
+tags:
+  - dev
+  - frontend
+  - testing
 startDate: 2016-06-01
 endDate: 2018-02-10
 ---
 
-At this company, I took my first steps in end-to-end test automation with Selenium. My role was more front-end oriented, and among the things I accomplished were a website with Jekyll, several WordPress sites, and an online store with PrestaShop.
+At Joonik, I gained practical experience in both front-end development and end-to-end testing using
+Selenium. I worked on diverse web projects including static sites with Jekyll, content management systems
+with WordPress, and e-commerce platforms using PrestaShop.
 
-One of the things I value most about this company is its focus on doing things, then doing them well, and then doing them even better.
+Key achievements and learnings:
 
-The most important lesson I learned is the phrase: "Don't assume. When you assume, is likely saying ass you, me"
+- Implemented test automation frameworks for web application validation
+- Developed and maintained multiple WordPress installations and custom themes
+- Built and configured e-commerce stores with PrestaShop
+- Collaborated with teams that emphasized continuous improvement and quality

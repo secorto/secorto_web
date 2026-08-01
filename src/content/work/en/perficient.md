@@ -1,10 +1,13 @@
 ---
 title: "Perficient Latinoamerica"
-excerpt: "Our passion is coding the future"
+excerpt: "Quality assurance and test automation expertise at an enterprise consultancy"
 image: "@assets/img/perficient/psl_2pc.jpg"
 role: "Senior Technical Consultant"
 responsibilities: "Test automation and quality assurance"
 website: https://www.perficient.com
+tags:
+  - dev
+  - testing
 gallery:
   - image: "@assets/img/perficient/perficient_gift.jpg"
     alt: "Perficient gift after achieving a challenge"
@@ -13,11 +16,14 @@ gallery:
 startDate: 2018-04-01
 ---
 
-I consider this company the place where my professional career took a turn toward testing.
+At Perficient, I focused on quality assurance and test automation, learning comprehensive strategies
+for ensuring product reliability. This role gave me the opportunity to transition from development to QA,
+where I gained expertise in SDET (Software Development Engineer in Test)—a field that combines technical
+engineering with quality assurance.
 
-Here I have learned a lot about testing strategies, soft skills, test automation, and much more.
+Key achievements and learnings:
 
-From this experience, I highlight the opportunity to create my own career path and move from developer to Quality Assurance (SDET is a branch of QA that requires technical knowledge in development).
-And I learned the importance of developing good tests for an application and what is required to determine whether an application meets or fails to meet customer expectations, as well as the importance of communication for effective teams.
-
-Or you can [apply to work at perficient](https://nearshore.perficient.com/careers/)
+- Developed and executed test automation strategies across multiple projects
+- Applied soft skills and communication to support effective cross-functional teams
+- Gained deep understanding of quality metrics and customer expectation management
+- Built automated test suites using industry-standard tools and frameworks

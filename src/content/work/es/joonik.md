@@ -1,16 +1,25 @@
 ---
 title: Joonik
-excerpt: "Unlock Your Gateway to Exceptional Product Development "
+excerpt: "Desarrollo front-end y automatización de pruebas E2E en múltiples plataformas web"
 image: "@assets/img/work/joonik.jpg"
 role: "Front-end developer"
-responsibilities: "Desarrollo de aplicaciones web con java"
+responsibilities: "Desarrollo de aplicaciones web con Java"
 website: https://joonik.com
+tags:
+  - dev
+  - frontend
+  - testing
 startDate: 2016-06-01
 endDate: 2018-02-10
 ---
 
-En esta empresa di mis primeros pasos en automatización de pruebas e2e con selenium, en esta mi rol era mas orientado a front-end, entre las cosas que alcance a hacer estuvo una pagina con jekyll, varios sitios que usaban wordpress, una tienda el linea con prestashop
+En Joonik adquirí experiencia práctica en desarrollo front-end y automatización de pruebas E2E usando
+Selenium. Trabajé en diversos proyectos web incluyendo sitios estáticos con Jekyll, sistemas de gestión
+de contenidos con WordPress y plataformas de comercio electrónico con PrestaShop.
 
-De las cosas que mas destaco de esta empresa es su enfoque de hacer las cosas, luego hacerlas bien y luego hacerlas mejor
+Logros y aprendizajes clave:
 
-El aprendizaje que mas destaco es la frase: no asumas, cuando asumes quedas como un culo y me dejas como un culo, ass you me
+- Implementé marcos de automatización de pruebas para validación de aplicaciones web
+- Desarrollé y mantuve múltiples instalaciones de WordPress con temas personalizados
+- Construí y configuré tiendas de comercio electrónico con PrestaShop
+- Colaboré en equipos que enfatizaban la mejora continua y la calidad del producto
