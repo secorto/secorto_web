@@ -1,5 +1,5 @@
 ---
-title: ADR 007: Unificación de dominio e i18n — `postId`, mapas de locales y SEO centralizado
+title: ADR 007 Unificación de dominio e i18n — `postId`, mapas de locales y SEO centralizado
 status: superseded
 date: 2026-03-24
 last_updated: 2026-05-21
