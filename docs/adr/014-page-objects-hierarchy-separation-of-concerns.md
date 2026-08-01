@@ -127,3 +127,12 @@ comunica exactamente qué contexto se está probando.
 - [PAGE_OBJECTS.md](../architecture/PAGE_OBJECTS.md) — referencia de arquitectura E2E
   con modelo genérico Component/Page/Flow, incluye implementación concreta de esta decisión
 - [TESTING_STRATEGY.md](../architecture/TESTING_STRATEGY.md) — estrategia general de testing E2E
+
+## Anexos
+
+Ver en `anexos/014-page-objects-hierarchy-separation-of-concerns/`:
+
+- [ANTIPATTERN_ANALYSIS.md](./anexos/014-page-objects-hierarchy-separation-of-concerns/ANTIPATTERN_ANALYSIS.md) —
+  Análisis del primer intento fallido (herencia inflexible)
+- [MIGRATION_PLAN.md](./anexos/014-page-objects-hierarchy-separation-of-concerns/MIGRATION_PLAN.md) —
+  Plan de migración a composición (patrón homepage)
