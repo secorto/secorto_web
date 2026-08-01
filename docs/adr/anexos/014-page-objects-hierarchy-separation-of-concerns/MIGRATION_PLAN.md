@@ -2,7 +2,7 @@
 
 **Fecha:** 2026-08-01
 **Objetivo:** Restituir ADR 014 mediante patrón composición + componentes
-**Estimación:** 6-9 horas
+**Estimación:** 8.25-9.25 horas
 **Riesgo:** Bajo (solo tests)
 
 ---
@@ -68,7 +68,7 @@ Cero duplicación. Patrón idéntico a homepage.
 
 ```typescript
 import type { Locator } from '@playwright/test'
-import { step, verifyStep } from '@tests/support/test-steps'
+import { step, verifyStep } from '@tests/fixtures'
 import { Target, target, TargetSelector, targetSelector } from '@tests/support/ui/components/Target'
 
 /**
@@ -130,7 +130,7 @@ export function tagsComponent(containerLocator: Locator) {
 
 ```typescript
 import type { Locator } from '@playwright/test'
-import { step, verifyStep } from '@tests/support/test-steps'
+import { step, verifyStep } from '@tests/fixtures'
 import { Target, target, TargetSelector, targetSelector } from '@tests/support/ui/components/Target'
 
 /**
@@ -187,7 +187,7 @@ export function contentListComponent(containerLocator: Locator) {
 
 ```typescript
 import type { Locator } from '@playwright/test'
-import { verifyStep } from '@tests/support/test-steps'
+import { verifyStep } from '@tests/fixtures'
 import { Target, target, TargetSelector, targetSelector } from '@tests/support/ui/components/Target'
 
 /**
@@ -238,10 +238,11 @@ export function contentDetailComponent(containerLocator: Locator) {
 
 ```typescript
 import type { UILanguages } from '@i18n/ui'
-import { MainLayoutComponent } from '@tests/support/ui/components/layout/MainLayout'
-import { TagsComponent } from './components/Tags'
-import { ContentListComponent } from './components/ContentList'
+import type { MainLayoutComponent } from '@tests/support/ui/shared/components/MainLayout'
+import type { TagsComponent } from './components/Tags'
+import type { ContentListComponent } from './components/ContentList'
 import { urlValidator } from '@tests/support/ui/shared/flows/urlValidator'
+import { verifyStep } from '@tests/fixtures'
 import type { Page } from '@playwright/test'
 
 /**
@@ -259,10 +260,12 @@ export class ContentListPage {
     readonly validateUrl: ReturnType<typeof urlValidator>,
   ) {}
 
-  async shouldBeLoaded(locale: UILanguages) {
-    await this.mainLayout.shouldBeLoaded(locale)
-    await this.tags.shouldRenderTags()
-    return this.shouldBeInLocale(locale)
+  shouldBeLoaded(locale: UILanguages) {
+    return verifyStep('content list is loaded', async ({ expect }) => {
+      await this.mainLayout.shouldBeLoaded(locale).with(expect)
+      await this.tags.shouldRenderTags().with(expect)
+      return this.shouldBeInLocale(locale).with(expect)
+    })
   }
 
   /**
@@ -279,11 +282,11 @@ export class ContentListPage {
    * Comprueba: URL contiene /tags/${tag} y lista tiene resultados.
    * Patrón: encapsula validaciones (no test hace expect(page.url())).
    */
-  async shouldBeFiltered(tag: string) {
-    await this.validateUrl(new RegExp(`/tags/${tag}`)).with(() => ({
-      expect: require('@playwright/test').expect,
-    }))
-    return this.list.shouldHaveResults()
+  shouldBeFiltered(tag: string) {
+    return verifyStep(`content is filtered by tag ${tag}`, async ({ expect }) => {
+      await this.validateUrl(new RegExp(`/tags/${tag}`)).with(expect)
+      return this.list.shouldHaveResults().with(expect)
+    })
   }
 
   /**
@@ -389,10 +392,10 @@ import type { UILanguages } from '@i18n/ui'
  * Cada content type (blog, project, work, etc.) exporta su propio descriptor.
  * Patrón: agnóstico, reutilizable, sin duplicación de imports en test.
  */
-export interface ContentTypeFlow {
+export interface ContentTypeFlow<ListPage, DetailPage> {
   readonly name: string
-  readonly userInList: (page: Page, locale: UILanguages) => Promise<unknown>
-  readonly userInDetail: (page: Page, locale: UILanguages, slug: string) => Promise<unknown>
+  readonly userInList: (page: Page, locale: UILanguages) => Promise<ListPage>
+  readonly userInDetail: (page: Page, locale: UILanguages, slug: string) => Promise<DetailPage>
 }
 ```
 
@@ -401,34 +404,43 @@ export interface ContentTypeFlow {
 ```typescript
 import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
-import { MainLayoutComponent } from '@tests/support/ui/components/layout/MainLayout'
+import { mainLayout, defaultMainLayout, type MainLayoutComponent } from '@tests/support/ui/shared/components/MainLayout'
+import { target } from '@tests/support/ui/components/Target'
 import { ContentListPage } from './ContentListPage'
 import { ContentDetailPage } from './ContentDetailPage'
 import { tagsComponent } from './components/Tags'
 import { contentListComponent } from './components/ContentList'
 import { CommentsComponent } from './components/Comments'
+import { urlValidator } from '@tests/support/ui/shared/flows/urlValidator'
 import type { ContentTypeFlow } from './types'
 
 export async function userInBlogList(page: Page, locale: UILanguages): Promise<ContentListPage> {
-  // Factories inyectan selectores (patrón DI, idéntico a HighlightCard)
-  const mainLayout = new MainLayoutComponent(page, 'Blog List')
-  const tags = tagsComponent(page.locator('main')) // selectores inyectados
+  // Factories inyectan selectores (patrón DI, idéntico a HighlightCard + homepage)
+  const layoutComponent = mainLayout({
+    ...defaultMainLayout(page),
+    name: 'blog list',
+    headerTitle: target('blog section title', page.getByRole('heading', { level: 1 })),
+  })
+  const tags = tagsComponent(page.locator('main'))
   const list = contentListComponent(page.locator('main'))
-  return new ContentListPage(mainLayout, tags, list, urlValidator(page))
+  return new ContentListPage(layoutComponent, tags, list, urlValidator(page))
 }
 
 export async function userInBlogPost(page: Page, locale: UILanguages, slug: string): Promise<ContentDetailPage> {
-  const mainLayout = new MainLayoutComponent(page, 'Blog Detail')
+  const layoutComponent = mainLayout({
+    ...defaultMainLayout(page),
+    name: 'blog detail',
+  })
   const comments = new CommentsComponent(page)
-  return new ContentDetailPage(mainLayout, comments)
+  return new ContentDetailPage(layoutComponent, comments)
 }
 
 /**
  * Descriptor del flow para blog.
  * Usado en test parametrizado para iterar sobre content types.
- * Patrón: agnóstico (ContentTypeFlow), sin duplicar imports.
+ * Patrón: agnóstico (ContentTypeFlow<ListPage, DetailPage>), sin duplicar imports.
  */
-export const blogFlow: ContentTypeFlow = {
+export const blogFlow: ContentTypeFlow<ContentListPage, ContentDetailPage> = {
   name: 'blog',
   userInList: userInBlogList,
   userInDetail: userInBlogPost,
@@ -438,18 +450,18 @@ export const blogFlow: ContentTypeFlow = {
 **Similar para ProjectPages, WorkPages, CommunityPages, TalkPages:**
 
 ```typescript
-export const projectFlow: ContentTypeFlow = {
+export const projectFlow: ContentTypeFlow<ContentListPage, ContentExperienceDetailPage> = {
   name: 'project',
   userInList: userInProjectList,
   userInDetail: userInProjectDetail,
 } as const
 
-// ... etc
+// ... etc (workFlow, communityFlow, talkFlow con sus respectivos tipos)
 ```
 
 **Beneficio:**
 
-- ✅ Tipo genérico (`ContentTypeFlow`) agnóstico
+- ✅ Tipo genérico (`ContentTypeFlow<ListPage, DetailPage>`) agnóstico y tipado
 - ✅ Cada módulo exporta su descriptor (factory)
 - ✅ Cero duplicación de imports en test
 - ✅ Explícito: qué funciones van en cada flow
@@ -513,7 +525,6 @@ import { projectFlow } from '@tests/support/ui/content/ProjectPages'
 import { workFlow } from '@tests/support/ui/content/WorkPages'
 import { communityFlow } from '@tests/support/ui/content/CommunityPages'
 import { talkFlow } from '@tests/support/ui/content/TalkPages'
-import type { ContentTypeFlow } from '@tests/support/ui/content/types'
 
 /**
  * Flujo completo de navegación en content:
@@ -524,12 +535,12 @@ import type { ContentTypeFlow } from '@tests/support/ui/content/types'
  * 5. Click en item de la lista
  * 6. Validar detalle carga
  *
- * Patrón: Cada content type exporta su descriptor (ContentTypeFlow).
+ * Patrón: Cada content type exporta su descriptor (ContentTypeFlow<ListPage, DetailPage>).
  * Test parametrizado itera sobre descriptores (agnóstico).
  * Sin duplicación, sin imports genéricos (as *).
  */
 
-const flows: ContentTypeFlow[] = [
+const flows = [
   blogFlow,
   projectFlow,
   workFlow,
