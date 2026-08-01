@@ -14,11 +14,11 @@ highlights:
     slug: 2023-09-27-devcontainers
 ---
 
-Software developer based in Itagüí, Colombia.
-I work in **software quality and test automation** at
-[Perficient](/en/work) since 2018.
-Organizer and speaker at [Python Barranquilla](/en/community).
+System Engineer specialized in quality.
+I design reproducible pipelines and scalable test suites,
+with experience in banking, commerce, media, digital agencies, and public sector.
 
-This site is itself a practical exercise: **100% test coverage**
-and **e2e testing with Playwright** — the starting point for a new series of
-[posts](/en/blog) and [talks](/en/talk).
+This site ([secorto](/en/project/scot3004)) is a working demo:
+100% test coverage, E2E with Playwright, CI/CD in GitHub Actions.
+
+Explore: [GitHub](https://github.com/scot3004) · [About me](/en/about)
