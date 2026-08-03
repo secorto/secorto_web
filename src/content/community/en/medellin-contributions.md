@@ -8,6 +8,10 @@ location: medellin
 connection: "Python Colombia"
 priority: 35
 translationKey: medellin-contributions
+tags:
+  - jamstack
+  - frontend
+  - opensource
 ---
 
 My participation in Medellín emerged through **Python Colombia** (PyCon 2018–2024).

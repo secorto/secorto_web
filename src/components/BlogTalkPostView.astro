@@ -14,7 +14,7 @@ interface Props {
     data: {
       title: string
       date?: Date
-      tags?: string[]
+      tags: string[]
       image?: string | ImageMetadata
       excerpt?: string
       gallery?: Array<{ image: ImageMetadata; alt: string }>
@@ -30,9 +30,7 @@ const t = useTranslations(locale)
 const dateFormat = getFullFormat(Astro.url)
 ---
 
-{entry.data.tags && entry.data.tags.length > 0 && (
-  <Tags route={`/${locale}/${routeSlug}/tags/`} tags={entry.data.tags} />
-)}
+<Tags route={`/${locale}/${routeSlug}/tags/`} tags={entry.data.tags} />
 
 {entry.data.video &&
     <ResponsiveIframe

@@ -8,6 +8,7 @@ import { glob } from 'astro/loaders'
  */
 const createBasePostSchema = (imageHelper: ImageFunction) => z.object({
   title: z.string(),
+  tags: z.array(z.string()).nonempty('Tags are required'),
   image: imageHelper().optional(),
   excerpt: z.string().optional(),
   description: z.string().optional(),
@@ -15,7 +16,6 @@ const createBasePostSchema = (imageHelper: ImageFunction) => z.object({
   translationKey: z.string().optional(),
   canonical: z.boolean().optional(),
   draft: z.boolean().optional(),
-  tags: z.array(z.string()).optional(),
   gallery: z.array(z.object({
     image: imageHelper(),
     alt: z.string()

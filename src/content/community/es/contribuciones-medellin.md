@@ -6,6 +6,10 @@ role: "Speaker"
 responsibilities: "Charlas sobre tecnologías web y desarrollo moderno"
 priority: 35
 translationKey: medellin-contributions
+tags:
+  - jamstack
+  - frontend
+  - opensource
 ---
 
 Mi participación en Medellín surgió a través de **Python Colombia** (PyCon 2018–2024).
