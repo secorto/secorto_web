@@ -16,6 +16,10 @@ gallery:
     image: "@assets/img/pybaq/pycon-pybaq-2019.jpg"
   - alt: Starting PyCon 2019
     image: "@assets/img/pybaq/pycon-entrada.jpg"
+tags:
+  - python
+  - testing
+  - opensource
 ---
 
 PyBAQ is part of **Python Colombia**, the national network of Python communities.

@@ -3,7 +3,6 @@ title: Mis primeros pasos en Linux
 date: 2026-04-25
 tags:
   - linux
-  - resumen
   - experiencias
 excerpt: Un repaso personal y condensado de lo que aprendí usando varias distribuciones y entornos de escritorio, transformando antiguos tutoriales en lecciones.
 gallery:

@@ -6,8 +6,6 @@ responsibilities: "Organización de eventos de software libre, charlas sobre Lin
 tags:
   - opensource
   - linux
-  - ubuntu
-  - flisol
 translationKey: fsl-barranquilla
 image: "@assets/img/comunidades/wp-baq.png"
 priority: 40
