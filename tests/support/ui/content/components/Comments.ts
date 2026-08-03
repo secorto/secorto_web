@@ -1,4 +1,4 @@
-import type { Locator } from '@playwright/test'
+import type { Locator, Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
 import { verifyStep } from '@tests/fixtures'
 
@@ -20,4 +20,15 @@ export class Comments {
 
 export function comments(script: Locator, frame: Locator) {
   return new Comments(script, frame)
+}
+
+/**
+ * Factory para Giscus comments.
+ * Encapsula los selectores específicos de Giscus, eliminando duplicación.
+ */
+export function giscusComments(page: Page) {
+  return comments(
+    page.locator('.comments script[src*="giscus.app"]'),
+    page.locator('iframe.giscus-frame'),
+  )
 }

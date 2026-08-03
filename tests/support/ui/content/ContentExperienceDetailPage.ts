@@ -1,62 +1,54 @@
 import type { Page } from '@playwright/test'
+import type { UILanguages } from '@i18n/ui'
+import type { SectionType } from '@domain/section'
+import type { MainLayoutComponent } from '@tests/support/ui/shared/components/MainLayout'
+import { mainLayout, defaultMainLayout } from '@tests/support/ui/shared/components/MainLayout'
 import { target } from '@tests/support/ui/components/Target'
-import type { Target as TargetComponent } from '@tests/support/ui/components/Target'
-import { ContentPage, createContentPage } from '@tests/support/ui/content/ContentPage'
+import type { ContentDetailComponent } from './components/ContentDetail'
+import { contentDetailComponent } from './components/ContentDetail'
+import { ExperienceListPageMain } from './ContentListPage'
 
 /**
- * Page Object for content detail views with professional experience metadata
- * (work, projects, community).
- * Specialization of ContentPage that guarantees role, responsibilities, and website fields.
+ * Orquestador de página de detalle (work, project, community).
+ * Compone MainLayout + ContentDetailComponent.
  */
-export class ContentExperienceDetailPage extends ContentPage {
+export class ContentExperienceDetailPage {
   constructor(
-    name: string,
-    headerTitle: TargetComponent,
-    tags: TargetComponent,
-    readonly postRole: TargetComponent,
-    readonly postResponsibilities: TargetComponent,
-    readonly postWebsite: TargetComponent,
-  ) {
-    super(name, headerTitle, tags)
+    readonly mainLayout: MainLayoutComponent,
+    readonly detail: ContentDetailComponent,
+  ) {}
+
+  shouldBeLoaded(locale: UILanguages) {
+    return this.mainLayout.shouldBeLoaded(locale)
   }
 
-  /**
-   * Verify the role/position title matches the expected value.
-   * @param expected - The role text to match
-   */
-  shouldHaveRole(expected: string) {
-    return this.postRole.shouldHaveText(expected)
+  shouldHaveRole(expectedRole: string) {
+    return this.detail.shouldHaveRole(expectedRole)
   }
 
-  /**
-   * Verify the responsibilities description matches the expected value.
-   * @param expected - The responsibilities text to match
-   */
-  shouldHaveResponsibilities(expected: string) {
-    return this.postResponsibilities.shouldHaveText(expected)
+  shouldHaveResponsibilities(expectedResponsibilities: string) {
+    return this.detail.shouldHaveResponsibilities(expectedResponsibilities)
   }
 
-  /**
-   * Verify the website link points to the expected URL.
-   * @param expected - The website URL to match
-   */
-  shouldHaveWebsite(expected: string) {
-    return this.postWebsite.shouldHaveAttribute('href', expected)
+  shouldHaveWebsite(expectedWebsite: string) {
+    return this.detail.shouldHaveWebsite(expectedWebsite)
   }
 }
 
 /**
- * Factory for creating ContentExperienceDetailPage with experience-specific elements.
- * Used for content types with professional metadata (work, projects, community).
+ * Crea ContentExperienceDetailPage para experiencias (work, project, community).
+ * Encapsula mainLayout + contentDetailComponent.
  */
-export function contentExperienceDetailPage(page: Page, name: string): ContentExperienceDetailPage {
-  const basePage = createContentPage(page, name)
-  return new ContentExperienceDetailPage(
-    basePage.name,
-    basePage.headerTitle,
-    basePage.tags,
-    target(`${name} role`, page.getByTestId('post-role')),
-    target(`${name} responsibilities`, page.getByTestId('post-responsibilities')),
-    target(`${name} website`, page.getByTestId('post-website')),
-  )
+export function createExperienceDetail(
+  page: Page,
+  sectionName: SectionType,
+): ContentExperienceDetailPage {
+  const layoutComponent = mainLayout({
+    ...defaultMainLayout(page),
+    name: `${sectionName} detail`,
+    headerTitle: target(`${sectionName} detail title`, page.getByRole('heading', { level: 1 })),
+    main: new ExperienceListPageMain(sectionName),
+  })
+  const detailComp = contentDetailComponent(page.locator('main'))
+  return new ContentExperienceDetailPage(layoutComponent, detailComp)
 }

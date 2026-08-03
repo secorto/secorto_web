@@ -1,21 +1,46 @@
 import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
-import { ContentListPage, contentListPage } from '@tests/support/ui/content/ContentListPage'
-import { ContentExperienceDetailPage, contentExperienceDetailPage } from '@tests/support/ui/content/ContentExperienceDetailPage'
-import { contentListPath, contentDetailsPath, visit } from '@tests/support/ui/shared/NavigationPaths'
+import { getURLForSection, getEntryURL } from '@domain/section'
+import { ContentListPage, ExperienceListPageMain, createContentListPageFactory } from './ContentListPage'
+import { ContentExperienceDetailPage, createExperienceDetail } from './ContentExperienceDetailPage'
+import { visit } from '@tests/support/ui/shared/NavigationPaths'
+import type { ContentTypeFlow } from './types'
 
-export const userInWorkList = (page: Page, locale: UILanguages) =>
-  visit(
+function createWorkListPage(page: Page) {
+  return createContentListPageFactory(page, 'work', ExperienceListPageMain)
+}
+
+function createWorkDetailPage(page: Page) {
+  return createExperienceDetail(page, 'work')
+}
+
+export async function userInWorkList(page: Page, locale: UILanguages): Promise<ContentListPage> {
+  return visit(
     `a user in work list ${locale}`,
     page,
-    contentListPath('work', locale),
-    (p): ContentListPage => contentListPage(p, 'work'),
+    getURLForSection('work', locale),
+    (p: Page) => createWorkListPage(p),
   )
+}
 
-export const userInWorkDetail = (page: Page, locale: UILanguages, slug: string) =>
-  visit(
+export async function userInWorkDetail(
+  page: Page,
+  locale: UILanguages,
+  slug: string,
+): Promise<ContentExperienceDetailPage> {
+  return visit(
     `a user in work detail ${locale} ${slug}`,
     page,
-    contentDetailsPath('work', locale, slug),
-    (p): ContentExperienceDetailPage => contentExperienceDetailPage(p, 'work'),
+    getEntryURL('work', locale, slug),
+    (p: Page) => createWorkDetailPage(p),
   )
+}
+
+export const workFlow: ContentTypeFlow<ContentListPage> = {
+  name: 'work',
+  testTag: 'dev',
+  testSlug: 'coruniamericana',
+  userInList: userInWorkList,
+  createDetail: createWorkDetailPage,
+} as const
+

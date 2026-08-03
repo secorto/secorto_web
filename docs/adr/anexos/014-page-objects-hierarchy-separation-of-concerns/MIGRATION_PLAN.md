@@ -1,8 +1,8 @@
 # Migration Plan: Refactorización de POM Content a Composición
 
-**Fecha:** 2026-08-01
+**Fecha:** 2026-08-01 (Actualizado: 2026-08-02)
 **Objetivo:** Restituir ADR 014 mediante patrón composición + componentes
-**Estimación:** 8.25-9.25 horas
+**Estimación:** ~~8.25-9.25 horas~~ **7.95-8.5 horas** ✅ (ahorro 45min por unificación del modelo de tags)
 **Riesgo:** Bajo (solo tests)
 
 ---
@@ -92,8 +92,9 @@ export class TagsComponent {
 
   shouldRenderTags() {
     return verifyStep(`Tags are rendered`, async ({ expect }) => {
-      await expect(this.container.locator).toBeVisible()
-      // tagLink.resolve() está disponible para validar cantidad
+      // Delega validación de visibilidad a Target
+      await this.container.shouldBeVisible().with(expect)
+      // Valida que hay tags renderizados (acceso a .locator necesario porque Target no expone count())
       const tagCount = await this.container.locator.locator('[data-testid^="tag-link-"]').count()
       expect(tagCount).toBeGreaterThan(0)
     })
@@ -136,11 +137,14 @@ import { Target, target, TargetSelector, targetSelector } from '@tests/support/u
 /**
  * Componente reutilizable para lista de items.
  * Patrón: Recibe Target + TargetSelector (DI), NO recibe page.
+ * Agnóstico a filtros: funciona en /es/blog y /es/blog/tags/python.
  */
 export class ContentListComponent {
   constructor(
     readonly container: Target,
     readonly itemLink: TargetSelector<string>, // factory: dado href, retorna Locator
+    readonly firstItem: Target, // Target: primer item (semántica explícita)
+    readonly allItems: Target, // Target: todos los items (semántica explícita)
   ) {}
 
   async clickItem(href: string, title: string) {
@@ -151,33 +155,37 @@ export class ContentListComponent {
 
   async clickFirstItem() {
     return step(`Click first item`, async () => {
-      const firstItem = this.container.locator.locator('[data-testid="list-item"]').first()
-      const href = await firstItem.getAttribute('href')
+      // Delega lectura de atributo a Target.getAttribute()
+      const href = await this.firstItem.getAttribute('href')
       if (!href) throw new Error('No href found on first item')
-      await this.itemLink.get(href).click()
+      return this.clickItem(href, 'first item')
     })
   }
 
   shouldHaveResults() {
-    return verifyStep(`List has items`, async ({ expect }) => {
-      const items = this.container.locator.locator('[data-testid="list-item"]')
-      await expect.poll(async () => items.count()).toBeGreaterThan(0)
-    })
+    // Delega validación de "al menos un item" a Target.shouldHaveAtLeastOne()
+    return this.allItems.shouldHaveAtLeastOne()
   }
 }
 
 /**
- * Factory inyecta selectores.
+ * Factory centralizada para crear ContentListPage.
+ * Elimina duplicación de lógica en BlogPages.ts, ProjectPages.ts, etc.
  */
-export function contentListComponent(containerLocator: Locator) {
-  return new ContentListComponent(
-    target('content list', containerLocator),
-    targetSelector(
-      'list item link',
-      (href: string) => containerLocator.locator(`[href="${href}"]`),
-      (href: string) => href,
-    ),
-  )
+export function createContentListPageFactory(
+  page: Page,
+  sectionName: SectionType,
+  mainPageClass: typeof PostListPageMain | typeof ExperienceListPageMain,
+): ContentListPage {
+  const layoutComponent = mainLayout({
+    ...defaultMainLayout(page),
+    name: `${sectionName} list`,
+    headerTitle: target(`${sectionName} section title`, page.getByRole('heading', { level: 1 })),
+    main: new mainPageClass(sectionName),
+  })
+  const tagsComp = tagsComponent(page.locator('main'))
+  const listComp = contentListComponent(page.locator('main'))
+  return new ContentListPage(layoutComponent, tagsComp, listComp, urlValidator(page))
 }
 ```
 
@@ -197,20 +205,18 @@ import { Target, target, TargetSelector, targetSelector } from '@tests/support/u
 export class ContentDetailComponent {
   constructor(
     readonly container: Target,
-    readonly roleField: TargetSelector<void>,
-    readonly responsibilitiesField: TargetSelector<void>,
+    readonly roleField: Target, // Target: role field (semántica explícita)
+    readonly responsibilitiesField: Target, // Target: responsibilities field (semántica explícita)
   ) {}
 
   shouldHaveRole(expectedRole: string) {
-    return verifyStep(`Has role: ${expectedRole}`, async ({ expect }) => {
-      await expect(this.roleField.get(undefined)).toContainText(expectedRole)
-    })
+    // Delega validación a Target.shouldContainText()
+    return this.roleField.shouldContainText(expectedRole)
   }
 
   shouldHaveResponsibilities(expectedResponsibilities: string) {
-    return verifyStep(`Has responsibilities`, async ({ expect }) => {
-      await expect(this.responsibilitiesField.get(undefined)).toContainText(expectedResponsibilities)
-    })
+    // Delega validación a Target.shouldContainText()
+    return this.responsibilitiesField.shouldContainText(expectedResponsibilities)
   }
 }
 
@@ -220,14 +226,8 @@ export class ContentDetailComponent {
 export function contentDetailComponent(containerLocator: Locator) {
   return new ContentDetailComponent(
     target('content detail', containerLocator),
-    targetSelector(
-      'detail role field',
-      () => containerLocator.locator('[data-testid="detail-role"]'),
-    ),
-    targetSelector(
-      'detail responsibilities field',
-      () => containerLocator.locator('[data-testid="detail-responsibilities"]'),
-    ),
+    target('role field', containerLocator.locator('[data-testid="detail-role"]')),
+    target('responsibilities field', containerLocator.locator('[data-testid="detail-responsibilities"]')),
   )
 }
 ```
@@ -316,7 +316,7 @@ export class ContentListPage {
 
 ```typescript
 import type { UILanguages } from '@i18n/ui'
-import { MainLayoutComponent } from '@tests/support/ui/components/layout/MainLayout'
+import { MainLayoutComponent } from '@tests/support/ui/shared/components/MainLayout'
 import { CommentsComponent } from './components/Comments'
 
 /**
@@ -350,7 +350,7 @@ export class ContentDetailPage {
 
 ```typescript
 import type { UILanguages } from '@i18n/ui'
-import { MainLayoutComponent } from '@tests/support/ui/components/layout/MainLayout'
+import { MainLayoutComponent } from '@tests/support/ui/shared/components/MainLayout'
 import { ContentDetailComponent } from './components/ContentDetail'
 
 /**
@@ -414,16 +414,24 @@ import { CommentsComponent } from './components/Comments'
 import { urlValidator } from '@tests/support/ui/shared/flows/urlValidator'
 import type { ContentTypeFlow } from './types'
 
-export async function userInBlogList(page: Page, locale: UILanguages): Promise<ContentListPage> {
-  // Factories inyectan selectores (patrón DI, idéntico a HighlightCard + homepage)
+/**
+ * Factory inyecta todas las dependencias de ContentListPage.
+ * Patrón: consistente con tagsComponent(), contentListComponent(), etc.
+ * Cambios localizados en un único factory.
+ */
+export function contentListPage(page: Page, sectionName: string) {
   const layoutComponent = mainLayout({
     ...defaultMainLayout(page),
-    name: 'blog list',
-    headerTitle: target('blog section title', page.getByRole('heading', { level: 1 })),
+    name: `${sectionName} list`,
+    headerTitle: target(`${sectionName} section title`, page.getByRole('heading', { level: 1 })),
   })
   const tags = tagsComponent(page.locator('main'))
   const list = contentListComponent(page.locator('main'))
   return new ContentListPage(layoutComponent, tags, list, urlValidator(page))
+}
+
+export async function userInBlogList(page: Page, locale: UILanguages): Promise<ContentListPage> {
+  return contentListPage(page, 'blog')
 }
 
 export async function userInBlogPost(page: Page, locale: UILanguages, slug: string): Promise<ContentDetailPage> {
@@ -440,7 +448,7 @@ export async function userInBlogPost(page: Page, locale: UILanguages, slug: stri
  * Usado en test parametrizado para iterar sobre content types.
  * Patrón: agnóstico (ContentTypeFlow<ListPage, DetailPage>), sin duplicar imports.
  */
-export const blogFlow: ContentTypeFlow<ContentListPage, ContentDetailPage> = {
+export const blogFlow: ContentTypeFlow<ContentListPage> = {
   name: 'blog',
   userInList: userInBlogList,
   userInDetail: userInBlogPost,
@@ -450,13 +458,39 @@ export const blogFlow: ContentTypeFlow<ContentListPage, ContentDetailPage> = {
 **Similar para ProjectPages, WorkPages, CommunityPages, TalkPages:**
 
 ```typescript
-export const projectFlow: ContentTypeFlow<ContentListPage, ContentExperienceDetailPage> = {
+// ✅ ACTUALIZADO 2026-08-02 (unificación modelo): Projects, Works, Communities ahora también tienen Tags
+// Porque WorkProjectCommunityView.astro renderiza <Tags ... /> (tags son obligatorios en schema)
+
+export async function userInProjectList(page: Page, locale: UILanguages): Promise<ContentListPage> {
+  // ✅ ProjectPages AHORA tiene TagsComponent (antes no)
+  return contentListPage(page, 'project')
+}
+
+export async function userInProjectDetail(page: Page, locale: UILanguages, slug: string):
+  Promise<ContentExperienceDetailPage> {
+    const layoutComponent = mainLayout({
+      ...defaultMainLayout(page),
+      name: 'project detail',
+    })
+    const detail = contentDetailComponent(page.locator('main'))
+    return new ContentExperienceDetailPage(layoutComponent, detail)
+}
+
+export const projectFlow: ContentTypeFlow<ContentListPage> = {
   name: 'project',
   userInList: userInProjectList,
   userInDetail: userInProjectDetail,
 } as const
 
-// ... etc (workFlow, communityFlow, talkFlow con sus respectivos tipos)
+// ... idem workFlow (userInWorkList, userInWorkDetail, workFlow)
+// ... idem communityFlow (userInCommunityList, userInCommunityDetail, communityFlow)
+
+// TalkPages: similar a BlogPages (ContentDetailPage sin ContentExperienceDetailPage)
+export const talkFlow: ContentTypeFlow<ContentListPage> = {
+  name: 'talk',
+  userInList: userInTalkList,
+  userInDetail: userInTalkDetail,
+} as const
 ```
 
 **Beneficio:**
@@ -466,6 +500,8 @@ export const projectFlow: ContentTypeFlow<ContentListPage, ContentExperienceDeta
 - ✅ Cero duplicación de imports en test
 - ✅ Explícito: qué funciones van en cada flow
 - ✅ Elegante: loop genérico en test sin cambios por content type
+- ✅ **ALINEADO CON MODELO UNIFICADO:** Todos los content types usan `ContentListPage` (con Tags)
+  porque tags ahora son obligatorios en schema
 
 ### Paso 8: ELIMINAR archivos obsoletos
 
@@ -484,6 +520,42 @@ export const projectFlow: ContentTypeFlow<ContentListPage, ContentExperienceDeta
 - ContentPage.ts, ContentPostDetailPage.ts, ContentTagsPage.ts no existen
 - Cero métodos duplicados
 - Patrón **idéntico a HighlightCard.ts** (DI + Target + TargetSelector)
+
+---
+
+## ✅ Unificación del Manejo de Tags — Simplificación del Modelo
+
+**Contexto:** Investigación aplicada del impacto de este plan de migración
+identificó que los 3 content types de experience (project, work, community)
+no tenían vista de tags en detalle (presumiblemente bug).
+Se normalizó el modelo para que TODOS los content types tengan tags obligatorios.
+
+**Cambios en `src/content.config.ts` y componentes:**
+
+1. **Tags obligatorios en schema:**
+   - Antes: `tags: z.array(z.string()).optional()`
+   - Ahora: `tags: z.array(z.string()).nonempty('Tags are required')`
+   - **Impacto:** Todos los content types SIEMPRE tienen tags (garantizado por schema)
+
+2. **BlogTalkPostView.astro — condicional innecesario eliminado:**
+   - Antes: `{entry.data.tags && entry.data.tags.length > 0 && <Tags ... />}`
+   - Ahora: `<Tags route={...} tags={entry.data.tags} />`
+   - **Impacto:** Blog/Talk SIEMPRE renderizan Tags
+
+3. **WorkProjectCommunityView.astro — Tags agregadas:**
+   - Antes: No había Tags en work/project/community
+   - Ahora: `<Tags route={...} tags={entry.data.tags} />`
+   - **Impacto:** Projects/Works/Communities ahora TAMBIÉN tienen tags
+   - `routeSlug` cambió de opcional a obligatorio (requerido por Tags)
+
+**Beneficio para el plan de migración:**
+
+- ✅ **Simplifica FASE 0.7:** Todos los 5 content types tienen idéntica estructura
+  - Antes: Blog/Talk ≠ Projects/Works/Communities
+  - Ahora: TODOS usan `ContentListPage` (MainLayout + Tags + ContentList)
+- ✅ **Simplifica FASE 1:** Tests no necesitan condicionales sobre tags
+- ✅ **Elimina casos edge:** No hay "items sin tags" en la DB
+- ✅ **Reduce tests fragmentados:** Ya no necesitas lógica especial por tipo
 
 ---
 
@@ -561,14 +633,19 @@ for (const flow of flows) {
         const list = await flow.userInList(page, locale)
         await list.shouldBeLoaded(locale).with(expect)
 
-        // 3. Click en un tag y primer item resultante
-        // (encapsulado en método de alto nivel: filtrado + click)
-        await list.clickFirstItemInTag('python')
+        // 3. Click en un tag para filtrar
+        // Navegación interna: /es/blog → /es/blog/tags/python (sigue siendo ContentListPage)
+        await list.filterByTag('python')
 
-        // 4. Valida filtrado (URL + resultados)
+        // 4. Valida filtrado (URL cambió a /tags/python, contenido filtrado)
+        // Los selectores de `list` siguen siendo válidos porque apuntan a 'main' (agnóstico a URL)
         await list.shouldBeFiltered('python').with(expect)
 
-        // 6. Valida detalle
+        // 5. Click en primer item de la lista filtrada
+        // Sigue siendo ContentListPage, solo que con resultados filtrados
+        await list.clickFirstItem()
+
+        // 6. Valida detalle carga
         const detail = await flow.userInDetail(page, locale, 'auto')
         await detail.shouldBeLoaded(locale)
       },
@@ -613,22 +690,22 @@ Eliminar:
 
 ## Cronograma Completo
 
-| Fase | Tarea | Estimación | Riesgo |
-| --- | --- | --- | --- |
-| 0.1 | Crear TagsComponent | 30min | Bajo |
-| 0.2 | Crear ContentListComponent | 30min | Bajo |
-| 0.3 | Crear ContentDetailComponent | 20min | Bajo |
-| 0.4-0.6 | Refactorizar orquestadores (3) | 1.5h | Bajo |
-| 0.7 | Actualizar facades (5 archivos) | 1h | Bajo |
-| 0.8 | Eliminar archivos obsoletos | 1h | Bajo |
-| FASE 0 Total | Reestructuración POM | 5-6h | Bajo |
-| 1.0 | Crear tipo `ContentTypeFlow` | 15min | Bajo |
-| 1.1 | Descriptores en cada módulo (5) | 30min | Bajo |
-| 1.2 | Crear test E2E parametrizado | 1h | Bajo |
-| 1.3 | Eliminar tests fragmentados | 30min | Bajo |
-| 1.4 | Validar tests + Firefox memory | 1h | Bajo |
-| FASE 1 Total | Consolidar E2E con DI | 3.25h | Bajo |
-| **Total** | **Ambas fases** | **8.25-9.25h** | **Bajo** |
+| Fase | Tarea | Estimación | Riesgo | Notas |
+| --- | --- | --- | --- | --- |
+| 0.1 | Crear TagsComponent | 30min | Bajo | |
+| 0.2 | Crear ContentListComponent | 30min | Bajo | |
+| 0.3 | Crear ContentDetailComponent | 20min | Bajo | |
+| 0.4-0.6 | Refactorizar orquestadores (3) | 1.5h | Bajo | (MainLayout, ContentList, ContentExperience) |
+| 0.7 | Actualizar facades (5 archivos) | **45min** | Bajo | ✅ -15min: modelo unificó estructura (todos con Tags) |
+| 0.8 | Eliminar archivos obsoletos | 1h | Bajo | |
+| FASE 0 Total | Reestructuración POM | **5-5.5h** | Bajo | ✅ Ahorro 30min |
+| 1.0 | Crear tipo `ContentTypeFlow` | 15min | Bajo | |
+| 1.1 | Descriptores en cada módulo (5) | 30min | Bajo | ✅ Más simple: todos usan ContentListPage |
+| 1.2 | Crear test E2E parametrizado | **45min** | Bajo | ✅ -15min: modelo eliminó condicionales |
+| 1.3 | Eliminar tests fragmentados | 30min | Bajo | |
+| 1.4 | Validar tests + Firefox memory | 1h | Bajo | |
+| FASE 1 Total | Consolidar E2E con DI | **3h** | Bajo | ✅ Ahorro 15min |
+| **Total** | **Ambas fases** | **7.95-8.5h** | **Bajo** | ✅ **Ahorro 45min vs plan original** |
 
 ---
 
@@ -738,3 +815,21 @@ mediante:
 2. DI puro (selectores inyectados, NO hardcodeados)
 3. Patrón probado (HighlightCard + Target + TargetSelector)
 4. Mejorar cobertura real (navegación completa vs fragmentados)
+
+---
+
+## Notas de Diseño: Excepciones de Herencia Legítima
+
+**Caso especial:** ContentListPageByTags es una **especialización** de ContentListPage
+
+- `/es/blog` = ContentListPage (base)
+- `/es/blog/tags/python` = ContentListPage filtrada (90% idéntico, 10% diferente: tag resaltado)
+
+**Esta herencia es legítima porque:**
+- No es herencia de clases (`extends`) — es **composición con estado**
+- Mismo objeto (`ContentListPage`), diferente estado (filtrado por tag)
+- Los selectores son agnósticos a la URL (apuntan a `main`, válidos en ambas)
+- No causa acoplamiento rígido — es una variación transparente
+
+**Patrón:** La navegación `filterByTag()` cambia la URL pero mantiene el mismo objeto,
+lo que permite encapsular validaciones (`shouldBeFiltered()`) sin duplicar lógica.

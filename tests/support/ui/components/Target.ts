@@ -55,6 +55,25 @@ export class Target {
       await this.locator.click()
     })
   }
+
+  /**
+   * Get an attribute value from the element.
+   * Used for reading data (not assertions).
+   * Example: `const href = await target('link', el).getAttribute('href')`
+   */
+  async getAttribute(name: string): Promise<string | null> {
+    return this.locator.getAttribute(name)
+  }
+
+  /**
+   * Verify that there is at least one matching element.
+   * Useful for lists or collections where count > 0 is expected.
+   */
+  shouldHaveAtLeastOne() {
+    return verifyStep(`${this.name} should have at least one item`, async ({ expect }) => {
+      await expect.poll(async () => this.locator.count()).toBeGreaterThan(0)
+    })
+  }
 }
 
 export function target(name: string, locator: Locator): Target {

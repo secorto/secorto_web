@@ -1,46 +1,42 @@
 import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
-import { comments } from '@tests/support/ui/content/Comments'
-import type { Comments as CommentsComponent } from '@tests/support/ui/content/Comments'
-import { ContentPage, createContentPage } from '@tests/support/ui/content/ContentPage'
-import type { Target as TargetComponent } from '@tests/support/ui/components/Target'
+import type { SectionType } from '@domain/section'
+import type { MainLayoutComponent } from '@tests/support/ui/shared/components/MainLayout'
+import { mainLayout, defaultMainLayout } from '@tests/support/ui/shared/components/MainLayout'
+import { target } from '@tests/support/ui/components/Target'
+import type { Comments } from './components/Comments'
+import { giscusComments } from './components/Comments'
+import { PostListPageMain, ExperienceListPageMain } from './ContentListPage'
 
 /**
- * Page Object for content detail views with comments (blog post, talk detail).
- * Specialization of ContentPage that provides comment interactions and assertions.
+ * Orquestador de página de detalle (blog, talk).
+ * Compone MainLayout + CommentsComponent.
  */
-export class ContentDetailPage extends ContentPage {
+export class ContentDetailPage {
   constructor(
-    name: string,
-    headerTitle: TargetComponent,
-    tags: TargetComponent,
-    readonly comments: CommentsComponent,
-  ) {
-    super(name, headerTitle, tags)
-  }
+    readonly mainLayout: MainLayoutComponent,
+    readonly comments: Comments,
+  ) {}
 
-  shouldHaveDetailTitle(expected: string) {
-    return this.headerTitle.shouldHaveText(expected)
-  }
-
-  shouldHaveComments(locale: UILanguages) {
-    return this.comments.shouldBeReady(locale)
+  shouldBeLoaded(locale: UILanguages) {
+    return this.mainLayout.shouldBeLoaded(locale)
   }
 }
 
 /**
- * Factory for creating ContentDetailPage with comment support.
- * Used for content types with comments (blog, talk).
+ * Crea ContentDetailPage para posts (blog, talk).
+ * Encapsula mainLayout + giscusComments.
  */
-export function contentDetailPage(page: Page, name: string): ContentDetailPage {
-  const basePage = createContentPage(page, name)
-  return new ContentDetailPage(
-    basePage.name,
-    basePage.headerTitle,
-    basePage.tags,
-    comments(
-      page.locator('.comments script[src*="giscus.app"]'),
-      page.locator('iframe.giscus-frame'),
-    ),
-  )
+export function createPostDetail(
+  page: Page,
+  sectionName: SectionType,
+): ContentDetailPage {
+  const layoutComponent = mainLayout({
+    ...defaultMainLayout(page),
+    name: `${sectionName} detail`,
+    headerTitle: target(`${sectionName} detail title`, page.getByRole('heading', { level: 1 })),
+    main: new PostListPageMain(sectionName),
+  })
+  const commentsComp = giscusComments(page)
+  return new ContentDetailPage(layoutComponent, commentsComp)
 }
