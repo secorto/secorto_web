@@ -6,7 +6,7 @@ import { mainLayout, defaultMainLayout } from '@tests/support/ui/shared/componen
 import { target } from '@tests/support/ui/components/Target'
 import type { Comments } from './components/Comments'
 import { giscusComments } from './components/Comments'
-import { PostListPageMain, ExperienceListPageMain } from './ContentListPage'
+import { PostListPageMain } from './ContentListPage'
 
 /**
  * Orquestador de página de detalle (blog, talk).
