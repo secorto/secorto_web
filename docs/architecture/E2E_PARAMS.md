@@ -9,7 +9,7 @@ Este documento lista y explica los inputs que acepta el workflow de tests
   - URL base a usar para las pruebas (por defecto `https://secorto.com`).
     Es la opción más importante: controla el host objetivo de las pruebas.
 - `folder` (string)
-  - Carpeta de tests (p. ej. `e2e`, `e2e/smoke`) para ejecutar un subconjunto de pruebas.
+  - Carpeta de tests (p. ej. `e2e`, `e2e/functional`) para ejecutar un subconjunto de pruebas.
     Útil para acotar alcance cuando se depura una sección concreta.
 - `tag` (string)
   - Tag/grep para filtrar tests por etiquetas o descriptores dentro del `folder` o del conjunto completo.

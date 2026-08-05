@@ -51,8 +51,9 @@ export class MainLayoutComponent<T = void> implements LocalizedPage<T> {
 
   switchTo(locale: UILanguages) {
     return step(`switch language to ${locale}`, async () => {
-      await this.langLinks.get(locale).shouldBeVisible()
-      await this.langLinks.get(locale).click()
+      const tagLink = this.langLinks.get(locale)
+      await tagLink.shouldBeVisible()
+      await tagLink.click()
     })
   }
 }

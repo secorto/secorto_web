@@ -2,8 +2,9 @@
 
 En esta carpeta `docs/` se agrupan guías, recursos técnicos y registros de decisiones del proyecto.
 
-**¿Es tu primera vez?** Comienza en [ARCHITECTURE.md](ARCHITECTURE.md) para entender principios.  
-**¿Necesitas hacer algo específico?** Busca en la sección temática abajo. Cada documento se auto-referencia a sus documentos relacionados.
+**¿Es tu primera vez?** Comienza en [ARCHITECTURE.md](ARCHITECTURE.md) para entender principios.
+**¿Necesitas hacer algo específico?** Busca en la sección temática abajo.
+Cada documento se auto-referencia a sus documentos relacionados.
 
 ## Índice por sección
 
@@ -13,14 +14,17 @@ En esta carpeta `docs/` se agrupan guías, recursos técnicos y registros de dec
 
 ### Arquitectura y diseño
 
-- [DETAIL_VIEW_ARCHITECTURE.md](DETAIL_VIEW_ARCHITECTURE.md) —
-  Arquitectura de vistas de detalle (blog, charlas, trabajo, proyectos, comunidad)
+- [DETAIL_VIEW_COMPONENTS.md](architecture/DETAIL_VIEW_COMPONENTS.md) —
+  Arquitectura de componentes de detalle (blog, charlas, trabajo, proyectos, comunidad)
+- [PAGE_OBJECTS.md](architecture/PAGE_OBJECTS.md) — Jerarquía y separación de concerns en page objects (E2E)
 - [GISCUS.md](GISCUS.md) — Integración de comentarios con Giscus
 
 ### Procesos y flujos
 
+- [DEVELOPMENT_WORKFLOW.md](architecture/DEVELOPMENT_WORKFLOW.md) — Flujo visual de desarrollo y validación pre-PR
+- [TESTING_STRATEGY.md](architecture/TESTING_STRATEGY.md) — Estrategia de pruebas (E2E con Playwright, unitarias con Vitest)
+- [E2E_CONSOLIDATION.md](architecture/E2E_CONSOLIDATION.md) — Consolidación de assertions en E2E tests
 - [COMMON_AI_MISTAKES.md](COMMON_AI_MISTAKES.md) — 6 patrones reales de errores que la IA ha cometido y cómo evitarlos
-- [TESTING_STRATEGY.md](TESTING_STRATEGY.md) — Estrategia de pruebas (E2E con Playwright, unitarias con Vitest)
 - [CONTENT_POLICY.md](CONTENT_POLICY.md) — Convenciones sobre el contenido del sitio
 - [MARKDOWN_VALIDATION.md](MARKDOWN_VALIDATION.md) — Validación de Markdown (linting y reglas de formato)
 - [UPGRADE.md](UPGRADE.md) — Guía de actualización
@@ -28,7 +32,7 @@ En esta carpeta `docs/` se agrupan guías, recursos técnicos y registros de dec
 ### Operativo y configuración
 
 - [DEVCONTAINER.md](DEVCONTAINER.md) — Configuración de Dev Container para desarrollo consistente
-- [E2E_PARAMS.md](E2E_PARAMS.md) — Parámetros y configuración para tests E2E
+- [E2E_PARAMS.md](architecture/E2E_PARAMS.md) — Parámetros y configuración para tests E2E
 
 ### Decisiones arquitectónicas (ADRs)
 
