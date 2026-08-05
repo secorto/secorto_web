@@ -21,6 +21,6 @@ export const visit = <T>(
     step(title, async () => {
       if (preAct) await preAct(page)
       await mockThirdParty(page)
-      await page.goto(url, { waitUntil: 'networkidle' })
+      await page.goto(url, { waitUntil: 'domcontentloaded' })
       return factory(page)
     })

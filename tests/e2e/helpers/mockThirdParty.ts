@@ -8,7 +8,9 @@ import { mockNetlifyCDP } from './mockNetlifyCDP'
 /**
  * mockThirdParty
  *
- * Aplica todos los mocks de terceros de una sola vez:
+ * Aplica todos los mocks de terceros de forma secuencial.
+ * Evita Promise.all para prevenir race conditions en Firefox con networkidle.
+ *
  * - YouTube (reproductor embebido)
  * - Slides (OneDrive, Google Slides, etc.)
  * - Giscus (comentarios)
@@ -19,11 +21,9 @@ import { mockNetlifyCDP } from './mockNetlifyCDP'
  *   await mockThirdParty(page)
  */
 export async function mockThirdParty(page: Page): Promise<void> {
-  await Promise.all([
-    mockGiscus(page),
-    mockYouTube(page),
-    mockSlides(page),
-    mockBugsnag(page),
-    mockNetlifyCDP(page),
-  ])
+  await mockGiscus(page)
+  await mockYouTube(page)
+  await mockSlides(page)
+  await mockBugsnag(page)
+  await mockNetlifyCDP(page)
 }
