@@ -6,6 +6,7 @@ import { getFullFormat, useTranslations } from '@i18n/utils'
 import type { UILanguages } from '@i18n/ui'
 import ResponsiveIframe from './ResponsiveIframe.astro'
 import type { RenderResult } from 'astro:content'
+import PostDate from './PostDate.astro'
 
 interface Props {
   locale: UILanguages
@@ -53,7 +54,7 @@ const dateFormat = getFullFormat(Astro.url)
   )
 )}
 
-{entry.data.date && <p>{dateFormat.format(entry.data.date)}</p>}
+{entry.data.date && <PostDate>{dateFormat.format(entry.data.date)}</PostDate>}
 
 
 

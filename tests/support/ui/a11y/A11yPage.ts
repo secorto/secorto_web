@@ -2,8 +2,9 @@ import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
 import { AxeBuilder } from '@axe-core/playwright'
 import type { SectionType } from '@domain/section'
+import { getEntryTagURL, getEntryURL, getURLForSection } from '@domain/section'
 import { verifyStep, step } from '@tests/fixtures'
-import { contentDetailsPath, contentListPath, contentTagsPath, tagsPath, visit } from '@tests/support/ui/shared/NavigationPaths'
+import { tagsPath, visit } from '@tests/support/ui/shared/NavigationPaths'
 
 const DEFAULT_EXCLUDES = [
   '[data-netlify-deploy-id]', 'iframe', 'iframe *'
@@ -33,16 +34,16 @@ export function a11yPage(page: Page) {
 }
 
 export function userInTalk(page: Page, locale: UILanguages) {
-  return visit(`a user in talk list ${locale}`, page, contentListPath('talk', locale), a11yPage)
+  return visit(`a user in talk list ${locale}`, page, getURLForSection('talk', locale), a11yPage)
 }
 
 export function userInTalkTag(page: Page, locale: UILanguages, tag = 'containers') {
-  const talksTagRoute = contentTagsPath('talk', locale, tag)
+  const talksTagRoute = getEntryTagURL('talk', locale, tag)
   return visit(`a user in talk tag ${locale} ${tag}`, page, talksTagRoute, a11yPage)
 }
 
 export function userInTalkDetail(page: Page, locale: UILanguages, postSlug: string) {
-  const talksPostRoute = contentDetailsPath('talk', locale, postSlug)
+  const talksPostRoute = getEntryURL('talk', locale, postSlug)
   return visit(`a user in talk detail ${locale} ${postSlug}`, page, talksPostRoute, a11yPage)
 }
 
@@ -51,18 +52,18 @@ export function userInTags(page: Page, locale: UILanguages) {
 }
 
 export function userInContentList(page: Page, locale: UILanguages, collection: SectionType) {
-  return visit(`a user in ${collection} list ${locale}`, page, contentListPath(collection, locale), a11yPage)
+  return visit(`a user in ${collection} list ${locale}`, page, getURLForSection(collection, locale), a11yPage)
 }
 
 export function userInContentTag(page: Page, locale: UILanguages, collection: SectionType, tag = 'containers') {
-  return visit(`a user in ${collection} tag ${locale} ${tag}`, page, contentTagsPath(collection, locale, tag), a11yPage)
+  return visit(`a user in ${collection} tag ${locale} ${tag}`, page, getEntryTagURL(collection, locale, tag), a11yPage)
 }
 
 export function userInContentDetail(page: Page, locale: UILanguages, collection: SectionType, postSlug: string) {
   return visit(
     `a user in ${collection} detail ${locale} ${postSlug}`,
     page,
-    contentDetailsPath(collection, locale, postSlug),
+    getEntryURL(collection, locale, postSlug),
     a11yPage,
   )
 }
