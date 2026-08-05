@@ -10,7 +10,7 @@ const baseUrl = getBaseUrl()
 export default defineConfig({
   testDir: './tests/e2e',
   /* Max duration for the entire test run */
-  globalTimeout: 10 * 60 * 1000,
+  globalTimeout: 15 * 60 * 1000,
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -32,6 +32,9 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+
+    /** Capture screenshot only on test failure */
+    screenshot: 'only-on-failure',
   },
   /** Capture Git information for the test run */
   captureGitInfo: { commit: true, diff: true },

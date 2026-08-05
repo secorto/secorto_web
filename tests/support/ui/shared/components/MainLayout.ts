@@ -49,14 +49,11 @@ export class MainLayoutComponent<T = void> implements LocalizedPage<T> {
     return this.themeToggle.shouldBeDifferent(initialTransform)
   }
 
-
-  shouldHaveLanguageOption(locale: UILanguages) {
-    return this.langLinks.get(locale).shouldBeVisible()
-  }
-
   switchTo(locale: UILanguages) {
     return step(`switch language to ${locale}`, async () => {
-      await this.langLinks.get(locale).locator.click()
+      const tagLink = this.langLinks.get(locale)
+      await tagLink.shouldBeVisible()
+      await tagLink.click()
     })
   }
 }

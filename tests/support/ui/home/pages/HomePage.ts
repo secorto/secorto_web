@@ -34,7 +34,10 @@ export class HomePage implements LocalizedPage<void>, LocalizedUrl {
   ) {}
 
   shouldBeLoaded(locale: UILanguages) {
-    return this.mainLayout.shouldBeLoaded(locale)
+    return verifyStep(`homepage is fully loaded and in ${locale}`, async ({ expect }) => {
+      await this.shouldBeInLocale(locale).with(expect)
+      await this.mainLayout.shouldBeLoaded(locale).with(expect)
+    })
   }
 
   shouldBeInLocale(locale: UILanguages) {

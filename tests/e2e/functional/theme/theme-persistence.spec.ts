@@ -14,6 +14,7 @@ test.describe('Theme local storage',
       test(`start ${startTheme} → toggle → ${toggledTheme}`,
         async ({ page }) => {
           const home = await userInHome(page, 'en', withThemeInStorage(startTheme))
+          await home.mainLayout.shouldHaveTheme(startTheme)
           await home.mainLayout.toggleTheme()
           await home.mainLayout.shouldHaveTheme(toggledTheme)
           await shouldHaveLocalStorage(page, 'theme', toggledTheme)
