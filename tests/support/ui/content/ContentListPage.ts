@@ -7,6 +7,7 @@ import type { SectionType } from '@domain/section'
 import { sectionsConfig, getURLForSection } from '@domain/section'
 import { urlValidator } from '@tests/support/ui/shared/flows/urlValidator'
 import { verifyStep } from '@tests/fixtures'
+import { visit } from '@tests/support/ui/shared/NavigationPaths'
 import type { LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
 import { mainLayout, defaultMainLayout } from '@tests/support/ui/shared/components/MainLayout'
 import { target } from '@tests/support/ui/components/Target'
@@ -76,7 +77,7 @@ export class ContentListPage {
    * Ej: /es/blog, /en/project/, etc.
    */
   shouldBeInLocale(locale: UILanguages) {
-    const expected = new RegExp(`/${locale}/[a-z]+(/|$)`)
+    const expected = new RegExp(`/${locale}/[a-z0-9-]+(/|$)`)
     return this.validateUrl(expected)
   }
 
@@ -146,6 +147,10 @@ export async function userIsOnContentList(
   locale: UILanguages,
 ): Promise<ContentListPage> {
   const url = getURLForSection(contentType, locale)
-  await page.goto(url)
-  return contentListPage(page, contentType)
+  return visit(
+    `navigate to ${contentType} list in ${locale}`,
+    page,
+    url,
+    (page) => contentListPage(page, contentType),
+  )
 }
