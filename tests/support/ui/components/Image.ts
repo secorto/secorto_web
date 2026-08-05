@@ -6,6 +6,7 @@ export class Image extends Target {
 
   shouldBeLoaded() {
     return verifyStep(`${this.name} is present and loaded`, async ({ expect }) => {
+      await this.locator.scrollIntoViewIfNeeded()
       await expect(this.locator).toBeVisible()
       await expect(this.locator).toHaveCount(1)
 

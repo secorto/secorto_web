@@ -13,7 +13,7 @@ const { title, url, image, excerpt = '', cta } = Astro.props
 const t = useTranslations(langFromString(Astro.currentLocale))
 ---
 
-<a class="card" href={url}>
+<a class="card" href={url} data-testid="list-item">
   {image &&
     <Image src={image} alt={formatString(t('featured_image'), [title])} class="card-image" />
   }

@@ -33,8 +33,8 @@ const { posts, basePath, lang, cta } = Astro.props
           />
         </PostDate>
       )}
-      <p>{post.data.role}</p>
-      <p>{post.data.responsibilities}</p>
+      <p data-testid="post-role">{post.data.role}</p>
+      <p data-testid="post-responsibilities">{post.data.responsibilities}</p>
     </PostItem>
   )}
 </PostList>
