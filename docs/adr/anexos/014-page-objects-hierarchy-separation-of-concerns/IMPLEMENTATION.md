@@ -15,7 +15,11 @@ Archivo | Responsabilidad | Patrón
 [tests/support/ui/content/components/ContentList.ts](../../../support/ui/content/components/ContentList.ts) | Navegación en listados | Recibe `Target` + `TargetSelector<string>`
 [tests/support/ui/content/components/Comments.ts](../../../support/ui/content/components/Comments.ts) | Comentarios (blog, talk) | Ya existía, reutilizado
 
-**Patrón DI:** Componentes NO reciben `page`. Reciben selectores inyectados via `Target` y `TargetSelector<T>`.
+**Patrón DI:** Componentes NO reciben `page`.
+
+- **Tags, ContentList**: Reciben `Target` + `TargetSelector<T>` (selectores dinámicos por parámetro)
+- **Comments**: Recibe `Target` (localizador fijo)
+- **Detail mains** (PostDetailMain/ExperienceDetailMain): Reciben `Target` objects (localizadores ya calculados)
 
 ### 2. Orquestadores (Composición)
 
@@ -80,37 +84,57 @@ Aspecto | Plan | Implementación | Por Qué
 Parametrización | Flow objects (`ContentTypeFlow<>`) | Array simple (`testContents`) | Más legible, menos código
 Facades | BlogPages.ts, WorkPages.ts, etc | Eliminadas | No se necesitan sin flow descriptors
 DetailPage composition | DetailPage + metadata parameter | DetailPage + inline main | Más simple, metadata ya inyectada en factory
-List main classes | `PostListPageMain` / `ExperienceListPageMain` | Siguen en código (vacías) | No se usan, candidatas para eliminar
+List main classes | `PostListPageMain` / `ExperienceListPageMain` | Implementadas con validaciones específicas | Validan contenido slot (PostDate vs role/responsibilities)
 
-### 🗑️ Pendiente: Limpiar
+### 🎯 Clases Main Implementadas con Validaciones Específicas
 
-**Clases vacías que pueden eliminarse:**
+**PostListPageMain** valida contenido del slot principal para posts/talks:
 
 ```typescript
-// ContentListPage.ts - Estas clases son vacías y NO se usan
 export class PostListPageMain implements LocalizedPage<void> {
-  constructor(private sectionType: SectionType) {}
-  shouldBeLoaded() {
-    return verifyStep(`${this.sectionType} list main is ready`, async () => {})
-  }
-}
-
-export class ExperienceListPageMain implements LocalizedPage<void> {
-  constructor(private sectionType: SectionType) {}
-  shouldBeLoaded() {
-    return verifyStep(`${this.sectionType} list main is ready`, async () => {})
+  constructor(private page: Page) {}
+  shouldBeLoaded(_locale: UILanguages) {
+    return verifyStep('post list items have post-date', async ({ expect }) => {
+      const firstItem = this.page.getByTestId('list-item').first()
+      const postDate = firstItem.getByTestId('post-date')
+      await expect(postDate).toBeVisible()
+    })
   }
 }
 ```
 
-**Razón:** `ContentListPage.shouldBeLoaded()` ya hace:
+**ExperienceListPageMain** valida contenido del slot para work/projects/community:
 
 ```typescript
-await this.mainLayout.shouldBeLoaded(locale).with(expect)
-// Ya valida todo, las clases main no aportan nada
+export class ExperienceListPageMain implements LocalizedPage<void> {
+  constructor(private page: Page) {}
+  shouldBeLoaded(_locale: UILanguages) {
+    return verifyStep('experience list items have role/responsibilities', async ({ expect }) => {
+      const firstItem = this.page.getByTestId('list-item').first()
+      const roleField = firstItem.getByTestId('post-role')
+      const respField = firstItem.getByTestId('post-responsibilities')
+      await expect(roleField).toBeVisible()
+      await expect(respField).toBeVisible()
+    })
+  }
+}
 ```
+
+**Rol:** Complementan `ContentListPage.shouldBeLoaded()` validando contenido específico del slot principal
+según tipo de contenido. Son parte esencial del objeto de página, no solo decorativas.
 
 ---
+
+## Validación de Slots Específicos por Categoría
+
+**PostListPageMain vs ExperienceListPageMain:** Cada uno valida selectores data-testid distintos en el slot principal:
+
+- **Posts (blog, talk):** Valida `post-date` (usando PostDate component)
+- **Experience (work, projects, community):** Valida `post-role` + `post-responsibilities`
+  (usando role/responsibilities fields)
+
+Esto asegura que el layout dinámico (MainLayout → slot → categoría específica) renderiza el contenido correcto
+sin generar snippets HTML duplicados.
 
 ## Archivo: Patrón Real vs Plan
 
