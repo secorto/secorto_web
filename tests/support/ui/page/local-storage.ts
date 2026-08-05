@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test'
-import { verifyStep, step } from '@tests/fixtures'
+import { verifyStep, step } from '@tests/step'
 
 /**
  * Asserts that a given key in localStorage has the expected value,

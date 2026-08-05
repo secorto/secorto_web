@@ -1,6 +1,6 @@
 import type { Locator, Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
-import { verifyStep } from '@tests/fixtures'
+import { verifyStep } from '@tests/step'
 
 export class Comments {
   constructor(

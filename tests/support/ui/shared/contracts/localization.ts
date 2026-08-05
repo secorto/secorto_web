@@ -1,5 +1,5 @@
 import type { UILanguages } from '@i18n/ui'
-import type { Verification } from '@tests/fixtures'
+import type { Verification } from '@tests/step'
 
 export interface LocalizedPage<T = void> {
   shouldBeLoaded(locale: UILanguages): Verification<T>

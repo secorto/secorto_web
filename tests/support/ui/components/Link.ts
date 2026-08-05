@@ -1,5 +1,5 @@
 import type { Locator } from '@playwright/test'
-import { verifyStep, step } from '@tests/fixtures'
+import { verifyStep, step } from '@tests/step'
 import { Target } from '@tests/support/ui/components/Target'
 
 export class Link extends Target {

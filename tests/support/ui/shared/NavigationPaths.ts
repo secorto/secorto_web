@@ -1,6 +1,6 @@
 import type { UILanguages } from '@i18n/ui'
 import type { Page } from '@playwright/test'
-import { step } from '@tests/fixtures'
+import { step } from '@tests/step'
 import { mockThirdParty } from '@tests/e2e/helpers/mockThirdParty'
 
 export function homePath(locale: UILanguages) {

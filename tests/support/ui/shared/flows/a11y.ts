@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test'
 import { AxeBuilder } from '@axe-core/playwright'
 import type axe from 'axe-core'
-import { step, verifyStep, type Step, type Verification } from '@tests/fixtures'
+import { step, verifyStep, type Step, type Verification } from '@tests/step'
 
 export interface A11y {
   analyze(): Step<axe.AxeResults>

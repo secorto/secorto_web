@@ -3,7 +3,7 @@ import type { UILanguages } from '@i18n/ui'
 import { AxeBuilder } from '@axe-core/playwright'
 import type { SectionType } from '@domain/section'
 import { getEntryTagURL, getEntryURL, getURLForSection } from '@domain/section'
-import { verifyStep, step } from '@tests/fixtures'
+import { verifyStep, step } from '@tests/step'
 import { tagsPath, visit } from '@tests/support/ui/shared/NavigationPaths'
 
 const DEFAULT_EXCLUDES = [

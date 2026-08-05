@@ -5,7 +5,7 @@ import { sectionsConfig } from '@domain/section'
 import type { MainLayoutComponent } from '@tests/support/ui/shared/components/MainLayout'
 import { mainLayout, defaultMainLayout } from '@tests/support/ui/shared/components/MainLayout'
 import { target, type Target } from '@tests/support/ui/components/Target'
-import { verifyStep } from '@tests/fixtures'
+import { verifyStep } from '@tests/step'
 import type { LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
 import { Comments, giscusComments } from './components/Comments'
 

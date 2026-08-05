@@ -1,4 +1,4 @@
-import { verifyStep } from '@tests/fixtures'
+import { verifyStep } from '@tests/step'
 import { sidebarToggleFromPage, SidebarToggle } from '@tests/support/ui/sidebar/SidebarToggle'
 import { target } from '@tests/support/ui/components/Target'
 import type { Target as TargetComponent } from '@tests/support/ui/components/Target'

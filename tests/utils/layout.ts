@@ -1,5 +1,5 @@
 import { expect, type Page, type TestInfo } from '@playwright/test'
-import { step } from '@tests/fixtures'
+import { step } from '@tests/step'
 
 async function assertNoHorizontalOverflowUtil(page: Page, testInfo?: TestInfo, locale?: string) {
   // Allow layout/paint to settle
