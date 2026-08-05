@@ -1,5 +1,4 @@
 import type { UILanguages } from '@i18n/ui'
-import { type SectionType, getEntryTagURL, getEntryURL, getURLForSection } from '@domain/section'
 import type { Page } from '@playwright/test'
 import { step } from '@tests/fixtures'
 import { mockThirdParty } from '@tests/e2e/helpers/mockThirdParty'
@@ -10,18 +9,6 @@ export function homePath(locale: UILanguages) {
 
 export function tagsPath(locale: UILanguages) {
   return `/${locale}/tags`
-}
-
-export function contentListPath(section: SectionType, locale: UILanguages) {
-  return getURLForSection(section, locale)
-}
-
-export function contentDetailsPath(section: SectionType, locale: UILanguages, slug: string) {
-  return getEntryURL(section, locale, slug)
-}
-
-export function contentTagsPath(section: SectionType, locale: UILanguages, tag: string) {
-  return getEntryTagURL(section, locale, tag)
 }
 
 export const visit = <T>(

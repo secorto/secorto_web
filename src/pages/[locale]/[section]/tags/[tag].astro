@@ -3,6 +3,7 @@ import BaseLayout from '@layouts/BaseLayout.astro'
 import SEOHead from '@components/SEOHead.astro'
 import Tags from '@components/Tags.astro'
 import ListPost from '@components/ListPost.astro'
+import ListWork from '@components/ListWork.astro'
 import LanguagePicker from '@components/LanguagePicker.astro'
 import { useTranslations } from '@i18n/utils'
 import { buildTagPaths, type TagPath } from '@utils/staticPathsBuilder.adapters'
@@ -36,7 +37,12 @@ const metaDescription = `${config.taggedKey ? t(config.taggedKey) : t(config.tra
     </div>
   ) : (
     <div>
-      <ListPost posts={posts} basePath={`${locale}/${config.routes[locale]}`} cta={t(config.ctaKey)} />
+      {config.category === 'post' && (
+        <ListPost posts={posts} basePath={`${locale}/${config.routes[locale]}`} cta={t(config.ctaKey)} />
+      )}
+      {config.category === 'experience' && (
+        <ListWork posts={posts} basePath={`${locale}/${config.routes[locale]}`} lang={locale} cta={t(config.ctaKey)} />
+      )}
     </div>
   )}
 </BaseLayout>
