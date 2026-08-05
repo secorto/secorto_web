@@ -39,7 +39,7 @@ export function tagsComponent(containerLocator: Locator) {
     target('tags container', containerLocator),
     targetSelector(
       'tag link',
-      (tag: string) => containerLocator.locator(`[href*="/tags/${tag}"]`),
+      (tag: string) => containerLocator.getByTestId(`tag-link-${tag}`),
       (tag: string) => tag,
     ),
   )

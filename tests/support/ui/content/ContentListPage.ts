@@ -20,7 +20,7 @@ import { contentListComponent } from './components/ContentList'
 export class PostListPageMain implements LocalizedPage<void> {
   constructor(private page: Page) {}
 
-  shouldBeLoaded() {
+  shouldBeLoaded(_locale: UILanguages) {
     return verifyStep('post list items have post-date', async ({ expect }) => {
       const firstItem = this.page.getByTestId('list-item').first()
       const postDate = firstItem.getByTestId('post-date')
@@ -36,7 +36,7 @@ export class PostListPageMain implements LocalizedPage<void> {
 export class ExperienceListPageMain implements LocalizedPage<void> {
   constructor(private page: Page) {}
 
-  shouldBeLoaded() {
+  shouldBeLoaded(_locale: UILanguages) {
     return verifyStep('experience list items have role/responsibilities', async ({ expect }) => {
       const firstItem = this.page.getByTestId('list-item').first()
       const roleField = firstItem.getByTestId('post-role')
@@ -82,12 +82,13 @@ export class ContentListPage {
 
   /**
    * Valida que el filtrado por tag fue exitoso.
-   * Comprueba: URL contiene /tags/${tag} y lista tiene resultados.
+   * Comprueba: URL contiene /tags/${tag} (escapado) y lista tiene resultados.
    * Patrón: encapsula validaciones (no test hace expect(page.url())).
    */
   shouldBeFiltered(tag: string) {
     return verifyStep(`content is filtered by tag ${tag}`, async ({ expect }) => {
-      await this.validateUrl(new RegExp(`/tags/${tag}`)).with(expect)
+      const escapedTag = tag.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      await this.validateUrl(new RegExp(`/tags/${escapedTag}$`)).with(expect)
       return this.list.shouldHaveResults().with(expect)
     })
   }

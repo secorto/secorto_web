@@ -13,7 +13,6 @@ Archivo | Responsabilidad | Patrón
 -------- | ----------------- | --------
 [tests/support/ui/content/components/Tags.ts](../../../support/ui/content/components/Tags.ts) | Filtrado por tags | Recibe `Target` + `TargetSelector<string>`
 [tests/support/ui/content/components/ContentList.ts](../../../support/ui/content/components/ContentList.ts) | Navegación en listados | Recibe `Target` + `TargetSelector<string>`
-[tests/support/ui/content/components/ContentDetail.ts](../../../support/ui/content/components/ContentDetail.ts) | Detalles de experience (work, project, community) | Recibe `Target`
 [tests/support/ui/content/components/Comments.ts](../../../support/ui/content/components/Comments.ts) | Comentarios (blog, talk) | Ya existía, reutilizado
 
 **Patrón DI:** Componentes NO reciben `page`. Reciben selectores inyectados via `Target` y `TargetSelector<T>`.

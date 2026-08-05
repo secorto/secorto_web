@@ -41,7 +41,7 @@ export class ExperienceDetailMain implements LocalizedPage<void> {
     readonly websiteLink: Target,
   ) {}
 
-  shouldBeLoaded() {
+  shouldBeLoaded(_locale: UILanguages) {
     return verifyStep('experience detail (metadata) is loaded', async ({ expect }) => {
       await expect(this.container.locator).toBeVisible()
       await expect(this.roleField.locator).toBeVisible()
