@@ -89,7 +89,7 @@ export class ContentListPage {
   shouldBeFiltered(tag: string) {
     return verifyStep(`content is filtered by tag ${tag}`, async ({ expect }) => {
       const escapedTag = tag.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-      await this.validateUrl(new RegExp(`/tags/${escapedTag}$`)).with(expect)
+      await this.validateUrl(new RegExp(`/tags/${escapedTag}\/?$`)).with(expect)
       return this.list.shouldHaveResults().with(expect)
     })
   }
