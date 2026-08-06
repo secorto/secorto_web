@@ -1,5 +1,5 @@
 import type { Locator } from '@playwright/test'
-import { step, verifyStep } from '@tests/fixtures'
+import { step, verifyStep } from '@tests/step'
 import { Target, target, TargetSelector, targetSelector } from '@tests/support/ui/components/Target'
 
 /**

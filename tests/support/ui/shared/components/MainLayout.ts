@@ -1,6 +1,6 @@
 import type { UILanguages } from '@i18n/ui'
 import type { LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
-import { step, verifyStep } from '@tests/fixtures'
+import { step, verifyStep } from '@tests/step'
 import { footerPage, type FooterComponent } from '@tests/support/ui/home/component/FooterComponent'
 import { sidebarPage, type SidebarComponent } from '@tests/support/ui/sidebar/SidebarComponent'
 import { target, targetSelector, type Target, type TargetSelector } from '@tests/support/ui/components/Target'

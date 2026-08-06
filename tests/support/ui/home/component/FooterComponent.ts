@@ -1,7 +1,7 @@
 import { ui, type UILanguages } from '@i18n/ui'
 import type { Page } from '@playwright/test'
 import type { Target as TargetComponent } from '../../components/Target'
-import { verifyStep } from '@tests/fixtures'
+import { verifyStep } from '@tests/step'
 import { target } from '../../components/Target'
 import { image, type Image } from '../../components/Image'
 

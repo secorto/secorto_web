@@ -1,4 +1,4 @@
-import { verifyStep } from '@tests/fixtures'
+import { verifyStep } from '@tests/step'
 import type { Locator, Page } from '@playwright/test'
 
 export class SidebarToggle {

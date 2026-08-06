@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test'
-import { verifyStep } from '@tests/fixtures'
+import { verifyStep } from '@tests/step'
 
 export class PageHelper {
   constructor(readonly page: Page) {}

@@ -1,4 +1,4 @@
-import { verifyStep } from "@tests/fixtures"
+import { verifyStep } from "@tests/step"
 import { Target } from "./Target"
 import type { Locator } from '@playwright/test'
 

@@ -1,5 +1,5 @@
 import type { Locator } from '@playwright/test'
-import { verifyStep } from '@tests/fixtures'
+import { verifyStep } from '@tests/step'
 import { Target, target, targetSelector, TargetSelector } from './Target'
 
 export class HighlightCards {

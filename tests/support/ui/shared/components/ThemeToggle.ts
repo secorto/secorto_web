@@ -1,4 +1,4 @@
-import { verifyStep, step } from '@tests/fixtures'
+import { verifyStep, step } from '@tests/step'
 import { target } from '@tests/support/ui/components/Target'
 import type { Target as TargetComponent } from '@tests/support/ui/components/Target'
 import type { Page } from '@playwright/test'
