@@ -1,8 +1,8 @@
 import { test, expect } from '@tests/fixtures'
-import { languageKeys } from '@i18n/ui'
-import { getEntryURL, type SectionType, sectionsConfig } from '@domain/section'
+import { getEntryURL, sectionsConfig } from '@domain/section'
 import { userIsOnContentList } from '@tests/support/ui/content/ContentListPage'
 import { contentDetailPage } from '@tests/support/ui/content/ContentDetailPage'
+import { testContents } from '@tests/support/data/testContents'
 
 /**
  * Flujo completo de navegación en content:
@@ -16,19 +16,6 @@ import { contentDetailPage } from '@tests/support/ui/content/ContentDetailPage'
  * Factories seleccionan automáticamente type basado en sectionsConfig.
  * Reporting: test.describe() agrupa por categoría (POST/EXPERIENCE) para mejor visibilidad.
  */
-
-const testContents = [
-  { name: 'blog', locale: 'es', testTag: 'python', testSlug: '2022-07-11-intro-python' },
-  { name: 'blog', locale: 'en', testTag: 'python', testSlug: '2022-07-11-intro-python' },
-  { name: 'talk', locale: 'es', testTag: 'python', testSlug: '2017-01-30-test-unitarios' },
-  { name: 'talk', locale: 'en', testTag: 'python', testSlug: '2017-01-30-test-unitarios' },
-  { name: 'work', locale: 'es', testTag: 'dev', testSlug: 'perficient' },
-  { name: 'work', locale: 'en', testTag: 'dev', testSlug: 'perficient' },
-  { name: 'projects', locale: 'es', testTag: 'python', testSlug: 'colombia-python' },
-  { name: 'projects', locale: 'en', testTag: 'python', testSlug: 'colombia-python' },
-  { name: 'community', locale: 'es', testTag: 'python', testSlug: 'pybaq' },
-  { name: 'community', locale: 'en', testTag: 'python', testSlug: 'pybaq' },
-] satisfies Array<{ name: SectionType; locale: typeof languageKeys[number]; testTag: string; testSlug: string }>
 
 for (const content of testContents) {
   const config = sectionsConfig[content.name]
