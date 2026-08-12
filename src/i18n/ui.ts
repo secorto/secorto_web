@@ -5,9 +5,8 @@ export const languages = {
   es: 'Spanish'
 } as const;
 
-export const languageKeys = Object.keys(languages) as Array<keyof typeof languages>;
-
-export type UILanguages = keyof typeof languages;
+export type UILanguages = keyof typeof languages
+export const languageKeys = Object.keys(languages) as Array<UILanguages>
 
 export const ui = {
   en: {

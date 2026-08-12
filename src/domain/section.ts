@@ -1,7 +1,8 @@
 import type { UILanguages } from '@i18n/ui'
 import { ui } from '@i18n/ui'
 
-export type SectionType = 'blog' | 'talk' | 'work' | 'projects' | 'community'
+export const sectionKeys = ['blog', 'talk', 'work', 'projects', 'community'] as const
+export type SectionType = typeof sectionKeys[number]
 export type EntryCategory = 'post' | 'experience'
 export type TranslationKey = keyof typeof ui[keyof typeof ui]
 
@@ -117,3 +118,4 @@ export function getEntryTagURL(
 ): string {
   return `${getURLForSection(section, locale)}/tags/${tag}`
 }
+

@@ -1,4 +1,4 @@
-import { languageKeys } from '@i18n/ui'
+import { type UILanguages } from '@i18n/ui'
 import type { SectionType } from '@domain/section'
 
 export const testContents = [
@@ -14,7 +14,7 @@ export const testContents = [
   { name: 'community', locale: 'en', testSlug: 'pybaq', testTag: 'python' },
 ] satisfies Array<{
   name: SectionType
-  locale: typeof languageKeys[number]
+  locale: UILanguages
   testSlug: string
   testTag: string
 }>
