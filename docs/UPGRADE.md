@@ -51,6 +51,16 @@ Para actualizar los demás paquetes se puede usar `npm-check-updates`
 npx npm-check-updates -u
 ```
 
+En caso de actualizar playwright, actualizar tambien la imagen de docker en el pipeline de pruebas e2e
+
+```yaml
+  e2e-tests:
+    name: E2E Tests (Playwright)
+    ...
+    container:
+      image: mcr.microsoft.com/playwright:v1.62.1-noble
+```
+
 Después de finalizar de actualizar ejecutar build, linters, tests
 
 Si algún paquete no puede ser actualizado revisar su valor.
