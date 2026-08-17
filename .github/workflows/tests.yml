@@ -52,8 +52,6 @@ jobs:
     name: E2E Tests (Playwright)
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    container:
-      image: mcr.microsoft.com/playwright:v1.62.1-noble
     steps:
     - uses: actions/checkout@v6
     - uses: actions/setup-node@v6
@@ -71,7 +69,13 @@ jobs:
       run: |
         # use the tiny runner which conditionally invokes the module when executed
         node .github/scripts/wait-netlify-runner.js
+    - name: Get Playwright Version from package.json
+      id: playwright-version
+      run: |
+        VERSION=$(node -p "require('./package.json').devDependencies['@playwright/test'].replace(/[^0-9.]/g, '')")
+        echo "version=$VERSION" >> "$GITHUB_OUTPUT"
     - name: Run Playwright tests (use Netlify preview if available)
+      uses: docker://microsoft.com/playwright:${{ steps.playwright-version.outputs.version }}-noble
       env:
         HOME: /root
         NETLIFY_PREVIEW_URL: ${{ env.NETLIFY_PREVIEW_URL }}
