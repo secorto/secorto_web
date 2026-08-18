@@ -73,8 +73,7 @@ jobs:
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
           PR_BRANCH: ${{ github.head_ref || github.ref_name }}
           COMMIT_ID: ${{ github.event.pull_request.head.sha || github.sha }}
-        run: |
-          pnpm exec wait-netlify
+        run: pnpm exec wait-netlify
 
       - name: Run Playwright tests (use Netlify preview if available)
         env:
