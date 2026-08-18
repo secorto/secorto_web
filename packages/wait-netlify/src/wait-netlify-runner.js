@@ -1,4 +1,8 @@
+import path from 'node:path'
 import { fileURLToPath } from 'url'
 import { runAndExit } from './wait-netlify.js'
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) runAndExit()
+const thisFile = fileURLToPath(import.meta.url)
+const argv1 = process.argv[1]
+
+if (argv1 && path.resolve(argv1) === thisFile) runAndExit()

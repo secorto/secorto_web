@@ -26,6 +26,12 @@ describe('wait-netlify runner', () => {
     expect(runMock).toHaveBeenCalled()
   })
 
+  it('calls runAndExit when executed as a relative path from the workspace root', async () => {
+    process.argv[1] = 'packages/wait-netlify/src/wait-netlify-runner.js'
+    await import('@secorto/wait-netlify/wait-netlify-runner')
+    expect(runMock).toHaveBeenCalled()
+  })
+
   it('does not call runAndExit when not executed directly', async () => {
     process.argv[1] = '/some/other/path'
     await import('@secorto/wait-netlify/wait-netlify-runner')
