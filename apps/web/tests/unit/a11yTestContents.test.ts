@@ -27,8 +27,7 @@ describe('a11yTestContents', () => {
 
     const { languageKeys } = await import('@i18n/ui')
     const { enabledA11yLanguages } = await import('@tests/support/data/a11yLanguages')
-    const { testContents } = await import('@tests/support/data/testContents')
-    const { a11yTestContents } = await import('@tests/support/data/testContents')
+    const { testContents, a11yTestContents } = await import('@tests/support/data/testContents')
 
     expect(enabledA11yLanguages).toEqual(languageKeys)
     expect(a11yTestContents).toEqual(testContents)

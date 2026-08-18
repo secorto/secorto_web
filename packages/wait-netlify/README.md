@@ -24,12 +24,12 @@ It is intentionally focused on the deployment lookup and not on browser or Playw
 - `NETLIFY_SITE_ID` — Netlify site identifier
 - `GITHUB_ENV` — GitHub Actions environment file path
 - `PR_BRANCH` or `GITHUB_REF_NAME` — branch used to match preview deploys
-- `COMMIT_ID` — exact commit SHA used to correlate the matching deploy
+- `COMMIT_ID` — exact commit SHA used to correlate the matching deploy;
+  required for PR-like runs because matching is SHA-based and polling will time out without it
 
 ### Optional
 
 - `GITHUB_REF` — fallback branch reference when needed
-- `--debug` — increases logging for troubleshooting
 
 ## Typical usage
 
@@ -52,7 +52,8 @@ NETLIFY_PREVIEW_URL=https://branch--site.netlify.app
 
 The helper tries to find the most relevant preview deploy
 by comparing the current branch/commit against Netlify deploy metadata.
-For PR-like runs, `COMMIT_ID` is strongly recommended to avoid matching the wrong deploy.
+For PR-like runs, `COMMIT_ID` is required because the matching logic is SHA-based;
+without it the helper cannot select the correct deploy and the polling loop will eventually time out.
 
 For default branch runs, it can also accept production deploys when appropriate.
 
