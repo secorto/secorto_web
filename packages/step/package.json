@@ -1,0 +1,21 @@
+{
+  "name": "@secorto/step",
+  "version": "0.0.1",
+  "private": false,
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "test": "vitest --run",
+    "test:unit": "vitest",
+    "test:unit:watch": "vitest --watch"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.10"
+  }
+}

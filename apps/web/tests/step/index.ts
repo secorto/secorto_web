@@ -1,42 +1,15 @@
 import { test, expect } from '@playwright/test'
+import { makeStep, makeVerification } from '@secorto/step'
+import type { ContextableStep } from '@secorto/step'
 
-export interface Step<T> extends Promise<T> {
-  kind: 'action'
-}
+type StepContext = { expect: typeof expect }
+
+export type { Step } from '@secorto/step'
 
 /**
- * Defines a step
- * @param title Title of the step
- * @param action Action to be executed
- * @returns Return value of the action
+ * A contextable step extended with Playwright-specific `.soft()` sugar.
  */
-export const step = <T>(
-  title: string,
-  action: () => T | Promise<T>
-): Step<T> => {
-  const run = () => test.step(title, action)
-
-  return {
-    kind: 'action',
-
-    then: (onFulfilled, onRejected) => run().then(onFulfilled, onRejected),
-    catch: (onRejected) => run().catch(onRejected),
-    finally: (onFinally) => run().finally(onFinally)
-  } as Step<T>
-}
-
-
-type ExpectType = typeof expect | typeof expect.soft
-type StepExpect = { expect: ExpectType }
-
-export interface Verification<T> extends Promise<T> {
-  kind: 'verification'
-  expect: ExpectType
-  /**
-   * Execute with a specific expect variant: hard or soft.
-   * Use inside verifyStep to respect parent's mode.
-   */
-  with(expectFn: ExpectType): Verification<T>
+export interface Verification<T> extends ContextableStep<T, StepContext> {
   /**
    * Execute with soft expects: all failures are collected without early exit.
    */
@@ -45,30 +18,28 @@ export interface Verification<T> extends Promise<T> {
 
 const buildVerification = <T>(
   title: string,
-  action: (args: StepExpect) => T | Promise<T>,
-  expectFn: ExpectType
+  action: (ctx: StepContext) => T | Promise<T>,
+  context: StepContext
 ): Verification<T> => {
+  const base = makeVerification(test.step, context)(title, action)
 
-  const run = () =>
-    test.step(title, () => action({ expect: expectFn }))
-
-  return {
-    kind: 'verification',
-    expect: expectFn,
-
-    then: (onFulfilled, onRejected) => run().then(onFulfilled, onRejected),
-    catch: (onRejected) => run().catch(onRejected),
-    finally: (onFinally) => run().finally(onFinally),
-
-    soft() {
-      return buildVerification(`${title} (soft)`, action, expect.soft)
+  return Object.assign(base, {
+    soft(): Verification<T> {
+      return buildVerification(title, action, { expect: expect.soft })
     },
-
-    with(newExpect) {
-      return buildVerification(title, action, newExpect)
-    }
-  } as Verification<T>
+    with(newContext: Partial<StepContext>): Verification<T> {
+      return buildVerification(title, action, { ...context, ...newContext })
+    },
+  }) as Verification<T>
 }
+
+/**
+ * Defines a plain action step.
+ * @param title Title of the step
+ * @param action Action to be executed
+ * @returns Return value of the action
+ */
+export const step = makeStep(test.step)
 
 /**
  * Defines a verification step that can be executed with hard or soft expects.
@@ -78,5 +49,5 @@ const buildVerification = <T>(
  */
 export const verifyStep = <T>(
   title: string,
-  action: (args: StepExpect) => T | Promise<T>
-): Verification<T> => buildVerification(title, action, expect)
+  action: (ctx: StepContext) => T | Promise<T>
+): Verification<T> => buildVerification(title, action, { expect })
