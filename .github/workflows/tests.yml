@@ -87,13 +87,13 @@ jobs:
           REAL_THIRD_PARTY: ${{ github.event.inputs.real_third_party }}
         run: |
           if [ -n "$FOLDER" ] && [ -n "$TAG" ]; then
-            pnpm exec playwright test "tests/$FOLDER" --grep "$TAG"
+            pnpm run test:e2e -- --grep "$TAG" "tests/$FOLDER"
           elif [ -n "$FOLDER" ]; then
-            pnpm exec playwright test "tests/$FOLDER"
+            pnpm run test:e2e -- "tests/$FOLDER"
           elif [ -n "$TAG" ]; then
-            pnpm exec playwright test --grep "$TAG"
+            pnpm run test:e2e -- --grep "$TAG"
           else
-            pnpm exec playwright test
+            pnpm run test:e2e
           fi
 
       - uses: actions/upload-artifact@v6
