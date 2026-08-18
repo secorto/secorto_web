@@ -45,9 +45,12 @@ Las usa la aplicación de tests para decidir qué entorno y qué modo ejecutar:
 - `NETLIFY_PREVIEW_URL` — URL exportada por el helper de preview cuando hay un deploy válido
 - `BASE_URL` — override manual para apuntar a un entorno concreto
 - `REAL_THIRD_PARTY` — si vale `true`, se omiten los mocks y se usan servicios externos reales
-- `A11Y_ALL_LANGUAGES` — si vale `true`, la colección A11y incluye todas las locales en lugar de filtrar solo la locale por defecto
+- `A11Y_ALL_LANGUAGES` — si vale `true`,
+  la colección A11y incluye todas las locales en lugar de filtrar solo la locale por defecto
 
-La convención general es separar claramente qué variable pertenece a CI/deploy y qué variable pertenece a la ejecución de tests. Eso evita mezclar requisitos de infraestructura con requisitos de validación funcional.
+La convención general es separar claramente qué variable pertenece a CI/deploy
+y qué variable pertenece a la ejecución de tests.
+Eso evita mezclar requisitos de infraestructura con requisitos de validación funcional.
 
 ## Comportamiento en el pipeline
 

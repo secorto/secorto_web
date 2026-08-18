@@ -1,4 +1,4 @@
-import { defaultLang, type UILanguages } from '@i18n/ui'
+import { type UILanguages } from '@i18n/ui'
 import type { SectionType } from '@domain/section'
 import { enabledA11yLanguages } from './a11yLanguages'
 
