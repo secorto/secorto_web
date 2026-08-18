@@ -31,3 +31,7 @@ pnpm-debug.log*
 /playwright/.auth/
 
 coverage/
+
+# Test results per apps
+apps/*/playwright-report/
+apps/*/test-results/

@@ -1,0 +1,26 @@
+{
+  "name": "@secorto/wait-netlify",
+  "version": "0.0.1",
+  "private": false,
+  "type": "module",
+  "main": "./src/index.js",
+  "scripts": {
+    "test": "vitest --run",
+    "test:unit": "vitest",
+    "test:unit:watch": "vitest --watch"
+  },
+  "exports": {
+    ".": "./src/index.js",
+    "./wait-netlify": "./src/wait-netlify.js",
+    "./wait-netlify-runner": "./src/wait-netlify-runner.js",
+    "./lib/wait-netlify-api.js": "./src/lib/wait-netlify-api.js",
+    "./lib/wait-netlify-git.js": "./src/lib/wait-netlify-git.js",
+    "./lib/wait-netlify-integrator.js": "./src/lib/wait-netlify-integrator.js"
+  },
+  "bin": {
+    "wait-netlify-runner": "./src/wait-netlify-runner.js"
+  },
+  "files": [
+    "src"
+  ]
+}

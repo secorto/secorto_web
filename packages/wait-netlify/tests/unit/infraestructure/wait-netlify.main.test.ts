@@ -6,7 +6,7 @@ import path from 'path'
 const OLD_ENV = { ...process.env }
 
 // Hoisted mock: mirrors how the module is imported by the script
-vi.mock('@github/lib/wait-netlify-api.js', () => ({
+vi.mock('@secorto/wait-netlify/lib/wait-netlify-api.js', () => ({
   listDeploys: vi.fn().mockResolvedValue([
     { id: 'd1', state: 'ready', commit_ref: 'abcd1234', deploy_url: 'https://p.netlify.app', context: 'deploy-preview', branch: 'feat' }
   ])
@@ -32,7 +32,7 @@ describe('wait-netlify main (cover main)', () => {
     process.env.PR_BRANCH = 'feat'
     process.env.GITHUB_ENV = path.join(os.tmpdir(), `gh_env_main_cover_${Date.now()}`)
 
-    const mod = await import('@github/scripts/wait-netlify')
+    const mod = await import('@secorto/wait-netlify')
     const code = await mod.main()
     expect(code).toBe(0)
     const content = fs.readFileSync(process.env.GITHUB_ENV!, 'utf8')

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { pollForPreview } from '@github/scripts/wait-netlify'
+import { pollForPreview } from '@secorto/wait-netlify'
 
 describe('pollForPreview', () => {
   it('returns match immediately when deploy matches expected sha', async () => {

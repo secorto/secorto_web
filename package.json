@@ -1,53 +1,37 @@
 {
-  "name": "secorto-website",
+  "name": "@secorto/workspace",
+  "private": true,
   "type": "module",
-  "version": "5.4.2",
-  "engines": {
-    "node": ">=24"
-  },
-  "scripts": {
-    "dev": "astro dev",
-    "start": "astro dev --host",
-    "build": "astro check && astro build",
-    "preview": "astro preview",
-    "astro": "astro",
-    "test": "npm run test:unit -- run && npm run test:e2e",
-    "test:e2e": "npx playwright test",
-    "test:e2e:env": "node --env-file=.env ./node_modules/@playwright/test/cli.js test",
-    "test:unit": "vitest",
-    "test:unit:watch": "vitest --watch",
-    "test:unit:ui": "vitest --ui",
-    "lint": "npm run lint:md && npm run lint:js",
-    "lint:js": "eslint .",
-    "lint:md": "markdownlint-cli2 \"**/*.md\"",
-    "lint:md:fix": "markdownlint-cli2 \"**/*.md\" --fix"
-  },
-  "dependencies": {
-    "@astrojs/check": "^0.9.10",
-    "@astrojs/rss": "^4.0.19",
-    "@astrojs/sitemap": "^3.7.3",
-    "astro": "^7.2.2",
-    "astro-expressive-code": "0.44.1",
-    "jsdom": "^30.0.1",
-    "photoswipe": "^5.4.4",
-    "typescript": "^6.0.3",
-    "yaml": "^2.9.0"
-  },
+  "version": "0.0.1",
+  "packageManager": "pnpm@11.16.0",
   "devDependencies": {
-    "@axe-core/playwright": "^4.13.0",
-    "@playwright/test": "^1.62.1",
-    "@types/node": "^26.2.0",
     "@typescript-eslint/eslint-plugin": "^8.67.0",
     "@typescript-eslint/parser": "^8.67.0",
-    "@vitest/coverage-v8": "^4.1.10",
-    "axe-core": "^4.13.0",
     "eslint": "^10.8.1",
     "eslint-plugin-astro": "^3.1.0",
     "markdownlint-cli2": "^0.23.2",
     "vitest": "^4.1.10"
   },
-  "allowScripts": {
-    "esbuild@0.28.1": true,
-    "sharp@0.34.3": true
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "pnpm -r --if-present run dev",
+    "start": "pnpm -r --if-present run start",
+    "build": "pnpm -r --if-present run build",
+    "preview": "pnpm -r --if-present run preview",
+    "astro": "pnpm -r --if-present run astro",
+    "test": "vitest --run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest --coverage --run",
+    "test:e2e": "pnpm -r --if-present run test:e2e",
+    "test:e2e:env": "pnpm -r --if-present run test:e2e:env",
+    "test:unit": "pnpm -r --if-present run test:unit",
+    "test:unit:watch": "pnpm -r --if-present run test:unit:watch",
+    "test:unit:ui": "pnpm -r --if-present run test:unit:ui",
+    "lint": "pnpm run lint:md && pnpm -r --if-present run lint",
+    "lint:js": "pnpm -r --if-present run lint:js",
+    "lint:md": "markdownlint-cli2 \"**/*.md\"",
+    "lint:md:fix": "markdownlint-cli2 \"**/*.md\" --fix"
   }
 }

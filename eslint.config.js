@@ -25,9 +25,14 @@ const sharedRules = {
 }
 
 export default [
-  // Ignore generated artifacts like coverage/dist/public
+  // Ignore generated artifacts like coverage/dist/public and Astro generated files
   {
-    ignores: ['coverage/**', 'dist/**', 'public/**', '.astro/**.d.ts']
+    ignores: [
+      '**/coverage/**',
+      '**/dist/**',
+      '**/public/**',
+      '**/.astro/**'
+    ]
   },
 
   // Recomendado para .astro (deja que el plugin procese .astro)
