@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { listDeploys } from '@github/lib/wait-netlify-api.js'
+import { listDeploys } from '@secorto/wait-netlify/lib/wait-netlify-api.js'
 
 describe('wait-netlify-api.listDeploys', () => {
   it('throws on non-ok response', async () => {

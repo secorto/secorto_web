@@ -11,8 +11,7 @@
       "@utils/*": ["./src/utils/*"],
       "@client/*": ["./src/client/*"],
       "@domain/*": ["./src/domain/*"],
-      "@tests/*": ["./tests/*"],
-      "@github/*": ["./.github/*"]
+      "@tests/*": ["./tests/*"]
     },
     "types": [
       "node"

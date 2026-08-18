@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
-import { extractShaFromDeploy } from '@github/lib/wait-netlify-git.js'
-import { previewDeploysForBranch, findMatchingDeploy, choosePreviewUrl, summarizeCandidates } from '@github/lib/wait-netlify-integrator.js'
-import { resolveExpectedSha } from '@github/scripts/wait-netlify'
+import { extractShaFromDeploy } from '@secorto/wait-netlify/lib/wait-netlify-git.js'
+import { previewDeploysForBranch, findMatchingDeploy, choosePreviewUrl, summarizeCandidates } from '@secorto/wait-netlify/lib/wait-netlify-integrator.js'
+import { resolveExpectedSha } from '@secorto/wait-netlify'
 
 describe('wait-netlify helpers (TS)', () => {
   it('extracts sha from common fields', () => {

@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { fileURLToPath } from 'url'
 
-const RUNNER_PATH = fileURLToPath(new URL('../../../.github/scripts/wait-netlify-runner.js', import.meta.url))
+const RUNNER_PATH = fileURLToPath(new URL('../../../src/wait-netlify-runner.js', import.meta.url))
 
 // Ensure the mock factory used by `vi.mock` (which is hoisted) can reference
 // a stable spy implementation. Declaring at module top prevents TDZ.
 const runMock = vi.fn()
-vi.mock('@github/scripts/wait-netlify', () => ({ runAndExit: runMock }))
+vi.mock('../../../src/wait-netlify.js', () => ({ runAndExit: runMock }))
 
 describe('wait-netlify runner', () => {
   const OLD_ARGV = [...process.argv]
@@ -22,13 +22,13 @@ describe('wait-netlify runner', () => {
 
   it('calls runAndExit when module is executed directly', async () => {
     process.argv[1] = RUNNER_PATH
-    await import('@github/scripts/wait-netlify-runner')
+    await import('@secorto/wait-netlify/wait-netlify-runner')
     expect(runMock).toHaveBeenCalled()
   })
 
   it('does not call runAndExit when not executed directly', async () => {
     process.argv[1] = '/some/other/path'
-    await import('@github/scripts/wait-netlify-runner')
+    await import('@secorto/wait-netlify/wait-netlify-runner')
     expect(runMock).not.toHaveBeenCalled()
   })
 })

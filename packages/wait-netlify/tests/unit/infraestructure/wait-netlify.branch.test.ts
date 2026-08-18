@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-import { resolveEnvBranch } from '@github/scripts/wait-netlify'
+import { resolveEnvBranch } from '@secorto/wait-netlify'
 
 const OLD_ENV = { ...process.env }
 

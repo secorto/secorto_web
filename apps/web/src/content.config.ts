@@ -12,7 +12,6 @@ const createBasePostSchema = (imageHelper: ImageFunction) => z.object({
   image: imageHelper().optional(),
   excerpt: z.string().optional(),
   description: z.string().optional(),
-  postId: z.undefined(),
   translationKey: z.string().optional(),
   canonical: z.boolean().optional(),
   draft: z.boolean().optional(),

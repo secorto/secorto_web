@@ -38,6 +38,7 @@ completa del proyecto a través de tres reescrituras en diferentes frameworks.
 | [012](012-formatting-proposal.md) | Formateo y herramienta de estilo propuesta | Código & Calidad | Propuesta | 2026-05 |
 | [013](013-lint-rule-changes.md) | Actualización a ESLint 10 y eliminación temporal de plugins | Código & Calidad | Aceptada | 2026-05 |
 | [014](014-page-objects-hierarchy-separation-of-concerns.md) | Jerarquía de Page Objects con separación clara de responsabilidades | Testing & QA | Aceptada | 2026-07 |
+| [016](016-monorepo-workspace-pnpm.md) | Adoptar un monorepo con pnpm workspace para el sitio web | Architecture | Propuesta | 2026-08 |
 
 ## Convenciones
 
