@@ -18,7 +18,7 @@
     "./lib/wait-netlify-integrator.js": "./src/lib/wait-netlify-integrator.js"
   },
   "bin": {
-    "wait-netlify-runner": "./src/wait-netlify-runner.js"
+    "wait-netlify": "./src/wait-netlify-runner.js"
   },
   "files": [
     "src"

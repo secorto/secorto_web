@@ -74,8 +74,7 @@ jobs:
           PR_BRANCH: ${{ github.head_ref || github.ref_name }}
           COMMIT_ID: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
-          # use the shared workspace package runner which conditionally invokes the module when executed
-          node packages/wait-netlify/src/wait-netlify-runner.js
+          pnpm exec wait-netlify
 
       - name: Run Playwright tests (use Netlify preview if available)
         env:
