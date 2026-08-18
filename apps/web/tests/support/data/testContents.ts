@@ -1,4 +1,4 @@
-import { type UILanguages } from '@i18n/ui'
+import { defaultLang, type UILanguages } from '@i18n/ui'
 import type { SectionType } from '@domain/section'
 
 export const testContents = [
@@ -18,3 +18,13 @@ export const testContents = [
   testSlug: string
   testTag: string
 }>
+
+/**
+ * Filter the test contents based on the environment variable A11Y_ALL_LANGUAGES.
+ * If A11Y_ALL_LANGUAGES is set to 'true', all test contents will be returned.
+ * Otherwise, only the test contents matching the default language will be returned.
+ */
+export const a11yTestContents =
+  process.env.A11Y_ALL_LANGUAGES === 'true'
+    ? testContents
+    : testContents.filter((content) => content.locale === defaultLang)
