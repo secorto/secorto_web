@@ -1,10 +1,12 @@
 import { test } from '@tests/fixtures'
-import { defaultLang } from '@i18n/ui'
 import { userInHome } from '@tests/support/ui/home/pages/HomePage'
+import { enabledA11yLanguages } from '@tests/support/data/a11yLanguages'
 
-test.describe('@a11y - @home', () => {
-  test(`home page a11y @${defaultLang}`, async ({ page }) => {
-    const homePage = await userInHome(page, defaultLang)
-    await homePage.auditA11y()
+enabledA11yLanguages.forEach((locale) => {
+  test.describe(`@a11y - @home @${locale}`, () => {
+    test('home page a11y', async ({ page }) => {
+      const homePage = await userInHome(page, locale)
+      await homePage.auditA11y()
+    })
   })
 })

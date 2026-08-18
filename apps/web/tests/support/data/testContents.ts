@@ -1,5 +1,6 @@
 import { defaultLang, type UILanguages } from '@i18n/ui'
 import type { SectionType } from '@domain/section'
+import { enabledA11yLanguages } from './a11yLanguages'
 
 export const testContents = [
   { name: 'blog', locale: 'es', testSlug: '2022-07-11-intro-python', testTag: 'python' },
@@ -20,11 +21,10 @@ export const testContents = [
 }>
 
 /**
- * Filter the test contents based on the environment variable A11Y_ALL_LANGUAGES.
- * If A11Y_ALL_LANGUAGES is set to 'true', all test contents will be returned.
- * Otherwise, only the test contents matching the default language will be returned.
+ * Filter the test contents based on the A11y language scope configured for the run.
+ * By default, only the default locale is included; opt into all locales via
+ * A11Y_ALL_LANGUAGES=true.
  */
-export const a11yTestContents =
-  process.env.A11Y_ALL_LANGUAGES === 'true'
-    ? testContents
-    : testContents.filter((content) => content.locale === defaultLang)
+export const a11yTestContents = testContents.filter((content) =>
+  enabledA11yLanguages.includes(content.locale),
+)
