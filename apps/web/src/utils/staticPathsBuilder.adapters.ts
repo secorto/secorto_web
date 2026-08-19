@@ -21,13 +21,11 @@ import {
 /**
  * Adapter: Construye rutas de índices de secciones para producción.
  * Inyecta automáticamente sectionsConfig al Core.
- * @param fetchCollection - Inyectable para testing (default: getCollection de Astro)
  * @returns Array de paths para getStaticPaths
  */
 export async function buildSectionIndexPaths(
-  fetchCollection: FetchCollection = getCollection
 ): Promise<SectionPath[]> {
-  return buildSectionIndexPathsCore(Object.values(sectionsConfig), fetchCollection)
+  return buildSectionIndexPathsCore(Object.values(sectionsConfig))
 }
 
 /**

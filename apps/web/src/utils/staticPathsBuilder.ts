@@ -16,7 +16,7 @@ import { languageKeys, type UILanguages } from '@i18n/ui'
 import { type SectionConfig } from '@domain/section'
 import { filterByLocale, getUniqueTags, mapEntryId } from './paths'
 import type { AvailableLocales } from '@domain/translation'
-import { type PostEntry, type ExperienceLikeEntry } from '@domain/post'
+import { type PostEntry } from '@domain/post'
 import { buildTagLocaleMap, getAvailableLocaleEntriesFromMap, buildLocaleEntryMap } from './translationHelpers'
 import { sortByPriority } from '@utils/sorting'
 import { buildDetailLinks } from '@i18n/languagePickerUtils'
@@ -30,28 +30,15 @@ import { rootMap } from '@i18n/rootMap'
 /** Minimal shape for the injected collection fetcher — easier to mock than the full generic overload. */
 export type FetchCollection = (collection: CollectionKey) => Promise<CollectionEntry<CollectionKey>[]>
 
-type SectionPathPostProps = {
-  config: SectionConfig & { category: 'post' }
-  posts: PostEntry<CollectionKey>[]
-  tags: string[]
-  links: TranslationLink[]
-}
-
-type SectionPathExperienceProps = {
-  config: SectionConfig & { category: 'experience' }
-  posts: ExperienceLikeEntry[]
-  tags: string[]
-  links: TranslationLink[]
-}
-
-export type SectionPathProps = SectionPathPostProps | SectionPathExperienceProps
-
 export interface SectionPath {
   params: {
     locale: UILanguages
     section: string
   }
-  props: SectionPathProps
+  props:  {
+    config: SectionConfig
+    links: TranslationLink[]
+  }
 }
 
 export interface TagPath {
@@ -105,28 +92,14 @@ export interface TagIndexPath {
  */
 export function buildLocalePathsForSection(
   config: SectionConfig,
-  allEntries: PostEntry<CollectionKey>[]
 ): SectionPath[] {
   const links = languageKeys.map(l =>
     availableLink(`${buildLangPrefix(l)}/${config.routes[l]}`, l)
   )
-
   return languageKeys.map(locale => {
-    const posts = filterByLocale(allEntries, locale)
-    const tags = getUniqueTags(posts)
-
-    if (config.category === 'post') {
-      return {
-        params: { locale, section: config.routes[locale] },
-        props: { config: config as SectionConfig & { category: 'post' }, posts, tags, links }
-      }
-    }
-
     return {
       params: { locale, section: config.routes[locale] },
-      // posts viene de FetchCollection (CollectionKey genérico); el cast es seguro porque
-      // work/projects/community satisfacen ExperienceLikeEntry estructuralmente en runtime.
-      props: { config: config as SectionConfig & { category: 'experience' }, posts: posts as ExperienceLikeEntry[], tags, links }
+      props: { config, links }
     }
   })
 }
@@ -140,12 +113,10 @@ export function buildLocalePathsForSection(
  */
 export async function buildSectionIndexPathsCore(
   sections: SectionConfig[],
-  fetchCollection: FetchCollection
 ): Promise<SectionPath[]> {
   const pathGroups = await Promise.all(
     sections.map(async config => {
-      const allEntries = sortByPriority(mapEntryId(await fetchCollection(config.name)))
-      return buildLocalePathsForSection(config, allEntries)
+      return buildLocalePathsForSection(config)
     })
   )
   return pathGroups.flat()

@@ -1,25 +1,28 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro'
 import SEOHead from '@components/SEOHead.astro'
-import ListPost from '@components/ListPost.astro'
-import ListWork from '@components/ListWork.astro'
 import Tags from '@components/Tags.astro'
 import LanguagePicker from '@components/LanguagePicker.astro'
 import { useTranslations } from '@i18n/utils'
-import { type UILanguages } from '@i18n/ui'
-import { buildSectionIndexPaths, type SectionPath } from '@utils/staticPathsBuilder.adapters'
+import { filterByLocale, getUniqueTags, mapEntryId } from '@utils/paths'
+import ListContent from '@components/list/ListContent.astro'
+import { buildSectionIndexPaths } from '@utils/staticPathsBuilder.adapters'
+import { getCollection } from 'astro:content'
 
 export async function getStaticPaths() {
   return await buildSectionIndexPaths()
 }
 
-const { locale, section } = Astro.params as { locale: UILanguages; section: string }
-const sectionProps = Astro.props as SectionPath['props']
+const { locale, section } = Astro.params
+const sectionProps = Astro.props
 const config = sectionProps.config
-const tags = sectionProps.tags
 const links = sectionProps.links
 const t = useTranslations(locale)
 const pageTitle = t(config.translationKey)
+const basePath = `${locale}/${section}`
+const rawPosts = filterByLocale(await getCollection(config.name), locale)
+const tags = getUniqueTags(rawPosts)
+const posts = mapEntryId(rawPosts)
 ---
 
 <BaseLayout pageTitle={pageTitle}>
@@ -28,10 +31,5 @@ const pageTitle = t(config.translationKey)
   {tags.length > 0 && (
     <Tags route={`/${locale}/${section}/tags/`} tags={tags} />
   )}
-  {config.category === 'post' && (
-    <ListPost posts={sectionProps.posts} basePath={`${locale}/${config.routes[locale]}`} cta={t(config.ctaKey)} />
-  )}
-  {config.category === 'experience' && (
-    <ListWork posts={sectionProps.posts} basePath={`${locale}/${config.routes[locale]}`} lang={locale} cta={t(config.ctaKey)}/>
-  )}
+  <ListContent section={sectionProps.config.name} posts={posts} basePath={basePath} lang={locale} cta={t(config.ctaKey)} />
 </BaseLayout>
