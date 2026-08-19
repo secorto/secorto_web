@@ -5,6 +5,7 @@
   "version": "6.0.0",
   "scripts": {
     "dev": "astro dev",
+    "clean": "rimraf playwright-report",
     "start": "astro dev --host",
     "build": "astro check && astro build",
     "preview": "astro preview",
@@ -26,14 +27,15 @@
     "astro-expressive-code": "0.44.1",
     "jsdom": "^30.0.1",
     "photoswipe": "^5.4.4",
+    "sharp": "0.34.3",
     "typescript": "^6.0.3",
     "yaml": "^2.9.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@secorto/step": "workspace:*",
     "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.62.1",
+    "@secorto/step": "workspace:*",
     "@types/node": "^26.2.0",
     "@typescript-eslint/eslint-plugin": "^8.67.0",
     "@typescript-eslint/parser": "^8.67.0",
