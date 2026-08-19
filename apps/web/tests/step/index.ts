@@ -1,36 +1,17 @@
 import { test, expect } from '@playwright/test'
-import { makeStep, makeVerification } from '@secorto/step'
-import type { ContextableStep } from '@secorto/step'
-
-type StepContext = { expect: typeof expect }
+import { makeStep } from '@secorto/step'
+import type { Step } from '@secorto/step'
 
 export type { Step } from '@secorto/step'
 
+type VerifyContext = { expect: typeof expect }
+
 /**
- * A contextable step extended with Playwright-specific `.soft()` sugar.
+ * A basic verification step that injects the Playwright expect function.
  */
-export interface Verification<T> extends ContextableStep<T, StepContext> {
-  /**
-   * Execute with soft expects: all failures are collected without early exit.
-   */
-  soft(): Verification<T>
-}
-
-const buildVerification = <T>(
-  title: string,
-  action: (ctx: StepContext) => T | Promise<T>,
-  context: StepContext
-): Verification<T> => {
-  const base = makeVerification(test.step, context)(title, action)
-
-  return Object.assign(base, {
-    soft(): Verification<T> {
-      return buildVerification(title, action, { expect: expect.soft })
-    },
-    with(newContext: Partial<StepContext>): Verification<T> {
-      return buildVerification(title, action, { ...context, ...newContext })
-    },
-  }) as Verification<T>
+export interface Verification<T> extends Step<T> {
+  with(expectImpl: typeof expect): Step<T>
+  soft(): Step<T>
 }
 
 /**
@@ -45,9 +26,20 @@ export const step = makeStep(test.step)
  * Defines a verification step that can be executed with hard or soft expects.
  * @param title Title of verification
  * @param action Verification to be executed
- * @returns value of the action parameter
+ * @returns a fresh step with the selected expect implementation
  */
 export const verifyStep = <T>(
   title: string,
-  action: (ctx: StepContext) => T | Promise<T>
-): Verification<T> => buildVerification(title, action, { expect })
+  action: (ctx: VerifyContext) => T | Promise<T>
+): Verification<T> => {
+  const build = (expectImpl: typeof expect): Step<T> =>
+    makeStep(test.step)(title, () => action({ expect: expectImpl }))
+
+  const base = build(expect)
+
+  return {
+    ...base,
+    with: (expectImpl: typeof expect) => build(expectImpl),
+    soft: () => build(expect.soft),
+  }
+}

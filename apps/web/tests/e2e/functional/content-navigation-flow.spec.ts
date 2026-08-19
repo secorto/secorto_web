@@ -1,4 +1,4 @@
-import { test, expect } from '@tests/fixtures'
+import { test } from '@tests/fixtures'
 import { getEntryURL, sectionsConfig } from '@domain/section'
 import { userIsOnContentList } from '@tests/support/ui/content/ContentListPage'
 import { contentDetailPage } from '@tests/support/ui/content/ContentDetailPage'
@@ -27,14 +27,14 @@ for (const content of testContents) {
       async ({ page }) => {
         // 1. Ir a listado de sección y validar carga
         const list = await userIsOnContentList(page, content.name, content.locale)
-        await list.shouldBeLoaded(content.locale).with(expect)
+        await list.shouldBeLoaded(content.locale).soft()
 
         // 2. Click en un tag para filtrar
         await list.filterByTag(content.testTag)
-        await list.shouldBeLoaded(content.locale).with(expect)
+        await list.shouldBeLoaded(content.locale).soft()
 
         // 3. Validar filtrado fue exitoso
-        await list.shouldBeFiltered(content.testTag).with(expect)
+        await list.shouldBeFiltered(content.testTag).soft()
 
         // 4. Click en el item con testSlug (sin navegar por URL)
         const entryUrl = getEntryURL(content.name, content.locale, content.testSlug)
@@ -42,7 +42,7 @@ for (const content of testContents) {
 
         // 5. Validar que el detail page se cargó correctamente
         const detail = contentDetailPage(page, content.name)
-        await detail.shouldBeLoaded(content.locale).with(expect)
+        await detail.shouldBeLoaded(content.locale).soft()
       },
     )
   })
