@@ -69,6 +69,12 @@ importers:
       '@playwright/test':
         specifier: ^1.62.1
         version: 1.62.1
+      '@secorto/astro-i18n':
+        specifier: workspace:*
+        version: link:../../packages/astro-i18n
+      '@secorto/i18n-core':
+        specifier: workspace:*
+        version: link:../../packages/i18n-core
       '@secorto/step':
         specifier: workspace:*
         version: link:../../packages/step

@@ -31,6 +31,8 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@secorto/i18n-core": "workspace:*",
+    "@secorto/astro-i18n": "workspace:*",
     "@secorto/step": "workspace:*",
     "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.62.1",
