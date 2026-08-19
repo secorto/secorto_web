@@ -1,8 +1,8 @@
 import { expect as pwExpect, test } from '@playwright/test'
-import type { Step, StepRunner } from './step.ts'
-import { makeStep } from './step.ts'
+import type { Step, StepRunner } from './step'
+import { makeStep } from './step'
 
-export type { Step } from './step.ts'
+export type { Step } from './step'
 
 export type ExpectAdapter = typeof pwExpect | typeof pwExpect.soft
 export type VerifyContext = { expect: ExpectAdapter }

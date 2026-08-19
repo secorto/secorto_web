@@ -1,4 +1,4 @@
-import { SectionDictionary, Brand } from './dictionary'
+import type { SectionDictionary, Brand } from './dictionary'
 
 /**
  * Localized route slugs per section.
@@ -10,7 +10,7 @@ export type SectionRoutes<
 
 /**
  * Constructs a nominal SectionRoutes value from a raw SectionDictionary.
- * 
+ *
  * This function enforces the domain invariants for localized section routes:
  * - each (locale, slug) pair must be unique across all sections
  * - the resulting value is branded as 'SectionRoutes'
@@ -29,7 +29,8 @@ export function sectionRoutes<
 >(routes: SectionDictionary<Section, Language, string >): SectionRoutes<Section, Language> {
   const seen = new Map<string, Section>() // key = `${locale}:${slug}`
 
-  for (const section in routes) {
+  for (const sectionKey in routes) {
+    const section = sectionKey as Section
     const localized = routes[section]
 
     for (const locale in localized) {

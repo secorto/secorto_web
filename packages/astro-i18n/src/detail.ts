@@ -1,5 +1,5 @@
-import { buildTranslationIndex, getSectionRoute, LocalizedEntry, SectionRoutes, type TranslationIndex } from '@secorto/i18n-core'
-import { adaptToLocalizedEntry, GenericCollectionEntry } from './adapter'
+import { buildTranslationIndex, getSectionRoute, type LocalizedEntry, type SectionRoutes, type TranslationIndex } from '@secorto/i18n-core'
+import { adaptToLocalizedEntry, type GenericCollectionEntry } from './adapter'
 
 type DetailPath<T, C extends string, L extends string> = {
     params: {
