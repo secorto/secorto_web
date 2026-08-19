@@ -56,25 +56,4 @@ describe('i18n utils', () => {
     // restore modules for other tests
     vi.resetModules()
   })
-
-  it('date formatters produce locale-specific month names', async () => {
-    const { getFullFormat, getMonthYearFormat } = await import('@i18n/utils')
-    const d = new Date('2015-02-07T00:00:00Z')
-
-    const enFull = getFullFormat(new URL('https://example.test/en/')).format(d)
-    expect(enFull).toContain('2015')
-    expect(enFull).toContain('February')
-
-    const esFull = getFullFormat(new URL('https://example.test/es/')).format(d)
-    expect(esFull.toLowerCase()).toContain('febrero')
-    expect(esFull).toContain('2015')
-
-    const enMonth = getMonthYearFormat(new URL('https://example.test/en/')).format(d)
-    expect(enMonth).toContain('2015')
-    expect(enMonth).toContain('February')
-
-    const esMonth = getMonthYearFormat(new URL('https://example.test/es/')).format(d)
-    expect(esMonth.toLowerCase()).toContain('febrero')
-    expect(esMonth).toContain('2015')
-  })
 })

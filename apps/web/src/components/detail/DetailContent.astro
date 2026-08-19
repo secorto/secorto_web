@@ -2,6 +2,7 @@
 import type { UILanguages } from '@i18n/ui'
 import BlogTalkPostView from './BlogTalkPostView.astro'
 import WorkProjectCommunityView from './WorkProjectCommunityView.astro'
+import Tags from '@components/Tags.astro'
 import type { SectionType } from '@domain/section'
 import type { RenderResult } from 'astro:content'
 import type { PostEntry } from '@domain/post'
@@ -17,18 +18,18 @@ const detailComponentMap = {
 interface Props {
   section: SectionType
   locale: UILanguages
-  routeSlug: string
   entry: PostEntry<SectionType>
   Content: RenderResult['Content']
 }
 
-const { locale, entry, Content, routeSlug, section } = Astro.props
+const { locale, entry, Content, section } = Astro.props
 const DetailComponent = detailComponentMap[section]
 ---
 
+<Tags section={section} locale={locale} tags={entry.data.tags} />
+
 <DetailComponent
   locale={locale}
-  routeSlug={routeSlug}
   entry={entry}
   Content={Content}
 />

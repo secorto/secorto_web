@@ -13,7 +13,7 @@ export async function getStaticPaths() {
   return await buildSectionIndexPaths()
 }
 
-const { locale, section } = Astro.params
+const { locale } = Astro.params
 const sectionProps = Astro.props
 const config = sectionProps.config
 const links = sectionProps.links
@@ -27,8 +27,6 @@ const posts = mapEntryId(rawPosts)
 <BaseLayout pageTitle={pageTitle}>
   <SEOHead slot="seo-head" links={links} />
   <LanguagePicker slot="langpicker" links={links} />
-  {tags.length > 0 && (
-    <Tags route={`/${locale}/${section}/tags/`} tags={tags} />
-  )}
-  <ListContent section={sectionProps.config.name} posts={posts} lang={locale} cta={t(config.ctaKey)} />
+  <Tags locale={locale} section={config.name} tags={tags} />
+  <ListContent section={sectionProps.config.name} posts={posts} locale={locale} cta={t(config.ctaKey)} />
 </BaseLayout>

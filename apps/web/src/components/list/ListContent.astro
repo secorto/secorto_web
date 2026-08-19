@@ -17,12 +17,12 @@ const listingComponentMap = {
 export interface Props {
   section: SectionType
   posts: PostEntry<SectionType>[]
-  lang: UILanguages
+  locale: UILanguages
   cta: string
 }
 
-const { posts, lang, cta, section } = Astro.props
+const { posts, locale, cta, section } = Astro.props
 const ListingComponent = listingComponentMap[section]
 ---
 
-<ListingComponent section={section} posts={posts} lang={lang} cta={cta} />
+<ListingComponent section={section} posts={posts} locale={locale} cta={cta} />

@@ -11,19 +11,19 @@ import { getEntryURL, type SectionType } from '@domain/section'
 export interface Props {
   section: SectionType
   posts: PostLikeEntry[]
-  lang: UILanguages
+  locale: UILanguages
   cta: string
 }
 
-const { posts, cta, lang, section } = Astro.props
-const dateFormat = new Intl.DateTimeFormat(lang, full)
+const { posts, cta, locale, section } = Astro.props
+const dateFormat = new Intl.DateTimeFormat(locale, full)
 ---
 
 <PostList>
   {sortPostsByPriority(posts).map((post) =>
     <PostItem
       image={post.data.image}
-      url={getEntryURL(section, lang, post.cleanId)}
+      url={getEntryURL(section, locale, post.cleanId)}
       title={post.data.title}
       excerpt={post.data.excerpt}
       cta={cta}

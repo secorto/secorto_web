@@ -18,8 +18,6 @@ const { entry, links, config } = Astro.props
 
 const t = useTranslations(locale)
 
-const routeSlug = config.routes[locale]
-
 const { Content } = await render(entry)
 const pageDescription = getSeoDescription(entry.data)
 ---
@@ -40,7 +38,6 @@ const pageDescription = getSeoDescription(entry.data)
   <DetailContent
     section={config.name}
     locale={locale}
-    routeSlug={routeSlug}
     entry={entry}
     Content={Content}
   />
