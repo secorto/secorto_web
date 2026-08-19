@@ -3,15 +3,32 @@
   "version": "0.0.1",
   "private": false,
   "type": "module",
-  "main": "./src/index.ts",
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
   "exports": {
-    ".": "./src/index.ts",
-    "./playwright": "./src/playwright.ts"
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs",
+      "default": "./dist/index.mjs"
+    },
+    "./playwright": {
+      "types": "./dist/playwright.d.mts",
+      "import": "./dist/playwright.mjs",
+      "default": "./dist/playwright.mjs"
+    }
   },
   "files": [
-    "src"
+    "dist"
   ],
+  "tsdown": {
+    "entry": [
+      "src/index.ts",
+      "src/playwright.ts"
+    ]
+  },
   "scripts": {
+    "build": "tsdown",
+    "clean": "rimraf dist",
     "test": "vitest --run",
     "test:unit": "vitest",
     "test:unit:watch": "vitest --watch"
