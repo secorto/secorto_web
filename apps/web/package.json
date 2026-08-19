@@ -11,6 +11,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "test": "npm run test:unit -- run && npm run test:e2e",
+    "pretest:e2e": "pnpm --filter @secorto/step build",
     "test:e2e": "npx playwright test",
     "test:e2e:env": "node --env-file=.env ./node_modules/@playwright/test/cli.js test",
     "test:unit": "vitest",
