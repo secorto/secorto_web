@@ -18,7 +18,6 @@ import { filterByLocale, getUniqueTags, mapEntryId } from './paths'
 import type { AvailableLocales } from '@domain/translation'
 import { type PostEntry } from '@domain/post'
 import { buildTagLocaleMap, getAvailableLocaleEntriesFromMap, buildLocaleEntryMap } from './translationHelpers'
-import { sortByPriority } from '@utils/sorting'
 import { buildDetailLinks } from '@i18n/languagePickerUtils'
 import { availableLink, missingLink } from '@domain/translationLink'
 import { buildLangPrefix } from '@i18n/languagePickerUtils'
@@ -137,7 +136,7 @@ export async function buildTagPathsCore(
 
   for (const config of sections) {
     const collectedEntries = await fetchCollection(config.name)
-    const allEntries = sortByPriority(mapEntryId(collectedEntries))
+    const allEntries = mapEntryId(collectedEntries)
     const tagLocaleMap = buildTagLocaleMap(allEntries, tagTranslations)
 
     for (const locale of languageKeys) {
@@ -212,7 +211,7 @@ export async function buildTagIndexPathsCore(
 
   for (const config of sections) {
     const entries = await fetchCollection(config.name)
-    allSectionEntries[config.name] = sortByPriority(mapEntryId(entries))
+    allSectionEntries[config.name] = mapEntryId(entries)
   }
 
   const globalTagsLinks = languageKeys.map(l =>

@@ -1,14 +1,4 @@
-/**
- * Ordena por prioridad y luego por identificador, sin mutar el array original.
- * Es el fallback común para listados heterogéneos.
- */
-export function sortByPriority<T extends { cleanId: string; data: { priority?: number; date?: Date; startDate?: Date } }>(
-  items: T[]
-): T[] {
-  return items.slice().sort((a, b) => compareByPriorityAndDate(a, b, item => item.data.date ?? item.data.startDate))
-}
-
-function compareByPriorityAndDate<T extends { cleanId: string; data: { priority?: number } }>(
+export function compareByPriorityAndDate<T extends { cleanId: string; data: { priority?: number } }>(
   a: T,
   b: T,
   getDate: (item: T) => Date | undefined,
@@ -24,8 +14,9 @@ function compareByPriorityAndDate<T extends { cleanId: string; data: { priority?
   return a.cleanId.localeCompare(b.cleanId)
 }
 
-function getPriority<T extends { data: { priority?: number } }>(item: T): number {
-  return Number.isInteger(item.data.priority) ? (item.data.priority as number) : 0
+export function getPriority<T extends { data: { priority?: number } }>(item: T): number {
+  const priority = item.data.priority
+  return priority && Number.isInteger(priority) ? priority : 0
 }
 
 function getComparableTimestamp(date: Date | undefined): number {
