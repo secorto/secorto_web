@@ -4,6 +4,7 @@ import PostList from '@components/PostList.astro';
 import PostDate from '@components/PostDate.astro';
 import { getFullFormat } from '@i18n/utils';
 import type { PostLikeEntry } from '@domain/post';
+import { sortPostsByPriority } from '@utils/sorting';
 
 export interface Props {
   basePath: string
@@ -16,7 +17,7 @@ const dateFormat = getFullFormat(Astro.url);
 ---
 
 <PostList>
-  {posts.map((post) =>
+  {sortPostsByPriority(posts).map((post) =>
     <PostItem
       image={post.data.image}
       url={`/${basePath}/${post.cleanId}`}

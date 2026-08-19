@@ -3,10 +3,10 @@ import type { UILanguages } from '@i18n/ui'
 import BlogTalkPostView from './BlogTalkPostView.astro'
 import WorkProjectCommunityView from './WorkProjectCommunityView.astro'
 import type { SectionType } from '@domain/section'
-import type { CollectionKey, RenderResult } from 'astro:content'
+import type { RenderResult } from 'astro:content'
 import type { PostEntry } from '@domain/post'
 
-export const detailComponentMap = {
+const detailComponentMap = {
   blog: BlogTalkPostView,
   talk: BlogTalkPostView,
   work: WorkProjectCommunityView,
@@ -15,10 +15,10 @@ export const detailComponentMap = {
 } as const satisfies Record<SectionType, typeof BlogTalkPostView | typeof WorkProjectCommunityView>
 
 interface Props {
-  section: CollectionKey
+  section: SectionType
   locale: UILanguages
   routeSlug: string
-  entry: PostEntry<CollectionKey>
+  entry: PostEntry<SectionType>
   Content: RenderResult['Content']
 }
 

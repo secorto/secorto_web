@@ -2,11 +2,10 @@
 import ListPost from './ListPost.astro'
 import ListWork from './ListWork.astro'
 import type { SectionType } from '@domain/section'
-import type { CollectionKey } from 'astro:content'
 import type { PostEntry } from '@domain/post'
 import type { UILanguages } from '@i18n/ui'
 
-export const listingComponentMap = {
+const listingComponentMap = {
   blog: ListPost,
   talk: ListPost,
   work: ListWork,
@@ -16,9 +15,9 @@ export const listingComponentMap = {
 
 
 export interface Props {
-  section: CollectionKey
+  section: SectionType
   basePath: string
-  posts: PostEntry<CollectionKey>[]
+  posts: PostEntry<SectionType>[]
   lang: UILanguages
   cta: string
 }

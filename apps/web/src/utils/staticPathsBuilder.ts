@@ -86,9 +86,10 @@ export interface TagIndexPath {
 
 
 /**
- * Helper puro síncrono: dado un config de sección y sus entradas (ya procesadas con mapEntryId),
- * genera los SectionPath para todos los locales con el tipo de posts correcto según la categoría.
- * Separado de la orquestación async para ser directamente testeable sin mocks de fetch.
+ * Core: Construye rutas de locales para una sección sin acoplamiento.
+ * Recibe la sección como parámetro explícito (objeto).
+ * @param config - Configuración de la sección a procesar (inyectada)
+ * @returns Array de paths para getStaticPaths
  */
 export function buildLocalePathsForSection(
   config: SectionConfig,
@@ -108,7 +109,6 @@ export function buildLocalePathsForSection(
  * Core: Construye rutas de índices de secciones sin acoplamiento.
  * Recibe las secciones como parámetro explícito (array).
  * @param sections - Secciones a procesar (inyectadas)
- * @param fetchCollection - Función para obtener colecciones
  * @returns Array de paths para getStaticPaths
  */
 export async function buildSectionIndexPathsCore(
