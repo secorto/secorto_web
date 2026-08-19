@@ -2,16 +2,47 @@
   "name": "@secorto/step",
   "version": "0.0.1",
   "private": false,
+  "description": "Framework-agnostic step primitives with a Playwright adapter",
+  "keywords": [
+    "steps",
+    "playwright",
+    "testing"
+  ],
+  "homepage": "https://github.com/secorto/secorto_web/blob/master/packages/step#readme",
+  "bugs": {
+    "url": "https://github.com/secorto/secorto_web/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/secorto/secorto_web.git"
+  },
+  "license": "MIT",
+  "author": "Sergio Carlos Orozco Torres",
   "type": "module",
-  "main": "./src/index.ts",
   "exports": {
-    ".": "./src/index.ts",
-    "./playwright": "./src/playwright.ts"
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./dist/index.mjs",
+      "default": "./dist/index.mjs"
+    },
+    "./playwright": {
+      "types": "./src/playwright.ts",
+      "import": "./dist/playwright.mjs",
+      "default": "./dist/playwright.mjs"
+    }
+  },
+  "main": "./dist/index.mjs",
+  "types": "./src/index.ts",
+  "directories": {
+    "test": "tests"
   },
   "files": [
+    "dist",
     "src"
   ],
   "scripts": {
+    "build": "tsdown",
+    "clean": "rimraf dist",
     "test": "vitest --run",
     "test:unit": "vitest",
     "test:unit:watch": "vitest --watch"
@@ -21,5 +52,11 @@
   },
   "devDependencies": {
     "vitest": "^4.1.10"
+  },
+  "tsdown": {
+    "entry": [
+      "src/index.ts",
+      "src/playwright.ts"
+    ]
   }
 }

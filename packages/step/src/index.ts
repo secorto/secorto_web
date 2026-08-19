@@ -1,2 +1,2 @@
-export type { StepRunner, Step } from './step.ts'
-export { makeStep } from './step.ts'
+export type { StepRunner, Step } from './step'
+export { createContextStep, makeStep } from './step'
