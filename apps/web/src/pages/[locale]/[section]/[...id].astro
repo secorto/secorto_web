@@ -1,5 +1,6 @@
 ---
 import { render, getCollection } from 'astro:content'
+import type { DetailPath } from '@utils/staticPathsBuilder.adapters'
 import BaseLayout from '@layouts/BaseLayout.astro'
 import Comments from '@components/Comments.astro'
 import DetailContent from '@components/detail/DetailContent.astro'
@@ -12,6 +13,9 @@ import { getSeoDescription } from '@domain/post'
 export async function getStaticPaths() {
   return await buildAllDetailPaths(getCollection)
 }
+
+export type Props = DetailPath['props']
+export type Params = DetailPath['params']
 
 const { locale } = Astro.params
 const { entry, links, config } = Astro.props

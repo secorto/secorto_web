@@ -8,10 +8,14 @@ import { filterByLocale, getUniqueTags, mapEntryId } from '@utils/paths'
 import ListContent from '@components/list/ListContent.astro'
 import { buildSectionIndexPaths } from '@utils/staticPathsBuilder.adapters'
 import { getCollection } from 'astro:content'
+import { type SectionPath } from '@utils/staticPathsBuilder'
 
 export async function getStaticPaths() {
   return await buildSectionIndexPaths()
 }
+
+export type Props = SectionPath['props']
+export type Params = SectionPath['params']
 
 const { locale } = Astro.params
 const sectionProps = Astro.props

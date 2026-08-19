@@ -6,11 +6,15 @@ import LanguagePicker from '@components/LanguagePicker.astro'
 import ListContent from '@components/list/ListContent.astro'
 import { useTranslations } from '@i18n/utils'
 import { buildTagPaths } from '@utils/staticPathsBuilder.adapters'
+import type { TagPath } from '@utils/staticPathsBuilder'
 import { filterByLocale, getUniqueTags } from '@utils/paths'
 
 export async function getStaticPaths() {
   return await buildTagPaths()
 }
+
+export type Props = TagPath['props']
+export type Params = TagPath['params']
 
 const { locale, tag } = Astro.params
 const { allEntries, config, links } = Astro.props
