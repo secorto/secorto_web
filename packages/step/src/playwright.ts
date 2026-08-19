@@ -13,14 +13,13 @@ export interface Verification<T> extends Step<T> {
 }
 
 export const createPlaywrightStep = (runner: StepRunner = test.step) => {
-  const step = makeStep(runner)
-
   return {
-    step,
+    step: makeStep(runner, 'StepAction'),
     verifyStep: <T>(
       title: string,
       action: (ctx: VerifyContext) => T | Promise<T>
     ): Verification<T> => {
+      const step = makeStep(runner, 'StepVerification')
       const build = (
         expectImpl: ExpectAdapter,
         nextTitle = title
