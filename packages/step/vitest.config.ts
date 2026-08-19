@@ -1,11 +1,13 @@
 import { defineConfig } from 'vitest/config'
 import { resolve } from 'path'
+import { fileURLToPath } from 'url'
+
+const PROJECT_ROOT = fileURLToPath(new URL('.', import.meta.url))
 
 export default defineConfig({
   resolve: {
     alias: {
-      '@secorto/step': resolve(__dirname, './src/index.ts'),
-      '@secorto/step/playwright': resolve(__dirname, './src/playwright.ts'),
+      '@secorto/step': resolve(PROJECT_ROOT, 'src'),
     },
   },
   test: {
