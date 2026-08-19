@@ -1,0 +1,68 @@
+name: Manual E2E
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: "Base URL to run tests against (optional). NETLIFY_PREVIEW_URL takes priority if present"
+        required: false
+        default: "https://secorto.com"
+      folder:
+        description: "Folder to run (optional)"
+        required: false
+        default: ""
+      tag:
+        description: "Tag to run (optional)"
+        required: false
+        default: ""
+      real_third_party:
+        description: "Run tests against real third-party services"
+        required: false
+        default: false
+        type: boolean
+      a11y_all_languages:
+        description: "Run a11y tests across all locales"
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  manual-e2e:
+    name: Manual E2E Tests (Playwright)
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.62.1-noble
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: pnpm/setup@v2
+        with:
+          runtime: node@24
+          cache: true
+
+      - name: Run Playwright tests (manual inputs)
+        env:
+          HOME: /root
+          BASE_URL: ${{ github.event.inputs.base_url }}
+          FOLDER: ${{ github.event.inputs.folder }}
+          TAG: ${{ github.event.inputs.tag }}
+          REAL_THIRD_PARTY: ${{ github.event.inputs.real_third_party }}
+          A11Y_ALL_LANGUAGES: ${{ github.event.inputs.a11y_all_languages }}
+        run: |
+          if [ -n "$FOLDER" ] && [ -n "$TAG" ]; then
+            pnpm test:e2e -- --grep "$TAG" "tests/$FOLDER"
+          elif [ -n "$FOLDER" ]; then
+            pnpm test:e2e -- "tests/$FOLDER"
+          elif [ -n "$TAG" ]; then
+            pnpm test:e2e -- --grep "$TAG"
+          else
+            pnpm test:e2e
+          fi
+
+      - uses: actions/upload-artifact@v6
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: "**/playwright-report/**"
+          retention-days: 30
