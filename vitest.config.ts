@@ -6,8 +6,8 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'html', 'lcov'],
       include: [
-        'apps/web/src/**/*.{ts,tsx,js,jsx,vue}',
-        'packages/wait-netlify/src/**/*.{ts,tsx,js,jsx,vue}',
+        'apps/*/src/**/*.{ts,tsx,js,jsx,vue}',
+        'packages/*/src/**/*.{ts,tsx,js,jsx,vue}',
       ],
       exclude: [
         '**/tests/**',
