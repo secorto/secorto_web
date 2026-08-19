@@ -1,15 +1,19 @@
 ---
+import { getEntryTagURL, type SectionType } from '@domain/section';
+import type { UILanguages } from '@i18n/ui';
+
 interface Props {
 	tags: string[],
-  route: string,
+  section: SectionType
+  locale: UILanguages
   current?: string
 }
-const { tags, route, current } = Astro.props;
+const { tags, section, locale, current } = Astro.props;
 ---
 
 <div class="tags" data-testid="tags">
   {tags.map((tag) => (
-    <a href={`${route}${tag}`} class={current === tag ? "tag active" : "tag"} data-testid={`tag-link-${tag}`}><p>{tag}</p></a>
+    <a href={getEntryTagURL(section, locale, tag)} class={current === tag ? "tag active" : "tag"} data-testid={`tag-link-${tag}`}><p>{tag}</p></a>
   ))}
 </div>
 

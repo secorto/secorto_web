@@ -5,29 +5,31 @@ import PostDate from '@components/PostDate.astro'
 import WorkDateRange from '@components/WorkDateRange.astro'
 import type { ExperienceLikeEntry } from '@domain/post'
 import type { UILanguages } from '@i18n/ui'
+import { sortExperienceByPriority } from '@utils/sorting'
+import { getEntryURL, type SectionType } from '@domain/section'
 
 export interface Props {
-  basePath: string
+  section: SectionType
   posts: ExperienceLikeEntry[]
-  lang: UILanguages
+  locale: UILanguages
   cta: string
 }
 
-const { posts, basePath, lang, cta } = Astro.props
+const { posts, locale, cta, section } = Astro.props
 ---
 
 <PostList>
-  {posts.map((post) =>
+  {sortExperienceByPriority(posts).map((post) =>
     <PostItem
       image={post.data.image}
-      url={`/${basePath}/${post.cleanId}`}
+      url={getEntryURL(section, locale, post.cleanId)}
       title={post.data.title}
       cta={cta}
     >
       {post.data.startDate && (
         <PostDate>
           <WorkDateRange
-            locale={lang}
+            locale={locale}
             startDate={post.data.startDate}
             endDate={post.data.endDate}
           />

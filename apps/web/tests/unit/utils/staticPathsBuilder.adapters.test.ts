@@ -29,7 +29,7 @@ const emptyFetch: FetchCollection = vi.fn(async () => [])
 
 describe('staticPathsBuilder.adapters — contrato con sectionsConfig real', () => {
   test('buildSectionIndexPaths: genera paths para cada sección x locale', async () => {
-    const result = await buildSectionIndexPaths(emptyFetch)
+    const result = await buildSectionIndexPaths()
 
     expect(result).toHaveLength(sectionCount * localeCount)
     expect(result[0]).toMatchObject({ params: expect.objectContaining({ locale: expect.any(String), section: expect.any(String) }) })

@@ -16,9 +16,8 @@ import { languageKeys, type UILanguages } from '@i18n/ui'
 import { type SectionConfig } from '@domain/section'
 import { filterByLocale, getUniqueTags, mapEntryId } from './paths'
 import type { AvailableLocales } from '@domain/translation'
-import { type PostEntry, type ExperienceLikeEntry } from '@domain/post'
+import { type PostEntry } from '@domain/post'
 import { buildTagLocaleMap, getAvailableLocaleEntriesFromMap, buildLocaleEntryMap } from './translationHelpers'
-import { sortByPriority } from '@utils/sorting'
 import { buildDetailLinks } from '@i18n/languagePickerUtils'
 import { availableLink, missingLink } from '@domain/translationLink'
 import { buildLangPrefix } from '@i18n/languagePickerUtils'
@@ -30,28 +29,15 @@ import { rootMap } from '@i18n/rootMap'
 /** Minimal shape for the injected collection fetcher — easier to mock than the full generic overload. */
 export type FetchCollection = (collection: CollectionKey) => Promise<CollectionEntry<CollectionKey>[]>
 
-type SectionPathPostProps = {
-  config: SectionConfig & { category: 'post' }
-  posts: PostEntry<CollectionKey>[]
-  tags: string[]
-  links: TranslationLink[]
-}
-
-type SectionPathExperienceProps = {
-  config: SectionConfig & { category: 'experience' }
-  posts: ExperienceLikeEntry[]
-  tags: string[]
-  links: TranslationLink[]
-}
-
-export type SectionPathProps = SectionPathPostProps | SectionPathExperienceProps
-
 export interface SectionPath {
   params: {
     locale: UILanguages
     section: string
   }
-  props: SectionPathProps
+  props:  {
+    config: SectionConfig
+    links: TranslationLink[]
+  }
 }
 
 export interface TagPath {
@@ -99,34 +85,21 @@ export interface TagIndexPath {
 
 
 /**
- * Helper puro síncrono: dado un config de sección y sus entradas (ya procesadas con mapEntryId),
- * genera los SectionPath para todos los locales con el tipo de posts correcto según la categoría.
- * Separado de la orquestación async para ser directamente testeable sin mocks de fetch.
+ * Core: Construye rutas de locales para una sección sin acoplamiento.
+ * Recibe la sección como parámetro explícito (objeto).
+ * @param config - Configuración de la sección a procesar (inyectada)
+ * @returns Array de paths para getStaticPaths
  */
 export function buildLocalePathsForSection(
   config: SectionConfig,
-  allEntries: PostEntry<CollectionKey>[]
 ): SectionPath[] {
   const links = languageKeys.map(l =>
     availableLink(`${buildLangPrefix(l)}/${config.routes[l]}`, l)
   )
-
   return languageKeys.map(locale => {
-    const posts = filterByLocale(allEntries, locale)
-    const tags = getUniqueTags(posts)
-
-    if (config.category === 'post') {
-      return {
-        params: { locale, section: config.routes[locale] },
-        props: { config: config as SectionConfig & { category: 'post' }, posts, tags, links }
-      }
-    }
-
     return {
       params: { locale, section: config.routes[locale] },
-      // posts viene de FetchCollection (CollectionKey genérico); el cast es seguro porque
-      // work/projects/community satisfacen ExperienceLikeEntry estructuralmente en runtime.
-      props: { config: config as SectionConfig & { category: 'experience' }, posts: posts as ExperienceLikeEntry[], tags, links }
+      props: { config, links }
     }
   })
 }
@@ -135,17 +108,14 @@ export function buildLocalePathsForSection(
  * Core: Construye rutas de índices de secciones sin acoplamiento.
  * Recibe las secciones como parámetro explícito (array).
  * @param sections - Secciones a procesar (inyectadas)
- * @param fetchCollection - Función para obtener colecciones
  * @returns Array de paths para getStaticPaths
  */
 export async function buildSectionIndexPathsCore(
   sections: SectionConfig[],
-  fetchCollection: FetchCollection
 ): Promise<SectionPath[]> {
   const pathGroups = await Promise.all(
     sections.map(async config => {
-      const allEntries = sortByPriority(mapEntryId(await fetchCollection(config.name)))
-      return buildLocalePathsForSection(config, allEntries)
+      return buildLocalePathsForSection(config)
     })
   )
   return pathGroups.flat()
@@ -166,7 +136,7 @@ export async function buildTagPathsCore(
 
   for (const config of sections) {
     const collectedEntries = await fetchCollection(config.name)
-    const allEntries = sortByPriority(mapEntryId(collectedEntries))
+    const allEntries = mapEntryId(collectedEntries)
     const tagLocaleMap = buildTagLocaleMap(allEntries, tagTranslations)
 
     for (const locale of languageKeys) {
@@ -241,7 +211,7 @@ export async function buildTagIndexPathsCore(
 
   for (const config of sections) {
     const entries = await fetchCollection(config.name)
-    allSectionEntries[config.name] = sortByPriority(mapEntryId(entries))
+    allSectionEntries[config.name] = mapEntryId(entries)
   }
 
   const globalTagsLinks = languageKeys.map(l =>

@@ -1,6 +1,5 @@
 import { ui, defaultLang, type UILanguages, languageKeys } from './ui'
 import { showDefaultLang } from '@i18n/config'
-import { full, monthYear } from '@i18n/dateFormat'
 
 /**
  * Obtiene el idioma a partir de la URL.
@@ -63,22 +62,4 @@ export function useTranslatedPath(lang: UILanguages) {
   return function translatePath(path: string, l: string = lang) {
     return !showDefaultLang && l === defaultLang ? path : `/${l}${path}`
   }
-}
-
-/**
- * Formateador de fecha completo según el idioma extraído de la URL.
- * @param url - URL actual (se usa para detectar idioma)
- * @returns Instancia de `Intl.DateTimeFormat` con el formato `full`
- */
-export function getFullFormat(url: URL): Intl.DateTimeFormat {
-  return new Intl.DateTimeFormat(getLangFromUrl(url), full)
-}
-
-/**
- * Formateador de mes y año según el idioma extraído de la URL.
- * @param url - URL actual (se usa para detectar idioma)
- * @returns Instancia de `Intl.DateTimeFormat` con el formato `monthYear`
- */
-export function getMonthYearFormat(url: URL): Intl.DateTimeFormat {
-  return new Intl.DateTimeFormat(getLangFromUrl(url), monthYear)
 }

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { sortByPriority } from '@utils/sorting'
+import { compareByPriorityAndDate, sortPostsByPriority, sortExperienceByPriority, getPriority } from '@utils/sorting'
 
 function make(id: string, priority?: number, date?: string, startDate?: string) {
   return {
@@ -14,61 +14,84 @@ function make(id: string, priority?: number, date?: string, startDate?: string) 
   }
 }
 
-describe('sortByPriority', () => {
-  it('orders by priority desc', () => {
-    const items = [make('a', 10), make('b', 50), make('c', 0)]
-    const sorted = sortByPriority(items)
-    expect(sorted.map(s => s.cleanId)).toEqual(['b', 'a', 'c'])
+describe('getPriority', () => {
+  it('returns the priority if defined', () => {
+    const item = make('test', 5)
+    expect(getPriority(item)).toBe(5)
   })
 
-  it('tiebreaks by startDate desc when priority equal', () => {
-    const items = [make('a', 10, undefined, '2023-01-01'), make('b', 10, undefined, '2024-01-01'), make('c', 10)]
-    const sorted = sortByPriority(items)
-    expect(sorted.map(s => s.cleanId)).toEqual(['b', 'a', 'c'])
+  it('returns 0 if priority is undefined', () => {
+    const item = make('test')
+    expect(getPriority(item)).toBe(0)
+  })
+})
+
+describe('compareByPriorityAndDate', () => {
+  it('orders by priority desc before falling back to date desc', () => {
+    const a = make('a', 10, '2024-01-01')
+    const b = make('b', 50, '2023-01-01')
+    expect(compareByPriorityAndDate(a, b, item => item.data.date)).toBeGreaterThan(0)
   })
 
-  it('tiebreaks by date desc when priority equal', () => {
-    const items = [make('a', 10, '2023-01-01'), make('b', 10, '2024-01-01'), make('c', 10)]
-    const sorted = sortByPriority(items)
-    expect(sorted.map(s => s.cleanId)).toEqual(['b', 'a', 'c'])
+  it('orders by date desc when priorities are equal', () => {
+    const a = make('older', 10, '2023-01-01')
+    const b = make('newer', 10, '2024-01-01')
+    expect(compareByPriorityAndDate(a, b, item => item.data.date)).toBeGreaterThan(0)
   })
 
-  it('date has precedence over startDate when both present', () => {
-    // a has later startDate but earlier date; b has later date -> b should come first
-    const a = make('a', 10, '2023-01-01', '2025-01-01')
-    const b = make('b', 10, '2024-01-01', '2010-01-01')
-    const sorted = sortByPriority([a, b])
-    expect(sorted.map(s => s.cleanId)).toEqual(['b', 'a'])
+  it('falls back to cleanId when priority and date are equal', () => {
+    const a = make('zeta', 10, '2024-01-01')
+    const b = make('alpha', 10, '2024-01-01')
+    expect(compareByPriorityAndDate(a, b, item => item.data.date)).toBeGreaterThan(0)
   })
 
-  it('falls back to cleanId when no priority or date', () => {
-    const items = [make('b'), make('a'), make('c')]
-    const sorted = sortByPriority(items)
-    expect(sorted.map(s => s.cleanId)).toEqual(['a', 'b', 'c'])
+  it('treats invalid dates as missing', () => {
+    const a = make('a', 10, 'not-a-date')
+    const b = make('b', 10, '2024-01-01')
+    expect(compareByPriorityAndDate(a, b, item => item.data.date)).toBeGreaterThan(0)
+  })
+})
+
+describe('post list sorting', () => {
+  it('orders posts by priority and publication date desc', () => {
+    const items = [
+      make('older-post', 10, '2023-01-01'),
+      make('newer-post', 10, '2024-01-01'),
+      make('undated-post', 10)
+    ]
+
+    expect(sortPostsByPriority(items).map(s => s.cleanId)).toEqual(['newer-post', 'older-post', 'undated-post'])
   })
 
-  it('treats invalid Date objects as missing dates', () => {
-    const a = make('a', 10, 'not-a-date') // invalid Date -> getTime() -> NaN
-    const b = make('b', 10, undefined, '2024-01-01') // valid startDate
-    const sorted = sortByPriority([a, b])
-    // invalid date is treated like missing -> b (dated) should come first
-    expect(sorted.map(s => s.cleanId)).toEqual(['b', 'a'])
+  it('falls back to cleanId when post priority and date are equal', () => {
+    const items = [
+      make('zeta', 10, '2024-01-01'),
+      make('alpha', 10, '2024-01-01'),
+      make('beta', 10, '2024-01-01')
+    ]
+
+    expect(sortPostsByPriority(items).map(s => s.cleanId)).toEqual(['alpha', 'beta', 'zeta'])
+  })
+})
+
+describe('experience list sorting', () => {
+  it('orders experiences by priority and startDate desc', () => {
+    const items = [
+      make('older-work', 10, undefined, '2023-01-01'),
+      make('newer-work', 10, undefined, '2024-01-01'),
+      make('undated-work', 10)
+    ]
+
+    expect(sortExperienceByPriority(items).map(s => s.cleanId)).toEqual(['newer-work', 'older-work', 'undated-work'])
   })
 
-  it('does not mutate the input array (immutability)', () => {
-    const items = [make('x', 5, '2020-01-01'), make('y', 10, '2021-01-01'), make('z', 0)]
-    const originalOrder = items.map(i => i.cleanId)
-    const copy = items.slice() // shallow copy reference
+  it('falls back to cleanId when experience priority and startDate are equal', () => {
+    const items = [
+      make('work-zeta', 10, undefined, '2024-01-01'),
+      make('work-alpha', 10, undefined, '2024-01-01'),
+      make('work-beta', 10, undefined, '2024-01-01')
+    ]
 
-    const sorted = sortByPriority(items)
-
-    // original array reference should remain same order
-    expect(items.map(i => i.cleanId)).toEqual(originalOrder)
-    // and the returned array is a different array instance
-    expect(sorted).not.toBe(items)
-    // sanity: returned array is ordered correctly
-    expect(sorted.map(s => s.cleanId)).toEqual(['y', 'x', 'z'])
-    // ensure shallow copy matches original (no mutation occurred)
-    expect(copy.map(i => i.cleanId)).toEqual(originalOrder)
+    expect(sortExperienceByPriority(items).map(s => s.cleanId)).toEqual(['work-alpha', 'work-beta', 'work-zeta'])
   })
 })

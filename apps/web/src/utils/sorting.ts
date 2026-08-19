@@ -1,30 +1,44 @@
+export function compareByPriorityAndDate<T extends { cleanId: string; data: { priority?: number } }>(
+  a: T,
+  b: T,
+  getDate: (item: T) => Date | undefined,
+): number {
+  const pa = getPriority(a)
+  const pb = getPriority(b)
+  if (pa !== pb) return pb - pa
+
+  const ta = getComparableTimestamp(getDate(a))
+  const tb = getComparableTimestamp(getDate(b))
+  if (ta !== tb) return tb - ta
+
+  return a.cleanId.localeCompare(b.cleanId)
+}
+
+export function getPriority<T extends { data: { priority?: number } }>(item: T): number {
+  const priority = item.data.priority
+  return priority && Number.isInteger(priority) ? priority : 0
+}
+
+function getComparableTimestamp(date: Date | undefined): number {
+  if (!date) return Number.NEGATIVE_INFINITY
+  const ts = date.getTime()
+  return Number.isFinite(ts) ? ts : Number.NEGATIVE_INFINITY
+}
+
 /**
- * Ordena elementos que cumplan la forma mínima requerida: `{ cleanId: string, data: { priority?: number, date?: Date, startDate?: Date } }`.
- * Devuelve un nuevo array del mismo tipo; no muta el array de entrada (la función mantiene inmutabilidad del caller).
+ * Ordena entradas de tipo blog/publicación por prioridad y fecha de publicación.
  */
-export function sortByPriority<T extends { cleanId: string; data: { priority?: number; date?: Date; startDate?: Date } }>(
+export function sortPostsByPriority<T extends { cleanId: string; data: { priority?: number; date?: Date } }>(
   items: T[]
 ): T[] {
-  const getPriority = (e: T) => Number.isInteger(e.data.priority) ? (e.data.priority as number) : 0
-  // Use `date` when present (blog/talk), otherwise fallback to `startDate` (work/projects/community)
-  const getStartTime = (e: T) => {
-    const maybeDate = e.data.date ?? e.data.startDate
-    if (!maybeDate) return null
-    const ts = maybeDate.getTime()
-    // getTime() can return NaN for invalid Date instances; treat non-finite timestamps as missing
-    return Number.isFinite(ts) ? ts : null
-  }
+  return items.slice().sort((a, b) => compareByPriorityAndDate(a, b, item => item.data.date))
+}
 
-  return items.slice().sort((a, b) => {
-    const pa = getPriority(a)
-    const pb = getPriority(b)
-    if (pa !== pb) return pb - pa
-
-    // Compare date/startDate as timestamps; missing date => -Infinity (so dated items come first)
-    const ta = getStartTime(a) ?? Number.NEGATIVE_INFINITY
-    const tb = getStartTime(b) ?? Number.NEGATIVE_INFINITY
-    if (ta !== tb) return tb - ta
-
-    return a.cleanId.localeCompare(b.cleanId)
-  })
+/**
+ * Ordena entradas de tipo experiencia por prioridad y fecha de inicio.
+ */
+export function sortExperienceByPriority<T extends { cleanId: string; data: { priority?: number; startDate?: Date } }>(
+  items: T[]
+): T[] {
+  return items.slice().sort((a, b) => compareByPriorityAndDate(a, b, item => item.data.startDate))
 }

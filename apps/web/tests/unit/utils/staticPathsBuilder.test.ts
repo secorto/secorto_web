@@ -60,89 +60,33 @@ describe('buildAllDetailPathsCore', () => {
 })
 
 describe('buildLocalePathsForSection', () => {
-  const postEntries = createPostEntries('blog', 4, { tags: ['ts'] }, 'post')
-  const workEntries = createPostEntries('work', 4, {}, 'work')
   test('genera paths para todos los locales configurados', () => {
-    const result = buildLocalePathsForSection(blogSection, postEntries)
+    const result = buildLocalePathsForSection(blogSection)
     expect(result).toHaveLength(2) // es + en
     expect(result.map(p => p.params.locale).sort()).toEqual(['en', 'es'])
-  })
-
-  test('rama post: config.category es "post" y posts son PostEntry[]', () => {
-    const result = buildLocalePathsForSection(blogSection, postEntries)
-    for (const path of result) {
-      expect(path.props.config.category).toBe('post')
-      expect(Array.isArray(path.props.posts)).toBe(true)
-    }
-  })
-
-  test('rama experience: config.category es "experience" y posts son ExperienceLikeEntry[]', () => {
-    const result = buildLocalePathsForSection(sectionsConfig['work'], workEntries)
-    for (const path of result) {
-      expect(path.props.config.category).toBe('experience')
-      expect(Array.isArray(path.props.posts)).toBe(true)
-    }
-  })
-
-  test('rama post: filtra entradas por locale correctamente', () => {
-    const result = buildLocalePathsForSection(blogSection, postEntries)
-    const esPath = result.find(p => p.params.locale === 'es')
-    const enPath = result.find(p => p.params.locale === 'en')
-    expect(esPath?.props.posts).toHaveLength(2)
-    expect(enPath?.props.posts).toHaveLength(2)
-  })
-
-  test('extrae tags desde los posts del locale correspondiente', () => {
-    const result = buildLocalePathsForSection(blogSection, postEntries)
-    const esPath = result.find(p => p.params.locale === 'es')
-    expect(esPath?.props.tags).toContain('ts')
-  })
-
-  test('collection vacía produce arrays de posts y tags vacíos', () => {
-    const result = buildLocalePathsForSection(blogSection, [])
-    for (const path of result) {
-      expect(path.props.posts).toHaveLength(0)
-      expect(path.props.tags).toHaveLength(0)
-    }
   })
 })
 
 describe('buildSectionIndexPathsCore', () => {
   test('builds paths for provided sections and locales', async () => {
-    const mockGetCollection: FetchCollection = vi.fn(async () => [])
-    const result = await buildSectionIndexPathsCore(blogAndTalkSections, mockGetCollection)
+    const result = await buildSectionIndexPathsCore(blogAndTalkSections)
     // 2 sections × 2 locales = 4 paths
     expect(result).toHaveLength(4)
   })
 
   test('includes correct structure per locale', async () => {
-    const mockGetCollection: FetchCollection = vi.fn(async () => [])
-    const result = await buildSectionIndexPathsCore(onlyBlogSections, mockGetCollection)
+    const result = await buildSectionIndexPathsCore(onlyBlogSections)
     expect(result).toHaveLength(2) // blog × 2 locales
     for (const path of result) {
       expect(path.params.locale).toMatch(/es|en/)
       expect(path.params.section).toBeDefined()
       expect(path.props.config).toBeDefined()
-      expect(Array.isArray(path.props.posts)).toBe(true)
-      expect(Array.isArray(path.props.tags)).toBe(true)
     }
   })
 
   test('handles empty sections', async () => {
-    const mockGetCollection: FetchCollection = vi.fn(async () => [])
-    const result = await buildSectionIndexPathsCore(emptySections, mockGetCollection)
+    const result = await buildSectionIndexPathsCore(emptySections)
     expect(result).toEqual([])
-  })
-
-  test('extracts tags from posts', async () => {
-    const mockGetCollection: FetchCollection = vi.fn(async () => [
-      createPostEntries('blog', 1, { tags: ['typescript', 'testing'] })[0],
-      createPostEntries('blog', 1, { id: 'en/post-2', tags: ['testing'] })[0]
-    ])
-    const result = await buildSectionIndexPathsCore(onlyBlogSections, mockGetCollection)
-    const esPath = result.find(p => p.params.locale === 'es')
-    expect(esPath?.props.tags).toContain('typescript')
-    expect(esPath?.props.tags).toContain('testing')
   })
 })
 

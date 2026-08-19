@@ -2,20 +2,22 @@
 import BaseLayout from '@layouts/BaseLayout.astro'
 import SEOHead from '@components/SEOHead.astro'
 import Tags from '@components/Tags.astro'
-import ListPost from '@components/ListPost.astro'
-import ListWork from '@components/ListWork.astro'
 import LanguagePicker from '@components/LanguagePicker.astro'
+import ListContent from '@components/list/ListContent.astro'
 import { useTranslations } from '@i18n/utils'
-import { buildTagPaths, type TagPath } from '@utils/staticPathsBuilder.adapters'
+import { buildTagPaths } from '@utils/staticPathsBuilder.adapters'
+import type { TagPath } from '@utils/staticPathsBuilder'
 import { filterByLocale, getUniqueTags } from '@utils/paths'
-import type { UILanguages } from '@i18n/ui'
 
 export async function getStaticPaths() {
   return await buildTagPaths()
 }
 
-const { locale, section, tag } = Astro.params as { locale: UILanguages; section: string; tag: string }
-const { allEntries, config, links } = Astro.props as TagPath['props']
+export type Props = TagPath['props']
+export type Params = TagPath['params']
+
+const { locale, tag } = Astro.params
+const { allEntries, config, links } = Astro.props
 const t = useTranslations(locale)
 
 const localePosts = filterByLocale(allEntries, locale)
@@ -28,7 +30,7 @@ const metaDescription = `${config.taggedKey ? t(config.taggedKey) : t(config.tra
 <BaseLayout pageTitle={pageTitle} description={metaDescription}>
   <SEOHead slot="seo-head" links={links} />
   <LanguagePicker slot="langpicker" links={links} />
-  <Tags route={`/${locale}/${section}/tags/`} tags={tags} current={tag} />
+  <Tags locale={locale} section={config.name} tags={tags} current={tag} />
   {config.taggedKey && <p>{t(config.taggedKey)} {tag}</p>}
 
   {posts.length === 0 ? (
@@ -37,12 +39,7 @@ const metaDescription = `${config.taggedKey ? t(config.taggedKey) : t(config.tra
     </div>
   ) : (
     <div>
-      {config.category === 'post' && (
-        <ListPost posts={posts} basePath={`${locale}/${config.routes[locale]}`} cta={t(config.ctaKey)} />
-      )}
-      {config.category === 'experience' && (
-        <ListWork posts={posts} basePath={`${locale}/${config.routes[locale]}`} lang={locale} cta={t(config.ctaKey)} />
-      )}
+      <ListContent section={config.name} posts={posts} cta={t(config.ctaKey)} locale={locale} />
     </div>
   )}
 </BaseLayout>
