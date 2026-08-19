@@ -2,8 +2,7 @@
 import { render, getCollection } from 'astro:content'
 import BaseLayout from '@layouts/BaseLayout.astro'
 import Comments from '@components/Comments.astro'
-import BlogTalkPostView from '@components/BlogTalkPostView.astro'
-import WorkProjectCommunityView from '@components/WorkProjectCommunityView.astro'
+import DetailContent from '@components/detail/DetailContent.astro'
 import SEOHead from '@components/SEOHead.astro'
 import LanguagePicker from '@components/LanguagePicker.astro'
 import { useTranslations } from '@i18n/utils'
@@ -18,13 +17,7 @@ const { locale } = Astro.params
 const { entry, links, config } = Astro.props
 
 const t = useTranslations(locale)
-// Map category to component
-const detailComponentMap = {
-  post: BlogTalkPostView,
-  experience: WorkProjectCommunityView
-} as const
 
-const DetailComponent = detailComponentMap[config.category]
 const routeSlug = config.routes[locale]
 
 const { Content } = await render(entry)
@@ -44,7 +37,8 @@ const pageDescription = getSeoDescription(entry.data)
     </div>
   )}
 
-  <DetailComponent
+  <DetailContent
+    section={config.name}
     locale={locale}
     routeSlug={routeSlug}
     entry={entry}

@@ -1,0 +1,34 @@
+---
+import type { UILanguages } from '@i18n/ui'
+import BlogTalkPostView from './BlogTalkPostView.astro'
+import WorkProjectCommunityView from './WorkProjectCommunityView.astro'
+import type { SectionType } from '@domain/section'
+import type { CollectionKey, RenderResult } from 'astro:content'
+import type { PostEntry } from '@domain/post'
+
+export const detailComponentMap = {
+  blog: BlogTalkPostView,
+  talk: BlogTalkPostView,
+  work: WorkProjectCommunityView,
+  projects: WorkProjectCommunityView,
+  community: WorkProjectCommunityView
+} as const satisfies Record<SectionType, typeof BlogTalkPostView | typeof WorkProjectCommunityView>
+
+interface Props {
+  section: CollectionKey
+  locale: UILanguages
+  routeSlug: string
+  entry: PostEntry<CollectionKey>
+  Content: RenderResult['Content']
+}
+
+const { locale, entry, Content, routeSlug, section } = Astro.props
+const DetailComponent = detailComponentMap[section]
+---
+
+<DetailComponent
+  locale={locale}
+  routeSlug={routeSlug}
+  entry={entry}
+  Content={Content}
+/>
