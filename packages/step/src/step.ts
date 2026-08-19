@@ -41,3 +41,21 @@ export const makeStep =
       [Symbol.toStringTag]: symbol
     }
   }
+
+/**
+ * Creates a step builder that injects a fixed context object into each action.
+ *
+ * This keeps the step abstraction framework-agnostic while allowing adapters
+ * such as Playwright to provide their own context payloads (for example,
+ * `{ expect }`).
+ */
+export const createContextStep =
+  <TContext>(runner: StepRunner, symbol = 'StepContext') =>
+  <T>(
+    title: string,
+    action: (ctx: TContext) => T | Promise<T>,
+    ctx: TContext
+  ): Step<T> => {
+    const step = makeStep(runner, symbol)
+    return step<T>(title, () => action(ctx))
+  }
