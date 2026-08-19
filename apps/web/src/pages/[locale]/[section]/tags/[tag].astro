@@ -22,7 +22,6 @@ const posts = localePosts.filter((post) => post.data.tags?.includes(tag))
 const tags = getUniqueTags(localePosts)
 const pageTitle = `${t(config.translationKey)} - ${tag}`
 const metaDescription = `${config.taggedKey ? t(config.taggedKey) : t(config.translationKey)} ${tag}`
-const basePath = `${locale}/${config.routes[locale]}`
 ---
 
 <BaseLayout pageTitle={pageTitle} description={metaDescription}>
@@ -37,7 +36,7 @@ const basePath = `${locale}/${config.routes[locale]}`
     </div>
   ) : (
     <div>
-      <ListContent section={config.name} posts={posts} basePath={basePath} cta={t(config.ctaKey)} lang={locale} />
+      <ListContent section={config.name} posts={posts} cta={t(config.ctaKey)} lang={locale} />
     </div>
   )}
 </BaseLayout>

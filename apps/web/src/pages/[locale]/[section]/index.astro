@@ -19,7 +19,6 @@ const config = sectionProps.config
 const links = sectionProps.links
 const t = useTranslations(locale)
 const pageTitle = t(config.translationKey)
-const basePath = `${locale}/${section}`
 const rawPosts = filterByLocale(await getCollection(config.name), locale)
 const tags = getUniqueTags(rawPosts)
 const posts = mapEntryId(rawPosts)
@@ -31,5 +30,5 @@ const posts = mapEntryId(rawPosts)
   {tags.length > 0 && (
     <Tags route={`/${locale}/${section}/tags/`} tags={tags} />
   )}
-  <ListContent section={sectionProps.config.name} posts={posts} basePath={basePath} lang={locale} cta={t(config.ctaKey)} />
+  <ListContent section={sectionProps.config.name} posts={posts} lang={locale} cta={t(config.ctaKey)} />
 </BaseLayout>

@@ -1,26 +1,29 @@
 ---
-import PostItem from '@components/PostItem.astro';
-import PostList from '@components/PostList.astro';
-import PostDate from '@components/PostDate.astro';
-import { getFullFormat } from '@i18n/utils';
-import type { PostLikeEntry } from '@domain/post';
-import { sortPostsByPriority } from '@utils/sorting';
+import PostItem from '@components/PostItem.astro'
+import PostList from '@components/PostList.astro'
+import PostDate from '@components/PostDate.astro'
+import type { PostLikeEntry } from '@domain/post'
+import type { UILanguages } from '@i18n/ui'
+import { sortPostsByPriority } from '@utils/sorting'
+import { full } from '@i18n/dateFormat'
+import { getEntryURL, type SectionType } from '@domain/section'
 
 export interface Props {
-  basePath: string
+  section: SectionType
   posts: PostLikeEntry[]
+  lang: UILanguages
   cta: string
 }
 
-const { posts, basePath, cta } = Astro.props;
-const dateFormat = getFullFormat(Astro.url);
+const { posts, cta, lang, section } = Astro.props
+const dateFormat = new Intl.DateTimeFormat(lang, full)
 ---
 
 <PostList>
   {sortPostsByPriority(posts).map((post) =>
     <PostItem
       image={post.data.image}
-      url={`/${basePath}/${post.cleanId}`}
+      url={getEntryURL(section, lang, post.cleanId)}
       title={post.data.title}
       excerpt={post.data.excerpt}
       cta={cta}
