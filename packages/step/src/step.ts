@@ -1,10 +1,10 @@
 /**
  * A function that runs a named step, equivalent to test.step in Playwright.
  */
-export type StepRunner = (
+export type StepRunner = <T>(
   title: string,
-  action: () => unknown
-) => Promise<unknown>
+  action: () => T | Promise<T>
+) => Promise<T>
 
 /**
  * A lazy step definition that can be inspected and executed.
@@ -30,7 +30,7 @@ export interface Step<T> extends Promise<T> {
 export const makeStep =
   (runner: StepRunner, symbol: string) =>
   <T>(title: string, action: () => T | Promise<T>): Step<T> => {
-    const run = () => runner(title, action) as Promise<T>
+    const run = () => runner(title, action)
 
     return {
       title,

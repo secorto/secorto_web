@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
-import { makeStep } from '../../src/step.ts'
-import type { StepRunner } from '../../src/step.ts'
+import { makeStep } from '@secorto/step'
+import type { StepRunner } from '@secorto/step'
 
 const mockRunner: StepRunner = (_title, action) =>
   Promise.resolve(action())
@@ -31,11 +31,24 @@ describe('makeStep', () => {
     expect(result).toBe('hello')
   })
 
-  it('calls the runner with the correct title', async () => {
-    const runner = vi.fn<StepRunner>(mockRunner)
+  it('preserves the action return type through the runner', async () => {
+    const runner: StepRunner = async (_title, action) => action()
+    const result = await runner('my step', () => 'hello')
+    const typedResult: string = result
+    expect(typedResult).toBe('hello')
+  })
+
+  it('forwards the provided title to the runner', async () => {
+    let seenTitle: string | undefined
+    const runner: StepRunner = async (title, action) => {
+      seenTitle = title
+      return Promise.resolve(action())
+    }
+
     const step = makeStep(runner, 'MyStep')
     await step('click the button', () => undefined)
-    expect(runner).toHaveBeenCalledWith('click the button', expect.any(Function))
+
+    expect(seenTitle).toBe('click the button')
   })
 
   it('is thenable (.then)', async () => {
