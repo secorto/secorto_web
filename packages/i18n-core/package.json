@@ -1,0 +1,12 @@
+{
+  "name": "@secorto/i18n-core",
+  "version": "0.0.1",
+  "description": "Framework-agnostic multilingual content domain",
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

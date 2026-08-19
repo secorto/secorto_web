@@ -26,7 +26,6 @@ export default getViteConfig({
       reporter: ['text', 'lcov'],
       include: [
         'src/**/*.{ts,tsx,js,jsx,vue}',
-        '../../packages/wait-netlify/src/**/*.{ts,tsx,js,jsx,vue}',
       ],
       exclude: [
         'src/content.config.ts',

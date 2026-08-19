@@ -1,0 +1,13 @@
+{
+  "name": "@secorto/astro-i18n",
+  "version": "0.0.1",
+  "description": "Astro integration for secorto i18n",
+  "type": "module",
+  "license": "MIT",
+  "dependencies": {
+    "@secorto/i18n-core": "workspace:*"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}
