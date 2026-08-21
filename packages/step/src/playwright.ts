@@ -1,46 +1,23 @@
+/**
+ * @deprecated Use the framework-agnostic adapter exported from @secorto/step/adapter.
+ * This Playwright wrapper remains available for backward compatibility only.
+ */
 import { expect as pwExpect, test } from '@playwright/test'
-import { createContextStep, makeStep } from './step'
-import type { Step, StepRunner } from './step'
-
-export type { Step } from './step'
+import type { StepRunner } from './step'
+import {
+  createTestingStep,
+  type Verification as GenericVerification,
+  type VerifyContextOf,
+} from './adapter'
 
 export type ExpectAdapter = typeof pwExpect | typeof pwExpect.soft
-export type VerifyContext = { expect: ExpectAdapter }
+export type VerifyContext = VerifyContextOf<ExpectAdapter>
+export type Verification<T> = GenericVerification<T, ExpectAdapter>
 
-export interface Verification<T> extends Step<T> {
-  with(expectImpl: ExpectAdapter): Step<T>
-  soft(): Step<T>
-}
-
-export const createPlaywrightStep = (runner: StepRunner = test.step) => {
-  const buildContextStep = createContextStep<VerifyContext>(
-    runner,
-    'StepVerification'
-  )
-
-  return {
-    step: makeStep(runner, 'StepAction'),
-    verifyStep: <T>(
-      title: string,
-      action: (ctx: VerifyContext) => T | Promise<T>
-    ): Verification<T> => {
-      const build = (
-        expectImpl: ExpectAdapter,
-        nextTitle = title
-      ): Step<T> =>
-        buildContextStep<T>(nextTitle, action, {
-          expect: expectImpl,
-        })
-
-      const base = build(pwExpect)
-
-      return {
-        ...base,
-        with: (expectImpl: ExpectAdapter) => build(expectImpl),
-        soft: () => build(pwExpect.soft, `${title} (soft)`),
-      }
-    },
-  }
-}
+/**
+ * @deprecated Prefer createTestingStep from @secorto/step/adapter.
+ */
+export const createPlaywrightStep = (runner: StepRunner = test.step) =>
+  createTestingStep<ExpectAdapter>(runner, pwExpect, pwExpect.soft)
 
 export const { step, verifyStep } = createPlaywrightStep()

@@ -1,6 +1,6 @@
 {
   "name": "@secorto/step",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": false,
   "description": "Framework-agnostic step primitives with a Playwright adapter",
   "keywords": [
@@ -24,6 +24,11 @@
       "types": "./src/index.ts",
       "import": "./dist/index.mjs",
       "default": "./dist/index.mjs"
+    },
+    "./adapter": {
+      "types": "./src/adapter.ts",
+      "import": "./dist/adapter.mjs",
+      "default": "./dist/adapter.mjs"
     },
     "./playwright": {
       "types": "./src/playwright.ts",
@@ -56,6 +61,7 @@
   "tsdown": {
     "entry": [
       "src/index.ts",
+      "src/adapter.ts",
       "src/playwright.ts"
     ]
   }
