@@ -1,130 +1,191 @@
 # @secorto/step
 
-Framework-agnostic step primitives with a Playwright adapter.
+Small primitives for building the observable step layer used in secorto_web.
+This package is intentionally minimal: it is not a global DSL,
+but a tiny adapter that lets each feature define its own named steps and verifications
+using any runner and any assertion engine.
 
-## Overview
+## Purpose
 
-This package provides a minimal core primitive and a Playwright-specific layer:
+In secorto_web, each test area defines its own adapter:
 
-- `makeStep(runner)` creates action steps
-- `@secorto/step/playwright` exports `step` and `verifyStep`
-- `verifyStep` can be overridden with `expect` or `expect.soft`
-- `.soft()` rewrites the title to `${title} (soft)`
+- a local runner (test.step or any equivalent)
+- an assertion engine (expect, expect.soft)
+- domain‑specific helpers (openHome, shouldShowMainContent, etc.)
 
-The goal is to keep the core generic and keep the Playwright-specific behavior in the adapter boundary.
+`@secorto/step` provides the minimal building blocks to create those helpers without coupling the project
+to Playwright or any specific framework.
 
-## Installation
+## Real project pattern
 
-```sh
-npm install @secorto/step
+```ts
+import { expect, test } from '@playwright/test'
+import { createTestingStep, type GenericVerification } from '@secorto/step'
+
+export const { step, verifyStep } = createTestingStep(
+  test.step,
+  expect,
+  expect.soft
+)
+
+// Define Verification<T> to align with Step<T>
+export type Verification<T> =
+  GenericVerification<T, typeof expect | typeof expect.soft>
+
+export type { Step } from '@secorto/step'
 ```
 
-## Core API
+### Why the caller must define `Verification<T>`
+
+`@secorto/step` exposes the generic verification primitive `GenericVerification<T, E>`
+but it does not decide which assertion engine E should be.
+
+- `step` and `verifyStep` share the same semantic contract
+- the correct assertion engine (`expect` or `expect.soft`) is injected into each verification
+- `.with()` and `.soft()` remain fully type‑safe
+- the verification result aligns with the project’s flow layer
+- the library stays transversal and framework‑agnostic
+
+### This keeps the integration explicit
+
+- `test.step` is the current ergonomic runner
+- `expect` / `expect.soft` are assertion providers
+- domain helpers remain readable and intention‑driven
+- the adapter can be replaced later without changing step semantics
+
+## Typical usage
+
+```ts
+export const openHome = () =>
+  step('abrir la home', async () => {
+    await page.goto('/home')
+  })
+
+export const shouldShowMainContent = () =>
+  verifyStep('la home muestra el contenido principal', ({ expect }) => {
+    expect(page.getByRole('heading', { name: 'Secorto' })).toBeVisible()
+  })
+```
+
+The code expresses business intent, while Playwright details stay encapsulated.
+
+## API Surface
 
 ### `StepRunner`
 
 ```ts
-export type StepRunner = (
+export type StepRunner = <T>(
   title: string,
-  action: () => unknown
-) => Promise<unknown>
+  action: () => T | Promise<T>
+) => Promise<T>
 ```
 
-A runner is any function compatible with Playwright’s `test.step` signature.
+A runner executes an action under a given title.
+Framework‑agnostic by design.
 
-### `makeStep(runner)`
+### `createStep(runner, symbol)`
 
 ```ts
-const makeStep = (runner: StepRunner) =>
-  <T>(title: string, action: () => T | Promise<T>): Step<T>
+const step = createStep(runner, 'CheckoutStep')
+
+await step('open checkout', async () => 'done')
 ```
 
-Returns a `Step<T>` object, which is a `Promise<T>` with `title` and `action` metadata.
+Creates a step object that preserves title and action metadata.
+
+### `createContextStep`
 
 ```ts
-import { makeStep } from '@secorto/step'
+const withUser = createContextStep<{ userId: string }>(runner, 'UserStep')
 
-const step = makeStep(async (title, action) => {
-  return action()
-})
-
-await step('fill the form', async () => {
-  return 'done'
-})
-```
-
-## Playwright adapter
-
-Use the adapter export for Playwright-specific behavior:
-
-```ts
-import { expect, test } from '@playwright/test'
-import { step, verifyStep } from '@secorto/step/playwright'
-```
-
-### `step`
-
-A Playwright-backed step runner created from `test.step`.
-
-```ts
-await step('open the page', async () => {
-  await page.goto('/home')
+await withUser('load profile', ({ userId }) => console.log(userId), {
+  userId: 'u_123',
 })
 ```
 
-### `verifyStep`
+Useful when each step requires a fixed runtime context.
+
+### `createVerifyStep(defaultExpect, softExpect, buildStep)`
 
 ```ts
-await verifyStep('page title is correct', ({ expect }) => {
-  expect(await page.title()).toBe('Home')
+const verifyStep = createVerifyStep(
+  expect,
+  expect.soft,
+  createContextStep(runner, 'VerifyStep')
+)
+
+await verifyStep('check the value', ({ expect }) => {
+  expect(true).toBe(true)
 })
 ```
 
-The callback receives a context object with an `expect` provider.
+This is the explicit factory form for the common verification adapter.
+It receives the default and soft assertion implementations plus a step builder,
+and returns a verification step factory that preserves the same semantics as `createTestingStep`.
 
-### `.with(...)`
-
-You can override the expect provider.
+### `createTestingStep`
 
 ```ts
-await verifyStep('title should be visible', ({ expect }) => {
-  expect('Home').toBe('Home')
+const { step, verifyStep } = createTestingStep(runner, expect, expect.soft)
+```
+
+This helper builds the same verification factory internally by composing
+`createStep` and `createVerifyStep` with `createContextStep`.
+
+## Ergonomics `.with(...)` and `.soft()`
+
+These are part of the verification ergonomics of the adapter:
+
+```ts
+await verifyStep('price is visible', ({ expect }) => {
+  expect(page.getByText('$42.00')).toBeVisible()
 }).with(expect)
 
-await verifyStep('title should be visible softly', ({ expect }) => {
-  expect('Home').toBe('Home')
+await verifyStep('banner is shown', ({ expect }) => {
+  expect(page.getByRole('alert')).toContainText('Saved')
 }).with(expect.soft)
 ```
 
-### `.soft()`
-
-`soft()` is a convenience wrapper that keeps the same action but uses `expect.soft` and rewrites the title:
-
 ```ts
-const result = verifyStep('checkout total', ({ expect }) => {
+const result = verifyStep('total is stable', ({ expect }) => {
   expect(42).toBe(42)
   return 'ok'
 }).soft()
-
-// title becomes: "checkout total (soft)"
 ```
 
-The adapter exposes the current title in the returned step object:
+These helpers allow switching the assertion engine per step or forcing soft mode.
+
+## Migration note (from 0.0.1)
+
+Version 0.0.1 exposed a Playwright‑first helper:
 
 ```ts
-console.log(result.title)
-// "checkout total (soft)"
+import { createPlaywrightStep } from '@secorto/step/playwright'
+
+const { step, verifyStep } = createPlaywrightStep()
 ```
 
-## Type surface
+This has been replaced by the more explicit and generic form:
 
 ```ts
-export type ExpectAdapter = typeof expect | typeof expect.soft
+import { createTestingStep } from '@secorto/step'
+import { expect, test } from '@playwright/test'
 
-export type VerifyContext = { expect: ExpectAdapter }
+const { step, verifyStep } = createTestingStep(
+  test.step,
+  expect,
+  expect.soft
+)
 ```
 
-The adapter intentionally keeps the type aligned with the real Playwright API variants, without pretending `expect.soft` is identical to the full `expect` object.
+In 0.0.1, types were exported from `@secorto/step/playwright`:
+
+```ts
+export type { Step, Verification } from '@secorto/step/playwright'
+```
+
+In the current version, `Step` is exported from `@secorto/step`, and
+`Verification<T>` must be defined by the caller using GenericVerification.
 
 ## License
 

@@ -2,7 +2,7 @@
   "name": "@secorto/web",
   "private": true,
   "type": "module",
-  "version": "6.0.0",
+  "version": "0.0.2",
   "scripts": {
     "dev": "astro dev",
     "clean": "rimraf dist playwright-report test-results .astro",
