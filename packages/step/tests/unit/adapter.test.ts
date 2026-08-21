@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
-import { makeStep } from '@secorto/step'
-import { createTestingStep } from '@secorto/step/adapter'
+import { createContextStep, makeStep } from '@secorto/step'
+import { createTestingStep, makeVerifyStep } from '@secorto/step/adapter'
 
 type MockAssertion = {
   toBe: (expected: unknown) => void
@@ -20,42 +20,20 @@ const createMockExpect =
     },
   })
 
-const createMockStepHarness = () => {
-  const runner = vi.fn(async (_title, action) => action())
-  const mismatch = vi.fn()
-
-  const defaultExpect = createMockExpect((actual, expected) => {
-    mismatch(actual, expected)
-    throw new Error(`expected ${String(expected)} but got ${String(actual)}`)
-  })
-
-  const softExpect = createMockExpect((actual, expected) => {
-    mismatch(actual, expected)
-  })
-
-  const stepFactory = createTestingStep(
-    runner,
-    defaultExpect,
-    softExpect,
-    <TResult>(
-      title: string,
-      action: (ctx: { expect: MockExpect }) => TResult | Promise<TResult>,
-      expectImpl: MockExpect
-    ) => makeStep(runner, 'GenericStep')<TResult>(title, () => action({ expect: expectImpl }))
-  )
-
-  return {
-    ...stepFactory,
-    runner,
-    mismatch,
-    defaultExpect,
-    softExpect,
-  }
-}
-
 describe('testing adapter core', () => {
-  it('exposes the title and action metadata', () => {
-    const { step } = createMockStepHarness()
+  const runner = vi.fn(async (_title, action) => action())
+
+  it('creates a testing bundle with both step helpers', () => {
+    const expectMock = createMockExpect(() => {})
+    const { step, verifyStep } = createTestingStep(runner, expectMock, expectMock)
+
+    expect(typeof step).toBe('function')
+    expect(typeof verifyStep).toBe('function')
+    expect(runner).not.toHaveBeenCalled()
+  })
+
+  it('exposes the title and action metadata for makeStep', () => {
+    const step = makeStep(runner, 'StepAction')
     const action = () => 42
     const value = step('plain action', action)
 
@@ -63,16 +41,49 @@ describe('testing adapter core', () => {
     expect(value.action).toBe(action)
   })
 
-  it('calls the step runner with the title and action', async () => {
-    const { step, runner } = createMockStepHarness()
+  it('calls the step runner with the title and action for makeStep', async () => {
+    const step = makeStep(runner, 'StepAction')
     const result = await step('plain action', () => 42)
 
     expect(result).toBe(42)
     expect(runner).toHaveBeenCalledWith('plain action', expect.any(Function))
   })
 
-  it('accepts the default expect callback', async () => {
-    const { verifyStep } = createMockStepHarness()
+  it('creates an explicit verification factory with the same runner contract', async () => {
+    const defaultExpect = createMockExpect(() => {
+      throw new Error('should not fail')
+    })
+    const softExpect = createMockExpect(() => {})
+
+    const verifyStep = makeVerifyStep(runner, defaultExpect, softExpect)
+
+    await verifyStep('verification from factory', ({ expect }) => {
+      expect('value').toBe('value')
+    })
+
+    expect(runner).toHaveBeenCalledWith(
+      'verification from factory',
+      expect.any(Function)
+    )
+  })
+
+  it('injects a fixed context through createContextStep', async () => {
+    const withUser = createContextStep<{ userId: string }>(runner, 'UserStep')
+
+    const result = await withUser('load profile', ({ userId }) => {
+      return userId
+    }, { userId: 'u_123' })
+
+    expect(result).toBe('u_123')
+    expect(runner).toHaveBeenCalledWith('load profile', expect.any(Function))
+  })
+
+  it('accepts the default expect callback for makeVerifyStep', async () => {
+    const defaultExpect = createMockExpect(() => {
+      throw new Error('should not fail')
+    })
+    const softExpect = createMockExpect(() => {})
+    const verifyStep = makeVerifyStep(runner, defaultExpect, softExpect)
     let called = false
 
     await verifyStep('verification with expect', ({ expect }) => {
@@ -83,8 +94,12 @@ describe('testing adapter core', () => {
     expect(called).toBe(true)
   })
 
-  it('resolves with the action result', async () => {
-    const { verifyStep } = createMockStepHarness()
+  it('resolves with the action result for makeVerifyStep', async () => {
+    const defaultExpect = createMockExpect(() => {
+      throw new Error('should not fail')
+    })
+    const softExpect = createMockExpect(() => {})
+    const verifyStep = makeVerifyStep(runner, defaultExpect, softExpect)
     const result = verifyStep('verification with override', ({ expect }) => {
       expect('value').toBe('value')
       return 'done'
@@ -94,7 +109,11 @@ describe('testing adapter core', () => {
   })
 
   it('overrides the expect implementation via .with()', async () => {
-    const { verifyStep, defaultExpect } = createMockStepHarness()
+    const defaultExpect = createMockExpect(() => {
+      throw new Error('should not fail')
+    })
+    const softExpect = createMockExpect(() => {})
+    const verifyStep = makeVerifyStep(runner, defaultExpect, softExpect)
     const result = verifyStep('verification with override', ({ expect }) => {
       expect('value').toBe('value')
       return 'done'
@@ -104,7 +123,15 @@ describe('testing adapter core', () => {
   })
 
   it('accepts a soft expect as .with() override', async () => {
-    const { verifyStep, softExpect, mismatch } = createMockStepHarness()
+    const mismatch = vi.fn()
+    const defaultExpect = createMockExpect((actual, expected) => {
+      mismatch(actual, expected)
+      throw new Error(`expected ${String(expected)} but got ${String(actual)}`)
+    })
+    const softExpect = createMockExpect((actual, expected) => {
+      mismatch(actual, expected)
+    })
+    const verifyStep = makeVerifyStep(runner, defaultExpect, softExpect)
     const result = verifyStep('verification with override soft', ({ expect }) => {
       expect('value').toBe('value')
       return 'done'
@@ -115,7 +142,11 @@ describe('testing adapter core', () => {
   })
 
   it('supports the .soft() shorthand', async () => {
-    const { verifyStep } = createMockStepHarness()
+    const defaultExpect = createMockExpect(() => {
+      throw new Error('should not fail')
+    })
+    const softExpect = createMockExpect(() => {})
+    const verifyStep = makeVerifyStep(runner, defaultExpect, softExpect)
     const result = verifyStep('verification with soft', ({ expect }) => {
       expect(true).toBe(true)
       return 'ok'
@@ -126,7 +157,15 @@ describe('testing adapter core', () => {
   })
 
   it('allows the caller to inject a generic expect adapter', async () => {
-    const { verifyStep, defaultExpect, mismatch } = createMockStepHarness()
+    const mismatch = vi.fn()
+    const defaultExpect = createMockExpect((actual, expected) => {
+      mismatch(actual, expected)
+      throw new Error(`expected ${String(expected)} but got ${String(actual)}`)
+    })
+    const softExpect = createMockExpect((actual, expected) => {
+      mismatch(actual, expected)
+    })
+    const verifyStep = makeVerifyStep(runner, defaultExpect, softExpect)
 
     const result = verifyStep('custom verification', ({ expect }) => {
       expect('value').toBe('value')

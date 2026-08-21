@@ -1,3 +1,9 @@
-export { step, verifyStep } from '@secorto/step/playwright'
-export type { Step, Verification } from '@secorto/step/playwright'
+import { expect, test } from '@playwright/test'
+import {
+  createTestingStep,
+  type GenericVerification,
+} from '@secorto/step'
 
+export type Verification<T> = GenericVerification<T, typeof expect | typeof expect.soft>
+export const { step, verifyStep } = createTestingStep(test.step, expect, expect.soft)
+export type { Step } from '@secorto/step'
