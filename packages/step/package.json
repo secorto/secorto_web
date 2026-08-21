@@ -24,11 +24,6 @@
       "types": "./src/index.ts",
       "import": "./dist/index.mjs",
       "default": "./dist/index.mjs"
-    },
-    "./adapter": {
-      "types": "./src/adapter.ts",
-      "import": "./dist/adapter.mjs",
-      "default": "./dist/adapter.mjs"
     }
   },
   "main": "./dist/index.mjs",
@@ -52,8 +47,7 @@
   },
   "tsdown": {
     "entry": [
-      "src/index.ts",
-      "src/adapter.ts"
+      "src/index.ts"
     ]
   }
 }

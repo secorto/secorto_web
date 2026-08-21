@@ -22,19 +22,31 @@ to Playwright or any specific framework.
 import { expect, test } from '@playwright/test'
 import { createTestingStep, type GenericVerification } from '@secorto/step'
 
-export type Verification<T> =
-  GenericVerification<T, typeof expect | typeof expect.soft>
-
 export const { step, verifyStep } = createTestingStep(
   test.step,
   expect,
   expect.soft
 )
 
+// Define Verification<T> to align with Step<T>
+export type Verification<T> =
+  GenericVerification<T, typeof expect | typeof expect.soft>
+
 export type { Step } from '@secorto/step'
 ```
 
-This keeps the integration explicit:
+### Why the caller must define `Verification<T>`
+
+`@secorto/step` exposes the generic verification primitive `GenericVerification<T, E>`
+but it does not decide which assertion engine E should be.
+
+- `step` and `verifyStep` share the same semantic contract
+- the correct assertion engine (`expect` or `expect.soft`) is injected into each verification
+- `.with()` and `.soft()` remain fully type‑safe
+- the verification result aligns with the project’s flow layer
+- the library stays transversal and framework‑agnostic
+
+### This keeps the integration explicit
 
 - `test.step` is the current ergonomic runner
 - `expect` / `expect.soft` are assertion providers
@@ -71,10 +83,10 @@ export type StepRunner = <T>(
 A runner executes an action under a given title.
 Framework‑agnostic by design.
 
-### `makeStep(runner, symbol)`
+### `createStep(runner, symbol)`
 
 ```ts
-const step = makeStep(runner, 'CheckoutStep')
+const step = createStep(runner, 'CheckoutStep')
 
 await step('open checkout', async () => 'done')
 ```
@@ -93,10 +105,14 @@ await withUser('load profile', ({ userId }) => console.log(userId), {
 
 Useful when each step requires a fixed runtime context.
 
-### `makeVerifyStep(runner, defaultExpect, softExpect)`
+### `createVerifyStep(defaultExpect, softExpect, buildStep)`
 
 ```ts
-const verifyStep = makeVerifyStep(runner, expect, softExpect)
+const verifyStep = createVerifyStep(
+  expect,
+  expect.soft,
+  createContextStep(runner, 'VerifyStep')
+)
 
 await verifyStep('check the value', ({ expect }) => {
   expect(true).toBe(true)
@@ -104,13 +120,17 @@ await verifyStep('check the value', ({ expect }) => {
 ```
 
 This is the explicit factory form for the common verification adapter.
-It keeps the same semantics as `createTestingStep` but makes the verification intent clearer when you only need the `verifyStep` helper.
+It receives the default and soft assertion implementations plus a step builder,
+and returns a verification step factory that preserves the same semantics as `createTestingStep`.
 
 ### `createTestingStep`
 
 ```ts
-const { step, verifyStep } = createTestingStep(runner, expect, softExpect)
+const { step, verifyStep } = createTestingStep(runner, expect, expect.soft)
 ```
+
+This helper builds the same verification factory internally by composing
+`createStep` and `createVerifyStep` with `createContextStep`.
 
 ## Ergonomics `.with(...)` and `.soft()`
 
@@ -157,6 +177,15 @@ const { step, verifyStep } = createTestingStep(
   expect.soft
 )
 ```
+
+In 0.0.1, types were exported from `@secorto/step/playwright`:
+
+```ts
+export type { Step, Verification } from '@secorto/step/playwright'
+```
+
+In the current version, `Step` is exported from `@secorto/step`, and
+`Verification<T>` must be defined by the caller using GenericVerification.
 
 ## License
 
