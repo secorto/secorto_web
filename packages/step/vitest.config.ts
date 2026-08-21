@@ -8,8 +8,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@secorto/step': resolve(PROJECT_ROOT, 'src'),
-      '@secorto/step/adapter': resolve(PROJECT_ROOT, 'src/adapter.ts'),
-      '@secorto/step/playwright': resolve(PROJECT_ROOT, 'src/playwright.ts'),    },
+    },
   },
   test: {
     include: ['tests/**/*.test.ts'],
