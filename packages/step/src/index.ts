@@ -10,5 +10,9 @@ export type { StepBuilder } from './context'
 export { createVerifyStep } from './verification'
 export type { GenericVerification, VerifyContextOf } from './verification'
 
+// Contract Steps
+export { createContractStep } from './contract'
+export type { ContractStep } from './contract'
+
 // Orchestration & Test Runner Integration
 export { createTestingStep } from './orchestration'

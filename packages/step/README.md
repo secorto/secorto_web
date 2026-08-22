@@ -126,11 +126,84 @@ and returns a verification step factory that preserves the same semantics as `cr
 ### `createTestingStep`
 
 ```ts
-const { step, verifyStep } = createTestingStep(runner, expect, expect.soft)
+const { step, verifyStep, contractStep } = createTestingStep(runner, expect, expect.soft)
 ```
 
 This helper builds the same verification factory internally by composing
-`createStep` and `createVerifyStep` with `createContextStep`.
+`createStep` and `createVerifyStep` with `createContextStep`, and also includes a contract step factory.
+
+### `createContractStep(runner, symbol)`
+
+```ts
+const contractStep = createContractStep(runner, 'ContractStepAction')
+
+await contractStep('fetch and parse response', async () => fetchJSON(), (json) => parse(json))
+```
+
+Creates a contract step that manages two functions:
+- **originFn**: The source of truth (e.g., fetch raw data)
+- **transformFn**: Parser or validator (e.g., parse JSON, verify schema)
+
+#### Default behavior (chained execution)
+
+By default, awaiting the contract step executes both functions in sequence:
+originFn runs first, then its result is passed to transformFn.
+The promise resolves with the transformFn result.
+
+```ts
+const parsed = await contractStep(
+  'fetch user from API',
+  async () => fetchUserJSON(),
+  (json) => JSON.parse(json) as User
+)
+// parsed is of type User
+```
+
+#### `.raw()` method
+
+Executes only originFn and resolves with its result, skipping transformFn entirely.
+Useful to verify the raw data before transformation.
+
+```ts
+const rawResponse = await contractStep(
+  'fetch user from API',
+  async () => fetchUserJSON(),
+  (json) => JSON.parse(json) as User
+).raw()
+// rawResponse is the raw JSON string
+```
+
+#### `.detailed()` method
+
+Executes both functions and resolves with an object containing both results.
+Useful for comprehensive validation or when you need to compare raw vs. parsed data.
+
+```ts
+const { parsed, raw } = await contractStep(
+  'fetch user from API',
+  async () => fetchUserJSON(),
+  (json) => JSON.parse(json) as User
+).detailed()
+// parsed: User
+// raw: JSON string
+```
+
+#### Metadata inspection
+
+Like other step primitives, contract steps preserve metadata for inspection
+before execution:
+
+```ts
+const myContract = contractStep(
+  'fetch and parse',
+  async () => fetchUserJSON(),
+  (json) => JSON.parse(json)
+)
+
+console.log(myContract.title)      // 'fetch and parse'
+console.log(myContract.originFn)   // [Function]
+console.log(myContract.transformFn) // [Function]
+```
 
 ## Ergonomics `.with(...)` and `.soft()`
 
