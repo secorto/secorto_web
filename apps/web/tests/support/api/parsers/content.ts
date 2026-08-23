@@ -1,6 +1,4 @@
 import type { APIResponse } from '@playwright/test'
-import { XMLParser } from 'fast-xml-parser'
-import type { ZodType } from 'zod'
 
 export const validateContentType = (contentType: string, allowed: string[] = ['text/plain']) => {
   if (!contentType) {
@@ -25,16 +23,3 @@ export const content = (allowed: string[]) =>
   }
 
 export const text = content(['text/plain'])
-
-export const xml = <T>(schema: ZodType<T>) =>
-  async (response: APIResponse) => {
-    const raw = await content(['application/xml', 'text/xml'])(response)
-
-    const parser = new XMLParser({
-      ignoreAttributes: false,
-      attributeNamePrefix: '',
-    })
-    const parsed = parser.parse(raw)
-
-    return schema.parse(parsed)
-  }

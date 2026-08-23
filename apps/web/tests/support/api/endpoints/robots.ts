@@ -1,6 +1,6 @@
 import { contractStep, verifyStep } from '@tests/step'
 import type { APIRequestContext, APIResponse } from '@playwright/test'
-import { text } from '@tests/support/api/parsers'
+import { text } from '@tests/support/api/parsers/content'
 
 export const robotsParser = async (response: APIResponse) => {
   const body = await text(response)

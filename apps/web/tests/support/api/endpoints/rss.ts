@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { xml } from '../parsers'
+import { xml } from '@tests/support/api/parsers/xml'
 import { contractStep, verifyStep } from '@tests/step'
 import type { APIRequestContext, APIResponse } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
