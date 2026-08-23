@@ -1,6 +1,6 @@
 import type { APIResponse } from '@playwright/test'
 
-export const validateContentType = (contentType: string, allowed: string[] = ['text/plain']) => {
+export const validateContentType = (contentType: string | null | undefined, allowed: string[] = ['text/plain']) => {
   if (!contentType) {
     throw new TypeError(`Missing content-type header`)
   }
