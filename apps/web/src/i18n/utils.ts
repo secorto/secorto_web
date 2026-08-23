@@ -30,28 +30,6 @@ export function useTranslations(lang: UILanguages) {
 }
 
 /**
- * Convierte una cadena en un valor válido de `UILanguages`.
- *
- * @param lang - Código de idioma a validar (por ejemplo `'es'`, `'en'`) o `undefined`
- * @returns `lang` como `UILanguages` si es válido
- * @throws {TypeError} si `lang` es `undefined` o no corresponde a un idioma soportado
- *
- * Ejemplo:
- * ```ts
- * langFromString('en') // 'en'
- * langFromString(undefined) // throws TypeError
- * ```
- */
-export function langFromString(lang: string | undefined) {
-  const possiblyLang = lang as UILanguages
-  if (languageKeys.includes(possiblyLang)) {
-    return possiblyLang
-  } else {
-    throw new TypeError(`Invalid language: ${lang}`)
-  }
-}
-
-/**
  * Crea un generador de rutas localizadas.
  * Si `showDefaultLang` es false y el idioma es el por defecto, devuelve
  * la ruta sin prefijo; en caso contrario, devuelve la ruta con `/{lang}`.

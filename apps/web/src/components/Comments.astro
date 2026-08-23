@@ -1,7 +1,7 @@
 ---
-import { langFromString } from "@i18n/utils"
+import { languages } from "@i18n/ui"
 
-const locale = langFromString(Astro.currentLocale)
+const locale = languages.fromString(Astro.currentLocale)
 ---
 <div class="comments" data-testid="comments-section" data-lang={locale}></div>
 <script>

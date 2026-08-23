@@ -1,6 +1,6 @@
 import rss from '@astrojs/rss'
-import { langFromString, useTranslations } from '@i18n/utils'
-import { languageKeys } from '@i18n/ui'
+import { useTranslations } from '@i18n/utils'
+import { languages } from '@i18n/ui'
 import type { APIContext } from 'astro'
 import type { UILanguages } from '@i18n/ui'
 import { buildRSSItems } from '@utils/rssBuilder'
@@ -11,11 +11,11 @@ const LOCALE_COUNTRY: Record<UILanguages, string> = {
 }
 
 export function getStaticPaths() {
-  return languageKeys.map((locale) => ({ params: { locale } }))
+  return languages.all.map((locale) => ({ params: { locale } }))
 }
 
 export async function GET(context: APIContext) {
-  const locale = langFromString(context.params.locale)
+  const locale = languages.fromString(context.params.locale)
   const t = useTranslations(locale)
 
   const items = await buildRSSItems('blog', locale)

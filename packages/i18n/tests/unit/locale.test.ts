@@ -18,4 +18,13 @@ describe('createLocales', () => {
   it('undefined or unsafe values throw an error', () => {
     expect(() => languages.fromString(undefined)).toThrow('Invalid language: undefined')
   })
+
+  it('validates that a correct language is valid', () => {
+    expect(languages.isValid('es')).toBe(true)
+  })
+
+  it('validates that an incorrect language is invalid', () => {
+    expect(languages.isValid('xx')).toBe(false)
+  })
 })
+

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import type { TranslationLink } from '@domain/translationLink'
 import { adaptLanguageLinks } from '@i18n/languagePickerAdapter'
-import { languages, ui, icons } from '@i18n/ui'
+import { languagesMap, ui, icons } from '@i18n/ui'
 
 describe('languagePickerAdapter', () => {
   it('adapts an available link to a LanguagePickerItem with no reason', () => {
@@ -11,9 +11,9 @@ describe('languagePickerAdapter', () => {
     expect(adapted).toHaveLength(1)
     const item = adapted[0]
 
-    expect(item.label).toBe(languages.en)
+    expect(item.label).toBe(languagesMap.en)
     expect(item.reason).toBe('')
-    expect(item.text).toBe(languages.en)
+    expect(item.text).toBe(languagesMap.en)
     expect(item.title).toBeUndefined()
     expect(item.href).toBe('/en/')
     expect(item.accessible).toBe(true)
@@ -25,9 +25,9 @@ describe('languagePickerAdapter', () => {
     const adapted = adaptLanguageLinks(links)
     const item = adapted[0]
 
-    expect(item.label).toBe(languages.en)
+    expect(item.label).toBe(languagesMap.en)
     expect(item.reason).toBe('draft')
-    expect(item.text).toBe(`${languages.en} ${icons.draft}`)
+    expect(item.text).toBe(`${languagesMap.en} ${icons.draft}`)
     expect(item.title).toBe(ui.en['translation.disabled.draft'])
     expect(item.href).toBe('/en/draft')
     expect(item.accessible).toBe(true)
@@ -39,9 +39,9 @@ describe('languagePickerAdapter', () => {
     const adapted = adaptLanguageLinks(links)
     const item = adapted[0]
 
-    expect(item.label).toBe(languages.es)
+    expect(item.label).toBe(languagesMap.es)
     expect(item.reason).toBe('missing')
-    expect(item.text).toBe(`${languages.es} ${icons.missing}`)
+    expect(item.text).toBe(`${languagesMap.es} ${icons.missing}`)
     expect(item.title).toBe(ui.es['translation.disabled.missing'])
     expect(item.href).toBeNull()
     expect(item.accessible).toBe(false)

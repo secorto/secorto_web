@@ -1,12 +1,16 @@
+import { createLocales } from '@secorto/i18n'
 export const defaultLang = 'es';
 
-export const languages = {
+export const languages = createLocales(['en', 'es'] as const)
+
+export type UILanguages = typeof languages.all[number]
+
+export const languagesMap: Record<UILanguages, string> = {
   en: 'English',
   es: 'Spanish'
-} as const;
+}
 
-export type UILanguages = keyof typeof languages
-export const languageKeys = Object.keys(languages) as Array<UILanguages>
+export const languageKeys = languages.all
 
 export const ui = {
   en: {
