@@ -2,7 +2,7 @@
   "name": "@secorto/web",
   "private": true,
   "type": "module",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "scripts": {
     "dev": "astro dev",
     "clean": "rimraf dist playwright-report test-results .astro",
@@ -42,7 +42,8 @@
     "@typescript-eslint/parser": "^8.67.0",
     "@vitest/coverage-v8": "^4.1.10",
     "axe-core": "^4.13.0",
-    "eslint-plugin-astro": "^3.1.0"
+    "eslint-plugin-astro": "^3.1.0",
+    "fast-xml-parser": "^5.11.0"
   },
   "allowScripts": {
     "esbuild@0.28.1": true,
