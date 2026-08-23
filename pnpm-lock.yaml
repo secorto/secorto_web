@@ -99,6 +99,9 @@ importers:
       eslint-plugin-astro:
         specifier: ^3.1.0
         version: 3.1.0(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.3)(@typescript-eslint/parser@8.67.0(eslint@10.8.1(supports-color@7.2.0))(supports-color@7.2.0)(typescript@6.0.3))(eslint@10.8.1(supports-color@7.2.0))(supports-color@7.2.0)
+      fast-xml-parser:
+        specifier: ^5.11.0
+        version: 5.11.0
 
   packages/step:
     devDependencies:
