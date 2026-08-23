@@ -60,13 +60,16 @@ export const createContractStep =
     const runRaw = () => runner(`${title} (raw)`, originFn)
 
     /**
-     * Execute both and collect results in separate runner calls.
+     * Execute both and collect results in a single runner call.
+     * Returns { parsed, raw } to allow inspection of both phases.
+     * Appears in report as a single step: "${title} (detailed)"
      */
-    const runDetailed = async () => {
-      const raw = await runRaw()
-      const parsed = await runner(title, async () => transformFn(raw))
-      return { parsed, raw }
-    }
+    const runDetailed = () =>
+      runner(`${title} (detailed)`, async () => {
+        const raw = await originFn()
+        const parsed = await transformFn(raw)
+        return { parsed, raw }
+      })
 
     return {
       title,

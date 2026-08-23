@@ -204,6 +204,19 @@ describe('createContractStep', () => {
       ).detailed()
       expect(result).toEqual({ parsed: 15, raw: 5 })
     })
+
+    it('appends "(detailed)" to the title for the runner', async () => {
+      let seenTitle: string | undefined
+      const runner: StepRunner = async (title, action) => {
+        seenTitle = title
+        return Promise.resolve(action())
+      }
+
+      const contractStep = createContractStep(runner, 'MyContractStep')
+      await contractStep('my contract', () => 42, (v) => v * 2).detailed()
+
+      expect(seenTitle).toBe('my contract (detailed)')
+    })
   })
 
   describe('promise chain (.then, .catch, .finally)', () => {
@@ -386,13 +399,13 @@ describe('createContractStep', () => {
       expect(runner).toHaveBeenCalledOnce()
     })
 
-    it('calls runner twice for .detailed() (once raw, once for transform)', async () => {
+    it('calls runner once for .detailed() because it owns the full execution', async () => {
       const runner = vi.fn((_title, action) => Promise.resolve(action()))
       const contractStep = createContractStep(runner, 'MyContractStep')
 
       await contractStep('my contract', () => 5, (v) => v * 3).detailed()
 
-      expect(runner).toHaveBeenCalledTimes(2)
+      expect(runner).toHaveBeenCalledTimes(1)
     })
   })
 
