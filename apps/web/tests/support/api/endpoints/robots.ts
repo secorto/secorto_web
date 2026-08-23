@@ -6,7 +6,7 @@ export const robots = (request: APIRequestContext) =>
   contractStep(
     'fetch robots.txt',
     async () => request.get('/robots.txt'),
-    async (response) => text(['text/plain'])(response),
+    text,
   )
 
 export const shouldBeLoaded = (body: string) =>
