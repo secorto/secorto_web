@@ -1,10 +1,10 @@
 import { test } from '@playwright/test'
-import { robots, shouldBeLoaded } from '@tests/support/api/endpoints/robots'
+import { robots } from '@tests/support/api/endpoints/robots'
 
 test.describe('robots.txt endpoint', { tag: ['@robots', '@functional'] }, () => {
   test('robots.txt is loaded and valid', async ({ request }) => {
-    const body = await robots(request)
+    const robotsTxt = await robots(request)
 
-    await shouldBeLoaded(body).soft()
+    await robotsTxt.shouldBeLoaded().soft()
   })
 })
