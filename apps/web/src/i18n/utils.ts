@@ -1,21 +1,5 @@
-import { ui, defaultLang, type UILanguages, languageKeys } from './ui'
+import { ui, defaultLang, type UILanguages } from './ui'
 import { showDefaultLang } from '@i18n/config'
-
-/**
- * Obtiene el idioma a partir de la URL.
- * Si el primer segmento de la ruta no corresponde a un idioma conocido,
- * retorna el idioma por defecto.
- * @param url - URL actual
- * @returns Idioma detectado (tipo `UILanguages`)
- */
-export function getLangFromUrl(url: URL) {
-  const [, lang] = url.pathname.split('/')
-  const possiblyLang = lang as UILanguages
-  if (languageKeys.includes(possiblyLang)) {
-    return possiblyLang
-  }
-  return defaultLang
-}
 
 /**
  * Crea una función traductora ligada a un idioma concreto.

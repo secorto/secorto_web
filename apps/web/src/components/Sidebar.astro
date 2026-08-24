@@ -1,10 +1,11 @@
 ---
 import { getRelativeLocaleUrl } from 'astro:i18n';
-import { getLangFromUrl, useTranslations, useTranslatedPath } from '../i18n/utils';
+import { useTranslations, useTranslatedPath } from '../i18n/utils';
 import { resolveLocalized } from '@i18n/rootMap'
 import { NAV_LINKS } from '@domain/nav'
 
 import ThemeIcon from './ThemeIcon.astro';
+import { languages } from '@i18n/ui';
 
 export interface Props {}
 
@@ -12,7 +13,7 @@ export interface Slots {
   langpicker?: Record<string, never>
 }
 
-const currentLocale = getLangFromUrl(Astro.url);
+const currentLocale = languages.fromString(Astro.currentLocale);
 const t = useTranslations(currentLocale);
 const translatePath = useTranslatedPath(currentLocale);
 ---

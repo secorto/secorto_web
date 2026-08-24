@@ -7,21 +7,9 @@ vi.mock('@i18n/dateFormat', () => ({
 }))
 
 // Mutable UI mock so tests can toggle `showDefaultLang` without hoisting issues
-const { defaultLang, ui } = await import('@i18n/ui')
-
+const { ui } = await import('@i18n/ui')
 
 describe('i18n utils', () => {
-  it('getLangFromUrl returns language when present and valid', async () => {
-    const { getLangFromUrl } = await import('@i18n/utils')
-    expect(getLangFromUrl(new URL('https://example.test/en/page'))).toBe('en')
-  })
-
-  it('getLangFromUrl falls back to default language when missing or invalid', async () => {
-    const { getLangFromUrl } = await import('@i18n/utils')
-    expect(getLangFromUrl(new URL('https://example.test/'))).toBe(defaultLang)
-    expect(getLangFromUrl(new URL('https://example.test/xx/page'))).toBe(defaultLang)
-  })
-
   it('useTranslations returns translations and undefined for unknown keys', async () => {
     const { useTranslations } = await import('@i18n/utils')
     const tEs = useTranslations('es')
