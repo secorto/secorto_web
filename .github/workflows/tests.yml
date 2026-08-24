@@ -19,6 +19,9 @@ jobs:
           runtime: node@24
           cache: true
 
+      - name: Build project
+        run: pnpm run build
+
       - name: Lint code
         run: pnpm run lint
 
@@ -46,6 +49,9 @@ jobs:
         with:
           runtime: node@24
           cache: true
+
+      - name: Build project
+        run: pnpm run build
 
       - name: Wait for Netlify preview deploy (PR or main/master push)
         if: github.event_name == 'pull_request' || startsWith(github.ref, 'refs/heads/main') || startsWith(github.ref, 'refs/heads/master')
