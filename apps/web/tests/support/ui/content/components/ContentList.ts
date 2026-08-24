@@ -1,6 +1,7 @@
 import type { Locator } from '@playwright/test'
 import { step } from '@tests/step'
-import { Target, target, TargetSelector, targetSelector } from '@tests/support/ui/components/Target'
+import { Target, target } from '@tests/support/ui/components/Target'
+import { TargetSelector, targetSelector } from '@tests/support/ui/components/TargetSelector'
 
 /**
  * Componente reutilizable para lista de items.

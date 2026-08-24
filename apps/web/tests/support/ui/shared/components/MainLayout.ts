@@ -3,9 +3,11 @@ import type { LocalizedPage } from '@tests/support/ui/shared/contracts/localizat
 import { step, verifyStep } from '@tests/step'
 import { footerPage, type FooterComponent } from '@tests/support/ui/home/component/FooterComponent'
 import { sidebarPage, type SidebarComponent } from '@tests/support/ui/sidebar/SidebarComponent'
-import { target, targetSelector, type Target, type TargetSelector } from '@tests/support/ui/components/Target'
+import { target, type Target } from '@tests/support/ui/components/Target'
+import { specializedTargetSelector, type TargetSelector } from '@tests/support/ui/components/TargetSelector'
 import { themeToggleFromPage, type ThemeToggle } from './ThemeToggle'
 import type { Page } from '@playwright/test'
+import { link, type Link } from '@tests/support/ui/components/Link'
 
 
 export class MainLayoutComponent<T = void> implements LocalizedPage<T> {
@@ -16,7 +18,7 @@ export class MainLayoutComponent<T = void> implements LocalizedPage<T> {
     readonly sidebar: SidebarComponent,
     readonly footer: FooterComponent,
     readonly main: LocalizedPage<T>,
-    readonly langLinks: TargetSelector<UILanguages>,
+    readonly langLinks: TargetSelector<UILanguages, Link>,
     readonly themeToggle: ThemeToggle,
   ) { }
 
@@ -85,7 +87,7 @@ export function defaultMainLayout(page: Page) {
     root: target('html root', page.locator('html')),
     sidebar: sidebarPage(page),
     footer: footerPage(page),
-    langLinks: targetSelector('language link', (lang: UILanguages) =>
+    langLinks: specializedTargetSelector(link, 'language link', (lang: UILanguages) =>
       page.getByTestId(`lang-${lang}`)
     ),
     themeToggle: themeToggleFromPage(page),
