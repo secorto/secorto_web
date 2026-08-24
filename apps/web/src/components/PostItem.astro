@@ -2,7 +2,7 @@
 import { useTranslations } from "@i18n/utils"
 import { formatString } from "@utils/formatString"
 import { Image } from "astro:assets"
-import { languages, type UILanguages } from "@i18n/ui"
+import { type UILanguages } from "@i18n/ui"
 
 interface Props {
   title: string
@@ -13,7 +13,7 @@ interface Props {
   locale: UILanguages
 }
 const { title, url, image, excerpt = '', cta, locale } = Astro.props
-const t = useTranslations(languages.fromString(locale))
+const t = useTranslations(locale)
 ---
 
 <a class="card" href={url} data-testid="list-item">
