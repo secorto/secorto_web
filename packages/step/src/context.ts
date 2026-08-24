@@ -28,10 +28,10 @@ export type StepBuilder<TContext> = <TResult>(
 export const createContextStep =
   <TContext>(runner: StepRunner, symbol = 'StepContext'): StepBuilder<TContext> =>
   <T>(
-    title: string,
-    action: (ctx: TContext) => T | Promise<T>,
-    ctx: TContext
-  ): Step<T> => {
+      title: string,
+      action: (ctx: TContext) => T | Promise<T>,
+      ctx: TContext
+    ): Step<T> => {
     const step = createStep(runner, symbol)
     return step<T>(title, () => action(ctx))
   }

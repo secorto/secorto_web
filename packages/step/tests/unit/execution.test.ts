@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { createStep } from '@secorto/step'
 import type { StepRunner } from '@secorto/step'
 
@@ -55,19 +55,5 @@ describe('createStep', () => {
     const step = createStep(mockRunner, 'MyStep')
     const result = await step('my step', () => 99).then((v) => v * 2)
     expect(result).toBe(198)
-  })
-
-  it('is catchable (.catch)', async () => {
-    const failingRunner: StepRunner = () => Promise.reject(new Error('fail'))
-    const step = createStep(failingRunner, 'MyStep')
-    const result = await step('my step', () => undefined).catch(() => 'caught')
-    expect(result).toBe('caught')
-  })
-
-  it('supports .finally', async () => {
-    const step = createStep(mockRunner, 'MyStep')
-    const spy = vi.fn()
-    await step('my step', () => 1).finally(spy)
-    expect(spy).toHaveBeenCalledOnce()
   })
 })

@@ -77,8 +77,6 @@ export const createContractStep =
       raw: runRaw,
       detailed: runDetailed,
       then: (onFulfilled, onRejected) => run().then(onFulfilled, onRejected),
-      catch: (onRejected) => run().catch(onRejected),
-      finally: (onFinally) => run().finally(onFinally),
       [Symbol.toStringTag]: symbol
     }
   }
