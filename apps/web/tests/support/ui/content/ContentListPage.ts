@@ -4,7 +4,7 @@ import type { MainLayoutComponent } from '@tests/support/ui/shared/components/Ma
 import type { TagsComponent } from './components/Tags'
 import type { ContentListComponent } from './components/ContentList'
 import type { SectionType } from '@domain/section'
-import { sectionsConfig, getURLForSection } from '@domain/section'
+import { sectionsConfig, getURLForSection, getEntryTagURL } from '@domain/section'
 import { urlValidator } from '@tests/support/ui/shared/flows/urlValidator'
 import { verifyStep } from '@tests/step'
 import { visit } from '@tests/support/ui/shared/NavigationPaths'
@@ -148,6 +148,24 @@ export async function userIsOnContentList(
   locale: UILanguages,
 ): Promise<ContentListPage> {
   const url = getURLForSection(contentType, locale)
+  return visit(
+    `navigate to ${contentType} list in ${locale}`,
+    page,
+    url,
+    (page) => contentListPage(page, contentType),
+  )
+}
+
+/**
+ * Navega a la página de lista por tag de una sección y retorna el page object.
+ */
+export async function userInContentTag(
+  page: Page,
+  contentType: SectionType,
+  locale: UILanguages,
+  tag: string
+): Promise<ContentListPage> {
+  const url = getEntryTagURL(contentType, locale, tag)
   return visit(
     `navigate to ${contentType} list in ${locale}`,
     page,
