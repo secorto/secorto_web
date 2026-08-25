@@ -27,7 +27,7 @@ export const rssParser = async (response: APIResponse) => {
   const body = await xml(rssSchema)(response)
 
   return {
-    raw: response,
+    response,
     body: body,
     shouldBeLoaded: (localeCountry: string) => verifyStep(`rss.xml is loaded in ${localeCountry}`, async ({ expect }) => {
       expect(body.rss.channel.language, `Expected language to be ${localeCountry}`).toBe(localeCountry)
