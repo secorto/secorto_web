@@ -1,6 +1,6 @@
 import type { UILanguages } from '@i18n/ui'
 import type { Page } from '@playwright/test'
-import { step } from '@tests/step'
+import { step, type Step } from '@tests/step'
 import { mockThirdParty } from '@tests/e2e/helpers/mockThirdParty'
 
 export function homePath(locale: UILanguages) {
@@ -15,8 +15,8 @@ export const visit = <T>(
   title: string,
   page: Page,
   url: string,
-  factory: (page: Page) => T | Promise<T>,
-  preAct?: (page: Page) => Promise<void> | void,
+  factory: (page: Page) => T | Step<T>,
+  preAct?: (page: Page) => Step<void> | void,
 ) =>
     step(title, async () => {
       if (preAct) await preAct(page)
