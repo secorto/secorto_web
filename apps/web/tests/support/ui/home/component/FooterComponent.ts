@@ -15,9 +15,14 @@ export class FooterComponent implements Loadable, LocalizedPage<void> {
 
   shouldBeLoaded() {
     return verifyStep('footer is loaded', async ({ expect }) => {
-      await this.avatar.shouldBeLoaded().with(expect)
       await this.role.shouldBeVisible().with(expect)
       await this.follow.shouldBeVisible().with(expect)
+    })
+  }
+
+  shouldAvatarBeLoaded() {
+    return verifyStep('footer avatar is loaded', async ({ expect }) => {
+      await this.avatar.shouldBeLoaded().with(expect)
     })
   }
 
