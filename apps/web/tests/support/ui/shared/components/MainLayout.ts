@@ -76,7 +76,7 @@ export function mainLayout<T>({
   sidebar: SidebarComponent,
   main: LocalizedPage<T>,
   footer: FooterComponent,
-  langLinks: TargetSelector<UILanguages>,
+  langLinks: TargetSelector<UILanguages, Link>,
   themeToggle: ThemeToggle,
 }) {
   return new MainLayoutComponent(name, root, headerTitle, sidebar, footer, main, langLinks, themeToggle)
