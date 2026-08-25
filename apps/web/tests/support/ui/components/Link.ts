@@ -25,12 +25,12 @@ export class Link extends Target {
 
       expect(links.length).toBeGreaterThan(0)
 
-      links.forEach(async (href, i) => {
+      for (const [i, href] of links.entries()) {
         await step(`link ${href} href matches pattern ${pattern}`, async () => {
           expect(href, `Item ${i} has no href`).toBeTruthy()
           expect(href!, `Item ${i} href mismatch`).toMatch(pattern)
         })
-      })
+      }
     })
   }
 }
