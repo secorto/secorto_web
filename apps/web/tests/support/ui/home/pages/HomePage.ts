@@ -6,7 +6,7 @@ import type { UILanguages } from '@i18n/ui'
 import { homePath, visit } from '@tests/support/ui/shared/NavigationPaths'
 import { verifyStep, type Step, type Verification } from '@tests/step'
 import { defaultMainLayout, mainLayout, type MainLayoutComponent } from '@tests/support/ui/shared/components/MainLayout'
-import type { LocalizedPage, LocalizedUrl } from '@tests/support/ui/shared/contracts/localization'
+import type { AuditablePage, Loadable, LocalizedPage, LocalizedUrl } from '@tests/support/ui/shared/contracts/localization'
 import { urlValidator } from '@tests/support/ui/shared/flows/urlValidator'
 import { a11yFlow, type A11y } from '@tests/support/ui/shared/flows/a11y'
 
@@ -17,8 +17,8 @@ export class HomePageMain implements LocalizedPage<void> {
     readonly highlightCards: HighlightCards,
   ) {}
 
-  shouldBeLoaded(_locale: UILanguages) {
-    return verifyStep('homepage main is loaded correctly', async ({ expect }) => {
+  shouldBeLocalized(_locale: UILanguages) {
+    return verifyStep('homepage main is localized', async ({ expect }) => {
       await this.avatar.shouldBeVisible().with(expect)
       await this.bioText.shouldBeVisible().with(expect)
       await this.highlightCards.shouldBeValid().with(expect)
@@ -26,17 +26,21 @@ export class HomePageMain implements LocalizedPage<void> {
   }
 }
 
-export class HomePage implements LocalizedPage<void>, LocalizedUrl {
+export class HomePage implements Loadable, LocalizedPage<void>, LocalizedUrl, AuditablePage {
   constructor(
     readonly mainLayout: MainLayoutComponent,
     readonly validateUrl: (expected: string | RegExp) => Verification<void>,
     readonly a11y: A11y,
   ) {}
 
-  shouldBeLoaded(locale: UILanguages) {
-    return verifyStep(`homepage is fully loaded and in ${locale}`, async ({ expect }) => {
+  shouldBeLoaded() {
+    return this.mainLayout.shouldBeLoaded()
+  }
+
+  shouldBeLocalized(locale: UILanguages) {
+    return verifyStep(`homepage is localized in ${locale}`, async ({ expect }) => {
       await this.shouldBeInLocale(locale).with(expect)
-      await this.mainLayout.shouldBeLoaded(locale).with(expect)
+      await this.mainLayout.shouldBeLocalized(locale).with(expect)
     })
   }
 
@@ -45,8 +49,8 @@ export class HomePage implements LocalizedPage<void>, LocalizedUrl {
     return this.validateUrl(expected)
   }
 
-  async auditA11y() {
-    await this.a11y.audit()
+  auditA11y() {
+    return this.a11y.audit()
   }
 }
 

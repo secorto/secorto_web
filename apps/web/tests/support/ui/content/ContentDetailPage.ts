@@ -1,13 +1,15 @@
 import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
 import type { SectionType } from '@domain/section'
-import { sectionsConfig } from '@domain/section'
+import { sectionsConfig, getEntryURL } from '@domain/section'
+import { visit } from '@tests/support/ui/shared/NavigationPaths'
 import type { MainLayoutComponent } from '@tests/support/ui/shared/components/MainLayout'
 import { mainLayout, defaultMainLayout } from '@tests/support/ui/shared/components/MainLayout'
 import { target, type Target } from '@tests/support/ui/components/Target'
-import { verifyStep } from '@tests/step'
-import type { LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
+import { verifyStep, type Step } from '@tests/step'
+import type { AuditablePage, Loadable, LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
 import { Comments, giscusComments } from './components/Comments'
+import { a11yFlow, type A11y } from '@tests/support/ui/shared/flows/a11y'
 
 /**
  * Main component para posts (blog, talk) en página de detalle.
@@ -20,8 +22,8 @@ export class PostDetailMain implements LocalizedPage<void> {
     readonly comments: Comments,
   ) {}
 
-  shouldBeLoaded(locale: UILanguages) {
-    return verifyStep('post detail (date + comments) is loaded', async ({ expect }) => {
+  shouldBeLocalized(locale: UILanguages) {
+    return verifyStep('post detail (date + comments) is localized', async ({ expect }) => {
       await expect(this.dateField.locator).toBeVisible()
       await this.comments.shouldBeReady(locale).with(expect)
     })
@@ -41,8 +43,8 @@ export class ExperienceDetailMain implements LocalizedPage<void> {
     readonly websiteLink: Target,
   ) {}
 
-  shouldBeLoaded(_locale: UILanguages) {
-    return verifyStep('experience detail (metadata) is loaded', async ({ expect }) => {
+  shouldBeLocalized(_locale: UILanguages) {
+    return verifyStep('experience detail (metadata) is localized', async ({ expect }) => {
       await expect(this.container.locator).toBeVisible()
       await expect(this.roleField.locator).toBeVisible()
       await expect(this.responsibilitiesField.locator).toBeVisible()
@@ -56,7 +58,6 @@ export class ExperienceDetailMain implements LocalizedPage<void> {
 
 /**
  * Factory selector: crea el main component según categoría (post vs experience).
- * Lee sectionsConfig para determinar qué tipo crear.
  */
 function buildDetailMain(
   page: Page,
@@ -65,12 +66,10 @@ function buildDetailMain(
   const config = sectionsConfig[sectionName]
 
   if (config.category === 'post') {
-    // Posts: blog, talk → PostDetailMain (valida date + comments)
     const dateContainer = page.getByTestId('post-date')
     const comments = giscusComments(page)
     return new PostDetailMain(target('post date', dateContainer), comments)
   } else {
-    // Experiences: work, projects, community → ExperienceDetailMain
     const mainContainer = page.locator('main')
     return new ExperienceDetailMain(
       target('experience metadata', mainContainer),
@@ -84,22 +83,28 @@ function buildDetailMain(
 /**
  * Orquestador de página de detalle.
  * Compone MainLayout + el componente main (PostDetailMain o ExperienceDetailMain).
- * Patrón simple: mainLayout es el contenedor, main es el contenido específico.
  */
-export class ContentDetailPage {
+export class ContentDetailPage implements Loadable, LocalizedPage<void>, AuditablePage {
   constructor(
     readonly mainLayout: MainLayoutComponent,
+    readonly a11y: A11y,
   ) {}
 
-  shouldBeLoaded(locale: UILanguages) {
-    return this.mainLayout.shouldBeLoaded(locale)
+  shouldBeLoaded() {
+    return this.mainLayout.shouldBeLoaded()
+  }
+
+  shouldBeLocalized(locale: UILanguages) {
+    return this.mainLayout.shouldBeLocalized(locale)
+  }
+
+  auditA11y() {
+    return this.a11y.audit()
   }
 }
 
 /**
  * Factory principal: crea ContentDetailPage completo.
- * Orquesta mainLayout + main component (post o experience).
- * Selecciona automáticamente según sectionName.
  */
 export function contentDetailPage(
   page: Page,
@@ -112,5 +117,24 @@ export function contentDetailPage(
     main: buildDetailMain(page, sectionName),
   })
 
-  return new ContentDetailPage(layoutComponent)
+  return new ContentDetailPage(layoutComponent, a11yFlow(page))
+}
+
+/**
+ * Navega a la página de detalle de un entry y retorna el page object.
+ * Encapsula: construcción de URL + instanciación de ContentDetailPage.
+ */
+export function userIsOnContentDetail(
+  page: Page,
+  sectionName: SectionType,
+  locale: UILanguages,
+  slug: string,
+): Step<ContentDetailPage> {
+  const url = getEntryURL(sectionName, locale, slug)
+  return visit(
+    `a user in ${sectionName} detail ${locale} ${slug}`,
+    page,
+    url,
+    (page) => contentDetailPage(page, sectionName),
+  )
 }

@@ -3,10 +3,10 @@ import { sidebarToggleFromPage, SidebarToggle } from '@tests/support/ui/sidebar/
 import { target } from '@tests/support/ui/components/Target'
 import type { Target as TargetComponent } from '@tests/support/ui/components/Target'
 import type { Page } from '@playwright/test'
-import type { LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
+import type { Loadable, LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
 import { ui, type UILanguages } from '@i18n/ui'
 
-export class SidebarComponent implements LocalizedPage<void> {
+export class SidebarComponent implements Loadable, LocalizedPage<void> {
   constructor(
     readonly toggle: SidebarToggle,
     readonly sidebarTitle: TargetComponent,
@@ -22,11 +22,16 @@ export class SidebarComponent implements LocalizedPage<void> {
     return this.toggle.toggle()
   }
 
-  shouldBeLoaded(locale: UILanguages) {
-    return verifyStep('sidebar is loaded correctly', async ({ expect }) => {
+  shouldBeLoaded() {
+    return verifyStep('sidebar is loaded', async ({ expect }) => {
       await this.sidebarTitle.shouldBeVisible().with(expect)
-      await this.aboutLink.shouldHaveVisibleText(ui[locale]['nav.about']).with(expect)
       await this.logo.shouldHaveCount(1).with(expect)
+    })
+  }
+
+  shouldBeLocalized(locale: UILanguages) {
+    return verifyStep('sidebar is localized correctly', async ({ expect }) => {
+      await this.aboutLink.shouldHaveVisibleText(ui[locale]['nav.about']).with(expect)
     })
   }
 }

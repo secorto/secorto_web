@@ -25,13 +25,13 @@ for (const content of testContents) {
       `navigation for ${content.name} content with slug ${content.testSlug} and tag ${content.testTag} in lang ${content.locale} `,
       { tag: [`@content-${content.name}`, `@${content.locale}`, '@navigation', '@functional'] },
       async ({ page }) => {
-        // 1. Ir a listado de sección y validar carga
+        // 1. Ir a listado de sección y validar carga (shouldBeLoaded llamado por visit)
         const list = await userIsOnContentList(page, content.name, content.locale)
-        await list.shouldBeLoaded(content.locale).soft()
+        await list.shouldBeLocalized(content.locale).soft()
 
         // 2. Click en un tag para filtrar
         await list.filterByTag(content.testTag)
-        await list.shouldBeLoaded(content.locale).soft()
+        await list.shouldBeLocalized(content.locale).soft()
 
         // 3. Validar filtrado fue exitoso
         await list.shouldBeFiltered(content.testTag).soft()
@@ -42,7 +42,8 @@ for (const content of testContents) {
 
         // 5. Validar que el detail page se cargó correctamente
         const detail = contentDetailPage(page, content.name)
-        await detail.shouldBeLoaded(content.locale).soft()
+        await detail.shouldBeLoaded().soft()
+        await detail.shouldBeLocalized(content.locale).soft()
       },
     )
   })
