@@ -219,7 +219,7 @@ describe('createContractStep', () => {
     })
   })
 
-  describe('promise chain (.then, .catch, .finally)', () => {
+  describe('promise chain (.then)', () => {
     it('supports .then() on default (chained) behavior', async () => {
       const contractStep = createContractStep(mockRunner, 'MyContractStep')
       const result = await contractStep(
