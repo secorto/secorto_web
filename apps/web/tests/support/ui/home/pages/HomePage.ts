@@ -4,7 +4,7 @@ import type { Page } from '@playwright/test'
 import type { Target as TargetComponent } from '@tests/support/ui/components/Target'
 import type { UILanguages } from '@i18n/ui'
 import { homePath, visit } from '@tests/support/ui/shared/NavigationPaths'
-import { verifyStep, type Verification } from '@tests/step'
+import { verifyStep, type Step, type Verification } from '@tests/step'
 import { defaultMainLayout, mainLayout, type MainLayoutComponent } from '@tests/support/ui/shared/components/MainLayout'
 import type { LocalizedPage, LocalizedUrl } from '@tests/support/ui/shared/contracts/localization'
 import { urlValidator } from '@tests/support/ui/shared/flows/urlValidator'
@@ -71,7 +71,7 @@ export function homePage(page: Page) {
 export const userInHome = (
   page: Page,
   locale: UILanguages,
-  preAct?: (page: Page) => Promise<void> | void,
+  preAct?: (page: Page) => Step<void> | void,
 ) =>
   visit(
     `a user opening home in ${locale} for theme/locale`,

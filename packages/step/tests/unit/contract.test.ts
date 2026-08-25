@@ -219,7 +219,7 @@ describe('createContractStep', () => {
     })
   })
 
-  describe('promise chain (.then, .catch, .finally)', () => {
+  describe('promise chain (.then)', () => {
     it('supports .then() on default (chained) behavior', async () => {
       const contractStep = createContractStep(mockRunner, 'MyContractStep')
       const result = await contractStep(
@@ -228,24 +228,6 @@ describe('createContractStep', () => {
         (v) => v * 3
       ).then((v) => v + 1)
       expect(result).toBe(16)
-    })
-
-    it('supports .catch() on error', async () => {
-      const failingRunner: StepRunner = () => Promise.reject(new Error('fail'))
-      const contractStep = createContractStep(failingRunner, 'MyContractStep')
-      const result = await contractStep(
-        'my contract',
-        () => 5,
-        (v) => v * 3
-      ).catch(() => 'caught')
-      expect(result).toBe('caught')
-    })
-
-    it('supports .finally()', async () => {
-      const contractStep = createContractStep(mockRunner, 'MyContractStep')
-      const spy = vi.fn()
-      await contractStep('my contract', () => 5, (v) => v * 3).finally(spy)
-      expect(spy).toHaveBeenCalledOnce()
     })
   })
 

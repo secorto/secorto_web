@@ -1,4 +1,4 @@
-import type { StepRunner } from './execution'
+import type { Step, StepRunner } from './execution'
 
 /**
  * A lazy contract definition that manages two functions: originFn (source of truth)
@@ -13,11 +13,9 @@ import type { StepRunner } from './execution'
  * The object can be inspected before execution (title, originFn, transformFn, action)
  * and awaited as a normal promise.
  */
-export interface ContractStep<TRaw, TParsed> extends Promise<TParsed> {
-  title: string
+export interface ContractStep<TRaw, TParsed> extends Step<TParsed> {
   originFn: () => TRaw | Promise<TRaw>
   transformFn: (raw: TRaw) => TParsed | Promise<TParsed>
-  action: () => Promise<TParsed>
   raw: () => Promise<TRaw>
   detailed: () => Promise<{ parsed: TParsed; raw: TRaw }>
 }
@@ -37,10 +35,10 @@ export interface ContractStep<TRaw, TParsed> extends Promise<TParsed> {
 export const createContractStep =
   (runner: StepRunner, symbol: string) =>
   <TRaw, TParsed>(
-    title: string,
-    originFn: () => TRaw | Promise<TRaw>,
-    transformFn: (raw: TRaw) => TParsed | Promise<TParsed>
-  ): ContractStep<TRaw, TParsed> => {
+      title: string,
+      originFn: () => TRaw | Promise<TRaw>,
+      transformFn: (raw: TRaw) => TParsed | Promise<TParsed>
+    ): ContractStep<TRaw, TParsed> => {
     /**
      * Default action: execute originFn, pass result to transformFn.
      */
@@ -79,8 +77,6 @@ export const createContractStep =
       raw: runRaw,
       detailed: runDetailed,
       then: (onFulfilled, onRejected) => run().then(onFulfilled, onRejected),
-      catch: (onRejected) => run().catch(onRejected),
-      finally: (onFinally) => run().finally(onFinally),
       [Symbol.toStringTag]: symbol
     }
   }

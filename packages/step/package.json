@@ -1,7 +1,8 @@
 {
   "name": "@secorto/step",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": false,
+  "sideEffects": false,
   "description": "Framework-agnostic step primitive",
   "keywords": [
     "steps",

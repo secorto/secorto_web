@@ -17,9 +17,10 @@ export type StepRunner = <T>(
  * The object can be inspected before execution and awaited as a normal promise.
  * When awaited, it runs the underlying step through the configured runner.
  */
-export interface Step<T> extends Promise<T> {
+export interface Step<T> extends PromiseLike<T> {
   title: string
   action: () => T | Promise<T>
+  readonly [Symbol.toStringTag]: string
 }
 
 /**
@@ -43,8 +44,6 @@ export const createStep =
       title,
       action,
       then: (onFulfilled, onRejected) => run().then(onFulfilled, onRejected),
-      catch: (onRejected) => run().catch(onRejected),
-      finally: (onFinally) => run().finally(onFinally),
       [Symbol.toStringTag]: symbol
     }
   }

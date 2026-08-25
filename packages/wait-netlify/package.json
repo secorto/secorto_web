@@ -1,9 +1,10 @@
 {
   "name": "@secorto/wait-netlify",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": false,
   "type": "module",
   "main": "./src/index.js",
+  "sideEffects": false,
   "scripts": {
     "test": "vitest --run",
     "test:unit": "vitest",
