@@ -15,7 +15,7 @@ export const visit = <T>(
   title: string,
   page: Page,
   url: string,
-  factory: (page: Page) => T | Step<T>,
+  factory: (page: Page) => T | Promise<T> | Step<T>,
   preAct?: (page: Page) => Step<void> | void,
 ) =>
     step(title, async () => {
