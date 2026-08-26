@@ -18,11 +18,12 @@ export const visit = <T extends Loadable>(
   url: string,
   factory: (page: Page) => T | Promise<T> | Step<T>,
   preAct?: (page: Page) => Step<void> | void,
+  gotoOptions?: Parameters<Page['goto']>[1],
 ) =>
     step(title, async () => {
       if (preAct) await preAct(page)
       await mockThirdParty(page)
-      await page.goto(url, { waitUntil: 'domcontentloaded' })
+      await page.goto(url, gotoOptions)
       const pageObject = await factory(page)
       await pageObject.shouldBeLoaded()
       return pageObject
