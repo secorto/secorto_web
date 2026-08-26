@@ -4,7 +4,8 @@ Complete API reference, integration patterns, and design details for library aut
 
 ## Purpose & Architecture
 
-`@secorto/step` is a minimal adapter layer that lets each project define its own named steps and verifications without coupling to Playwright or any specific framework.
+`@secorto/step` is a minimal adapter layer that lets each project define its own named steps and verifications
+without coupling to Playwright or any specific framework.
 
 In secorto_web, each test area defines its own adapter:
 
@@ -139,6 +140,7 @@ await contractStep('fetch and parse response', async () => fetchJSON(), (json) =
 ```
 
 Creates a contract step that manages two functions:
+
 - **originFn**: The source of truth (e.g., fetch raw data)
 - **transformFn**: Parser or validator (e.g., parse JSON, verify schema)
 
@@ -235,6 +237,7 @@ Contract steps model API contracts as observable, testable units. Each contract:
 - Captures both in test reports for full transparency
 
 This makes contracts ideal for:
+
 - Testing API responses end-to-end
 - Validating schema adherence
 - Building reusable API adapters

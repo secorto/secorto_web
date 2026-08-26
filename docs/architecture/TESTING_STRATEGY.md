@@ -6,7 +6,8 @@ Incluye elección de frameworks, patrones recomendados y cómo ejecutar cada tip
 
 ## ¿Por dónde empiezo?
 
-- **Escribir test E2E (Playwright)** → Sigue leyendo, luego ve a [PAGE_OBJECTS.md](PAGE_OBJECTS.md) para patrón de Page Object Model
+- **Escribir test E2E (Playwright)** → Sigue leyendo, luego ve a [PAGE_OBJECTS.md](PAGE_OBJECTS.md)
+  para patrón de Page Object Model
 - **Escribir test unitario (Vitest)** → Sigue leyendo sección "Pruebas Unitarias"
 - **Entender por qué estos frameworks** → [ADR 002 — Testing Framework Migration](../adr/002-testing-framework-migration.md)
 - **Usar soft assertions en E2E** → [ADR 015 — Consolidated E2E Assertions](../adr/015-consolidated-e2e-assertions-soft-expect.md)

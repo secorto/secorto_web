@@ -256,7 +256,8 @@ const user = await contractStep(
 )
 ```
 
-Observable API contract. Execute both functions in sequence (default), or `.raw()` for origin only, or `.detailed()` for both results.
+Observable API contract. Execute both functions in sequence (default), or `.raw()` for origin only, or `.detailed()`
+for both results.
 
 ---
 
