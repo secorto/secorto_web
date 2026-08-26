@@ -105,15 +105,15 @@ type SectionDictionary<Section extends string, Language extends string, TValue>
 
 - [ ] Instancia de `createLocales(['es', 'en'])`
 - [ ] 3 instancias de `createRouteMap<L, C>()` con config secorto (2 idiomas, especializado):
-  - [ ] `collectionRoutesByLocale` (blog, talk, docs, etc.)
-  - [ ] `tagRoutesByLocale` (tags dinámicos, indexados por locale)
-  - [ ] `singletonPagesByLocale` (about, tags-page, etc.)
+  - [ ] `collectionRoutesByLocale` (blog, talk, docs, etc.) — estructura: `Record<Section, Record<Language, Slug>>`
+  - [ ] `tagRoutesByLocale` (tags dinámicos, estructura: `Record<Section, Record<Language, Slug>>`)
+  - [ ] `singletonPagesByLocale` (about, tags-page, etc., estructura: `Record<Section, Record<Language, Slug>>`)
 - [ ] Instancia de `createTranslationIndex()` con todas las entries
 - [ ] Mapas granulares: `uiMap` (translationKey, ctaKey, showFeaturedImage), `collectionCategoryMap` (si E2E lo necesita)
 
 ### Actualizar Call-Sites
 
-- [ ] Pages: cambiar `sectionsConfig[section].routes[locale]` → `collectionRoutesByLocale[locale][slug]`
+- [ ] Pages: cambiar `sectionsConfig[section].routes[locale]` → `collectionRoutesByLocale[section][locale]`
 - [ ] Components: cambiar `sectionsConfig[section].translationKey` → `uiMap[section].translationKey`
 - [ ] Tests E2E: cambiar `sectionsConfig[section].category` → `collectionCategoryMap[section]`
 - [ ] Helpers: refactorizar `createLocalizedEntryLinks()` para usar mapas indexados por locale
@@ -171,9 +171,9 @@ type SectionDictionary<Section extends string, Language extends string, TValue>
 - [ ] Delete `src/domain/section.ts` completamente
 - [ ] Crear instancias de primitivas en `src/i18n/config.ts`:
   - [ ] `languages = createLocales(['es', 'en'])`
-  - [ ] `collectionRoutesByLocale = createSectionRoutes({blog: {es: 'blog', ...}, ...})`
-    - Estructura retornada: `{blog: {es: 'blog', en: 'blog'}, talk: {es: 'charla', en: 'talk'}, ...}`
-    - Acceso: `collectionRoutesByLocale[section][language]`
+  - [ ] `collectionRoutesByLocale = createSectionRoutes({blog: {es: 'blog', en: 'blog'}, talk: {es: 'charla', en: 'talk'}, ...})`
+    - Estructura retornada: `Record<Section, Record<Language, Slug>>` — sección primero, luego idioma
+    - Acceso: `collectionRoutesByLocale[section][language]` → slug localizado
   - [ ] `tagRoutesByLocale = createRouteMap({...})` (dinámico, si se usa)
   - [ ] `singletonPagesByLocale = createRouteMap({...})` (about, tags-page)
 - [ ] Crear mapas granulares: `src/i18n/uiMap.ts` (translationKey, ctaKey, showFeaturedImage)

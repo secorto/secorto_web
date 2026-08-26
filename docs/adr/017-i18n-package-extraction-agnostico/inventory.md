@@ -75,15 +75,16 @@ agnóstico de `@secorto/i18n` o si es específico de `apps/web` (secorto).
    - Responsabilidad: Type guard + validación de array de idiomas
    - Agnóstica: ✅ Sí (funciona con cualquier N)
 
-2. ✅ **`createRouteMap<L, C>()`** ← Patrón agnóstico (replicable para collections, tags, singleton pages)**
+2. ✅ **`createRouteMap<L, C>()`** ← Patrón agnóstico (replicable para collections, tags, singleton pages)
    - Ubicación actual: `rootMap` (monolítico: collections + tags + singleton pages)
    - **Antipatrón detectado:** Iterar TODO el mapa para buscar un slug por idioma (O(n), confuso)
    - Estructura agnóstica: `Record<C, Record<L, string>>` (indexado por sección primero, luego por idioma)
    - Acceso: `routes[section][language]` — natural del dominio, búsqueda O(1)
    - Responsabilidad: Compilar + validar mapa de rutas (indexado por sección, sin duplicados)
    - Agnóstica: ✅ Sí (funciona con cualquier M, cualquier estructura)
-   - **Especialización requerida:** Separar en 3 mapas especializados por bounded context:
-     - `collectionRoutesByLocale` — mapear sección+idioma → slug canonical (blog, talk, etc.; es/en)
+   - **Especialización requerida:** Separar en 3 mapas especializados por bounded context
+    (estructura: `Record<Section, Record<Language, Slug>>`):
+     - `collectionRoutesByLocale` — mapear sección+idioma → slug localizado (blog, talk, etc.; es/en)
      - `tagRoutesByLocale` — mapear sección+idioma → slug canonical (tags: es/en, dinámico)
      - `singletonPagesByLocale` — mapear sección+idioma → slug canonical (about, tags-page, etc.; es/en, fijo)
    - **Beneficio:** Búsqueda O(1), acceso natural por secciones del dominio
@@ -138,12 +139,12 @@ agnóstico de `@secorto/i18n` o si es específico de `apps/web` (secorto).
 **Primitiva 2: Instancia `createRouteMap` (patrón reutilizable — collections, tags, singleton pages)**
 
 - Ubicación actual: `rootMap.ts` (monolítico, antipatrón O(n))
-- Patrón agnóstico: Invertir índice → `Record<L, Record<Slug, Canonical>>`
-- Cambio: Crear 3 mapas especializados indexados por locale:
-  - `collectionRoutesByLocale = { es: {blog: 'blog', charlas: 'talk'}, en: {blog: 'blog', talks: 'talk'} }`
-  - `tagRoutesByLocale = { es: {tag1: 'tag1'}, en: {tag1: 'tag1'} }`
-  - `singletonPagesByLocale = { es: {acerca-de: 'about', tags: 'tags'}, en: {about: 'about', tags: 'tags'} }`
-- Beneficio: Búsqueda O(1), iteración clara sobre locales, especialización por tipo
+- Patrón agnóstico: Estructura indexada por sección → `Record<C, Record<L, string>>`
+- Cambio: Crear 3 mapas especializados con acceso por sección+idioma:
+  - `collectionRoutesByLocale = { blog: {es: 'blog', en: 'blog'}, talk: {es: 'charla', en: 'talk'} }`
+  - `tagRoutesByLocale = { tag1: {es: 'tag1', en: 'tag1'} }` (dinámico, mismo patrón sección-primero)
+  - `singletonPagesByLocale = { about: {es: 'acerca-de', en: 'about'}, tags: {es: 'tags', en: 'tags'} }`
+- Beneficio: Búsqueda O(1), acceso uniforme por sección+idioma, especialización por tipo
 - Impacto: Refactorizar `findSectionMap()` y `createLocalizedEntryLinks()` (usar lookup directo en mapas especializados)
 
 **Primitiva 3: Instancia `createTranslationIndex`**
@@ -202,35 +203,35 @@ agnóstico de `@secorto/i18n` o si es específico de `apps/web` (secorto).
 
 ### `createRouteMap<L, C>()` (patrón agnóstico — indexado por locale, especializado por tipo de página)
 
-**Estructura agnóstica:** `Record<L, Record<Slug, Canonical>>`
+**Estructura agnóstica:** `Record<C, Record<L, string>>` (indexado por sección, luego idioma)
 
-Transformación clara: Itera LOCALES, no todo el mapa.
+Transformación clara: Indexa por SECCIÓN primero, permite búsqueda O(1) por sección+idioma.
 
 ```typescript
-// Input: collectionConfig = { blog: {es: 'blog', en: 'blog'}, talk: {es: 'charlas', en: 'talks'} }
-// Output (indexado por locale):
+// Input: collectionConfig = { blog: {es: 'blog', en: 'blog'}, talk: {es: 'charla', en: 'talk'} }
+// Output (indexado por sección):
 collectionRoutesByLocale = {
-  es: { 'blog': 'blog', 'charlas': 'talk' },
-  en: { 'blog': 'blog', 'talks': 'talk' }
+  blog: { es: 'blog', en: 'blog' },
+  talk: { es: 'charla', en: 'talk' }
 }
-// Lookup O(1): collectionRoutesByLocale['es']['charlas'] → 'talk'
+// Lookup O(1): collectionRoutesByLocale['talk']['es'] → 'charla'
 
-// Singleton pages: páginas únicas por locale
+// Singleton pages: páginas únicas por locale (mismo patrón sección-primero)
 singletonPagesByLocale = {
-  es: { 'acerca-de': 'about', 'tags': 'tags' },
-  en: { 'about': 'about', 'tags': 'tags' }
+  about: { es: 'acerca-de', en: 'about' },
+  tags: { es: 'tags', en: 'tags' }
 }
 ```
 
 | Escenario | Fixture | Valida |
 | --- | --- | --- |
-| 1 idioma, 1 collection | `{en: {blog: 'blog'}}` → `{en: {blog: 'blog'}}` | Agnóstico de N=1, M=1 |
-| 2 idiomas, 5 collections | (secorto) → `{es: {blog, charlas, ...}, en: {blog, talks, ...}}` | Agnóstico de N=2, M=5 |
-| 5 idiomas, 1 collection | Input de 5 locales → output con 5 locales indexados | Agnóstico de N=5, M=1 |
-| **Tags (mismo patrón):** 2 idiomas, N tags | (dinámico) → `{es: {tag1, tag2...}, en: {...}}` | Agnóstico de N=2, M tags (lookup O(1)) |
-| **Singleton pages (patrón igual):** 2 idiomas, 2 páginas | (about, tags-page) → `{es: {acerca-de: about, tags}, en: {...}}` | Agnóstico de N=2, M=2 (páginas únicas) |
+| 1 idioma, 1 collection | `{blog: {en: 'blog'}}` → `{blog: {en: 'blog'}}` | Agnóstico de N=1, M=1 |
+| 2 idiomas, 5 collections | (secorto) → `{blog: {es, en}, talk: {es: 'charla', en: 'talk'}, ...}` | Agnóstico de N=2, M=5 |
+| 5 idiomas, 1 collection | Input de 5 locales → output con 5 locales indexados por sección | Agnóstico de N=5, M=1 |
+| **Tags (mismo patrón):** 2 idiomas, N tags | (dinámico) → `{tag1: {es, en}, tag2: {es, en}}` | Agnóstico de N=2, M tags (lookup O(1)) |
+| **Singleton pages (patrón igual):** 2 idiomas, 2 páginas | (about, tags-page) → `{about: {es: 'acerca-de', en: 'about'}, tags: {es, en}}` | Agnóstico de N=2, M=2 (páginas únicas) |
 | **Duplicates:** Mismo slug en un locale | Debe lanzar error durante construcción | Validación agnóstica (igual en todos) |
-| **Iteración clara:** Para cada locale, define qué slug mapea a qué canonical | No itera TODO el mapa | Pattern agnóstico |
+| **Iteración clara:** Para cada sección, define qué slug mapea a cada locale | No itera TODO el mapa | Pattern agnóstico |
 
 ### `createTranslationIndex<L, E, C>()`
 
