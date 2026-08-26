@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { createLocales } from '@secorto/i18n'
 
-
 describe('createLocales', () => {
   const languages = createLocales(['en', 'es', 'fr'] as const)
 

@@ -16,7 +16,7 @@ const { frontmatter } = Astro.props;
 const { title, draft, translationKey } = frontmatter;
 
 const links = createStandalonePageLinks(
-  Astro.url,
+  Astro.url.pathname.slice(1).replace(/\/$/, ''),
   translationKey,
   standalonePageIndex,
   languages,

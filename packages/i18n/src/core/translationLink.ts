@@ -110,7 +110,7 @@ export function isMissing<L extends string>(link: TranslationLink<L>): link is M
 export function resolveDefaultAccessibleLink<L extends string>(
   links: TranslationLink<L>[],
   defaultLang: L
-): AccessibleTranslationLink<L> | undefined {
+): AccessibleTranslationLink<L> {
   if (!links || links.length === 0) throw new Error('resolveDefaultAccessibleLink: unexpected empty links array')
 
   const defaultAny = links.find(l => l.locale === defaultLang)

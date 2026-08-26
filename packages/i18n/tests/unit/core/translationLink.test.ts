@@ -39,33 +39,36 @@ describe('draftLink', () => {
 })
 
 describe('resolveDefaultAccessibleLink', () => {
-  it('prefers defaultLang available link', () => {
+  it('returns the default locale available link when present', () => {
     const links = [availableLink('/en/slug', 'en'), availableLink('/es/slug', 'es')]
     expect(resolveDefaultAccessibleLink(links, 'es')?.locale).toBe('es')
   })
 
-  it('falls back to first available when defaultLang is missing', () => {
+  it('falls back to the first available link when the default locale is unavailable', () => {
     const links = [availableLink('/en/slug', 'en'), missingLink('es')]
     expect(resolveDefaultAccessibleLink(links, 'es')?.locale).toBe('en')
   })
 
-  it('prefers defaultLang draft over other drafts', () => {
+  it('returns the default locale draft when no available links exist', () => {
     const links = [draftLink('/en/slug', 'en'), draftLink('/es/slug', 'es')]
     expect(resolveDefaultAccessibleLink(links, 'es')?.locale).toBe('es')
   })
 
-  it('prefers the first available draft when only', () => {
+  it('falls back to the first draft when the default locale draft is unavailable', () => {
     const links = [draftLink('/en/slug', 'en'), draftLink('/en/slug', 'fr')]
     expect(resolveDefaultAccessibleLink(links, 'es')?.locale).toBe('en')
   })
 
-
-  it('returns undefined when all links are missing', () => {
+  it('throws when all links are missing', () => {
     const links = [missingLink('en'), missingLink('es')]
-    expect(() => resolveDefaultAccessibleLink(links, 'es')).toThrow('resolveDefaultAccessibleLink: expected at least one accessible link')
+    expect(() => resolveDefaultAccessibleLink(links, 'es')).toThrow(
+      'resolveDefaultAccessibleLink: expected at least one accessible link'
+    )
   })
 
-  it('throws on empty array', () => {
-    expect(() => resolveDefaultAccessibleLink([], 'es')).toThrow('resolveDefaultAccessibleLink: unexpected empty links array')
+  it('throws when links array is empty', () => {
+    expect(() => resolveDefaultAccessibleLink([], 'es')).toThrow(
+      'resolveDefaultAccessibleLink: unexpected empty links array'
+    )
   })
 })

@@ -5,7 +5,6 @@ import { createLocales, createStandalonePageLinks } from '@secorto/i18n'
 const locales = createLocales(['en', 'es', 'fr'])
 
 describe('createStandalonePageLinks', () => {
-
   const index = {
     home: {
       en: { route: 'home' },
@@ -17,7 +16,7 @@ describe('createStandalonePageLinks', () => {
   it('throws when translation key is not indexed', () => {
     expect(() =>
       createStandalonePageLinks(
-        new URL('https://example.com/en/home'),
+        'en/home',
         'unknown',
         index,
         locales,
@@ -37,7 +36,7 @@ describe('createStandalonePageLinks', () => {
 
     expect(() =>
       createStandalonePageLinks(
-        new URL('https://example.com/fr/accueil'),
+        'fr/accueil',
         'home',
         customIndex,
         locales,
@@ -50,19 +49,19 @@ describe('createStandalonePageLinks', () => {
   it('throws when current route does not belong to the translation group', () => {
     expect(() =>
       createStandalonePageLinks(
-        new URL('https://example.com/en/wrong-route'),
+        'en/wrong-route',
         'home',
         index,
         locales,
       ),
     ).toThrow(
-      "Route '/en/wrong-route' does not belong to standalone page 'home'.",
+      "Route 'en/wrong-route' does not belong to standalone page 'home'.",
     )
   })
 
   it('returns links for all available locales', () => {
     const result = createStandalonePageLinks(
-      new URL('https://example.com/en/home'),
+      'en/home',
       'home',
       index,
       locales,
@@ -71,18 +70,21 @@ describe('createStandalonePageLinks', () => {
     expect(result).toHaveLength(3)
 
     expect(result).toEqual([
-      expect.objectContaining({
+      {
+        type: 'available',
         href: '/en/home',
         locale: 'en',
-      }),
-      expect.objectContaining({
+      },
+      {
+        type: 'available',
         href: '/es/inicio',
         locale: 'es',
-      }),
-      expect.objectContaining({
+      },
+      {
+        type: 'available',
         href: '/fr/accueil',
         locale: 'fr',
-      }),
+      },
     ])
   })
 
@@ -98,18 +100,17 @@ describe('createStandalonePageLinks', () => {
     }
 
     const result = createStandalonePageLinks(
-      new URL('https://example.com/en/home'),
+      'en/home',
       'home',
       customIndex,
       locales,
     )
 
-    expect(result).toContainEqual(
-      expect.objectContaining({
-        href: '/es/inicio',
-        locale: 'es',
-      }),
-    )
+    expect(result).toContainEqual({
+      type: 'draft',
+      href: '/es/inicio',
+      locale: 'es',
+    })
   })
 
   it('returns a missing link when a locale entry does not exist', () => {
@@ -121,27 +122,16 @@ describe('createStandalonePageLinks', () => {
     }
 
     const result = createStandalonePageLinks(
-      new URL('https://example.com/en/home'),
+      'en/home',
       'home',
       customIndex,
       locales,
     )
 
-    expect(result[2]).toEqual(
-      expect.objectContaining({
-        locale: 'fr',
-      }),
-    )
-  })
-
-  it('accepts urls with a trailing slash', () => {
-    const result = createStandalonePageLinks(
-      new URL('https://example.com/en/home/'),
-      'home',
-      index,
-      locales,
-    )
-
-    expect(result).toHaveLength(3)
+    expect(result[2]).toEqual({
+      type: 'missing',
+      href: null,
+      locale: 'fr',
+    })
   })
 })

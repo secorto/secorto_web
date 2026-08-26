@@ -46,13 +46,13 @@ export type StandalonePageIndex<
 export function createStandalonePageLinks<
   L extends string,
 >(
-  url: URL,
+  path: string,
   translationKey: string,
   index: StandalonePageIndex<string, L>,
   locales: Locales<L>,
 ): TranslationLink<L>[] {
   const { locale: currentLocale, id: currentRoute } = extractCleanId(
-    url.pathname.slice(1).replace(/\/$/, ''),
+    path,
     locales,
   )
 
@@ -74,7 +74,7 @@ export function createStandalonePageLinks<
 
   if (currentEntry.route !== currentRoute) {
     throw new Error(
-      `Route '${url.pathname}' does not belong to standalone page '${translationKey}'.`,
+      `Route '${path}' does not belong to standalone page '${translationKey}'.`,
     )
   }
 
