@@ -7,11 +7,27 @@ import {
   type TranslationLink,
 } from './translationLink'
 
+/**
+ * Represents a localized standalone page.
+ */
 export interface StandalonePageEntry {
+  /**
+   * Route to the page.
+   */
   route: string
+
+  /**
+   * Indicates whether the page exists only as a draft.
+   */
   draft?: boolean
 }
 
+/**
+* Maps a page identifier to its localized standalone page entries.
+*
+* The first key represents the page identifier and the nested keys represent
+* locales.
+*/
 export type StandalonePageIndex<
   K extends string,
   L extends string,
@@ -26,7 +42,8 @@ export type StandalonePageIndex<
  * Validates that:
  * - the translation key is indexed
  * - the current route belongs to the indexed translation group
- */export function createStandalonePageLinks<
+ */
+export function createStandalonePageLinks<
   L extends string,
 >(
   url: URL,

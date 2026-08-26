@@ -1,7 +1,6 @@
 /**
- * Strangler-fig shim: re-exports generic TranslationLink types and constructors
- * from @secorto/i18n, and provides a site-specific `resolveDefaultAccessibleLink`
- * with `defaultLang` already bound so all existing call sites are unaffected.
+ * Strangler-fig shim that re-exports TranslationLink types and helpers bound
+ * to the application's UI languages.
  */
 import { type UILanguages } from '@i18n/ui'
 import {

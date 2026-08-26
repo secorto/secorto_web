@@ -1,4 +1,4 @@
-import { Locales } from "./locale";
+import type { Locales } from "./locale";
 
 /**
  * Extracts the locale and cleanId from an entryId of the form "es/my-post".
