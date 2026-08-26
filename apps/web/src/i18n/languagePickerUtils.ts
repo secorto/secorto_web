@@ -2,11 +2,9 @@ import type { UILanguages } from './ui'
 import { defaultLang } from './ui'
 import type { TranslationLink } from '@domain/translationLink'
 import { availableLink, missingLink, draftLink, isAccessible } from '@domain/translationLink'
-import { languageKeys } from './ui'
-import { findSectionMap } from './rootMap'
 import type { AvailableLocales } from '@domain/translation'
 import { showDefaultLang } from '@i18n/config'
-import { langFromString } from './utils'
+import { languages } from './ui'
 
 /**
  * Calcula el prefijo de ruta localizado según el idioma.
@@ -22,7 +20,7 @@ export function buildLangPrefix(targetLang: UILanguages): string {
  * @returns Array de links disponibles para cada idioma apuntando a la raíz del sitio
  */
 export function buildHomeLinks(): TranslationLink[] {
-  return languageKeys.map(l => availableLink(`${buildLangPrefix(l)}/`, l))
+  return languages.all.map(l => availableLink(`${buildLangPrefix(l)}/`, l))
 }
 
 /**
@@ -53,7 +51,7 @@ export function buildDetailLinks(
   sectionRoutes: Record<UILanguages, string>,
   availableLocales: AvailableLocales
 ): TranslationLink[] {
-  return languageKeys.map(l => buildDetailLink(l, sectionRoutes[l], availableLocales))
+  return languages.all.map(l => buildDetailLink(l, sectionRoutes[l], availableLocales))
 }
 
 /**
@@ -61,26 +59,7 @@ export function buildDetailLinks(
  * Useful for routes that should show locked translation states (e.g. 404 pages).
  */
 export function buildMissingLanguageLinks(): TranslationLink[] {
-  return languageKeys.map(l => missingLink(l))
-}
-
-/**
- * Builds links for all languages from a URL.
- * Hoists URL parsing and rootMap scan outside the per-language loop.
- */
-export function buildStaticPageLinks(url: URL): TranslationLink[] {
-  const [, maybeLocale, rawSegment] = url.pathname.split('/')
-  if (!(languageKeys as string[]).includes(maybeLocale)) return buildMissingLanguageLinks()
-
-  const currentLocale = langFromString(maybeLocale)
-  const sectionMap = findSectionMap(rawSegment, currentLocale)
-
-  return languageKeys.map(targetLang => {
-    const localized = sectionMap?.[targetLang]
-    if (localized) return availableLink(`${buildLangPrefix(targetLang)}/${localized}`, targetLang)
-    if (targetLang === currentLocale) return availableLink(`${buildLangPrefix(targetLang)}/${rawSegment}`, targetLang)
-    return missingLink(targetLang)
-  })
+  return languages.all.map(l => missingLink(l))
 }
 
 /**

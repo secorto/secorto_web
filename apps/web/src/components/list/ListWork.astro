@@ -25,6 +25,7 @@ const { posts, locale, cta, section } = Astro.props
       url={getEntryURL(section, locale, post.cleanId)}
       title={post.data.title}
       cta={cta}
+      locale={locale}
     >
       {post.data.startDate && (
         <PostDate>

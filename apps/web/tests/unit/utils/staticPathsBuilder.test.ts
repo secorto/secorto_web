@@ -55,7 +55,7 @@ describe('buildAllDetailPathsCore', () => {
     const invalidEntry = createCollectionEntry('blog', { id: 'orphan/my-post' })
     const mockGetCollection: FetchCollection = vi.fn(async () => [invalidEntry])
     await expect(buildAllDetailPathsCore(onlyBlogSections, mockGetCollection))
-      .rejects.toThrow('Unknown locale prefix "orphan" in entryId "orphan/my-post"')
+      .rejects.toThrow('Invalid entryId "orphan/my-post". Unknown locale prefix "orphan". Expected one of: en, es.')
   })
 })
 

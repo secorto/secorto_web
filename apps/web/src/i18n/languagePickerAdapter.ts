@@ -1,5 +1,5 @@
 import type { TranslationLink } from '@domain/translationLink'
-import { languages, icons as uiIcons, ui as uiStrings } from '@i18n/ui'
+import { languagesMap, icons as uiIcons, ui as uiStrings } from '@i18n/ui'
 import type { UILanguages } from '@i18n/ui'
 
 export type LanguagePickerItem =
@@ -37,7 +37,7 @@ const reasonMeta = {
 }
 
 function buildLanguagePickerMeta(l: TranslationLink): LanguagePickerItem {
-  const label = languages[l.locale]
+  const label = languagesMap[l.locale]
 
   if (l.type === 'available') {
     return {

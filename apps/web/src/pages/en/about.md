@@ -1,6 +1,7 @@
 ---
 title: About me
-layout: "@layouts/MarkdownLayout.astro"
+layout: "@layouts/StandalonePageLayout.astro"
+translationKey: about
 ---
 
 **Systems Engineer specialized in automation and quality systems design.** I design reproducible automation suites

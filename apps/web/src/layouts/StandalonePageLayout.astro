@@ -1,0 +1,35 @@
+---
+import type { MarkdownLayoutProps } from 'astro'
+import BaseLayout from '@layouts/BaseLayout.astro'
+import LanguagePicker from '@components/LanguagePicker.astro'
+import { createStandalonePageLinks } from '@secorto/i18n'
+import SEOHead from '@components/SEOHead.astro'
+import { languages } from '@i18n/ui'
+import { standalonePageIndex } from '@domain/standalonePage'
+
+type Props = MarkdownLayoutProps<{
+  title: string
+  draft?: boolean
+  translationKey: string
+}>
+
+const { frontmatter } = Astro.props
+const { title, draft, translationKey } = frontmatter
+
+const links = createStandalonePageLinks(
+  Astro.url.pathname.slice(1).replace(/\/$/, ''),
+  translationKey,
+  standalonePageIndex,
+  languages,
+)
+---
+
+<BaseLayout pageTitle={title}>
+  <LanguagePicker slot="langpicker" links={links} />
+  <SEOHead
+    slot="seo-head"
+    links={links}
+    noindex={Boolean(draft)}
+  />
+  <slot/>
+</BaseLayout>

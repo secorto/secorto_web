@@ -2,7 +2,9 @@
 import '../styles/global.css'
 import Hamburger from '../components/Hamburger.astro'
 import Sidebar from '../components/Sidebar.astro'
-import { langFromString, useTranslations } from '@i18n/utils'
+import { useTranslations } from '@i18n/utils'
+import { languages } from '@i18n/ui'
+
 
 interface Props {
   pageTitle: string
@@ -10,7 +12,7 @@ interface Props {
 }
 
 const { pageTitle, description } = Astro.props
-const locale = langFromString(Astro.currentLocale)
+const locale = languages.fromString(Astro.currentLocale)
 const t = useTranslations(locale)
 const siteDescription = description || t('site.description')
 const canonicalURL = new URL(Astro.url.pathname, Astro.site)

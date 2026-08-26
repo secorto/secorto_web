@@ -27,6 +27,7 @@ const dateFormat = new Intl.DateTimeFormat(locale, full)
       title={post.data.title}
       excerpt={post.data.excerpt}
       cta={cta}
+      locale={locale}
     >
       {post.data.date &&
         <PostDate>
