@@ -1,6 +1,6 @@
 ---
 title: Sobre mi
-layout: '@layouts/MarkdownLayout.astro'
+layout: '@layouts/StandalonePageLayout.astro'
 translationKey: about
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: About me
-layout: "@layouts/MarkdownLayout.astro"
+layout: "@layouts/StandalonePageLayout.astro"
 translationKey: about
 ---
 
