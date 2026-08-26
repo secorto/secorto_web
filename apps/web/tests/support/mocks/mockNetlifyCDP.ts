@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test'
-import { whenMocked } from '@tests/e2e/helpers/whenMocked'
+import { whenMocked } from '@tests/support/mocks/whenMocked'
 
 /**
  * mockNetlifyCDP
