@@ -6,8 +6,8 @@ export const robotsParser = async (response: APIResponse) => {
   const body = await text(response)
 
   return {
-    raw: response,
-    body: body,
+    response,
+    body,
     shouldBeLoaded: () => verifyStep('robots.txt is loaded', async ({ expect }) => {
       expect(body, 'robots.txt should contain origin').toContain('User-agent: *')
       expect(body, 'robots.txt should allow root').toContain('Allow: /')

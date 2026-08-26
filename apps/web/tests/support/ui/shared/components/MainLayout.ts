@@ -1,14 +1,16 @@
 import type { UILanguages } from '@i18n/ui'
-import type { LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
+import type { Loadable, LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
 import { step, verifyStep } from '@tests/step'
 import { footerPage, type FooterComponent } from '@tests/support/ui/home/component/FooterComponent'
 import { sidebarPage, type SidebarComponent } from '@tests/support/ui/sidebar/SidebarComponent'
-import { target, targetSelector, type Target, type TargetSelector } from '@tests/support/ui/components/Target'
+import { target, type Target } from '@tests/support/ui/components/Target'
+import { specializedTargetSelector, type TargetSelector } from '@tests/support/ui/components/TargetSelector'
 import { themeToggleFromPage, type ThemeToggle } from './ThemeToggle'
 import type { Page } from '@playwright/test'
+import { link, type Link } from '@tests/support/ui/components/Link'
 
 
-export class MainLayoutComponent<T = void> implements LocalizedPage<T> {
+export class MainLayoutComponent<T = void> implements Loadable {
   constructor(
     readonly name: string,
     readonly root: Target,
@@ -16,19 +18,26 @@ export class MainLayoutComponent<T = void> implements LocalizedPage<T> {
     readonly sidebar: SidebarComponent,
     readonly footer: FooterComponent,
     readonly main: LocalizedPage<T>,
-    readonly langLinks: TargetSelector<UILanguages>,
+    readonly langLinks: TargetSelector<UILanguages, Link>,
     readonly themeToggle: ThemeToggle,
   ) { }
 
-  shouldBeLoaded(locale: UILanguages) {
-    return verifyStep(`${this.name} is loaded`, async ({ expect }) => {
+  shouldBeLoaded() {
+    return verifyStep(`${this.name} layout is loaded`, async ({ expect }) => {
       await this.root.shouldBeVisible().with(expect)
-      await this.root.shouldHaveAttribute('lang', locale).with(expect)
       await this.headerTitle.shouldHaveVisibleText(/\S+/).with(expect)
-      await this.footer.shouldBeLoaded(locale).with(expect)
-      await this.sidebar.shouldBeLoaded(locale).with(expect)
+      await this.footer.shouldBeLoaded().with(expect)
+      await this.sidebar.shouldBeLoaded().with(expect)
       await this.themeToggle.shouldBeVisible().with(expect)
-      return this.main.shouldBeLoaded(locale).with(expect)
+    })
+  }
+
+  shouldBeLocalized(locale: UILanguages) {
+    return verifyStep(`${this.name} layout is localized in ${locale}`, async ({ expect }) => {
+      await this.root.shouldHaveAttribute('lang', locale).with(expect)
+      await this.footer.shouldBeLocalized(locale).with(expect)
+      await this.sidebar.shouldBeLocalized(locale).with(expect)
+      return this.main.shouldBeLocalized(locale).with(expect)
     })
   }
 
@@ -74,7 +83,7 @@ export function mainLayout<T>({
   sidebar: SidebarComponent,
   main: LocalizedPage<T>,
   footer: FooterComponent,
-  langLinks: TargetSelector<UILanguages>,
+  langLinks: TargetSelector<UILanguages, Link>,
   themeToggle: ThemeToggle,
 }) {
   return new MainLayoutComponent(name, root, headerTitle, sidebar, footer, main, langLinks, themeToggle)
@@ -85,7 +94,7 @@ export function defaultMainLayout(page: Page) {
     root: target('html root', page.locator('html')),
     sidebar: sidebarPage(page),
     footer: footerPage(page),
-    langLinks: targetSelector('language link', (lang: UILanguages) =>
+    langLinks: specializedTargetSelector(link, 'language link', (lang: UILanguages) =>
       page.getByTestId(`lang-${lang}`)
     ),
     themeToggle: themeToggleFromPage(page),

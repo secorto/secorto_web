@@ -4,15 +4,16 @@ import type { MainLayoutComponent } from '@tests/support/ui/shared/components/Ma
 import type { TagsComponent } from './components/Tags'
 import type { ContentListComponent } from './components/ContentList'
 import type { SectionType } from '@domain/section'
-import { sectionsConfig, getURLForSection } from '@domain/section'
+import { sectionsConfig, getURLForSection, getEntryTagURL } from '@domain/section'
 import { urlValidator } from '@tests/support/ui/shared/flows/urlValidator'
 import { verifyStep } from '@tests/step'
 import { visit } from '@tests/support/ui/shared/NavigationPaths'
-import type { LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
+import type { AuditablePage, Loadable, LocalizedPage, LocalizedUrl } from '@tests/support/ui/shared/contracts/localization'
 import { mainLayout, defaultMainLayout } from '@tests/support/ui/shared/components/MainLayout'
 import { target } from '@tests/support/ui/components/Target'
 import { tagsComponent } from './components/Tags'
 import { contentListComponent } from './components/ContentList'
+import { a11yFlow, type A11y } from '@tests/support/ui/shared/flows/a11y'
 
 /**
  * Main para listas de posts (blog, talk).
@@ -21,7 +22,7 @@ import { contentListComponent } from './components/ContentList'
 export class PostListPageMain implements LocalizedPage<void> {
   constructor(private page: Page) {}
 
-  shouldBeLoaded(_locale: UILanguages) {
+  shouldBeLocalized(_locale: UILanguages) {
     return verifyStep('post list items have post-date', async ({ expect }) => {
       const firstItem = this.page.getByTestId('list-item').first()
       const postDate = firstItem.getByTestId('post-date')
@@ -37,7 +38,7 @@ export class PostListPageMain implements LocalizedPage<void> {
 export class ExperienceListPageMain implements LocalizedPage<void> {
   constructor(private page: Page) {}
 
-  shouldBeLoaded(_locale: UILanguages) {
+  shouldBeLocalized(_locale: UILanguages) {
     return verifyStep('experience list items have role/responsibilities', async ({ expect }) => {
       const firstItem = this.page.getByTestId('list-item').first()
       const roleField = firstItem.getByTestId('post-role')
@@ -52,23 +53,25 @@ export class ExperienceListPageMain implements LocalizedPage<void> {
 /**
  * Orquestador de página de lista.
  * Compone MainLayout + Tags + ContentList.
- * Patrón: idéntico a HomePage.
- *
- * urlValidator: reutilizado de homepage, valida URL correcta de sección.
  */
-export class ContentListPage {
+export class ContentListPage implements Loadable, LocalizedPage<void>, LocalizedUrl, AuditablePage {
   constructor(
     readonly mainLayout: MainLayoutComponent,
     readonly tags: TagsComponent,
     readonly list: ContentListComponent,
     readonly validateUrl: ReturnType<typeof urlValidator>,
+    readonly a11y: A11y,
   ) {}
 
-  shouldBeLoaded(locale: UILanguages) {
-    return verifyStep('content list is loaded', async ({ expect }) => {
-      await this.mainLayout.shouldBeLoaded(locale).with(expect)
-      await this.tags.shouldRenderTags().with(expect)
-      return this.shouldBeInLocale(locale).with(expect)
+  shouldBeLoaded() {
+    return this.mainLayout.shouldBeLoaded()
+  }
+
+  shouldBeLocalized(locale: UILanguages) {
+    return verifyStep('content list is localized', async ({ expect }) => {
+      await this.shouldBeInLocale(locale).with(expect)
+      await this.mainLayout.shouldBeLocalized(locale).with(expect)
+      return this.tags.shouldRenderTags().with(expect)
     })
   }
 
@@ -81,10 +84,13 @@ export class ContentListPage {
     return this.validateUrl(expected)
   }
 
+  auditA11y() {
+    return this.a11y.audit()
+  }
+
   /**
    * Valida que el filtrado por tag fue exitoso.
    * Comprueba: URL contiene /tags/${tag} (escapado) y lista tiene resultados.
-   * Patrón: encapsula validaciones (no test hace expect(page.url())).
    */
   shouldBeFiltered(tag: string) {
     return verifyStep(`content is filtered by tag ${tag}`, async ({ expect }) => {
@@ -94,10 +100,8 @@ export class ContentListPage {
     })
   }
 
-
   /**
    * Abre un item específico por su href.
-   * Patrón: usa getEntryURL() del domain, sin construir rutas manualmente.
    */
   async openItem(href: string) {
     const slug = href.split('/').pop() || 'item'
@@ -114,7 +118,6 @@ export class ContentListPage {
 /**
  * Factory unificado: crea ContentListPage automáticamente.
  * Selecciona el mainPageClass correcto según sectionName (post vs experience).
- * Lee sectionsConfig para determinar qué tipo de main usar.
  */
 export function contentListPage(
   page: Page,
@@ -133,13 +136,11 @@ export function contentListPage(
   })
   const tagsComp = tagsComponent(page.locator('main'))
   const listComp = contentListComponent(page.locator('main'))
-  return new ContentListPage(layoutComponent, tagsComp, listComp, urlValidator(page))
+  return new ContentListPage(layoutComponent, tagsComp, listComp, urlValidator(page), a11yFlow(page))
 }
 
 /**
  * Navega a la página de lista de una sección y retorna el page object.
- * Encapsula: construcción de URL + instanciación de ContentListPage.
- * Patrón: el test solo llama esto, sin construir URLs manualmente.
  */
 export async function userIsOnContentList(
   page: Page,
@@ -147,6 +148,24 @@ export async function userIsOnContentList(
   locale: UILanguages,
 ): Promise<ContentListPage> {
   const url = getURLForSection(contentType, locale)
+  return visit(
+    `navigate to ${contentType} list in ${locale}`,
+    page,
+    url,
+    (page) => contentListPage(page, contentType),
+  )
+}
+
+/**
+ * Navega a la página de lista por tag de una sección y retorna el page object.
+ */
+export async function userInContentTag(
+  page: Page,
+  contentType: SectionType,
+  locale: UILanguages,
+  tag: string
+): Promise<ContentListPage> {
+  const url = getEntryTagURL(contentType, locale, tag)
   return visit(
     `navigate to ${contentType} list in ${locale}`,
     page,

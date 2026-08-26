@@ -1,6 +1,7 @@
 import type { Locator } from '@playwright/test'
 import { verifyStep } from '@tests/step'
-import { Target, target, targetSelector, TargetSelector } from './Target'
+import { Target, target } from './Target'
+import { TargetSelector, targetSelector } from './TargetSelector'
 
 export class HighlightCards {
   constructor(
@@ -33,8 +34,8 @@ export class HighlightCards {
 export function highlightCards(containerLocator: Locator) {
   return new HighlightCards(
     target('container for highlight', containerLocator),
-    targetSelector('highlight card title', (containerLocator) => containerLocator.locator('.highlight-title')),
-    targetSelector('highlight card excerpt', (containerLocator) => containerLocator.locator('.highlight-excerpt')),
-    targetSelector('highlight card cta', (containerLocator) => containerLocator.locator('.highlight-cta')),
+    targetSelector('highlight card title', (card: Locator) => card.locator('.highlight-title')),
+    targetSelector('highlight card excerpt', (card: Locator) => card.locator('.highlight-excerpt')),
+    targetSelector('highlight card cta', (card: Locator) => card.locator('.highlight-cta')),
   )
 }

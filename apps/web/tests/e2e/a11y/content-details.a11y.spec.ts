@@ -1,12 +1,12 @@
 import { test } from '@tests/fixtures'
-import { userInContentDetail } from '@tests/support/ui/shared/flows/a11yNavigate'
 import { a11yTestContents } from '@tests/support/data/testContents'
+import { userIsOnContentDetail } from '@tests/support/ui/content/ContentDetailPage'
 
 a11yTestContents.forEach((content) => {
   test.describe(`@a11y @content-${content.name} @${content.locale}`, () => {
     test(`@content-details @${content.testSlug}`, async ({ page }) => {
-      const detailA11yFlow = await userInContentDetail(page, content.locale, content.name, content.testSlug)
-      await detailA11yFlow.audit()
+      const detailPage = await userIsOnContentDetail(page, content.name, content.locale, content.testSlug)
+      await detailPage.auditA11y()
     })
   })
 })
