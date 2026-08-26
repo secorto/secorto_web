@@ -1,15 +1,15 @@
 ---
-import { useTranslations } from "@i18n/utils"
-import { formatString } from "@utils/formatString"
-import { Image } from "astro:assets"
-import { type UILanguages } from "@i18n/ui"
+import { useTranslations } from '@i18n/utils'
+import { formatString } from '@utils/formatString'
+import { Image } from 'astro:assets'
+import { type UILanguages } from '@i18n/ui'
 
 interface Props {
   title: string
   url: string
   image?: ImageMetadata
   excerpt?: string
-  cta: string,
+  cta: string
   locale: UILanguages
 }
 const { title, url, image, excerpt = '', cta, locale } = Astro.props

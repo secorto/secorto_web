@@ -1,8 +1,7 @@
-import { standalonePageIndex } from "@domain/standalonePage"
-import { languages } from "@i18n/ui"
-import { createStandalonePageLinks } from "@secorto/i18n"
-import { expect, it } from "vitest"
-
+import { standalonePageIndex } from '@domain/standalonePage'
+import { languages } from '@i18n/ui'
+import { createStandalonePageLinks } from '@secorto/i18n'
+import { expect, it } from 'vitest'
 
 it('creates translated links for standalone pages', () => {
   const links = createStandalonePageLinks(
