@@ -1,8 +1,7 @@
 import { createLocales } from '@secorto/i18n'
-export const defaultLang = 'es';
-import { locales } from '../../i18n.config.mjs';
+export const defaultLang = 'es'
 
-export const languages = createLocales(locales)
+export const languages = createLocales(['en', 'es'])
 
 export type UILanguages = typeof languages.all[number]
 
