@@ -6,7 +6,7 @@ import { expect, it } from "vitest"
 
 it('creates translated links for standalone pages', () => {
   const links = createStandalonePageLinks(
-    new URL('https://example.com/es/acerca-de'),
+    'es/acerca-de',
     'about',
     standalonePageIndex,
     languages,
