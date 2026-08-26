@@ -2,17 +2,25 @@
 import type { MarkdownLayoutProps } from 'astro';
 import BaseLayout from '@layouts/BaseLayout.astro'
 import LanguagePicker from '@components/LanguagePicker.astro'
-import { buildStaticPageLinks } from '@i18n/languagePickerUtils'
-import SEOHead from '@components/SEOHead.astro';
+import { createStandalonePageLinks } from '@secorto/i18n'
+import SEOHead from '@components/SEOHead.astro'
+import { languages  } from '@i18n/ui';
+import { standalonePageIndex } from '@domain/standalonePage'
 
 type Props = MarkdownLayoutProps<{
   title: string
   draft?: boolean
+  translationKey: string
 }>;
 const { frontmatter } = Astro.props;
-const { title, draft } = frontmatter;
+const { title, draft, translationKey } = frontmatter;
 
-const links = buildStaticPageLinks(Astro.url)
+const links = createStandalonePageLinks(
+  Astro.url,
+  translationKey,
+  standalonePageIndex,
+  languages,
+)
 ---
 
 <BaseLayout pageTitle={title}>

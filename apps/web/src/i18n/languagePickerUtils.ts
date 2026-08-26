@@ -2,7 +2,6 @@ import type { UILanguages } from './ui'
 import { defaultLang } from './ui'
 import type { TranslationLink } from '@domain/translationLink'
 import { availableLink, missingLink, draftLink, isAccessible } from '@domain/translationLink'
-import { findSectionMap } from './rootMap'
 import type { AvailableLocales } from '@domain/translation'
 import { showDefaultLang } from '@i18n/config'
 import { languages } from './ui'
@@ -61,25 +60,6 @@ export function buildDetailLinks(
  */
 export function buildMissingLanguageLinks(): TranslationLink[] {
   return languages.all.map(l => missingLink(l))
-}
-
-/**
- * Builds links for all languages from a URL.
- * Hoists URL parsing and rootMap scan outside the per-language loop.
- */
-export function buildStaticPageLinks(url: URL): TranslationLink[] {
-  const [, maybeLocale, rawSegment] = url.pathname.split('/')
-  if (!languages.isValid(maybeLocale)) return buildMissingLanguageLinks()
-
-  const currentLocale = languages.fromString(maybeLocale)
-  const sectionMap = findSectionMap(rawSegment, currentLocale)
-
-  return languages.all.map(targetLang => {
-    const localized = sectionMap?.[targetLang]
-    if (localized) return availableLink(`${buildLangPrefix(targetLang)}/${localized}`, targetLang)
-    if (targetLang === currentLocale) return availableLink(`${buildLangPrefix(targetLang)}/${rawSegment}`, targetLang)
-    return missingLink(targetLang)
-  })
 }
 
 /**

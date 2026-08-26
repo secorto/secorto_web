@@ -2,12 +2,13 @@ import { test, expect, describe } from 'vitest'
 import { buildTagLocaleMap, getAvailableLocaleEntriesFromMap, buildLocaleEntryMap } from '@utils/translationHelpers'
 import type { CollectionKey } from 'astro:content'
 import type { PostEntry } from '@domain/post'
-import { extractCleanId } from '@utils/ids'
+import { languages } from '@i18n/ui'
+import { extractCleanId } from '@secorto/i18n'
 
 // Minimal helper to build fake entries for testing
 // Require explicit `translationKey` to reflect real PostEntry usage (no fallbacks)
 const entry = (id: string, data: Record<string, unknown> = {}, translationKey: string): PostEntry<CollectionKey> => {
-  const { id: cleanId, locale } = extractCleanId(id)
+  const { id: cleanId, locale } = extractCleanId(id, languages)
   return ({ id, data, cleanId, translationKey, locale } as unknown) as PostEntry<CollectionKey>
 }
 

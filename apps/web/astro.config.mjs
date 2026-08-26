@@ -4,6 +4,7 @@ const isDev = import.meta.env.DEV
 import sitemap from "@astrojs/sitemap"
 
 import expressiveCode from 'astro-expressive-code'
+import { languages } from '@i18n/ui'
 
 // https://astro.build/config
 export default defineConfig({
@@ -38,7 +39,7 @@ export default defineConfig({
   ],
   i18n: {
     defaultLocale: "es",
-    locales: ["es", "en"],
+    locales: languages.all,
     routing: {
       prefixDefaultLocale: true,
       redirectToDefaultLocale: isDev,

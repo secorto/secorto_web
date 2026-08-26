@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { availableLink, isAccessible, isAvailable, isDraft, isMissing, missingLink } from '@domain/translationLink'
-import { buildHomeLinks, buildDetailLink, buildDetailLinks, buildStaticPageLinks, buildMissingLanguageLinks, buildAlternatesFromLinks } from '@i18n/languagePickerUtils'
+import { buildHomeLinks, buildDetailLink, buildDetailLinks, buildMissingLanguageLinks, buildAlternatesFromLinks } from '@i18n/languagePickerUtils'
 import { languageKeys } from '@i18n/ui'
 
 describe('languagePickerUtils', () => {
@@ -95,38 +95,6 @@ describe('languagePickerUtils', () => {
       // Each link must use its own localized section route, not the one from the current entry's locale
       expect(enLink?.href).toContain('/en/talk/en-talk-slug')
       expect(esLink?.href).toContain('/es/charla/es-charla-slug')
-    })
-  })
-
-  describe('buildStaticPageLinks', () => {
-    it('returns missing links when URL has no locale prefix', () => {
-      const links = buildStaticPageLinks(new URL('http://x/cosito'))
-      expect(links.every(l => !isAccessible(l) && isMissing(l))).toBe(true)
-    })
-
-    it('uses rootMap for localized section slugs', () => {
-      const links = buildStaticPageLinks(new URL('http://x/es/acerca-de'))
-      expect(links.map(l => l.locale)).toEqual(expect.arrayContaining(['es', 'en']))
-      const relevant = links.filter(l => ['es', 'en'].includes(l.locale))
-      expect(relevant.every(l => isAccessible(l) && isAvailable(l))).toBe(true)
-      const hrefByLocale = Object.fromEntries(links.map(l => [l.locale, l.href]))
-      expect(hrefByLocale).toMatchObject({
-        es: expect.stringContaining('acerca-de'),
-        en: expect.stringContaining('about')
-      })
-    })
-
-    it('handles unmapped sections gracefully', () => {
-      const links = buildStaticPageLinks(new URL('http://x/es/custom-section'))
-      const es = links.find(l => l.locale === 'es')
-      const en = links.find(l => l.locale === 'en')
-      expect(es).toBeDefined()
-      expect(en).toBeDefined()
-      expect(isAccessible(es!)).toBe(true)
-      expect(isAvailable(es!)).toBe(true)
-      expect(es?.href).toContain('custom-section')
-      expect(isAccessible(en!)).toBe(false)
-      expect(isAvailable(en!)).toBe(false)
     })
   })
 

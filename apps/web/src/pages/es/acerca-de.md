@@ -1,6 +1,7 @@
 ---
 title: Sobre mi
 layout: '@layouts/MarkdownLayout.astro'
+translationKey: about
 ---
 
 **Ingeniero especializado en automatización y diseño de sistemas de calidad.** Diseño suites reproducibles
