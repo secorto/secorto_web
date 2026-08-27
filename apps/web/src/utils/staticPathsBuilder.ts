@@ -15,10 +15,8 @@
 import { languageKeys, type UILanguages } from '@i18n/ui'
 import { type SectionConfig } from '@domain/section'
 import { filterByLocale, getUniqueTags, mapEntryId } from './paths'
-import type { AvailableLocales } from '@domain/translation'
 import { type PostEntry } from '@domain/post'
-import { buildTagLocaleMap, getAvailableLocaleEntriesFromMap, buildLocaleEntryMap } from './translationHelpers'
-import { buildDetailLinks } from '@i18n/languagePickerUtils'
+import { buildTagLocaleMap } from './translationHelpers'
 import { availableLink, missingLink } from '@domain/translationLink'
 import { buildLangPrefix } from '@i18n/languagePickerUtils'
 import type { TranslationLink } from '@domain/translationLink'
@@ -50,22 +48,6 @@ export interface TagPath {
     allEntries: PostEntry<CollectionKey>[]
     config: SectionConfig
     links: TranslationLink[]
-  }
-}
-
-export interface DetailPath {
-  params: {
-    locale: UILanguages
-    section: string
-    id: string
-  }
-    props: {
-    entry: PostEntry<CollectionKey>
-    /** Mapa de locales disponibles para este entry, pre-calculado en build time. */
-    availableLocales: AvailableLocales
-    /** Pre-computado: array de TranslationLink (href, availability, locale) */
-    links: TranslationLink[]
-    config: SectionConfig
   }
 }
 
@@ -159,39 +141,6 @@ export async function buildTagPathsCore(
   }
 
   return paths
-}
-
-/**
- * Core: Construye rutas de páginas de detalle sin acoplamiento.
- * Recibe las secciones como parámetro explícito (array).
- * @param sections - Secciones a procesar (inyectadas)
- * @param fetchCollection - Función para obtener colecciones
- * @returns Array de paths para getStaticPaths
- */
-export async function buildAllDetailPathsCore(
-  sections: SectionConfig[],
-  fetchCollection: FetchCollection
-): Promise<DetailPath[]> {
-  const allPaths: DetailPath[] = []
-
-  for (const config of sections) {
-    const allEntries = mapEntryId(await fetchCollection(config.name))
-
-    const localeEntryMapByKey = buildLocaleEntryMap(allEntries)
-
-    for (const entry of allEntries) {
-      const locale = entry.locale
-      const localeEntryMap = getAvailableLocaleEntriesFromMap(localeEntryMapByKey, entry.translationKey)
-      const links = buildDetailLinks(config.routes, localeEntryMap)
-
-      allPaths.push({
-        params: { locale, section: config.routes[locale], id: entry.cleanId },
-        props: { entry, availableLocales: localeEntryMap, links, config }
-      })
-    }
-  }
-
-  return allPaths
 }
 
 /**
