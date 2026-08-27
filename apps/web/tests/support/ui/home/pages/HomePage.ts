@@ -3,12 +3,11 @@ import { highlightCards, HighlightCards } from '@tests/support/ui/components/Hig
 import type { Page } from '@playwright/test'
 import type { Target as TargetComponent } from '@tests/support/ui/components/Target'
 import type { UILanguages } from '@i18n/ui'
-import { homePath, visit } from '@tests/support/ui/shared/NavigationPaths'
+import { NavigablePage, visit, createPageContext } from '@tests/support/ui/shared/pages'
 import { verifyStep, type Step, type Verification } from '@tests/step'
-import { defaultMainLayout, mainLayout, type MainLayoutComponent } from '@tests/support/ui/shared/components/MainLayout'
-import type { AuditablePage, Loadable, LocalizedPage, LocalizedUrl } from '@tests/support/ui/shared/contracts/localization'
-import { urlValidator } from '@tests/support/ui/shared/flows/urlValidator'
-import { a11yFlow, type A11y } from '@tests/support/ui/shared/flows/a11y'
+import { type MainLayoutComponent } from '@tests/support/ui/shared/components/MainLayout'
+import type { LocalizedPage, LocalizedUrl } from '@tests/support/ui/shared/contracts/localization'
+import { type A11y } from '@tests/support/ui/shared/flows/a11y'
 
 export class HomePageMain implements LocalizedPage<void> {
   constructor(
@@ -26,15 +25,13 @@ export class HomePageMain implements LocalizedPage<void> {
   }
 }
 
-export class HomePage implements Loadable, LocalizedPage<void>, LocalizedUrl, AuditablePage {
+export class HomePage extends NavigablePage implements LocalizedPage<void>, LocalizedUrl {
   constructor(
-    readonly mainLayout: MainLayoutComponent,
+    mainLayout: MainLayoutComponent,
     readonly validateUrl: (expected: string | RegExp) => Verification<void>,
-    readonly a11y: A11y,
-  ) {}
-
-  shouldBeLoaded() {
-    return this.mainLayout.shouldBeLoaded()
+    a11y: A11y,
+  ) {
+    super(mainLayout, a11y)
   }
 
   shouldBeLocalized(locale: UILanguages) {
@@ -48,10 +45,6 @@ export class HomePage implements Loadable, LocalizedPage<void>, LocalizedUrl, Au
     const expected = new RegExp(`/${locale}(/|$)`)
     return this.validateUrl(expected)
   }
-
-  auditA11y() {
-    return this.a11y.audit()
-  }
 }
 
 export function homePage(page: Page) {
@@ -60,16 +53,8 @@ export function homePage(page: Page) {
     target('home bio text', page.locator('.home-bio-text')),
     highlightCards(page.locator('.highlight-card')),
   )
-  return new HomePage(
-    mainLayout({
-      ...defaultMainLayout(page),
-      name: 'home',
-      headerTitle: target('home header title', page.getByRole('heading', { level: 1 })),
-      main: main,
-    }),
-    urlValidator(page),
-    a11yFlow(page),
-  )
+  const { layout, validateUrl, a11y } = createPageContext(page, 'home', main)
+  return new HomePage(layout, validateUrl, a11y)
 }
 
 export const userInHome = (
@@ -80,7 +65,7 @@ export const userInHome = (
   visit(
     `a user opening home in ${locale} for theme/locale`,
     page,
-    homePath(locale),
+    `/${locale}/`,
     homePage,
     preAct
   )

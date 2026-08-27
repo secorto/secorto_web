@@ -2,14 +2,13 @@ import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
 import type { SectionType } from '@domain/section'
 import { sectionsConfig, getEntryURL } from '@domain/section'
-import { visit } from '@tests/support/ui/shared/NavigationPaths'
+import { NavigablePage, visit, createPageContext } from '@tests/support/ui/shared/pages'
 import type { MainLayoutComponent } from '@tests/support/ui/shared/components/MainLayout'
-import { mainLayout, defaultMainLayout } from '@tests/support/ui/shared/components/MainLayout'
 import { target, type Target } from '@tests/support/ui/components/Target'
 import { verifyStep, type Step } from '@tests/step'
-import type { AuditablePage, Loadable, LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
+import type { LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
 import { Comments, giscusComments } from './components/Comments'
-import { a11yFlow, type A11y } from '@tests/support/ui/shared/flows/a11y'
+import { type A11y } from '@tests/support/ui/shared/flows/a11y'
 
 /**
  * Main component para posts (blog, talk) en página de detalle.
@@ -84,22 +83,16 @@ function buildDetailMain(
  * Orquestador de página de detalle.
  * Compone MainLayout + el componente main (PostDetailMain o ExperienceDetailMain).
  */
-export class ContentDetailPage implements Loadable, LocalizedPage<void>, AuditablePage {
+export class ContentDetailPage extends NavigablePage implements LocalizedPage<void> {
   constructor(
-    readonly mainLayout: MainLayoutComponent,
-    readonly a11y: A11y,
-  ) {}
-
-  shouldBeLoaded() {
-    return this.mainLayout.shouldBeLoaded()
+    mainLayout: MainLayoutComponent,
+    a11y: A11y,
+  ) {
+    super(mainLayout, a11y)
   }
 
   shouldBeLocalized(locale: UILanguages) {
     return this.mainLayout.shouldBeLocalized(locale)
-  }
-
-  auditA11y() {
-    return this.a11y.audit()
   }
 }
 
@@ -110,14 +103,8 @@ export function contentDetailPage(
   page: Page,
   sectionName: SectionType,
 ): ContentDetailPage {
-  const layoutComponent = mainLayout({
-    ...defaultMainLayout(page),
-    name: `${sectionName} detail`,
-    headerTitle: target(`${sectionName} detail title`, page.getByRole('heading', { level: 1 })),
-    main: buildDetailMain(page, sectionName),
-  })
-
-  return new ContentDetailPage(layoutComponent, a11yFlow(page))
+  const { layout, a11y } = createPageContext(page, `${sectionName} detail`, buildDetailMain(page, sectionName))
+  return new ContentDetailPage(layout, a11y)
 }
 
 /**
