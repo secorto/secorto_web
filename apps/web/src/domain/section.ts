@@ -1,5 +1,6 @@
 import type { UILanguages } from '@i18n/ui'
 import { ui } from '@i18n/ui'
+import { createSectionRoutes, type SectionRoutes } from '@secorto/i18n'
 
 export const sectionKeys = ['blog', 'talk', 'work', 'projects', 'community'] as const
 export type SectionType = typeof sectionKeys[number]
@@ -119,3 +120,10 @@ export function getEntryTagURL(
   return `${getURLForSection(section, locale)}/tags/${tag}`
 }
 
+export const sectionRoutes: SectionRoutes<SectionType, UILanguages> = createSectionRoutes({
+  blog: { es: 'blog', en: 'blog' },
+  talk: { es: 'charla', en: 'talk' },
+  work: { es: 'trabajo', en: 'work' },
+  projects: { es: 'proyecto', en: 'project' },
+  community: { es: 'comunidad', en: 'community' },
+})

@@ -1,15 +1,13 @@
 import { it, expect, describe, vi } from 'vitest'
 
-import { getStaticPathsEntries, type GenericCollectionEntry } from '@secorto/i18n'
+import { createSectionRoutes, getStaticPathsEntries, type GenericCollectionEntry } from '@secorto/i18n'
 import { createLocales } from '@secorto/i18n'
 
-
 describe('getStaticPathsEntries', () => {
-
-  const routes = {
+  const routes = createSectionRoutes({
     blog: { es: 'blog/es', en: 'blog/en' },
     talk: { es: 'charla/es', en: 'talk/en' }
-  }
+  })
 
   const allowedLocales = createLocales(['es', 'en'] as const)
 
@@ -29,10 +27,25 @@ describe('getStaticPathsEntries', () => {
     return []
   })
 
-  let result: Awaited<ReturnType<typeof getStaticPathsEntries<{ title: string }, 'blog' | 'talk', 'es' | 'en'>>>
+  type Entry =
+  GenericCollectionEntry<
+    'blog' | 'talk',
+    { title: string }
+  >
+
+  let result: Awaited<
+    ReturnType<
+      typeof getStaticPathsEntries<
+        Entry,
+        { title: string },
+        'blog' | 'talk',
+        'es' | 'en'
+      >
+    >
+  >
 
   it('executes getStaticPathsEntries', async () => {
-    result = await getStaticPathsEntries<{ title: string }, 'blog' | 'talk', 'es' | 'en'>(routes, fetchCollection, allowedLocales)
+    result = await getStaticPathsEntries(routes, fetchCollection, allowedLocales)
     expect(result.length).toBe(4)
   })
 
@@ -57,8 +70,8 @@ describe('getStaticPathsEntries', () => {
   it('generates correct siblings for blog', () => {
     const blogEs = result.find(p => p.params.section === 'blog' && p.params.locale === 'es')
     expect(Object.keys(blogEs!.props.siblings)).toEqual(['es', 'en'])
-    expect(blogEs!.props.siblings.es?.entry.title).toBe('Post ES')
-    expect(blogEs!.props.siblings.en?.entry.title).toBe('Post EN')
+    expect(blogEs!.props.siblings.es?.original.data.title).toBe('Post ES')
+    expect(blogEs!.props.siblings.en?.original.data.title).toBe('Post EN')
   })
 
   it('generates correct params for talk/es', () => {
@@ -82,8 +95,8 @@ describe('getStaticPathsEntries', () => {
   it('generates correct siblings for talk', () => {
     const talkEs = result.find(p => p.params.section === 'talk' && p.params.locale === 'es')
     expect(Object.keys(talkEs!.props.siblings)).toEqual(['es', 'en'])
-    expect(talkEs!.props.siblings.es?.entry.title).toBe('Charla ES')
-    expect(talkEs!.props.siblings.en?.entry.title).toBe('Talk EN')
+    expect(talkEs!.props.siblings.es?.original.data.title).toBe('Charla ES')
+    expect(talkEs!.props.siblings.en?.original.data.title).toBe('Talk EN')
   })
 
   it('calls fetchCollection for both collections', () => {

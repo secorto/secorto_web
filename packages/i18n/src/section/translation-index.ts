@@ -5,15 +5,13 @@
  * @template L - The language code (e.g., 'es', 'en').
  */
 export interface LocalizedEntry<
-  E,
-  C extends string,
+  TEntry,
   L extends string
 > {
   cleanId: string
   translationKey: string
   locale: L
-  section: C
-  entry: E
+  original: TEntry
 }
 
 /**
@@ -24,9 +22,11 @@ export interface LocalizedEntry<
  */
 export type TranslationIndex<
   L extends string,
-  E,
-  C extends string
-> = Record<string, Partial<Record<L, LocalizedEntry<E, C, L>>>>
+  TEntry
+> = Record<
+  string,
+  Partial<Record<L, LocalizedEntry<TEntry, L>>>
+>
 
 /**
  * Builds a translation index from an array of localized entries.
@@ -41,13 +41,12 @@ export type TranslationIndex<
  */
 export function createTranslationIndex<
   L extends string,
-  E,
-  C extends string
+  TEntry
 >(
-  entries: readonly LocalizedEntry<E, C, L>[]
-): TranslationIndex<L, E, C> {
+  entries: readonly LocalizedEntry<TEntry, L>[]
+): TranslationIndex<L, TEntry> {
   // Using map to safely mutate internally without lying to TypeScript
-  const map = new Map<string, Partial<Record<L, LocalizedEntry<E, C, L>>>>()
+  const map = new Map<string, Partial<Record<L, LocalizedEntry<TEntry, L>>>>()
 
   for (const entry of entries) {
     const key = entry.translationKey

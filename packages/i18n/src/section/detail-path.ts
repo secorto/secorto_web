@@ -1,51 +1,73 @@
-import { Locales } from "../core"
-import { adaptToLocalizedEntry, GenericCollectionEntry } from "./entry-adapter"
-import { createTranslationIndex, LocalizedEntry, TranslationIndex } from "./translation-index"
+import { Locales } from '../core'
+import {
+  createTranslationIndex,
+  LocalizedEntry,
+  TranslationIndex,
+} from './translation-index'
+import {
+  adaptToLocalizedEntry,
+  GenericCollectionEntry,
+} from './entry-adapter'
+import { SectionRoutes } from './routes'
 
-type DetailPath<T, C extends string, L extends string> = {
-    params: {
-        locale: L
-        section: C
-        id: string
-    }
-    props: {
-        entry: LocalizedEntry<T, C, L>
-        siblings: TranslationIndex<L, T, C>[string]
-    }
+export type DetailPath<
+  TEntry extends GenericCollectionEntry<C, object>,
+  C extends string,
+  L extends string,
+> = {
+  params: {
+    locale: L
+    section: string
+    id: string
+  }
+  props: {
+    entry: LocalizedEntry<TEntry, L>
+    section: C
+    siblings: TranslationIndex<L, TEntry>[string]
+  }
 }
 
 export async function getStaticPathsEntries<
+  TEntry extends GenericCollectionEntry<C, E>,
   E extends object,
   C extends string,
   L extends string,
 >(
-  routes: Record<C, Record<L, string>>,
-  fetchCollection: (collection: C) => Promise<GenericCollectionEntry<C, E>[]>,
-  allowedLocales: Locales<L>
-): Promise<DetailPath<E, C, L>[]> {
+  
+  routes: SectionRoutes<C, L>,
+  fetchCollection: (
+    collection: C,
+  ) => Promise<TEntry[]>,
+  allowedLocales: Locales<L>,
+): Promise<DetailPath<TEntry, C, L>[]> {
 
-  const allPaths: DetailPath<E, C, L>[] = []
+  const allPaths: DetailPath<TEntry, C, L>[] = []
 
-  for (const sectionKey in routes) {
-    const rawEntries = await fetchCollection(sectionKey as C)
+  for (const sectionKey in routes.routes) {
+    console.log(sectionKey)
+    const rawEntries = await fetchCollection(sectionKey)
 
-    const entries: LocalizedEntry<E, C, L>[] = rawEntries.map(entry =>
-      adaptToLocalizedEntry<E, C, L>(entry, allowedLocales)
+    const localizedEntries = rawEntries.map(entry =>
+      adaptToLocalizedEntry<TEntry, E, C, L>(
+        entry,
+        allowedLocales,
+      ),
     )
 
-    const index = createTranslationIndex(entries)
+    const index = createTranslationIndex(localizedEntries)
 
-    for (const entry of entries) {
+    for (const localized of localizedEntries) {
       allPaths.push({
         params: {
-          locale: entry.locale,
+          locale: localized.locale,
           section: sectionKey,
-          id: entry.cleanId
+          id: localized.cleanId,
         },
         props: {
-          entry,
-          siblings: index[entry.translationKey]
-        }
+          entry: localized,
+          section: sectionKey,
+          siblings: index[localized.translationKey],
+        },
       })
     }
   }

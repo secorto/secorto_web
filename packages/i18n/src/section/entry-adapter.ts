@@ -1,13 +1,13 @@
-import { extractCleanId, Locales } from "@secorto/i18n";
-import { LocalizedEntry } from "./translation-index";
+import { extractCleanId, Locales } from '../core'
+import { LocalizedEntry } from './translation-index'
 
 export interface GenericCollectionEntry<
-  C extends string, 
+  C extends string,
   TData
 > {
-  id: string;
-  collection: C;
-  data: TData;
+  id: string
+  collection: C
+  data: TData
 }
 
 export function resolveTranslationKey<T extends object>(
@@ -21,21 +21,24 @@ export function resolveTranslationKey<T extends object>(
 }
 
 export function adaptToLocalizedEntry<
-  T extends object, 
-  C extends string, 
+  TEntry extends GenericCollectionEntry<C, T>,
+  T extends object,
+  C extends string,
   L extends string
 >(
-  // Pasamos C y T para amarrar la colección y el esquema de datos exacto
-  entry: GenericCollectionEntry<C, T>, 
+  entry: TEntry,
   locales: Locales<L>
-): LocalizedEntry<T, C, L> {
-  const { locale, id: cleanId } = extractCleanId(entry.id, locales);
-  
+): LocalizedEntry<TEntry, L> {
+  const { locale, id: cleanId } =
+    extractCleanId(entry.id, locales)
+
   return {
     cleanId,
     locale,
-    section: entry.collection,
-    translationKey: resolveTranslationKey(entry.data, cleanId),
-    entry: entry.data
-  };
+    translationKey: resolveTranslationKey(
+      entry.data,
+      cleanId
+    ),
+    original: entry,
+  }
 }
