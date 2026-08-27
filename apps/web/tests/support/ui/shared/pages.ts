@@ -39,17 +39,17 @@ export const visit = <T extends Loadable>(
   preAct?: (page: Page) => Step<void> | void,
   gotoOptions?: Parameters<Page['goto']>[1],
 ) => contractStep(
-  title,
-  async () => {
-    if (preAct) await preAct(page)
-    await mockThirdParty(page)
-    await page.goto(url, gotoOptions)
-    return await factory(page)
-  }, async (pageObject) => {
-    await pageObject.shouldBeLoaded()
-    return pageObject
-  }
-)
+    title,
+    async () => {
+      if (preAct) await preAct(page)
+      await mockThirdParty(page)
+      await page.goto(url, gotoOptions)
+      return await factory(page)
+    }, async (pageObject) => {
+      await pageObject.shouldBeLoaded()
+      return pageObject
+    }
+  )
 
 /**
  * Helper para construir el contexto base de una página: layout + validación de URL + a11y.
