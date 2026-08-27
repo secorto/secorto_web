@@ -76,6 +76,8 @@ export async function getStaticPathsEntries<
     const index = createTranslationIndex(localizedEntries)
 
     for (const localized of localizedEntries) {
+      const siblings = index[localized.translationKey]
+
       allPaths.push({
         params: {
           locale: localized.locale,
@@ -85,7 +87,7 @@ export async function getStaticPathsEntries<
         props: {
           entry: localized,
           section: sectionKey,
-          siblings: index[localized.translationKey],
+          siblings,
         },
       })
     }

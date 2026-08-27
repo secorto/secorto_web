@@ -21,13 +21,15 @@ export interface LocalizedEntry<
  * @template E - The type of the content (e.g., { title: string, body: string }).
  * @template C - The section of the application (e.g., 'blog', 'docs').
  */
+export type TranslationGroup<
+  L extends string,
+  TEntry,
+> = Record<L, LocalizedEntry<TEntry, L>>
+
 export type TranslationIndex<
   L extends string,
   TEntry
-> = Record<
-  string,
-  Partial<Record<L, LocalizedEntry<TEntry, L>>>
->
+> = Record<string, TranslationGroup<L, TEntry>>
 
 /**
  * Builds a translation index from an array of localized entries.
@@ -47,16 +49,15 @@ export function createTranslationIndex<
   entries: readonly LocalizedEntry<TEntry, L>[]
 ): TranslationIndex<L, TEntry> {
   // Using map to safely mutate internally without lying to TypeScript
-  const map = new Map<string, Partial<Record<L, LocalizedEntry<TEntry, L>>>>()
+  const map = new Map<string, TranslationGroup<L, TEntry>>()
 
   for (const entry of entries) {
     const key = entry.translationKey
     const locale = entry.locale
 
-    // Get or create the group for this key
     let group = map.get(key)
     if (!group) {
-      group = {}
+      group = {} as TranslationGroup<L, TEntry>
       map.set(key, group)
     } else if (locale in group) {
       throw new Error(
@@ -64,8 +65,8 @@ export function createTranslationIndex<
       )
     }
 
-    // Assign directly to the entry
     group[locale] = entry
   }
+
   return Object.fromEntries(map)
 }
