@@ -1,12 +1,11 @@
 import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
-import { tagsPath, visit } from '@tests/support/ui/shared/NavigationPaths'
+import { NavigablePage, visit, createPageContext } from '@tests/support/ui/shared/pages'
 import { verifyStep } from '@tests/step'
-import { defaultMainLayout, mainLayout, type MainLayoutComponent } from '@tests/support/ui/shared/components/MainLayout'
-import { target } from '@tests/support/ui/components/Target'
-import { urlValidator } from '@tests/support/ui/shared/flows/urlValidator'
-import { a11yFlow, type A11y } from '@tests/support/ui/shared/flows/a11y'
-import type { AuditablePage, Loadable, LocalizedPage, LocalizedUrl } from '@tests/support/ui/shared/contracts/localization'
+import type { MainLayoutComponent } from '@tests/support/ui/shared/components/MainLayout'
+import type { Verification } from '@tests/step'
+import type { LocalizedPage, LocalizedUrl } from '@tests/support/ui/shared/contracts/localization'
+import type { A11y } from '@tests/support/ui/shared/flows/a11y'
 
 /**
  * Main component for the global tags page (/locale/tags).
@@ -27,15 +26,13 @@ export class TagsPageMain implements LocalizedPage<void> {
  * Orchestrator for the global tags page.
  * Composes MainLayout + a11yFlow, following the same pattern as HomePage and ContentDetailPage.
  */
-export class TagsPage implements Loadable, LocalizedPage<void>, LocalizedUrl, AuditablePage {
+export class TagsPage extends NavigablePage implements LocalizedPage<void>, LocalizedUrl {
   constructor(
-    readonly mainLayout: MainLayoutComponent,
-    readonly validateUrl: ReturnType<typeof urlValidator>,
-    readonly a11y: A11y,
-  ) {}
-
-  shouldBeLoaded() {
-    return this.mainLayout.shouldBeLoaded()
+    mainLayout: MainLayoutComponent,
+    readonly validateUrl: (expected: string | RegExp) => Verification<void>,
+    a11y: A11y,
+  ) {
+    super(mainLayout, a11y)
   }
 
   shouldBeLocalized(locale: UILanguages) {
@@ -49,26 +46,14 @@ export class TagsPage implements Loadable, LocalizedPage<void>, LocalizedUrl, Au
     const expected = new RegExp(`/${locale}/tags(/|$)`)
     return this.validateUrl(expected)
   }
-
-  auditA11y() {
-    return this.a11y.audit()
-  }
 }
 
 /**
  * Factory: creates a TagsPage instance for the given page.
  */
 export function tagsPage(page: Page): TagsPage {
-  return new TagsPage(
-    mainLayout({
-      ...defaultMainLayout(page),
-      name: 'tags',
-      headerTitle: target('tags header title', page.getByRole('heading', { level: 1 })),
-      main: new TagsPageMain(page),
-    }),
-    urlValidator(page),
-    a11yFlow(page),
-  )
+  const { layout, validateUrl, a11y } = createPageContext(page, 'tags', new TagsPageMain(page))
+  return new TagsPage(layout, validateUrl, a11y)
 }
 
 /**
@@ -76,5 +61,5 @@ export function tagsPage(page: Page): TagsPage {
  * Follows the same pattern as userInHome and userIsOnContentDetail.
  */
 export function userInTags(page: Page, locale: UILanguages) {
-  return visit(`a user in tags ${locale}`, page, tagsPath(locale), tagsPage)
+  return visit(`a user in tags ${locale}`, page, `/${locale}/tags`, tagsPage)
 }

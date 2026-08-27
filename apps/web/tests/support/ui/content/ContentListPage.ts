@@ -7,13 +7,11 @@ import type { SectionType } from '@domain/section'
 import { sectionsConfig, getURLForSection, getEntryTagURL } from '@domain/section'
 import { urlValidator } from '@tests/support/ui/shared/flows/urlValidator'
 import { verifyStep } from '@tests/step'
-import { visit } from '@tests/support/ui/shared/NavigationPaths'
-import type { AuditablePage, Loadable, LocalizedPage, LocalizedUrl } from '@tests/support/ui/shared/contracts/localization'
-import { mainLayout, defaultMainLayout } from '@tests/support/ui/shared/components/MainLayout'
-import { target } from '@tests/support/ui/components/Target'
+import { NavigablePage, visit, createPageContext } from '@tests/support/ui/shared/pages'
+import type { LocalizedPage, LocalizedUrl } from '@tests/support/ui/shared/contracts/localization'
 import { tagsComponent } from './components/Tags'
 import { contentListComponent } from './components/ContentList'
-import { a11yFlow, type A11y } from '@tests/support/ui/shared/flows/a11y'
+import { type A11y } from '@tests/support/ui/shared/flows/a11y'
 
 /**
  * Main para listas de posts (blog, talk).
@@ -54,17 +52,15 @@ export class ExperienceListPageMain implements LocalizedPage<void> {
  * Orquestador de página de lista.
  * Compone MainLayout + Tags + ContentList.
  */
-export class ContentListPage implements Loadable, LocalizedPage<void>, LocalizedUrl, AuditablePage {
+export class ContentListPage extends NavigablePage implements LocalizedPage<void>, LocalizedUrl {
   constructor(
-    readonly mainLayout: MainLayoutComponent,
+    mainLayout: MainLayoutComponent,
     readonly tags: TagsComponent,
     readonly list: ContentListComponent,
     readonly validateUrl: ReturnType<typeof urlValidator>,
-    readonly a11y: A11y,
-  ) {}
-
-  shouldBeLoaded() {
-    return this.mainLayout.shouldBeLoaded()
+    a11y: A11y,
+  ) {
+    super(mainLayout, a11y)
   }
 
   shouldBeLocalized(locale: UILanguages) {
@@ -82,10 +78,6 @@ export class ContentListPage implements Loadable, LocalizedPage<void>, Localized
   shouldBeInLocale(locale: UILanguages) {
     const expected = new RegExp(`/${locale}/[a-z0-9-]+(/|$)`)
     return this.validateUrl(expected)
-  }
-
-  auditA11y() {
-    return this.a11y.audit()
   }
 
   /**
@@ -128,15 +120,10 @@ export function contentListPage(
     ? new PostListPageMain(page)
     : new ExperienceListPageMain(page)
 
-  const layoutComponent = mainLayout({
-    ...defaultMainLayout(page),
-    name: `${sectionName} list`,
-    headerTitle: target(`${sectionName} section title`, page.getByRole('heading', { level: 1 })),
-    main: mainPageInstance,
-  })
+  const { layout, validateUrl, a11y } = createPageContext(page, `${sectionName} list`, mainPageInstance)
   const tagsComp = tagsComponent(page.locator('main'))
   const listComp = contentListComponent(page.locator('main'))
-  return new ContentListPage(layoutComponent, tagsComp, listComp, urlValidator(page), a11yFlow(page))
+  return new ContentListPage(layout, tagsComp, listComp, validateUrl, a11y)
 }
 
 /**
