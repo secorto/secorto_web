@@ -23,7 +23,7 @@ export abstract class NavigablePage implements Loadable, AuditablePage {
   }
 
   auditA11y() {
-    return this.a11y.audit()
+    return this.a11y
   }
 }
 

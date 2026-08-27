@@ -1,5 +1,6 @@
 import type { UILanguages } from '@i18n/ui'
 import type { Verification } from '@tests/step'
+import type { A11y } from '../flows/a11y'
 
 export interface Loadable {
   shouldBeLoaded(): Verification<void>
@@ -14,5 +15,5 @@ export interface LocalizedUrl {
 }
 
 export interface AuditablePage {
-  auditA11y(): Verification<void>
+  auditA11y(): A11y
 }
