@@ -11,6 +11,7 @@ export interface LocalizedEntry<
   cleanId: string
   translationKey: string
   locale: L
+  draft: boolean
   original: TEntry
 }
 

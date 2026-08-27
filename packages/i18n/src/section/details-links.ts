@@ -1,4 +1,4 @@
-import { availableLink, Locales, missingLink, TranslationLink } from "../core"
+import { availableLink, draftLink, Locales, missingLink, TranslationLink } from "../core"
 import { GenericCollectionEntry } from "./entry-adapter"
 import { SectionRoutes } from "./routes"
 import { LocalizedEntry } from "./translation-index"
@@ -16,9 +16,9 @@ import { LocalizedEntry } from "./translation-index"
  * @returns One translation link per supported locale.
  */
 export function createDetailTranslationLinks<
-  TEntry extends GenericCollectionEntry<C, object>,
   C extends string,
   L extends string,
+  TEntry extends GenericCollectionEntry<C, object>,
 >(
   siblings: Partial<Record<L, LocalizedEntry<TEntry, L>>>,
   sectionRoutes: SectionRoutes<C, L>,
@@ -37,6 +37,6 @@ export function createDetailTranslationLinks<
       sibling.cleanId,
     )
 
-    return availableLink(href, locale)
+    return sibling.draft ? draftLink(href, locale) : availableLink(href, locale)
   })
 }

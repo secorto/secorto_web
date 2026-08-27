@@ -20,6 +20,7 @@ function localizedEntry(
     cleanId,
     locale,
     translationKey: cleanId,
+    draft: false,
     original: {
       id: `${locale}/${cleanId}`,
       collection: "blog",
@@ -86,6 +87,38 @@ describe("createDetailTranslationLinks", () => {
       {
         type: "missing",
         href: null,
+        locale: "es",
+      },
+      {
+        type: "missing",
+        href: null,
+        locale: "fr",
+      },
+    ])
+  })
+
+  it("returns draft links when a translation exists but is unpublished", () => {
+    const draftEntry = localizedEntry("es", "articulo")
+
+    draftEntry.draft = true
+
+    const result = createDetailTranslationLinks(
+      {
+        es: draftEntry,
+      },
+      sectionRoutes,
+      locales,
+    )
+
+    expect(result).toEqual([
+      {
+        type: "missing",
+        href: null,
+        locale: "en",
+      },
+      {
+        type: "draft",
+        href: "/es/blog/articulo",
         locale: "es",
       },
       {

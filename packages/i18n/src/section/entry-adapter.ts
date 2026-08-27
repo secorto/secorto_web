@@ -31,16 +31,18 @@ export function resolveTranslationKey<T extends object>(
  * @returns The corresponding localized entry.
  */
 export function adaptToLocalizedEntry<
-  TEntry extends GenericCollectionEntry<C, T>,
-  T extends object,
   C extends string,
-  L extends string
+  T extends object,
+  L extends string,
+  TEntry extends GenericCollectionEntry<C, T>
 >(
   entry: TEntry,
   locales: Locales<L>
 ): LocalizedEntry<TEntry, L> {
   const { locale, id: cleanId } =
     extractCleanId(entry.id, locales)
+
+  const draft = 'draft' in entry.data && entry.data.draft === true
 
   return {
     cleanId,
@@ -49,6 +51,7 @@ export function adaptToLocalizedEntry<
       entry.data,
       cleanId
     ),
+    draft,
     original: entry,
   }
 }

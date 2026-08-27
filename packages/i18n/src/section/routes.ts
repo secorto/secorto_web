@@ -29,6 +29,11 @@ export interface SectionRoutes<
   readonly routes: Record<Section, Record<Language, string>>
 
   /**
+   * Returns the configured section identifiers.
+   */
+  getSections(): Section[]
+
+  /**
    * Returns the localized slug for a section.
    *
    * @param section Section identifier.
@@ -59,7 +64,7 @@ export interface SectionRoutes<
 
 /**
  * Constructs a nominal SectionRoutes value from a raw SectionDictionary.
- * 
+ *
  * This function enforces the domain invariants for localized section routes:
  * - each (locale, slug) pair must be unique across all sections
  * - the resulting value is branded as 'SectionRoutes'
@@ -80,10 +85,10 @@ export function createSectionRoutes<
 ): SectionRoutes<Section, Language> {
   const seen = new Map<string, Section>()
 
-  for (const section in routes) {
+  for (const section of Object.keys(routes) as Section[]) {
     const localized = routes[section]
 
-    for (const locale in localized) {
+    for (const locale of Object.keys(localized) as Language[]) {
       const slug = localized[locale]
       const key = `${locale}:${slug}`
 
@@ -97,6 +102,8 @@ export function createSectionRoutes<
       seen.set(key, section)
     }
   }
+
+  const getSections = (): Section[] => Object.keys(routes) as Section[]
 
   const getSectionRoute = (section: Section, locale: Language): string =>
     routes[section][locale]
@@ -113,6 +120,7 @@ export function createSectionRoutes<
 
   return {
     routes,
+    getSections,
     getSectionRoute,
     getSectionURL,
     getEntryURL
