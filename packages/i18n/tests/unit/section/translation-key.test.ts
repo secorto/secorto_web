@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest'
-import { resolveTranslationKey } from '@secorto/i18n'
+import {
+  adaptToLocalizedEntry,
+  createLocales,
+  resolveTranslationKey,
+} from '@secorto/i18n'
 
 describe('resolveTranslationKey', () => {
   it('returns translationKey when it exists and is a string', () => {
@@ -35,5 +39,37 @@ describe('resolveTranslationKey', () => {
     const data: Entry = { extra: 99 }
     const result = resolveTranslationKey(data, 'fallback')
     expect(result).toBe('fallback')
+  })
+})
+
+describe('adaptToLocalizedEntry', () => {
+  const locales = createLocales(['en', 'es'] as const)
+
+  it('marks a draft as false when the draft field is present but not true', () => {
+    const result = adaptToLocalizedEntry({
+      id: 'es/intro',
+      collection: 'blog',
+      data: { title: 'Intro', draft: false },
+    }, locales)
+
+    expect(result).toMatchObject({
+      cleanId: 'intro',
+      locale: 'es',
+      draft: false,
+    })
+  })
+
+  it('marks a draft as false when the draft field is absent', () => {
+    const result = adaptToLocalizedEntry({
+      id: 'en/landing',
+      collection: 'blog',
+      data: { title: 'Landing' },
+    }, locales)
+
+    expect(result).toMatchObject({
+      cleanId: 'landing',
+      locale: 'en',
+      draft: false,
+    })
   })
 })
