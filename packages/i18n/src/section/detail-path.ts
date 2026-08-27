@@ -44,7 +44,6 @@ export async function getStaticPathsEntries<
   const allPaths: DetailPath<TEntry, C, L>[] = []
 
   for (const sectionKey in routes.routes) {
-    console.log(sectionKey)
     const rawEntries = await fetchCollection(sectionKey)
 
     const localizedEntries = rawEntries.map(entry =>
