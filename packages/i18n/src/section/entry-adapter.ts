@@ -20,6 +20,16 @@ export function resolveTranslationKey<T extends object>(
     : cleanId
 }
 
+/**
+ * Converts a collection entry into a localized entry.
+ *
+ * Extracts the locale and clean ID from the entry ID and resolves the
+ * translation key used to group translations of the same content.
+ *
+ * @param entry Collection entry to adapt.
+ * @param locales Supported locales used to parse the entry ID.
+ * @returns The corresponding localized entry.
+ */
 export function adaptToLocalizedEntry<
   TEntry extends GenericCollectionEntry<C, T>,
   T extends object,

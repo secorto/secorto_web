@@ -27,6 +27,30 @@ export type DetailPath<
   }
 }
 
+/**
+ * Generates the static path definitions required to build localized detail pages
+ * for all entries across all configured sections.
+ *
+ * For each section defined in `routes`, this function:
+ * 1. Fetches the collection entries.
+ * 2. Adapts them into localized entries.
+ * 3. Groups translations by translation key.
+ * 4. Produces one path per localized entry, including its translation siblings.
+ *
+ * The resulting paths can be consumed by static site generators to create
+ * localized detail pages with access to the current entry and all of its
+ * translations.
+ *
+ * @template TEntry Entry type returned by the collection loader.
+ * @template E Entry data type.
+ * @template C Section identifiers (for example: `'blog' | 'docs'`).
+ * @template L Locale identifiers (for example: `'en' | 'es'`).
+ *
+ * @param routes Localized section routes used to resolve URL segments.
+ * @param fetchCollection Function that retrieves all entries belonging
+ * to a given section.
+ * @param allowedLocales Supported locales
+ */
 export async function getStaticPathsEntries<
   TEntry extends GenericCollectionEntry<C, E>,
   E extends object,
