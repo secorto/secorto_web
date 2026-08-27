@@ -1,5 +1,6 @@
-import { extractCleanId, Locales } from '../core'
-import { LocalizedEntry } from './translation-index'
+import { extractCleanId } from '../core'
+import type { Locales } from '../core'
+import type { LocalizedEntry } from './translation-index'
 
 export interface GenericCollectionEntry<
   C extends string,

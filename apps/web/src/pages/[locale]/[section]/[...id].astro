@@ -15,6 +15,9 @@ export async function getStaticPaths() {
   return await getStaticPathsEntries(sectionRoutes, getCollection, languages)
 }
 
+export type Props = Awaited<ReturnType<typeof getStaticPaths>>[number]['props']
+export type Params = Awaited<ReturnType<typeof getStaticPaths>>[number]['params']
+
 const { locale } = Astro.params
 const { entry, siblings, section } = Astro.props
 

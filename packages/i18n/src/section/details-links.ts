@@ -1,7 +1,8 @@
-import { availableLink, draftLink, Locales, missingLink, TranslationLink } from "../core"
-import { GenericCollectionEntry } from "./entry-adapter"
-import { SectionRoutes } from "./routes"
-import { LocalizedEntry } from "./translation-index"
+import { availableLink, draftLink, missingLink } from "../core"
+import type { Locales, TranslationLink } from "../core"
+import type { GenericCollectionEntry } from "./entry-adapter"
+import type { SectionRoutes } from "./routes"
+import type { LocalizedEntry } from "./translation-index"
 
 /**
  * Creates translation links for all supported locales.

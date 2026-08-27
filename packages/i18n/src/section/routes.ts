@@ -31,7 +31,7 @@ export interface SectionRoutes<
   /**
    * Returns the configured section identifiers.
    */
-  getSections(): Section[]
+  getSections(): readonly Section[]
 
   /**
    * Returns the localized slug for a section.
@@ -103,7 +103,7 @@ export function createSectionRoutes<
     }
   }
 
-  const getSections = (): Section[] => Object.keys(routes) as Section[]
+  const getSections = (): readonly Section[] => Object.keys(routes) as Section[]
 
   const getSectionRoute = (section: Section, locale: Language): string =>
     routes[section][locale]

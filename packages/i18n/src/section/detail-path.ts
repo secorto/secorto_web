@@ -1,14 +1,16 @@
-import { Locales } from '../core'
+import type { Locales } from '../core'
 import {
   createTranslationIndex,
+} from './translation-index'
+import type {
   LocalizedEntry,
   TranslationIndex,
 } from './translation-index'
 import {
   adaptToLocalizedEntry,
-  GenericCollectionEntry,
 } from './entry-adapter'
-import { SectionRoutes } from './routes'
+import type { GenericCollectionEntry } from './entry-adapter'
+import type { SectionRoutes } from './routes'
 
 export type DetailPath<
   C extends string,
