@@ -16,3 +16,5 @@ export type { ContractStep } from './contract'
 
 // Orchestration & Test Runner Integration
 export { createTestingStep } from './orchestration'
+
+export { enhance, bind } from './ability'
