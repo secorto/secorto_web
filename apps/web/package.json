@@ -37,6 +37,7 @@
     "@playwright/test": "^1.62.1",
     "@secorto/i18n": "workspace:*",
     "@secorto/step": "workspace:*",
+    "@secorto/ui-components": "workspace:*",
     "@types/node": "^26.2.0",
     "@typescript-eslint/eslint-plugin": "^8.67.0",
     "@typescript-eslint/parser": "^8.67.0",

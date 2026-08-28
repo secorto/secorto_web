@@ -1,7 +1,6 @@
 import type { Locator } from '@playwright/test'
-import { verifyStep } from '@tests/step'
-import { Target, target } from './Target'
-import { TargetSelector, targetSelector } from './TargetSelector'
+import type { VerifyStepFn } from '@secorto/step'
+import { Target, TargetSelector } from '@secorto/ui-components'
 
 export class HighlightCards {
   constructor(
@@ -9,10 +8,11 @@ export class HighlightCards {
     readonly title: TargetSelector<Locator>,
     readonly excerpt: TargetSelector<Locator>,
     readonly cta: TargetSelector<Locator>,
+    private verifyStep: VerifyStepFn,
   ) {}
 
   shouldBeValid() {
-    return verifyStep('highlight cards are valid', async ({ expect }) => {
+    return this.verifyStep('highlight cards are valid', async ({ expect }) => {
       const cardCount = await this.parent.locator.count()
       expect(cardCount).toBeGreaterThan(0)
       for (let i = 0; i < cardCount; i++) {
@@ -23,19 +23,10 @@ export class HighlightCards {
   }
 
   shouldHaveValidCard(parent: Locator) {
-    return verifyStep('highlight card is valid', async ({ expect }) => {
+    return this.verifyStep('highlight card is valid', async ({ expect }) => {
       await this.title.get(parent).shouldBeVisible().with(expect)
       await this.excerpt.get(parent).shouldBeVisible().with(expect)
       await this.cta.get(parent).shouldBeVisible().with(expect)
     })
   }
-}
-
-export function highlightCards(containerLocator: Locator) {
-  return new HighlightCards(
-    target('container for highlight', containerLocator),
-    targetSelector('highlight card title', (card: Locator) => card.locator('.highlight-title')),
-    targetSelector('highlight card excerpt', (card: Locator) => card.locator('.highlight-excerpt')),
-    targetSelector('highlight card cta', (card: Locator) => card.locator('.highlight-cta')),
-  )
 }
