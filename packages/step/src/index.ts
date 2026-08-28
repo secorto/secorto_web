@@ -20,3 +20,5 @@ export type { GenericContractVerification } from './contract-verification'
 
 // Orchestration & Test Runner Integration
 export { createTestingStep } from './orchestration'
+
+export { enhance, bind } from './ability'
