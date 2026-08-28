@@ -2,6 +2,10 @@
 export { createStep } from './execution'
 export type { StepRunner, Step } from './execution'
 
+// Domain-agnostic capability composition
+export type { Ability } from './abilities'
+export { applyAbilities } from './abilities'
+
 // Context & State Management
 export { createContextStep } from './context'
 export type { StepBuilder } from './context'
