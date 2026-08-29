@@ -1,8 +1,9 @@
 ---
-title: ADR 008: Estrategia de pruebas client-side y reorganización del cliente
+id: ADR-008
+title: Estrategia de pruebas client-side y reorganización del cliente
 status: accepted
 date: 2026-04-02
-last_updated: null
+last_updated: 2026-08-26
 categories:
   - Testing
   - Architecture
@@ -10,86 +11,60 @@ categories:
 
 ## Contexto
 
-El cambio principal es la adopción de una **estrategia de pruebas
-client-side**: habilitar y consolidar tests unitarios que ejerciten la
-manipulación del DOM en módulos cliente usando `jsdom` y `vitest`.
-Como consecuencia de esta decisión se reorganizó el código cliente:
-se creó `src/client/` y se extrajeron responsabilidades (por ejemplo
-`themeToggle`, `giscus` y la lógica del sidebar) desde los layouts hacia
-módulos dedicados; el script inline en el layout se redujo y se añadieron
-tests unitarios (`tests/unit/client/themeToggle.test.ts`, `tests/unit/client/sidebar.test.ts`)
-que cubren escenarios de `localStorage`, inicialización y preferencias
-del sistema. Concretamente, parte de la lógica previa ubicada en
-`src/scripts/menu.js` fue migrada a `src/client/sidebar.ts` y la
-inicialización del toggle del sidebar se realiza explícitamente desde el
-layout (`SiteLayout.astro`) llamando a `initSidebar(document.querySelector('.hamburger'))`.
+El sistema incluye lógica ejecutada en el cliente que interactúa con el DOM, gestiona preferencias del usuario
+y controla elementos de la interfaz.
+Históricamente, gran parte de esta lógica residía en estructuras de presentación y se validaba principalmente
+mediante pruebas end‑to‑end, lo que generaba:
 
-Antes de este cambio las comprobaciones de comportamiento del toggle se
-realizaban principalmente mediante e2e (Playwright) y algunos tests de humo;
-esto dejaba escenarios sin cobertura clara (conditions/race, fallback de
-preferencias, edge cases de `localStorage`) y dependía de widgets
-externos (p. ej. giscus) en pruebas integradas.
+- Cobertura insuficiente en escenarios específicos del cliente.
+- Dependencia excesiva en pruebas integradas para validar comportamientos simples.
+- Dificultad para aislar y probar estados, inicialización y preferencias.
+- Acoplamiento entre la lógica del cliente y las estructuras de presentación.
+
+Para mejorar la confiabilidad y la mantenibilidad, se requiere una estrategia de pruebas más granular
+y una reorganización del código cliente.
+
+## Objetivo
+
+Establecer una estrategia de pruebas determinista para la lógica client‑side y reorganizar el código
+en módulos dedicados que permitan aislar responsabilidades y facilitar su validación.
 
 ## Decisión
 
-1. Priorizar la estrategia de pruebas client-side: habilitar `jsdom` y
-  `vitest` para cubrir de forma determinista la lógica que interactúa
-  con el DOM en módulos cliente.
-2. Reorganizar el código cliente: crear `src/client/` y extraer
-  responsabilidades (por ejemplo `themeToggle`, `giscus`, `sidebar`) a
-  módulos dedicados. Preferir API explícitas y que la inicialización se
-  realice desde el layout para mejorar testabilidad y control de carga.
-3. Usar `jsdom` en entorno de pruebas para permitir tests unitarios del
-   comportamiento DOM sin abrir un navegador real.
-4. Escribir tests unitarios que cubran: inicialización, lectura/escritura
-   de `localStorage`, detección de preferencias del sistema, manejo de
-   estados por defecto y API pública mínima del módulo.
-5. Minimizar el script inline en el HTML y cargar la lógica no crítica de
-   forma diferida (lazy) cuando sea posible.
+1. Priorizar una estrategia de pruebas client‑side basada en la ejecución de lógica de manipulación del DOM
+  en un entorno simulado.
+2. Reorganizar el código cliente en módulos dedicados, separando responsabilidades como manejo de preferencias,
+  control de elementos interactivos y lógica de inicialización.
+3. Definir APIs explícitas para cada módulo, facilitando su testabilidad y reduciendo el acoplamiento
+  con las estructuras de presentación.
+4. Validar la lógica del cliente mediante pruebas unitarias que cubran inicialización, estados por defecto,
+  preferencias del usuario y comportamiento observable.
+5. Minimizar la lógica inline en las estructuras de presentación y delegar la inicialización a módulos dedicados.
 
-## Motivación
+## Implementación
 
-- Incrementar la cobertura y confiabilidad: los tests unitarios son más
-  deterministas y rápidos que e2e para comprobar lógica de manipulación
-  DOM aislada.
-- Reducir dependencias incidentales en e2e: al poder mockear `giscus`
-  y otros terceros, las pruebas unitarias evitan falsos negativos.
-- Mejorar mantenibilidad: un módulo con API pequeña y testeable facilita
-  refactors y evita que cambios en layout rompan la lógica del toggle.
-- Rendimiento: script inline reducido mejora TTI y facilita caching.
+La implementación concreta se documenta en los archivos de arquitectura correspondientes.
+Conceptualmente, la decisión implica:
 
-## Alternativas consideradas
-
-- Mantener toda la lógica en el layout y probar con e2e únicamente —
-  Rechazada: pruebas e2e eran frágiles y no cubrían todos los edge cases.
-- Usar un headless browser en todos los tests unitarios — Rechazada:
-  más lenta y menos conveniente en CI comparado con `jsdom` para pruebas
-  de manipulación DOM simple.
+- Crear una estructura dedicada para módulos client‑side.
+- Extraer la lógica de interacción con el DOM desde las estructuras de presentación hacia módulos aislados.
+- Definir una API pública mínima para cada módulo, centrada en comportamiento observable.
+- Ejecutar pruebas unitarias en un entorno simulado que permita validar la manipulación del DOM
+  sin depender de un navegador real.
+- Reducir la lógica inline y delegar la inicialización a módulos explícitos para mejorar control y testabilidad.
 
 ## Consecuencias
 
 ### Positivas
 
-- Tests unitarios rápidos y deterministas para la mayor parte de la
-  lógica del toggle y del sidebar, reduciendo la dependencia en e2e para
-  estos casos.
-- Menor número de pruebas e2e necesarias; e2e se reserva para flujos
-  integrales y contratos con terceros.
-- Código más modular y reusable (`src/client/themeToggle.ts`,
-  `src/client/sidebar.ts`).
-- Cobertura añadida para `sidebar` vía `tests/unit/client/sidebar.test.ts`,
-   permitiendo validar `openSidebar`, `closeSidebar`, `toggleSidebar` e
-   `initSidebar` en `jsdom`.
+- Pruebas unitarias rápidas y deterministas para la lógica client‑side.
+- Reducción de la dependencia en pruebas end‑to‑end para validar comportamientos simples.
+- Código más modular y mantenible gracias a la separación de responsabilidades.
+- Mayor claridad en la API pública de los módulos del cliente.
+- Cobertura más completa de escenarios como inicialización, preferencias del usuario y estados por defecto.
 
-### Negativas / Costes
+### A tener en cuenta
 
-- Mayor superficie de código: más archivos y responsabilidades claras que
-  mantener.
-- Configuración de CI y dependencias dev (`jsdom`, `vitest`) para
-  mantener actualizadas.
-- Necesidad de disciplina en mantener la API pública mínima y la
-  documentación para evitar duplicación.
-
-## Autor
-
-Equipo de desarrollo — @secorto
+- La reorganización incrementa la superficie de código y requiere disciplina para mantener APIs pequeñas y bien documentadas.
+- La estrategia de pruebas requiere mantener actualizado el entorno simulado y las dependencias de desarrollo.
+- La modularización implica mantener coherencia entre los módulos y las estructuras de presentación.
