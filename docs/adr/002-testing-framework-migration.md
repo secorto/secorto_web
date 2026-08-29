@@ -1,8 +1,9 @@
 ---
-title: ADR 002: Migración de Cypress a Playwright + Vitest
+id: ADR-002
+title: Migración de Cypress a Playwright + Vitest
 status: accepted
 date: 2025-07
-last_updated: null
+last_updated: 2026-08-29
 categories:
   - Testing
   - Tooling
@@ -61,7 +62,7 @@ unitario, manteniendo Cypress temporalmente hasta completar la migración.
 ### Playwright para E2E
 
 - **Multi-navegador nativo:** Chromium, Firefox y WebKit en un solo comando
-- **`page.route()`:** interceptación de red precisa para mocks de terceros
+- **Interceptar third parties:** interceptación de red precisa para mocks de terceros
   (ver [ADR 003](003-third-party-mocks.md))
 - **Sin límite de ejecuciones:** runner open-source sin SaaS obligatorio
 - **Traces livianos:** archivo `.zip` con snapshots del DOM, red y consola
@@ -81,47 +82,6 @@ unitario, manteniendo Cypress temporalmente hasta completar la migración.
 
 ---
 
-## CI
-
-El workflow `Tests` (`.github/workflows/tests.yml`) ejecuta dos jobs en
-paralelo:
-
-```text
-unit-tests:    vitest --run --coverage  → artifact vitest-coverage
-e2e-tests:     playwright test          → artifact playwright-report
-```
-
-- **`unit-tests`** se ejecuta en push/PR (no en `workflow_dispatch`)
-- **`e2e-tests`** se ejecuta siempre, incluyendo `workflow_dispatch` para
-  validar entornos de preview con un `base_url` configurable
-- **Sin límite de ejecuciones:** a diferencia de Cypress Cloud, no hay
-  restricción en el número de runs mensuales
-
----
-
-## Comparación directa
-
-| Criterio | Cypress | Playwright |
-| --- | --- | --- |
-| Límite mensual CI | **500 ejecuciones** (Cloud) | **Sin límite** |
-| Navegadores | Chromium, Firefox | Chromium, Firefox, **WebKit** |
-| Interceptación de red | `cy.intercept()` | `page.route()` (más flexible) |
-| Multi-tab/ventana | ❌ | ✅ |
-| Traces/debugging | Video + screenshots (~pesados) | Trace ZIP (~livianos) |
-| Page Object Model | Manual | Fixtures nativos |
-| Coste (CI recording) | Gratis limitado / pago | Gratis ilimitado |
-| API de mocking | Limitada | `route.fulfill()` con body, headers, status |
-
-| Criterio | — (sin framework) | Vitest |
-| --- | --- | --- |
-| Tests unitarios | No existían | 165+ tests |
-| Cobertura | No medible | 100 % (statements, branches, functions, lines) |
-| Velocidad | — | < 1 s toda la suite |
-| Mocking | — | `vi.mock()`, `vi.fn()`, `vi.spyOn()` |
-| TypeScript | — | Nativo |
-
----
-
 ## Consecuencias
 
 ### Positivas
@@ -135,6 +95,15 @@ e2e-tests:     playwright test          → artifact playwright-report
 - **Un solo ecosistema:** Vitest + Playwright comparten configuración
   TypeScript y convenciones
 
+## Referencias
+
+- [Playwright vs Cypress](https://playwright.dev/docs/why-playwright)
+- [Cypress Cloud Pricing](https://www.cypress.io/pricing) — límite de 500
+  ejecuciones en plan gratuito
+- [Vitest](https://vitest.dev/)
+- [ADR 003 — Mocks de terceros](003-third-party-mocks.md)
+- [docs/TESTING_STRATEGY.md](../TESTING_STRATEGY.md) — Estrategia general
+
 ### Anexos
 
 Los siguientes son los anexos de este adr:
@@ -145,14 +114,5 @@ Los siguientes son los anexos de este adr:
 - [Fase de eliminación](./anexos/002-testing-framework-migration/eliminacion.md)
   Checklist de artefactos y verificaciones realizadas al retirar el runner antiguo
   (registro de decisiones y puntos de validación)
-- [Métricas y artefactos](./anexos/002-testing-framework-migration/METRICS_FOR_PRESENTATION.md)
-  Resumen de métricas y artefactos recopilados para presentación y toma de decisión
-
-## Referencias
-
-- [Playwright vs Cypress](https://playwright.dev/docs/why-playwright)
-- [Cypress Cloud Pricing](https://www.cypress.io/pricing) — límite de 500
-  ejecuciones en plan gratuito
-- [Vitest](https://vitest.dev/)
-- [ADR 003 — Mocks de terceros](003-third-party-mocks.md)
-- [docs/TESTING_STRATEGY.md](../TESTING_STRATEGY.md) — Estrategia general
+- [Métricas y artefactos](./anexos/002-testing-framework-migration/technical-evidence.md)
+  Resumen de métricas y artefactos recopilados
