@@ -1,8 +1,9 @@
 ---
-title: ADR 010: Plantilla estándar de ADRs
-status: proposed
+id: ADR-010
+title: Plantilla estándar de ADRs
+status: accepted
 date: 2026-05-01
-last_updated: null
+last_updated: 2026-08-29
 categories:
   - Content
   - Tooling
@@ -10,93 +11,69 @@ categories:
 
 ## Contexto
 
-La carpeta `docs/adr/` actual usa un formato **consistente** de metadatos basado en `blockquote`
-(establecido desde `ADR 001`) y cabeceras ATX, pero sigue habiendo inconsistencias menores:
-numeración de listas inconsistente (`1.` vs `1)`) y ausencia de validación automatizada de estructura.
+La carpeta de registros de decisiones arquitectónicas (ADRs) actual usa un formato consistente de metadatos
+ basado en bloques de citas y cabeceras ATX, pero sigue habiendo inconsistencias menores:
+  numeración de listas inconsistente y ausencia de validación automatizada de estructura.
 
 Aunque el estado es ya más uniforme que en versiones anteriores, persisten dos retos:
 
 1. **Sin validación automática:** no hay herramienta que fuerce la presencia de secciones obligatorias
-   (Contexto, Decisión, Consecuencias). El formato actual basado en `blockquotes` carece de análisis estructurado
-   que permita validar presencia de campos o sincronizar metadatos.
-2. **Inconsistencia generada por IA:** los asistentes IA generan ADRs con formatos distintos;
-   adoptar `frontmatter` YAML estándar permite validación automática de estructura y facilita
-   que las instrucciones sean seguidas uniformemente.
+  (Contexto, Decisión, Consecuencias). El formato previo carece de un análisis estructurado
+  que permita validar la presencia de campos o sincronizar metadatos.
+2. **Inconsistencia generada por IA:** los asistentes de IA generan ADRs con formatos distintos;
+  adoptar un bloque de metadatos superior (`frontmatter` YAML) estándar permite la validación automática
+  de la estructura y facilita que las instrucciones sean seguidas uniformemente.
 
-La validación sintáctica con `markdownlint-cli2` adoptada en `ADR 009`
-reduce errores de formato Markdown pero no garantiza consistencia de estructura ni presencia de secciones.
+La validación sintáctica adoptada previamente reduce errores de formato Markdown,
+pero no garantiza la consistencia de la estructura ni la presencia de las secciones core.
 
 ## Objetivo
 
-Definir una plantilla canónica para ADRs y normalizar metadatos con `frontmatter` YAML,
-facilitando validación automática y mejorando consistencia visual del repositorio.
-Actualizar las instrucciones para asistentes IA para que produzcan ADRs conformes al formato.
+Definir una plantilla canónica para ADRs y normalizar los metadatos con `frontmatter` YAML,
+facilitando la validación automática y mejorando la consistencia visual del repositorio.
+Actualizar las instrucciones para asistentes de IA para que produzcan ADRs conformes al formato.
 
 ## Decisión
 
 Adoptar una plantilla estándar para ADRs que define cabeceras mínimas,
-secciones obligatorias y metadatos normalizados (`frontmatter` YAML).
+secciones obligatorias y metadatos normalizados mediante `frontmatter` YAML.
+
+Los ADRs deben mantener la decisión **agnóstica a detalles de implementación concretos**:
+los contextos y decisiones deben abordar problemas y patrones abstractos,
+mientras que los archivos de arquitectura específicos se encargarán de mapear el diseño con las clases, herramientas o archivos reales.
 
 ## Implementación
 
-- Crear `docs/adr/TEMPLATE.md` que especifique:
-  - `Frontmatter` YAML con campos: `status`, `date`, `last_updated`, `categories`.
-    **Note:** `categories` is an array of strings
-  - Recomendación adicional para metadatos de reconstrucción/historia:
-    - `repository`: repositorio origen o nombre histórico (string)
-    - `commits`: número aproximado de commits migrados (number)
-    - `start_year`: año de inicio del repositorio/mantenimiento (number)
-    - `end_year`: año de fin. **Omisión** de `end_year` se interpreta como "present".
-      - Recomendar: si se quiere dejar explícito, usar `end_year: null` para indicar abierto/en curso;
-        la plantilla debe documentar que la ausencia es equivalente a presente para compatibilidad con ADRs anteriores.
-    - `replaced_by`: campo opcional que apunta al ADR que reemplaza a este
-      (string, preferiblemente filename relativo, p.ej. `R03-migracion-gatsby-a-astro.md`).
-  - Secciones obligatorias: Contexto, Objetivo, Decisión, Implementación,
-    Consecuencias (Positivas / A tener en cuenta), Referencias.
-  - **Guía de contenido por sección:** Los ADRs deben mantener la decisión
-    **agnóstica a detalles de implementación concretos**:
-    - **Contexto:** problema abstracto (p.ej. "múltiples responsabilidades en
-      una clase"), no nombres de archivos o clases específicas
-    - **Decisión:** estructura o patrón abstracto (p.ej. "especialización por
-      responsabilidad", "Vista de Lista vs Vista de Detalle"), no
-      identificadores de implementación
-    - **Implementación:** descripción de cómo se aplicó, referencias a
-      documentos de arquitectura (docs/architecture/) donde vive el mapeo
-      concreto a clases/archivos reales
-    - **Consecuencias:** impacto conceptual (mantenibilidad, complejidad,
-      claridad), no detalles técnicos de clases específicas
-    - **Razón:** ADRs permanecen válidos como referencias incluso cuando
-      cambia la implementación. Detalles concretos van en archivos de
-      arquitectura específicos (docs/architecture/) que pueden evolucionar
-      sin invalidar la decisión.
-- Actualizar `docs/adr/README.md` — sección **Convenciones** — para
-  documentar el nuevo formato `frontmatter` YAML como fuente única de verdad
-  para autores humanos.
-- Normalizar ADRs existentes en PRs separados y claramente marcados (commits
-  de formato que **reemplazan completamente** `blockquotes` por `frontmatter`
-  YAML,
-  sin mezcla de ambos formatos).
-- Actualizar `.github/copilot-instructions.md` para que asistentes IA generen ADRs conformes
-  con `frontmatter` YAML desde el inicio.
+- **Creación de la plantilla canónica:** Definir un archivo de plantilla que sirva de base
+  con la estructura de metadatos (`frontmatter` YAML) y las secciones obligatorias requeridas.
+- **Documentación de convenciones:** Actualizar el archivo de directrices de la carpeta de ADRs
+  para oficializar el nuevo formato como la fuente única de verdad para autores humanos.
+- **Configuración de herramientas de asistencia:** Adaptar las instrucciones del entorno de desarrollo
+  y asistentes de IA para asegurar que las nuevas propuestas se generen alineadas al estándar desde el inicio.
+- **Migración progresiva:** Normalizar los registros de decisiones existentes mediante cambios dedicados
+  exclusivamente a la actualización de formato, garantizando un historial limpio sin alterar las decisiones pasadas.
 
 ## Consecuencias
 
 ### Positivas
 
-- Plantilla canónica proporciona referencia clara para autores (humanos e IA)
-- Normalización visual de ADRs facilita revisiones y búsquedas
-- Base estructural para validación automática futura (frontmatter, secciones obligatorias)
-- Commits de normalización quedan claramente marcados (formato, no cambios de decisión)
+- La plantilla canónica proporciona una referencia clara para autores (humanos e IA).
+- La normalización visual de los ADRs facilita las revisiones y búsquedas.
+- Se establece una base estructural para la validación automática futura (campos y secciones obligatorias).
+- Los commits de normalización quedan claramente marcados como cambios de formato, sin mezclar alteraciones en las decisiones.
 
 ### Trabajo futuro habilitado
 
-- **Validación de `frontmatter` YAML:** implementar scripts que validen estructura mínima
-  y campos obligatorios en `CI` (p.ej. con Zod, JSON Schema, o validador personalizado)
-- **Integración en `linters`:** extender `markdownlint` o herramientas similares para forzar
-  cabeceras obligatorias y secciones mínimas
-- **Auditoría de anexos:** revisar ciclo de vida y responsables de la carpeta `docs/adr/anexos/`
-  (gobernanza fuera del alcance de este ADR)
+- **Validación de metadatos:** Implementar scripts en el flujo de integración continua (CI)
+  que validen la estructura mínima y los campos obligatorios del YAML.
+- **Integración en linters:** Extender las herramientas de análisis estático de Markdown
+  para forzar la existencia de las secciones requeridas.
+- **Auditoría de anexos:** Revisar el ciclo de vida y la gobernanza de los archivos complementarios de la documentación.
 
 ## Referencias
 
 - [ADR 009](009-markdown-validation.md) — validación de Markdown con `markdownlint-cli2`
+
+## Anexos
+
+- [Implementación](anexos/010-plantilla-estandar-adr/IMPLEMENTATION.md)

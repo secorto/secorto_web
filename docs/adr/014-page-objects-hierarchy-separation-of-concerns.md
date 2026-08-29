@@ -1,138 +1,71 @@
 ---
-title: ADR 014: Jerarquía de Page Objects con separación clara de responsabilidades
+id: ADR-014
+title: Jerarquía de Page Objects con separación clara de responsabilidades
 status: accepted
 date: 2026-07-20
+last_updated: 2026-08-29
 categories:
   - Testing
   - Architecture
 ---
-
 ## Contexto
 
-La suite E2E de tests utilizaba una clase `ContentListPage` que **mezclaba tres responsabilidades distintas**:
-visión de lista, visión de detalle y filtrado por tags. Esto generaba:
+La arquitectura E2E del proyecto presentaba una mezcla de responsabilidades dentro de los Page Objects,
+dificultando la mantenibilidad, la claridad semántica y la escalabilidad.
+Una clase actuaba simultáneamente como vista de lista, vista de detalle y vista filtrada,
+violando el principio de responsabilidad única.
 
-1. **Violación del SRP**: una única clase hacía múltiples cosas
-2. **Confusión de contextos**: en `BlogPages.ts`, `userInBlogPost()` retornaba `ContentListPage`
-   pero navegaba a una página de **detalle** — el tipo no reflejaba la intención
-3. **Falta de jerarquía**: todos los Page Objects tenían la misma interfaz sin diferenciar
-   su propósito (lista vs detalle vs filtrado)
-4. **Propiedades innecesarias**: métodos de detalle en lista, métodos de filtrado en detalle,
-   propiedades de comentarios en lista
+Esto generaba:
 
-```text
-ContentListPage (original) ❌
-├── Vista de LISTA
-│   ├── shouldHaveListHeaderTitle()
-│   ├── filterByTag()
-│   └── ...
-├── Vista de DETALLE
-│   ├── shouldHaveDetailTitle()
-│   ├── shouldHaveComments()
-│   ├── shouldHaveRole()
-│   └── ...
-└── Vista de TAGS (Filtrado)
-    └── ...
-```
-
-Esta mezcla dificultaba:
-
-- Descubrir qué métodos usar en cada contexto (confusión de IDE)
-- Agregar nuevas especializaciones sin contaminar la clase base
-- Mantener tests claros: el tipo de retorno no comunicaba intención
+- Confusión en los tests: el tipo de retorno no comunicaba el contexto.
+- Duplicación de métodos y selectores.
+- Contaminación de la clase base.
+- Dificultad para agregar nuevas especializaciones.
 
 ## Decisión
 
-Implementar una **jerarquía de Page Objects basada en especialización de responsabilidades**.
-Cada clase representa un contexto/vista específico.
+Se adopta una jerarquía de Page Objects basada en **especialización por contexto**,
+con una **base mínima** y **componentes reutilizables**.
+Cada clase representa una vista específica y expone únicamente los métodos relevantes para ese contexto.
 
-**Estructura genérica**:
+### Estructura general
 
-1. **Base compartida**
-   - Propiedades comunes a todos los contextos (ej: encabezado, tags)
-   - Métodos transversales aplicables en cualquier contexto (ej: navegar a tag)
+- **Base compartida**: layout, encabezado, navegación global.
+- **Vista de Lista**: navegación de items, filtrado, validaciones de listado.
+- **Vista de Detalle**: validaciones de contenido específico.
+- **Vista Filtrada**: validaciones de resultados filtrados.
 
-2. **Especialización: Vista de Lista**
-   - Responsabilidad única: representar lista navegable
-   - Métodos: listar items, filtrar, navegar a item
-   - Propiedades: selectores para items y filtros
-
-3. **Especialización: Vista de Detalle (con comentarios)**
-   - Responsabilidad única: representar vista de detalle de recurso con sección de comentarios
-   - Métodos: validar contenido, interactuar con comentarios
-
-4. **Especialización: Vista de Detalle (con metadata profesional)**
-   - Responsabilidad única: representar vista de detalle con información profesional (rol, responsabilidades, links)
-   - Métodos: validar metadata específica
-
-5. **Especialización: Filtrado por Tags**
-   - Responsabilidad única: representar vista filtrada por criterio
-   - Métodos: filtrar, navegar, validar resultados filtrados
-
-```text
-Base Compartida ✅
-│
-├── Vista de Lista
-├── Vista de Detalle (Comentarios)
-├── Vista de Detalle (Metadata)
-└── Vista de Filtrado
-```
-
-**Principio**: Cada clase tiene UNA responsabilidad clara. El tipo de retorno en tests
-comunica exactamente qué contexto se está probando.
+Los tests deben expresar intención mediante el tipo de retorno del Page Object.
 
 ## Motivación
 
-- **Type Safety en tests**: cada especialización es un tipo distinto, compiler valida
-  disponibilidad de métodos en compile-time
-- **Claridad de intención**: el tipo de retorno comunica exactamente qué contexto se prueba
-- **Escalabilidad**: nuevas especializaciones se crean extendiendo la base sin contaminar clases existentes
-- **Autocompletar mejorado**: IDE sugiere solo métodos relevantes para cada contexto
-- **Mantenibilidad**: cada clase tiene una responsabilidad clara y pequeña (SRP)
-- **Legibilidad de tests**: el tipo de Page Object actúa como documentación implícita
+- Seguridad de tipos.
+- Claridad semántica.
+- Escalabilidad.
+- Mantenibilidad.
+- Legibilidad.
 
 ## Alternativas consideradas
 
-1. **Mantener una única clase genérica con métodos opcionales**
-   - Rechazada: genera confusión, complicaciones en documentación, sin validación en compile-time
-
-2. **Usar una mega-interfaz con métodos parcialmente implementados**
-   - Rechazada: máscara de SRP, difícil de mantener
-
-3. **Usar composición de mixins en lugar de herencia**
-   - Considerada: más flexible, pero más compleja; especializaciones simples son suficientes
+1. Clase genérica única — rechazada.
+2. Mega-interfaz — rechazada.
+3. Mixins — innecesarios.
 
 ## Consecuencias
 
 ### Positivas
 
-- ✅ **Separación clara de responsabilidades**: cada clase representa un contexto único
-- ✅ **Mejor navegación en IDE**: autocompletar muestra solo métodos válidos para cada contexto
-- ✅ **Seguridad de tipos**: compiler valida disponibilidad de métodos en compile-time
-- ✅ **Documentación explícita mediante tipos**: el tipo de Page Object comunica el contexto
-- ✅ **Mantenibilidad**: cambios en una especialización no afectan otras
-- ✅ **Escalabilidad**: patrón replicable a otros Page Objects del proyecto
+- Separación clara de responsabilidades.
+- Autocompletar más preciso.
+- Mantenibilidad mejorada.
+- Escalabilidad del modelo.
 
 ### Negativas
 
-- ⚠️ Más clases: una clase por especialización (lista, detalle, filtrado, etc.)
-- ⚠️ Requiere actualizar helpers/factories para retornar tipos correctos
-
-### Neutras
-
-- El patrón es independiente de nombres concretos, aplicable en cualquier dominio
+- Mayor número de clases.
+- Necesidad de actualizar factories y helpers.
 
 ## Referencias
 
-- [PAGE_OBJECTS.md](../architecture/PAGE_OBJECTS.md) — referencia de arquitectura E2E
-  con modelo genérico Component/Page/Flow, incluye implementación concreta de esta decisión
-- [TESTING_STRATEGY.md](../architecture/TESTING_STRATEGY.md) — estrategia general de testing E2E
-
-## Anexos
-
-Ver en `anexos/014-page-objects-hierarchy-separation-of-concerns/`:
-
-- [ANTIPATTERN_ANALYSIS.md](./anexos/014-page-objects-hierarchy-separation-of-concerns/ANTIPATTERN_ANALYSIS.md) —
-  Análisis del primer intento fallido (herencia inflexible)
-- [MIGRATION_PLAN.md](./anexos/014-page-objects-hierarchy-separation-of-concerns/MIGRATION_PLAN.md) —
-  Plan de migración a composición (patrón homepage)
+- [PAGE_OBJECTS.md](../architecture/PAGE_OBJECTS.md) — Arquitectura completa de POM
+- [TESTING_STRATEGY.md](../architecture/TESTING_STRATEGY.md) — Estrategia de pruebas

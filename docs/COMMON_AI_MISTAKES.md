@@ -217,11 +217,11 @@ class ContentListPage {
   // Responsabilidad 1: Vista de LISTA
   shouldHaveListHeaderTitle() { /* ... */ }
   filterByTag() { /* ... */ }
-  
+
   // Responsabilidad 2: Vista de DETALLE
   shouldHaveDetailTitle() { /* ... */ }
   shouldHaveComments() { /* ... */ }
-  
+
   // Responsabilidad 3: Vista de TAGS
   shouldHaveTagsInFilter() { /* ... */ }
 }
@@ -303,7 +303,7 @@ const { locale, id: postId } = extractCleanId(entry.id)
 **Referencias:**
 
 - [docs/CODING_GUIDELINES.md](./CODING_GUIDELINES.md) — DRY, domain layer
-- [docs/architecture/DETAIL_VIEW_COMPONENTS.md](./architecture/DETAIL_VIEW_COMPONENTS.md)
+- [docs/architecture/DETAIL_VIEW_COMPONENTS.md](./adr/anexos/001-i18n-router-framework/DETAIL_VIEW_COMPONENTS.md)
 
 ---
 

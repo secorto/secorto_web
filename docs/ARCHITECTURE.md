@@ -30,7 +30,6 @@ Testing no es añadido posterior; es manifestación de cómo pensamos el sistema
 | **Agregar contenido / traducción** | [CONTENT_POLICY.md](CONTENT_POLICY.md) | Reglas de nombrado, frontmatter, `draft`, `translationKey` |
 | **Escribir código nuevo** | [CODING_GUIDELINES.md](CODING_GUIDELINES.md) | Estilo, tipos, modularidad, fail-fast, testing obligatorio |
 | **Crear tests** | [architecture/TESTING_STRATEGY.md](architecture/TESTING_STRATEGY.md) | Unit (Vitest) + E2E (Playwright); capas Component/Page/Flow |
-| **Entender vistas de detalle** | [architecture/DETAIL_VIEW_COMPONENTS.md](architecture/DETAIL_VIEW_COMPONENTS.md) | Estrategia de componentes reutilizables |
 | **Escribir tests E2E** | [architecture/PAGE_OBJECTS.md](architecture/PAGE_OBJECTS.md) | Arquitectura E2E, separación de responsabilidades, type safety |
 | **Configurar E2E en CI** | [architecture/E2E_PARAMS.md](architecture/E2E_PARAMS.md) | Parámetros del workflow, Netlify preview, `base_url`, `real_third_party` |
 | **Entender política de IA en desarrollo** | [adr/005-ia-development-integration.md](adr/005-ia-development-integration.md) | Decisión arquitectónica: IA integrada con guardrails explícitos y Quality by Design |

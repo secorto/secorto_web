@@ -1,4 +1,4 @@
-# Anexo ADR 017: Migration Guide — Referencia de Extracción
+# Migration Guide — Referencia de Extracción
 
 **Propósito:** Inventario de primitivas agnósticas a extraer, criterios de validación y checklist
 de refactoring. Este documento es descriptivo (QUÉ extraer), no prescriptivo (HOW implementar).

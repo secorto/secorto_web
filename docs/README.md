@@ -14,8 +14,6 @@ Cada documento se auto-referencia a sus documentos relacionados.
 
 ### Arquitectura y diseño
 
-- [DETAIL_VIEW_COMPONENTS.md](architecture/DETAIL_VIEW_COMPONENTS.md) —
-  Arquitectura de componentes de detalle (blog, charlas, trabajo, proyectos, comunidad)
 - [PAGE_OBJECTS.md](architecture/PAGE_OBJECTS.md) — Jerarquía y separación de concerns en page objects (E2E)
 - [GISCUS.md](GISCUS.md) — Integración de comentarios con Giscus
 
@@ -23,7 +21,6 @@ Cada documento se auto-referencia a sus documentos relacionados.
 
 - [DEVELOPMENT_WORKFLOW.md](architecture/DEVELOPMENT_WORKFLOW.md) — Flujo visual de desarrollo y validación pre-PR
 - [TESTING_STRATEGY.md](architecture/TESTING_STRATEGY.md) — Estrategia de pruebas (E2E con Playwright, unitarias con Vitest)
-- [E2E_CONSOLIDATION.md](architecture/E2E_CONSOLIDATION.md) — Consolidación de assertions en E2E tests
 - [COMMON_AI_MISTAKES.md](COMMON_AI_MISTAKES.md) — 6 patrones reales de errores que la IA ha cometido y cómo evitarlos
 - [CONTENT_POLICY.md](CONTENT_POLICY.md) — Convenciones sobre el contenido del sitio
 - [MARKDOWN_VALIDATION.md](MARKDOWN_VALIDATION.md) — Validación de Markdown (linting y reglas de formato)
