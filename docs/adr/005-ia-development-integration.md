@@ -1,5 +1,6 @@
 ---
-title: ADR 005: Integración de asistentes IA en el proceso de desarrollo
+id: ADR-005
+title: Integración de asistentes IA en el proceso de desarrollo
 status: accepted
 date: 2026-01
 last_updated: 2026-07
@@ -185,5 +186,5 @@ Con esta decisión:
 - [DEVELOPMENT_WORKFLOW.md](../architecture/DEVELOPMENT_WORKFLOW.md) — QbD con validaciones explícitas
 - [ARCHITECTURE.md](../ARCHITECTURE.md) — principios del proyecto
 - [CONTRIBUTING.md](../CONTRIBUTING.md) — guía para contribuidores
-- ADR 004 — linting y validación automática
-- ADR 002 — testing framework migration
+- [ADR 004](004-linting-any-ban-style-conventions.md) — linting y validación automática
+- [ADR 002](002-testing-framework-migration.md) — testing framework migration

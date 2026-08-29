@@ -1,5 +1,6 @@
 ---
-title: ADR 012: Formateo y herramienta de estilo propuesta
+id: ADR-012
+title: Formateo y herramienta de estilo propuesta
 status: proposed
 date: 2026-05-21
 categories:
