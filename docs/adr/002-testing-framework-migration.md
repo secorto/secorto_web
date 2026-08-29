@@ -61,7 +61,7 @@ y posterior eliminación del runner antiguo una vez alcanzada la paridad funcion
 ## Referencias
 
 - [ADR 003 — Mocks de terceros](003-third-party-mocks.md)
-- [docs/TESTING_STRATEGY.md](../TESTING_STRATEGY.md) — Estrategia general
+- [docs/TESTING_STRATEGY.md](../architecture/TESTING_STRATEGY.md) — Estrategia general
 
 ### Anexos
 

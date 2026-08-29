@@ -96,4 +96,4 @@ la responsabilidad del dominio ni la semántica de las traducciones:
 - [ARCHITECTURE_DIAGRAM.md](./anexos/001-i18n-router-framework/ARCHITECTURE_DIAGRAM.md) — Diagramas de flujo
 - [BEFORE_AFTER_COMPARISON.md](./anexos/001-i18n-router-framework/BEFORE_AFTER_COMPARISON.md) — Comparación antes/después
 - [MIGRATION_GUIDE.md](./anexos/001-i18n-router-framework/MIGRATION_GUIDE.md) — Guía de migración
-- [DETAIL_VIEW_ARCHITECTURE.md](./anexos/001-i18n-router-framework/DETAIL_VIEW_COMPONENTS.md) — de vistas de detalle
+- [DETAIL_VIEW_COMPONENTS.md](./anexos/001-i18n-router-framework/DETAIL_VIEW_COMPONENTS.md) — de vistas de detalle

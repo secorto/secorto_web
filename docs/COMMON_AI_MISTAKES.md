@@ -302,8 +302,8 @@ const { locale, id: postId } = extractCleanId(entry.id)
 
 **Referencias:**
 
-- [docs/CODING_GUIDELINES.md](./CODING_GUIDELINES.md) — DRY, domain layer
-- [docs/architecture/DETAIL_VIEW_COMPONENTS.md](./adr/anexos/001-i18n-router-framework/DETAIL_VIEW_COMPONENTS.md)
+- [CODING_GUIDELINES.md](./CODING_GUIDELINES.md) — DRY, domain layer
+- [DETAIL_VIEW_COMPONENTS.md](./adr/anexos/001-i18n-router-framework/DETAIL_VIEW_COMPONENTS.md)
 
 ---
 

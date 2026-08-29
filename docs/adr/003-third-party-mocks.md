@@ -63,10 +63,10 @@ Conceptualmente, la decisión implica:
 
 ## Referencias
 
+- [docs/GISCUS.md](../GISCUS.md) — Integración y helpers para el widget de comentarios
+- [docs/TESTING_STRATEGY.md](../architecture/TESTING_STRATEGY.md) — Estrategia general de testing del proyecto
 - [Playwright: Network — `page.route()`](https://playwright.dev/docs/network#modify-requests)
 - [Testing Trophy](https://kentcdodds.com/blog/the-testing-trophy-and-testing-classifications) — Kent C. Dodds
-- [docs/GISCUS.md](../GISCUS.md) — Integración y helpers para el widget de comentarios
-- [docs/TESTING_STRATEGY.md](./TESTING_STRATEGY.md) — Estrategia general de testing del proyecto
 
 ## Anexos
 

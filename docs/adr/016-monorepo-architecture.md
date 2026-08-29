@@ -1,7 +1,7 @@
 ---
 id: ADR-016
 title: Adoptar una arquitectura de monorepo para el sitio web
-status: acepted
+status: accepted
 date: 2026-08-18
 last_updated: 2026-08-29
 categories:
