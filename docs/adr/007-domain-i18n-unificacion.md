@@ -3,7 +3,7 @@ id: ADR-007
 title: Unificación de dominio e i18n
 status: accepted
 date: 2026-03-24
-last_updated: 2026-05-21
+last_updated: 2026-08-29
 categories:
   - Architecture
   - i18n
@@ -12,86 +12,75 @@ categories:
 
 ## Contexto
 
-La arquitectura de contenido e i18n necesita una regla clara para agrupar
-variantes del mismo recurso en distintos locales. Cuando esa identidad no se
-expresa de forma explícita, el modelo acaba mezclando nociones de URL, locale,
-SEO y traducción, y la lógica se dispersa por múltiples helpers y componentes.
-
-El problema no es solo el almacenamiento de contenido, sino la ausencia de una
-fuente única de verdad para decidir cuándo dos entradas son la misma entidad,
-cuáles son sus variantes por idioma y cómo debe fallar el sistema ante
-inconsistencias.
+El sistema de contenido localizado requería una regla clara para determinar cuándo varias entradas
+representan la misma entidad en distintos idiomas. Sin una identidad canónica del contenido, nociones
+como URL, locale, SEO y traducción terminaban mezclándose en distintas capas, generando decisiones
+implícitas y estados ambiguos durante el build.
 
 ## Objetivo
 
-Establecer un modelo de dominio para contenido localizado que unifique la
-identidad de una entrada, el tratamiento de locales y la generación de enlaces
-y metadata SEO, sin mezclar esta responsabilidad con la resolución de rutas ni
-con la clave semántica de una traducción.
+Definir un modelo de dominio que establezca una identidad única para cada entidad de contenido y que
+trate los locales como variantes explícitas de esa identidad, manteniendo una separación estricta
+entre dominio, routing y traducción.
 
 ## Decisión
 
-Adoptar `postId` como la identidad canónica del contenido dentro del dominio.
-Una entrada localizada se considera la misma entidad cuando comparte el mismo
-`postId`, y cada variante debe además declarar explícitamente su `locale`.
+El dominio debe definir una **identidad canónica del contenido**, independiente del idioma, que
+agrupa todas las variantes localizadas de una misma entidad.
 
-La decisión establece estas invariantes:
+El `locale` es un **atributo estructural de la entrada localizada**: no forma parte del contenido en
+sí, pero sí forma parte de la identidad de la variante. Una entrada localizada se identifica por la
+combinación de:
 
-1. `postId` agrupa todas las traducciones y variantes de una misma entidad.
-2. `locale` es un dato obligatorio y explícito en la entrada normalizada.
-3. La construcción de mapas por locale se hace a partir de `postId` para evitar
-   doble-mapeo y parseos repetidos.
-4. El dominio falla de forma temprana ante inconsistencias críticas como
-   duplicados de `(postId, locale)`.
+- **identidad canónica del contenido**, y
+- **locale**.
+
+El modelo establece las siguientes invariantes:
+
+1. Todas las variantes de una entidad comparten una identidad canónica común.
+2. El `locale` es parte fundamental de la identidad de la variante localizada.
+3. La relación entre identidad y locales es una responsabilidad del dominio, no del routing ni de la
+   traducción.
+4. Las inconsistencias de identidad (como duplicados de identidad por locale) se consideran
+   violaciones de invariantes del dominio.
 
 ## Rol dentro del sistema i18n
 
-Este ADR tiene un alcance específico y no reemplaza las decisiones de routing ni
-las de traducción:
+Este ADR define **qué constituye la misma entrada** en distintos locales y cómo se identifican sus
+variantes.
 
-- ADR 001 define cómo se resuelven rutas y aliases de secciones.
-- ADR 007 define la identidad del contenido y las invariantes del dominio.
-- ADR 011 define la clave semántica de los mensajes traducibles.
+- **ADR‑001** define **cómo se navega hacia esa entrada** y cómo el locale participa en la unicidad
+  de las rutas.
+- **ADR‑011** define **cómo se identifica un mensaje dentro de esa entrada**, donde la identidad del
+  mensaje se expresa como `(translationKey, locale)`.
 
-En otras palabras, 007 responde a “qué es la misma entrada en distintos
-locales”, mientras que 001 responde a “cómo se llega a ella” y 011 responde a
-“qué identifica un texto traducido”.
+Cada capa mantiene su responsabilidad: identidad del contenido, navegación y traducción.
 
 ## Implementación
 
-La implementación concreta se apoya en:
-
-- `extractCleanId` como mecanismo estricto de extracción de identidad y locale.
-- `entryAdapter` para normalizar contenido y asignar `postId` y `locale`.
-- `buildLocaleEntryMap` como mapa estable por `postId` para derivar variantes.
-- `SiteLayout` y los helpers de SEO como fuente única de canonical y alternates.
-- validación temprana de errores de contenido para evitar estados ambiguos en
-  build time.
-
-Estos pasos convierten la lógica del dominio en una API estable y auditable,
-separada de la capa de render y de la semántica de traducción.
+La implementación concreta se documenta en el anexo técnico correspondiente.
 
 ## Consecuencias
 
 ### Positivas
 
-- Unifica la identidad del contenido entre locales.
-- Reduce parseos, duplicación y decisiones inconsistente en SEO.
-- Hace explícitas las invariantes del dominio y mejora la fiabilidad del build.
-- Aclara la frontera entre dominio, routing y traducción.
+- Identidad del contenido unificada y explícita.
+- Variantes localizadas definidas por identidad + locale.
+- Separación clara entre dominio, routing y traducción.
+- Reducción de decisiones implícitas en SEO y generación de enlaces.
+- Mayor robustez del build al detectar inconsistencias de forma temprana.
 
 ### A tener en cuenta
 
-- La política de invariantes es estricta y puede requerir correcciones de
-  contenido legacy antes del merge.
-- Los consumers del dominio deben ajustar su modelo para usar `postId` y
-  `locale` como contrato explícito.
-- No reemplaza la semántica de `translationKey`; cada capa mantiene su rol.
+- Puede requerir ajustes en contenido legacy.
+- Los consumidores del dominio deben tratar la identidad canónica y el locale como contrato
+  explícito.
+- No modifica la semántica de la clave de traducción; cada capa mantiene su rol.
 
 ## Referencias
 
-- [ADR 001](./001-i18n-router-framework.md) — responsabilidad de routing y aliasing por sección.
-- [ADR 011](./011-i18n-translationkey.md) — llave canónica para mensajes traducibles.
+- [ADR 001](./001-i18n-router-framework.md)
+- [ADR 011](./011-i18n-translationkey.md)
 
 ## Anexos
 
