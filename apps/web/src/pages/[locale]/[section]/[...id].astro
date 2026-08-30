@@ -1,48 +1,51 @@
 ---
 import { render, getCollection } from 'astro:content'
-import type { DetailPath } from '@utils/staticPathsBuilder.adapters'
+import { createDetailTranslationLinks, getStaticPathsEntries } from '@secorto/i18n'
 import BaseLayout from '@layouts/BaseLayout.astro'
 import Comments from '@components/Comments.astro'
 import DetailContent from '@components/detail/DetailContent.astro'
 import SEOHead from '@components/SEOHead.astro'
 import LanguagePicker from '@components/LanguagePicker.astro'
 import { useTranslations } from '@i18n/utils'
-import { buildAllDetailPaths } from '@utils/staticPathsBuilder.adapters'
 import { getSeoDescription } from '@domain/post'
+import { languages } from '@i18n/ui'
+import { sectionRoutes } from '@domain/section'
 
 export async function getStaticPaths() {
-  return await buildAllDetailPaths(getCollection)
+  return await getStaticPathsEntries(sectionRoutes, getCollection, languages)
 }
 
-export type Props = DetailPath['props']
-export type Params = DetailPath['params']
+export type Props = Awaited<ReturnType<typeof getStaticPaths>>[number]['props']
+export type Params = Awaited<ReturnType<typeof getStaticPaths>>[number]['params']
 
 const { locale } = Astro.params
-const { entry, links, config } = Astro.props
+const { entry, siblings, section } = Astro.props
+
+const links = createDetailTranslationLinks(siblings, sectionRoutes, languages)
 
 const t = useTranslations(locale)
 
-const { Content } = await render(entry)
-const pageDescription = getSeoDescription(entry.data)
+const { Content } = await render(entry.original)
+const pageDescription = getSeoDescription(entry.original.data)
 ---
 
-<BaseLayout pageTitle={entry.data.title} description={pageDescription}>
+<BaseLayout pageTitle={entry.original.data.title} description={pageDescription}>
   <SEOHead
     slot="seo-head"
     links={links}
-    noindex={Boolean(entry.data.draft)}
+    noindex={entry.draft}
   />
   <LanguagePicker slot="langpicker" links={links} />
-  {entry.data.draft && (
+  {entry.draft && (
     <div class="untranslated-notice" role="status">
       <p>{t('post.draft_notice')}</p>
     </div>
   )}
 
   <DetailContent
-    section={config.name}
+    section={section}
     locale={locale}
-    entry={entry}
+    entry={entry.original}
     Content={Content}
   />
 

@@ -5,7 +5,7 @@ import WorkProjectCommunityView from './WorkProjectCommunityView.astro'
 import Tags from '@components/Tags.astro'
 import type { SectionType } from '@domain/section'
 import type { RenderResult } from 'astro:content'
-import type { PostEntry } from '@domain/post'
+import type { CollectionEntry } from 'astro:content'
 
 const detailComponentMap = {
   blog: BlogTalkPostView,
@@ -18,7 +18,7 @@ const detailComponentMap = {
 interface Props {
   section: SectionType
   locale: UILanguages
-  entry: PostEntry<SectionType>
+  entry: CollectionEntry<SectionType>
   Content: RenderResult['Content']
 }
 

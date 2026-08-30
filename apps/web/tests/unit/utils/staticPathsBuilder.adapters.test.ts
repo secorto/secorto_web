@@ -12,7 +12,6 @@ import { describe, test, expect, vi } from 'vitest'
 import {
   buildSectionIndexPaths,
   buildTagPaths,
-  buildAllDetailPaths,
   buildTagIndexPaths
 } from '@utils/staticPathsBuilder.adapters'
 import { sectionsConfig } from '@domain/section'
@@ -51,11 +50,6 @@ describe('staticPathsBuilder.adapters — contrato con sectionsConfig real', () 
 
   test('buildTagPaths: devuelve array (vacío si no hay entradas con tags)', async () => {
     const result = await buildTagPaths(emptyFetch)
-    expect(Array.isArray(result)).toBe(true)
-  })
-
-  test('buildAllDetailPaths: devuelve array (vacío si no hay entradas)', async () => {
-    const result = await buildAllDetailPaths(emptyFetch)
     expect(Array.isArray(result)).toBe(true)
   })
 })

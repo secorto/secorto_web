@@ -1,6 +1,5 @@
 import { test, expect, describe, vi } from 'vitest'
 import {
-  buildAllDetailPathsCore,
   buildSectionIndexPathsCore,
   buildLocalePathsForSection,
   buildTagPathsCore,
@@ -12,7 +11,6 @@ import { sectionsConfig, type SectionConfig } from '@domain/section'
 import {
   collectionMocks,
   createPostEntries,
-  createCollectionEntry,
 } from './staticPathsBuilder.fixtures'
 
 const blogSection = sectionsConfig['blog']
@@ -20,44 +18,6 @@ const talkSection = sectionsConfig['talk']
 const onlyBlogSections = [blogSection]
 const blogAndTalkSections = [blogSection, talkSection]
 const emptySections: SectionConfig[] = []
-
-describe('buildAllDetailPathsCore', () => {
-
-  test('handles empty collections gracefully', async () => {
-    const mockGetCollection: FetchCollection = vi.fn(async () => [] as CollectionEntry<CollectionKey>[])
-    const result = await buildAllDetailPathsCore(onlyBlogSections, mockGetCollection)
-    expect(result).toEqual([])
-  })
-
-  test('generates correct params structure', async () => {
-    const mockGetCollection: FetchCollection = vi.fn(async () => createPostEntries('blog', 2))
-    const result = await buildAllDetailPathsCore(onlyBlogSections, mockGetCollection)
-    expect(result.length).toBeGreaterThan(0)
-    for (const path of result) {
-      expect(path.params.locale).toBeDefined()
-      expect(path.params.section).toBeDefined()
-      expect(path.params.id).toBeDefined()
-      expect(path.props.entry).toBeDefined()
-      expect(path.props.availableLocales).toBeDefined()
-      expect(path.props.config).toBeDefined()
-    }
-  })
-
-  test('properly injects all dependencies', async () => {
-    const mockEntries = createPostEntries('blog', 1)
-    const mockGetCollection: FetchCollection = vi.fn(async () => mockEntries)
-    const result = await buildAllDetailPathsCore(onlyBlogSections, mockGetCollection)
-    expect(mockGetCollection).toHaveBeenCalled()
-    expect(result.length).toBeGreaterThan(0)
-  })
-
-  test('lanza error si un entry no está bajo una carpeta de locale válida', async () => {
-    const invalidEntry = createCollectionEntry('blog', { id: 'orphan/my-post' })
-    const mockGetCollection: FetchCollection = vi.fn(async () => [invalidEntry])
-    await expect(buildAllDetailPathsCore(onlyBlogSections, mockGetCollection))
-      .rejects.toThrow('Invalid entryId "orphan/my-post". Unknown locale prefix "orphan". Expected one of: en, es.')
-  })
-})
 
 describe('buildLocalePathsForSection', () => {
   test('genera paths para todos los locales configurados', () => {
