@@ -19,7 +19,7 @@ compatibilidad con nuevas versiones del toolchain.
 Ejemplos históricos incluyen:
 
 - un runner E2E con restricciones operativas que afectaba la estabilidad del CI (ver ADR‑002),
-- extensiones de análisis estático que impedían actualizar el núcleo del sistema de linting (ver ADR‑013).
+- extensiones de análisis estático que impedían actualizar el núcleo del sistema de linting.
 
 Estos casos evidencian la necesidad de una regla arquitectónica clara para manejar dependencias que
 bloquean la evolución del proyecto.
@@ -58,7 +58,6 @@ tooling editorial, etc.). Las acciones concretas se documentarán en ADRs espec�
 - Las decisiones específicas se documentarán en ADRs independientes.
 - La política no obliga a reemplazar herramientas funcionales; solo actúa ante bloqueos.
 
-## Relación con otros ADRs
+## Referencias
 
-- **ADR‑002** — Migración de Cypress a Playwright + Vitest.
-- **ADR‑013** — Manejo de dependencias bloqueantes en análisis estático.
+- [ADR-002](002-dynamic-testing-architecture.md) — Migración de Cypress a Playwright + Vitest.

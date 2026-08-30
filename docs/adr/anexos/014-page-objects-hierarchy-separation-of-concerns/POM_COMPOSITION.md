@@ -58,7 +58,7 @@ export class DetailPage {
 }
 ```
 
-Conclusión
+## Conclusión
 
 Este patrón proporciona una arquitectura modular, escalable y semánticamente clara para Page Objects,
 evitando herencia rígida y duplicación de lógica.

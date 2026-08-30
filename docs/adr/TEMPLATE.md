@@ -2,8 +2,8 @@
 id: ADR-XXX
 title: Título breve de la decisión
 status: proposed
-date: 2026-08-29
-last_updated: 2026-08-29
+date: YYYY-MM-DD
+last_updated: YYYY-MM-DD
 categories:
   - Architecture
 ---

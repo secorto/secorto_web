@@ -61,3 +61,7 @@ ecosistema.
 ## Referencias
 
 - [ADR-012](012-formatting.md) Formateo
+
+## Anexos
+
+- [Implementación](anexos/004-linting/IMPLEMENTATION.md)

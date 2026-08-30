@@ -70,7 +70,7 @@ La configuración se basa en los siguientes plugins:
 - CI más confiable al detectar problemas semánticos antes de ejecutar tests.
 - Código generado por IA alineado mediante reglas en `.github/copilot-instructions.md`.
 
-## Analisis detallado
+## Análisis detallado
 
 Se elevó la regla `@typescript-eslint/no-explicit-any` a `error` para evitar
 introducir nuevos `any` en el código fuente. El cambio ya está aplicado en
