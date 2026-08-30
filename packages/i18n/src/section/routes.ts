@@ -84,8 +84,9 @@ export function createSectionRoutes<
   routes: SectionDictionary<Section, Language, string>
 ): SectionRoutes<Section, Language> {
   const seen = new Map<string, Section>()
+  const sections = Object.freeze(Object.keys(routes) as Section[])
 
-  for (const section of Object.keys(routes) as Section[]) {
+  for (const section of sections) {
     const localized = routes[section]
 
     for (const locale of Object.keys(localized) as Language[]) {
@@ -103,7 +104,13 @@ export function createSectionRoutes<
     }
   }
 
-  const getSections = (): readonly Section[] => Object.keys(routes) as Section[]
+  // Enforce runtime immutability for the value object invariants.
+  for (const section of sections) {
+    Object.freeze(routes[section])
+  }
+  Object.freeze(routes)
+
+  const getSections = (): readonly Section[] => sections
 
   const getSectionRoute = (section: Section, locale: Language): string =>
     routes[section][locale]
