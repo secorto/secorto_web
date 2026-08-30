@@ -57,7 +57,7 @@ duplicación de configuración.
 - Base sólida para futuras validaciones automáticas más estrictas.
 - Mejora en la coherencia editorial del repositorio.
 
-### A tener en cuenta
+### A considerar
 
 - Requiere documentación clara para evitar confusiones entre reglas y patrones.
 - La configuración puede evolucionar, pero la decisión arquitectónica permanece estable.

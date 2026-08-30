@@ -74,7 +74,7 @@ Estas decisiones se aplicarán de manera uniforme y automática.
 - Separación clara entre análisis semántico (ADR 004) y estilo (este ADR).
 - Menor carga cognitiva para los desarrolladores al no discutir detalles estéticos.
 
-### Consideraciones
+### A considerar
 
 - La adopción del formateador puede requerir un commit de normalización.
 - El código generado por herramientas deberá alinearse automáticamente con las convenciones.

@@ -36,16 +36,20 @@ Integrar asistentes IA como herramientas de apoyo en el desarrollo, bajo los sig
 
 ## Consecuencias
 
-**Positivas:**
+### Positivas
 
 - Aceleración controlada del desarrollo.
 - Consistencia en el uso de IA.
 - Riesgos mitigados mediante política externa.
 
-**Negativas:**
+### A considerar
 
 - Requiere mantenimiento de la política.
 - Revisión más estricta en PRs.
+
+### Contras (Trade-offs)
+
+- El coste principal es la disciplina de revisión y la necesidad de mantener la política vigente.
 
 ## Referencias
 

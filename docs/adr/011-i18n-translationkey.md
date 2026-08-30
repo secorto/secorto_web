@@ -74,7 +74,7 @@ principio de separación semántica no.
 - Hace más robusta la evolución del contenido y de la i18n.
 - Mantiene la decisión válida aunque cambie el nombre técnico del campo.
 
-### A tener en cuenta
+### A considerar
 
 - Requiere una adopción consistente en contenidos y plantillas.
 - No reemplaza la identidad del dominio; complementa la decisión de negocio del

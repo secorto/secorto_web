@@ -70,7 +70,7 @@ La implementación concreta se documenta en el anexo técnico correspondiente.
 - Reducción de decisiones implícitas en SEO y generación de enlaces.
 - Mayor robustez del build al detectar inconsistencias de forma temprana.
 
-### A tener en cuenta
+### A considerar
 
 - Puede requerir ajustes en contenido legacy.
 - Los consumidores del dominio deben tratar la identidad canónica y el locale como contrato

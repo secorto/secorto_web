@@ -62,7 +62,7 @@ mientras que los archivos de arquitectura específicos se encargarán de mapear 
 - Se establece una base estructural para la validación automática futura (campos y secciones obligatorias).
 - Los commits de normalización quedan claramente marcados como cambios de formato, sin mezclar alteraciones en las decisiones.
 
-### Trabajo futuro habilitado
+### A considerar
 
 - **Validación de metadatos:** Implementar scripts en el flujo de integración continua (CI)
   que validen la estructura mínima y los campos obligatorios del YAML.

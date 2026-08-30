@@ -56,7 +56,7 @@ Conceptualmente, la decisión implica:
 - **Mantenibilidad:** agregar un nuevo proveedor requiere únicamente definir su comportamiento simulado.
 - **Flexibilidad:** se habilita un modo de ejecución que permite validar la integración real cuando sea necesario.
 
-### A tener en cuenta
+### A considerar
 
 - Las pruebas con mocks no detectan cambios reales en APIs o estructuras de proveedores externos.
 - Se recomienda ejecutar periódicamente una suite contra servicios reales para detectar roturas de integración.

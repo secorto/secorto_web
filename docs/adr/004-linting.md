@@ -46,7 +46,7 @@ ecosistema.
 - Pipeline más confiable al detectar fallos antes de la ejecución de tests.
 - Ecosistema alineado: código humano, código generado y paquetes internos siguen las mismas reglas.
 
-### Consideraciones
+### A considerar
 
 - Algunas áreas requerirán excepciones justificadas (por ejemplo, definiciones de tipos).
 - La política de análisis estático evolucionará en ADRs posteriores conforme cambie el ecosistema.

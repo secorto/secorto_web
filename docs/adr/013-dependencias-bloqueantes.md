@@ -52,7 +52,7 @@ tooling editorial, etc.). Las acciones concretas se documentarán en ADRs espec�
 - Reducción de fricción causada por dependencias obsoletas.
 - Mayor control sobre la evolución del proyecto.
 
-### Consideraciones
+### A considerar
 
 - Las migraciones deben evaluarse caso por caso.
 - Las decisiones específicas se documentarán en ADRs independientes.

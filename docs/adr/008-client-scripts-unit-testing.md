@@ -63,7 +63,7 @@ Conceptualmente, la decisión implica:
 - Mayor claridad en la API pública de los módulos del cliente.
 - Cobertura más completa de escenarios como inicialización, preferencias del usuario y estados por defecto.
 
-### A tener en cuenta
+### A considerar
 
 - La reorganización incrementa la superficie de código y requiere disciplina para mantener APIs pequeñas y bien documentadas.
 - La estrategia de pruebas requiere mantener actualizado el entorno simulado y las dependencias de desarrollo.

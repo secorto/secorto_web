@@ -62,7 +62,7 @@ A nivel conceptual, la decisión implica:
 - Mayor claridad para editores humanos y herramientas automáticas.
 - Migración simple desde estados históricos hacia el nuevo mecanismo.
 
-### A tener en cuenta
+### A considerar
 
 - Algunos contenidos antiguos pueden requerir normalización manual o asistida.
 - El campo histórico de estados de traducción puede permanecer como metadata obsoleta hasta su eventual limpieza.

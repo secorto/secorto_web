@@ -54,7 +54,7 @@ Adoptar una **arquitectura de testing dinámica por capas**, compuesta por:
 - Mejor capacidad de debugging mediante traces ligeros.
 - Ecosistema homogéneo: Vitest + Playwright comparten convenciones y toolchain.
 
-### Consideraciones
+### A considerar
 
 - La fase de convivencia requiere criterios claros de paridad.
 - La eliminación del runner antiguo implica revisar artefactos, configuraciones y dependencias históricas.

@@ -76,7 +76,7 @@ la responsabilidad del dominio ni la semántica de las traducciones:
 - Facilita agregar nuevas secciones sin multiplicar rutas manualmente.
 - Mejora la consistencia de la experiencia multilenguaje.
 
-### A tener en cuenta
+### A considerar
 
 - Introduce una capa de indirección entre la URL, la sección y la colección.
 - Requiere documentación clara para que la resolución de rutas sea legible.
