@@ -26,25 +26,27 @@ garantizando que las reglas de estilo se apliquen de manera uniforme en cualquie
 
 ## Decisión
 
-Adoptar **markdownlint-cli2** como herramienta estándar de validación de Markdown, utilizando:
+Adoptar un sistema de validación automática de Markdown que garantice reglas editoriales
+reproducibles en cualquier entorno. Actualmente se utiliza **markdownlint-cli2** por cumplir
+estos requisitos, pero la decisión se centra en el mecanismo y no en una herramienta específica.
 
-- Un archivo de reglas centralizado (`.markdownlint.jsonc`)
-- Un archivo de opciones de ejecución (`.markdownlint-cli2.jsonc`) para globs, exclusiones y configuración de CLI
-
-La separación entre reglas y patrones permite mantener una fuente única de verdad para estilo,
-mientras se ajustan los patrones según necesidades del entorno.
+El sistema debe permitir separar reglas editoriales del proyecto de los patrones de ejecución
+dependientes del entorno, asegurando una fuente única de verdad para estilo y evitando
+duplicación de configuración.
 
 ## Alternativas consideradas
 
 - **Reglas distintas para CI y local**
-  Rechazada: genera deriva y comportamientos inesperados.
-  La capacidad de `severity` en markdownlint permite flexibilidad sin duplicar reglas.
+  Rechazada: mantener configuraciones divergentes entre entornos genera deriva, inconsistencias y
+  comportamientos inesperados. La gobernanza editorial requiere un conjunto único de reglas.
 
-- **Solo linters en editor**
-  Rechazada: mejora la experiencia local, pero no garantiza consistencia en CI ni obligatoriedad en PRs.
+- **Validación solo en el editor**
+  Rechazada: mejora la experiencia local, pero no garantiza obligatoriedad ni coherencia en PRs.
+  La validación debe ser parte del pipeline para asegurar consistencia en todo el repositorio.
 
-- **Separación reglas vs patterns (adoptada)**
-  Permite centralizar estilo y ajustar ejecución sin duplicar configuración.
+- **Separación entre reglas editoriales y patrones de ejecución (adoptada)**
+  Permite centralizar las reglas del proyecto y ajustar la ejecución según el entorno sin duplicar
+  configuración. Este modelo asegura una fuente única de verdad y una validación reproducible.
 
 ## Consecuencias
 

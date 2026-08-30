@@ -186,5 +186,5 @@ Con esta decisión:
 - [DEVELOPMENT_WORKFLOW.md](../architecture/DEVELOPMENT_WORKFLOW.md) — QbD con validaciones explícitas
 - [ARCHITECTURE.md](../ARCHITECTURE.md) — principios del proyecto
 - [CONTRIBUTING.md](../CONTRIBUTING.md) — guía para contribuidores
-- [ADR 004](004-linting-any-ban-style-conventions.md) — linting y validación automática
+- [ADR 004](004-linting.md) — linting y validación automática
 - [ADR 002](002-testing-framework-migration.md) — testing framework migration

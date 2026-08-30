@@ -68,7 +68,7 @@ const parseEntry = (entry: EntryData): Computed => { /* ... */ }
 
 **Referencias:**
 
-- [ADR 004: Linting, tipo `any` y convenciones](./adr/004-linting-any-ban-style-conventions.md)
+- [ADR 004: Linting, tipo `any` y convenciones](./adr/004-linting.md)
 - [copilot-instructions.md](../.github/copilot-instructions.md) — "Avoid `any` type"
 
 ---

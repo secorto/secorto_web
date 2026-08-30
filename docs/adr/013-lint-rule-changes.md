@@ -69,5 +69,5 @@ o existan alternativas de bajo mantenimiento.
 
 ## Referencias
 
-- [ADR 004: Linting, tipo `any` y convenciones de estilo](004-linting-any-ban-style-conventions.md)
+- [ADR 004: Linting, tipo `any` y convenciones de estilo](004-linting.md)
 - [ADR 012: Formateo y herramienta de estilo propuesta](012-formatting.md)

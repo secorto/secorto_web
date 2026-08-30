@@ -39,7 +39,7 @@ Antes de ejecutar pruebas dinámicas, validación estática asegura contractos e
 y previene categorías de errores que serían costosas en tests:
 
 - **TypeScript strict**: Tipos en `domain/`, componentes, utils. Sin `any` sin justificación.
-- **ESLint**: Reglas de estilo + convenciones (ver [ADR 004](../adr/004-linting-any-ban-style-conventions.md) y [ADR 013](../adr/013-lint-rule-changes.md))
+- **ESLint**: Reglas de estilo + convenciones (ver [ADR 004](../adr/004-linting.md) y [ADR 013](../adr/013-lint-rule-changes.md))
 - **Markdownlint**: Documentación consistente (ver [MARKDOWN_VALIDATION.md](../MARKDOWN_VALIDATION.md))
 - **Build-time validation**: Astro valida `src/content.config.ts`, `i18n`, rutas dinámicas
 
@@ -69,7 +69,7 @@ Aplican a **Unit** y **E2E**:
 
 - **Nombres descriptivos**: `describe('contexto') / it('debe X cuando Y')`
 - **AAA**: Arrange / Act / Assert
-- **Evitar `any`**: Preferir datos fuertemente tipados (ver [ADR 004](../adr/004-linting-any-ban-style-conventions.md))
+- **Evitar `any`**: Preferir datos fuertemente tipados (ver [ADR 004](../adr/004-linting.md))
 - **Mockear dependencias externas**: Aislar el código bajo prueba de terceros
 
 ---
