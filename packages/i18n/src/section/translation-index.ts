@@ -24,17 +24,21 @@ export interface LocalizedEntry<
 export type TranslationGroup<
   L extends string,
   TEntry,
-> = Record<L, LocalizedEntry<TEntry, L>>
+> = Partial<Record<L, LocalizedEntry<TEntry, L>>>
 
 export type TranslationIndex<
   L extends string,
   TEntry
-> = Record<string, TranslationGroup<L, TEntry>>
+> = Partial<Record<string, TranslationGroup<L, TEntry>>>
 
 /**
  * Builds a translation index from an array of localized entries.
  * The index groups entries by their translation key and locale.
  * If duplicate entries for the same translation key and locale are found, an error is thrown.
+ *
+ * Invariant: a key is only inserted into the map after at least one locale
+ * has been assigned to it. An empty group is therefore an invalid state.
+ *
  * @template E - The type of the content (e.g., { title: string, body: string }).
  * @template C - The section of the application (e.g., 'blog', 'docs').
  * @template L - The language code (e.g., 'es', 'en').
@@ -48,7 +52,7 @@ export function createTranslationIndex<
 >(
   entries: readonly LocalizedEntry<TEntry, L>[]
 ): TranslationIndex<L, TEntry> {
-  // Using map to safely mutate internally without lying to TypeScript
+  // Using map to safely mutate internally without lying to TypeScript.
   const map = new Map<string, TranslationGroup<L, TEntry>>()
 
   for (const entry of entries) {

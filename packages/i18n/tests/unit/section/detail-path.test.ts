@@ -19,7 +19,7 @@ describe("getStaticPathsEntries", () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })
-  
+
   const routes = createSectionRoutes({
     blog: {
       es: "blog/es",

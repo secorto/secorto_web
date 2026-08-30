@@ -25,7 +25,7 @@ export type DetailPath<
   props: {
     entry: LocalizedEntry<TEntry, L>
     section: C
-    siblings: TranslationIndex<L, TEntry>[string]
+    siblings: NonNullable<TranslationIndex<L, TEntry>[string]>
   }
 }
 
@@ -79,6 +79,12 @@ export async function getStaticPathsEntries<
 
     for (const localized of localizedEntries) {
       const siblings = index[localized.translationKey]
+
+      if (!siblings || Object.keys(siblings).length === 0) {
+        throw new Error(
+          `Missing translation group for key "${localized.translationKey}"`,
+        )
+      }
 
       allPaths.push({
         params: {

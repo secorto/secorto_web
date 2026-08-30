@@ -1,7 +1,13 @@
-import { describe, expect, it } from 'vitest'
+import {
+  describe,
+  expect,
+  expectTypeOf,
+  it,
+} from 'vitest'
 import {
   createTranslationIndex,
   LocalizedEntry,
+  TranslationGroup,
 } from '@secorto/i18n'
 
 type TestLocales = 'es' | 'en' | 'fr'
@@ -22,6 +28,7 @@ function createEntry<K extends string>(
     original: {
       text: 'default content',
     },
+    draft: false,
     translationKey,
     locale,
   }
@@ -45,11 +52,11 @@ describe('createTranslationIndex', () => {
     ])
 
     expect(
-      index['playwright-guide'].es,
+      index['playwright-guide']?.es,
     ).toBe(esEntry)
 
     expect(
-      index['playwright-guide'].en,
+      index['playwright-guide']?.en,
     ).toBe(enEntry)
   })
 
@@ -85,15 +92,15 @@ describe('createTranslationIndex', () => {
     ])
 
     expect(
-      index['playwright-guide'].es,
+      index['playwright-guide']?.es,
     ).toBe(esEntry)
 
     expect(
-      index['playwright-guide'].en,
+      index['playwright-guide']?.en,
     ).toBeUndefined()
   })
 
-  it('should enforce safe navigation for missing translation keys', () => {
+  it('keeps the invariant that an existing group contains entries', () => {
     const entry = createEntry(
       'existing-key',
       'es',
@@ -103,9 +110,21 @@ describe('createTranslationIndex', () => {
       entry,
     ])
 
-    const missingGroup =
-      index['missing-key']
+    const group = index['existing-key']
+    const missingGroup = index['missing-key']
 
+    expect(group).toBeDefined()
+    expect(Object.keys(group ?? {})).toHaveLength(1)
+    expect(group?.es).toBe(entry)
+    expect(group?.fr).toBeUndefined()
     expect(missingGroup).toBeUndefined()
+
+    expectTypeOf(group?.fr)
+      .toEqualTypeOf<LocalizedEntry<TestContent, TestLocales> | undefined>()
+
+    expectTypeOf(missingGroup)
+      .toEqualTypeOf<
+        Partial<Record<string, TranslationGroup<TestLocales, TestContent>>>[string]
+      >()
   })
 })
