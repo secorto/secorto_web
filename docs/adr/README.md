@@ -25,7 +25,7 @@ completa del proyecto a través de tres reescrituras en diferentes frameworks.
 | # | Título | Temática | Estado | Fecha |
 | --- | --- | --- | --- | --- |
 | [001](001-i18n-router-framework.md) | Router polimórfico de secciones | Router & i18n | Aceptada | 2025-06 |
-| [002](002-testing-framework-migration.md) | Migración de Cypress a Playwright + Vitest | Testing & QA | Aceptada | 2025-07 |
+| [002](002-dynamic-testing-architecture.md) | Adopción de una arquitectura de testing dinámica por capas | Testing & QA | Aceptada | 2025-07 |
 | [003](003-third-party-mocks.md) | Mocks de servicios de terceros en tests E2E | Testing & QA | Aceptada | 2025-07 |
 | [004](004-linting.md) | Linting y análisis estático como garantía de calidad estructural | Código & Calidad | Aceptada | 2025-07 |
 | [005](005-ia-development-integration.md) | Integración de asistentes IA en el flujo de desarrollo | Architecture | Aceptada | 2026-01 |

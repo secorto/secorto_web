@@ -187,4 +187,4 @@ Con esta decisión:
 - [ARCHITECTURE.md](../ARCHITECTURE.md) — principios del proyecto
 - [CONTRIBUTING.md](../CONTRIBUTING.md) — guía para contribuidores
 - [ADR 004](004-linting.md) — linting y validación automática
-- [ADR 002](002-testing-framework-migration.md) — testing framework migration
+- [ADR 002](002-dynamic-testing-architecture.md) — testing framework migration

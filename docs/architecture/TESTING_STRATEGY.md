@@ -9,7 +9,7 @@ Incluye elección de frameworks, patrones recomendados y cómo ejecutar cada tip
 - **Escribir test E2E (Playwright)** → Sigue leyendo, luego ve a [PAGE_OBJECTS.md](PAGE_OBJECTS.md)
   para patrón de Page Object Model
 - **Escribir test unitario (Vitest)** → Sigue leyendo sección "Pruebas Unitarias"
-- **Entender por qué estos frameworks** → [ADR 002 — Testing Framework Migration](../adr/002-testing-framework-migration.md)
+- **Entender por qué estos frameworks** → [ADR 002 — Testing Framework Migration](../adr/002-dynamic-testing-architecture.md)
 - **Usar soft assertions en E2E** → [ADR 015 — Consolidated E2E Assertions](../adr/015-consolidated-e2e-assertions-soft-expect.md)
 - **Reglas de estilo** → [CODING_GUIDELINES.md](../CODING_GUIDELINES.md)
 
@@ -31,7 +31,7 @@ Incluye elección de frameworks, patrones recomendados y cómo ejecutar cada tip
 - E2E — `Playwright`
 
 Para el razonamiento y la justificación de cada elección, ver
-[ADR 002](../adr/002-testing-framework-migration.md).
+[ADR 002](../adr/002-dynamic-testing-architecture.md).
 
 ## Análisis Estático: Primera Línea de Defensa
 
