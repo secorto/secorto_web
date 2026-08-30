@@ -1,5 +1,6 @@
 ---
-title: ADR 006: Unificación del manejo de borradores (`draft`)
+id: ADR-006
+title: Unificación del manejo de borradores (`draft`)
 status: accepted
 date: 2026-02-13
 last_updated: null
@@ -11,45 +12,44 @@ categories:
 
 ## Contexto
 
-El repositorio implica contenido multilingüe organizado por carpetas
-(`src/content/<collection>/<locale>/`) y metadatos en frontmatter. Históricamente
-se usó el campo `translation_status` para marcar traducciones en curso
-(`draft`, `partial`, `translated`, etc.). Esto generó complejidad accidental:
+El repositorio gestiona contenido multilingüe con metadatos asociados a cada entrada.
+Históricamente se utilizaron dos mecanismos para indicar que un contenido no debía ser publicado:
+un campo específico para estados de traducción y un campo booleano para marcar borradores.
 
-- Doble fuente de verdad (`translation_status` vs. `draft`) con reglas
-  distintas en plantillas y scripts.
-- Necesidad de inferir estado de borrador desde `translation_status`, lo que
-  introducía lógica dispersa y condiciones especiales en `paths`, `translationMetadata` y vistas.
-- Riesgo de inconsistencia entre archivos antiguos y comportamiento de la web.
+La coexistencia de ambos mecanismos generó complejidad accidental:
 
-Mientras tanto, `draft: true` (booleano) resulta una convención simple y
-clara para indicar que un archivo no debe aparecer en listados ni indexarse.
+- Dos fuentes de verdad para determinar si un contenido debía ser visible.
+- Lógica dispersa para inferir estados de borrador a partir de estados de traducción.
+- Riesgo de inconsistencias entre contenido antiguo y comportamiento esperado.
+
+El campo booleano `draft` ofrece una convención simple y explícita para indicar que una entrada no debe ser publicada.
+
+---
+
+## Objetivo
+
+Establecer un mecanismo único, claro y determinista para indicar que una entrada es un borrador,
+reduciendo complejidad y evitando inferencias implícitas.
 
 ---
 
 ## Decisión
 
-Adoptar un único campo explícito en frontmatter: `draft: true` para indicar
-borradores. Cambios concretos:
-
-- El esquema de contenido (`src/content.config.ts`) incluirá `draft?: boolean`.
-- Las funciones que generan listados y paths (`src/utils/paths.ts`) solo
-  filtrarán por `data.draft === true` para excluir borradores.
-- La lógica de canonical/noindex y avisos se basará en `draft` y en los helpers del dominio;
-  no se recomienda inferir borradores desde `translation_status`.
-- `translation_status` podrá permanecer como metadata histórica/auxiliar,
-  pero ya no se usará para inferir el estado de borrador.
+Adoptar `draft: true` como **única** señal de borrador en el frontmatter.
+El campo histórico de estados de traducción podrá mantenerse como metadata auxiliar,
+pero no participará en la determinación de visibilidad.
 
 ---
 
-## Alternativas consideradas
+## Implementación
 
-- Mantener `translation_status` como fuente de verdad: rechazado por
-  complejidad y riesgo de inconsistencias.
-- Usar ambos campos y priorizar uno sobre otro: añade ambigüedad y reglas
-  de resolución que complican templates y scripts.
-- No usar ningún campo explícito y determinar borradores por existencia de
-  un sufijo o carpeta especial: menos conveniente para editores externos.
+La implementación concreta se documenta en los archivos de arquitectura correspondientes.
+A nivel conceptual, la decisión implica:
+
+- Incorporar `draft` como parte del esquema de metadatos del contenido.
+- Basar la visibilidad, indexación y avisos únicamente en el valor de `draft`.
+- Evitar cualquier inferencia automática desde estados de traducción.
+- Mantener los estados de traducción como metadata histórica sin impacto en la lógica de borradores.
 
 ---
 
@@ -57,84 +57,22 @@ borradores. Cambios concretos:
 
 ### Positivas
 
-- Simplicidad y claridad en frontmatter (`draft: true` es explícito e
-  evidente).
-- Menos lógica dispersa en templates y utilidades; más fácil razonar sobre
-  visibilidad y SEO (noindex/canonical).
-- Proceso de migración sencillo: transformar `translation_status: 'draft'`
-  a `draft: true` en los casos necesarios.
+- Un único mecanismo explícito para determinar borradores.
+- Reducción de complejidad accidental en la lógica de visibilidad.
+- Mayor claridad para editores humanos y herramientas automáticas.
+- Migración simple desde estados históricos hacia el nuevo mecanismo.
 
-### Negativas / Trade-offs
+### A considerar
 
-- Requiere convertir algunos archivos antiguos si existieran valores de
-  `translation_status` relevantes (script de migración recomendado).
-- `translation_status` permanece en los archivos como metadata potencialmente
-  obsoleta; conviene limpiar a futuro.
-
----
-
-## Plan de migración
-
-1. Actualizar el schema (`src/content.config.ts`) para aceptar `draft?: boolean`.
-2. Actualizar utilidades y plantillas para usar `draft` (ya aplicado en el
-   código base actual).
-3. Ejecutar un script que identifique archivos con `translation_status: 'draft'`
-   y proponga (o aplique con turno manual) `draft: true`.
-4. Actualizar la documentación (`docs/CONTENT_POLICY.md`) para reflejar
-   la nueva convención.
+- Algunos contenidos antiguos pueden requerir normalización manual o asistida.
+- El campo histórico de estados de traducción puede permanecer como metadata obsoleta hasta su eventual limpieza.
 
 ---
 
 ## Referencias
 
-- `src/content.config.ts` — campo `draft` añadido al schema base
-- `src/utils/paths.ts` — filtrado por `draft`
-- `src/domain/post.ts` — helpers de dominio (p. ej. `getSeoDescription`) y tipos relacionados;
-  las extracciones simples de metadata también pueden encontrarse inline en las plantillas o centralizadas en estos helpers.
-- `docs/CONTENT_POLICY.md` — guía actualizada
+- [Gobernanza de contenido multilingüe](../CONTENT_POLICY.md)
 
----
+## Anexos
 
-## Implementación (observaciones)
-
-Cambios aplicados durante la implementación para reducir la complejidad
-accidental y asegurar comportamiento consistente:
-
-- `src/content.config.ts`: el schema base ya expone `draft?: boolean`, lo
-  que permite que todas las colecciones acepten el campo sin cambios
-  manuales en cada post.
-- `src/utils/paths.ts`: se actualizó el filtrado para excluir entradas con
-  `data.draft === true`. Se eliminaron casts inseguros y se usan comprobaciones
-  en tiempo de ejecución sobre `Record<string, unknown>` para evitar `any`.
-- `src/domain/post.ts`: los helpers de dominio (por ejemplo `getSeoDescription`)
-  y la lógica de SEO/canonical/noindex se concentran aquí o se dejan inline en
-  las plantillas. Se simplificó la lógica para depender únicamente de `draft`
-  (frontmatter: `entry.data.draft`) y evitar inferencias desde `translation_status`.
-  Se eliminaron inferencias automáticas sobre `translation_status` en el
-  flujo principal (la metadata histórica puede permanecer en archivos).
-- `src/pages/[locale]/[section]/[...id].astro`: la plantilla de detalle ahora
-  muestra el aviso de borrador únicamente cuando `entry.data.draft` es true;
-  se eliminó la lógica condicional que intentaba inferir borradores desde
-  estados de traducción.
-- Tipado: se añadió `draft?: boolean` en el tipo local `BaseEntryData` para
-  evitar casteos y reflejar el campo en las páginas que renderizan entradas.
-- Tests: las pruebas unitarias se adaptaron para usar `draft` (`entry.data.draft`) como
-  fuente de verdad y se eliminó la dependencia en el helper de compatibilidad
-  (o se reescribieron para cubrir la nueva interfaz). La suite local pasa
-  completamente tras los cambios.
-
-Notas importantes:
-
-- Se priorizó eliminar compatibilidad retro en el runtime para evitar
-  lógica dispersa y ambigua. Si se necesita, se puede crear un script de
-  migración que proponga `draft: true` en archivos con
-  `translation_status: 'draft'` (modo preview recomendado antes de aplicar).
-- Eliminamos `any` y casts inseguros en puntos críticos (`paths.ts`,
-  plantillas) para mejorar la seguridad de tipos y la mantenibilidad.
-- Resultado: comportamiento determinista — solo `draft: true` controla la
-  visibilidad y SEO (noindex/canonical) en la web.
-
----
-
-Decisión tomada por: autor del repositorio (Sergio Orozco) tras revisión del
-historial y necesidad de reducir complejidad accidental.
+- [Implementación](anexos/006-unificacion-manejo-borradores/IMPLEMENTATION.md)

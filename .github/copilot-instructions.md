@@ -36,9 +36,11 @@ Documenta patrones reales de errores que evitar (cualquier `any`, referencias ro
 
 ## Cuando escribas ADRs
 
-- Lee [docs/adr/010-plantilla-estandar-adr.md](../docs/adr/010-plantilla-estandar-adr.md) para estructura obligatoria
+- Usa [docs/adr/TEMPLATE.md](../docs/adr/TEMPLATE.md) como plantilla canónica
 - **Mantén la decisión agnóstica a implementación concreta:**
   - Usa conceptos abstractos (no nombres de clases: p.ej. "especialización por responsabilidad", no "ContentListPage")
-  - Referencias a detalles concretos van en archivos de arquitectura (docs/architecture/), no en el ADR
+  - Referencias a detalles concretos van en archivos de arquitectura (docs/architecture/) o anexos técnicos, no en el ADR
   - Así el ADR sigue siendo válido cuando refactoriza la implementación
-- Incluye: Contexto (abstracto), Decisión (patrón abstracto), Motivación, Alternativas, Consecuencias, Referencias
+- Requiere frontmatter YAML con metadatos mínimos: `id`, `title`, `status`, `date`, `last_updated`, `categories`
+- Estructura recomendada: Contexto, Objetivo, Decisión, Motivación, Implementación, Consecuencias, Referencias, Anexos
+- En Consecuencias usa un único formato: Positivas, A considerar, Contras (Trade-offs), Alternativas Rechazadas

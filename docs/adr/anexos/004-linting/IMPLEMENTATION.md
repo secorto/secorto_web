@@ -1,36 +1,76 @@
----
-title: ADR 004: Linting, tipo `any` y convenciones de estilo
-status: superseded
-date: 2026-02-15
-last_updated: null
-categories:
-  - Tooling
-  - Code Quality
-  - Style
-superseded_by:
-  - 013
----
+# Implementación de lint usando eslint
 
 ## Contexto
 
-A medida que el proyecto creció y se hicieron múltiples refactorings para
-alcanzar 100 % de cobertura unitaria, se detectaron problemas recurrentes de
-calidad de código:
+El crecimiento del proyecto y la incorporación de refactorings para alcanzar 100 % de cobertura unitaria
+revelaron problemas estructurales de calidad de código:
 
-1. **Uso extendido de `any`:** muchas funciones y variables usaban `any`,
-   lo que anulaba las ventajas de TypeScript. Los errores de tipo solo se
-   descubrían en runtime o en tests E2E lentos, no en tiempo de compilación.
-2. **Falta de linter configurado:** no había un ESLint estructurado; cada
-   archivo seguía convenciones diferentes.
-3. **Inconsistencia en estilo:** algunos archivos usaban `;`, otros no;
-   la indentación variaba entre archivos.
-4. **Código generado por herramientas con estilo diferente:** Playwright
-   codegen genera código con `;` (semicolons), pero la convención del
-   proyecto es omitirlos.
+- Uso extendido de `any`, que anulaba las garantías de TypeScript.
+- Ausencia de una configuración consolidada de ESLint.
+- Inconsistencias en convenciones semánticas (imports, variables no usadas, accesibilidad).
+- Código generado por herramientas con reglas distintas, dificultando mantener criterios uniformes.
 
-## Decisiones tomadas
+Estos problemas afectaban la robustez del código, la detección temprana de errores y la confiabilidad del pipeline de CI.
 
-### 1. Prohibir `any` — `@typescript-eslint/no-explicit-any: error`
+> **Nota:** Las decisiones de estilo y formateo (semicolons, quotes, trailing commas, indentación, etc.)
+> se documentan en **ADR 012**.
+> Este ADR cubre únicamente reglas de análisis estático y calidad semántica.
+
+## Decisión
+
+Adoptar **ESLint (flat config)** como herramienta central de análisis estático, con reglas estrictas orientadas a:
+
+- eliminar el uso de `any` salvo excepciones justificadas,
+- detectar imports inválidos o dependencias no declaradas,
+- asegurar accesibilidad en componentes `.astro`,
+- evitar variables no utilizadas,
+- consolidar convenciones semánticas del proyecto.
+
+La configuración se basa en los siguientes plugins:
+
+- `@typescript-eslint`
+- `eslint-plugin-import`
+- `eslint-plugin-jsx-a11y`
+- `eslint-plugin-astro`
+
+## Motivación
+
+- Garantizar que errores de tipo y problemas semánticos se detecten en compilación, no en runtime.
+- Reducir dependencias implícitas y errores silenciosos en imports.
+- Alinear el ecosistema de tooling con TypeScript y Astro.
+- Mantener un estándar mínimo de accesibilidad en componentes.
+- Evitar que el código generado por herramientas introduzca inconsistencias semánticas.
+
+## Reglas principales adoptadas
+
+- `@typescript-eslint/no-explicit-any: error`
+  Evita introducir nuevos `any` y obliga a definir tipos explícitos.
+
+- `@typescript-eslint/no-unused-vars: error`
+  Previene variables y parámetros no utilizados; permite ignorar nombres con `_`.
+
+- `import/no-unresolved: error`
+  Detecta imports rotos, especialmente con alias de Astro.
+
+- `import/no-extraneous-dependencies: error`
+  Garantiza que las dependencias usadas estén declaradas correctamente.
+
+- `jsx-a11y/*`
+  Reglas de accesibilidad para componentes `.astro` y JSX.
+
+- Reglas específicas de Astro mediante `eslint-plugin-astro`.
+
+## Consecuencias
+
+### Positivas
+
+- Eliminación progresiva de `any` y mayor seguridad en tiempo de compilación.
+- Imports validados y menos errores silenciosos en rutas o alias.
+- Accesibilidad mínima garantizada en componentes.
+- CI más confiable al detectar problemas semánticos antes de ejecutar tests.
+- Código generado por IA alineado mediante reglas en `.github/copilot-instructions.md`.
+
+## Análisis detallado
 
 Se elevó la regla `@typescript-eslint/no-explicit-any` a `error` para evitar
 introducir nuevos `any` en el código fuente. El cambio ya está aplicado en
@@ -111,14 +151,14 @@ de organizar (se excluyen decisiones de estilo, que se documentan en
 ┌──────────────────────────────────────────────────────────┐
 │ ESLint (flat config, v9)                                 │
 │                                                          │
-│  ┌─────────────┐  ┌──────────────┐  ┌────────────────┐  │
+│  ┌──────────────┐  ┌──────────────┐  ┌────────────────┐  │
 │  │ @typescript- │  │ eslint-      │  │ eslint-plugin- │  │
 │  │ eslint       │  │ plugin-      │  │ jsx-a11y       │  │
 │  │              │  │ import       │  │                │  │
 │  │ • no-any ⚠️  │  │ • unresolved │  │ • alt-text     │  │
 │  │ • no-unused  │  │ • extraneous │  │ • anchor       │  │
 │  │   vars ❌    │  │              │  │                │  │
-│  └─────────────┘  └──────────────┘  └────────────────┘  │
+│  └──────────────┘  └──────────────┘  └────────────────┘  │
 │                                                          │
 │  ┌─────────────┐                                         │
 │  │ eslint-     │                                         │
@@ -128,40 +168,3 @@ de organizar (se excluyen decisiones de estilo, que se documentan en
 │                                                          │
 └──────────────────────────────────────────────────────────┘
 ```
-
-## Consecuencias
-
-### Positivas
-
-- **Cero `any` en producción:** TypeScript detecta errores en compilación
-  que antes solo aparecían en runtime.
-- **Imports validados:** `import/no-unresolved` previene imports rotos,
-  especialmente con los alias de Astro (`@config/*`, `@utils/*`).
-- **Accesibilidad validada:** `jsx-a11y` detecta problemas de accesibilidad
-  en componentes `.astro`.
-- **Copilot alineado:** las instrucciones en `.github/copilot-instructions.md`
-  mantienen el código generado por IA consistente con las convenciones.
-
-### Deuda técnica conocida
-
-- Reglas de estilo (quotes, trailing commas, semicolons) sin definir; el
-  contenido y propuesta de formateo se trasladó a `ADR 012`.
-- `no-explicit-any` ahora es `error`; revisar fallos en CI y agregar
-  excepciones justificadas si aparecen casos legítimos.
-- Configuración de ESLint podría consolidarse mejor (algunas reglas sueltas).
-
-## Acciones futuras (cuando se retome)
-
-1. [ ] Verificar CI y/o agregar excepciones justificadas para `no-explicit-any`
-2. [ ] Revisar y eliminar `eslint-disable` restantes (ej. `src/env.d.ts`) y
-   confirmar que las overrides en ESLint para `.d.ts` permiten quitar
-   la mayoría de disables inline
-3. [ ] Documentar la resolución final en este ADR (cambiar estado a **Aceptada**)
-
-## Referencias
-
-- [ESLint Flat Config](https://eslint.org/docs/latest/use/configure/configuration-files-new)
-- [typescript-eslint: no-explicit-any](https://typescript-eslint.io/rules/no-explicit-any/)
-- [ESLint Stylistic](https://eslint.style/)
-- [Prettier vs ESLint](https://prettier.io/docs/en/comparison.html)
-- [copilot-instructions.md](../../.github/copilot-instructions.md)

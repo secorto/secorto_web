@@ -144,7 +144,7 @@ module.exports = {
 - `@testing-library/cypress` para queries semánticas
 - Solo un spec file: accesibilidad en ambos color modes
 - No se usó Cypress Cloud (evitando el límite de 500 ejecuciones/mes
-  que luego motivaría el [ADR 002](002-testing-framework-migration.md))
+  que luego motivaría el [ADR 002](002-dynamic-testing-architecture.md))
 
 #### Pipeline CI (GitHub Actions)
 

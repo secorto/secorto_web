@@ -1,4 +1,4 @@
-# Anexo ADR 017: Inventario de Funciones — Core Agnóstico vs Secorto-Específico
+# Inventario de Funciones — Core Agnóstico vs Secorto-Específico
 
 **Propósito:** Mapear cada función/tipo en el codebase actual y clasificar si pertenece al core
 agnóstico de `@secorto/i18n` o si es específico de `apps/web` (secorto).

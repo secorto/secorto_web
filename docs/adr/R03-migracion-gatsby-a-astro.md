@@ -131,7 +131,7 @@ que el sitio soportaba más de un idioma. Documentado en detalle en
 
 La complejidad del i18n evidenció las limitaciones de Cypress y la
 ausencia de tests unitarios. Documentado en
-[ADR 002](002-testing-framework-migration.md):
+[ADR 002](002-dynamic-testing-architecture.md):
 
 - **Playwright** reemplazó a Cypress para E2E (multi-browser, sin límite
   de ejecuciones)
@@ -260,5 +260,5 @@ Astro post-i18n  → Playwright E2E + Vitest unitarios (cobertura completa)
 - [ADR R01 — Jekyll](R01-fundacion-sitio-jekyll.md)
 - [ADR R02 — Gatsby](R02-migracion-jekyll-a-gatsby.md)
 - [ADR 001 — i18n y router polimórfico](001-i18n-router-framework.md)
-- [ADR 002 — Migración Cypress → Playwright + Vitest](002-testing-framework-migration.md)
+- [ADR 002 — Migración Cypress → Playwright + Vitest](002-dynamic-testing-architecture.md)
 - [Astro](https://astro.build/)

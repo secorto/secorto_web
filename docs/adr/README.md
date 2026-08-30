@@ -24,21 +24,22 @@ completa del proyecto a través de tres reescrituras en diferentes frameworks.
 
 | # | Título | Temática | Estado | Fecha |
 | --- | --- | --- | --- | --- |
-| [001](001-i18n-router-framework.md) | Framework i18n y router polimórfico de secciones | Router & i18n | Aceptada | 2025-06 |
-| [002](002-testing-framework-migration.md) | Migración de Cypress a Playwright + Vitest | Testing & QA | Aceptada | 2025-07 |
+| [001](001-i18n-router-framework.md) | Router polimórfico de secciones | Router & i18n | Aceptada | 2025-06 |
+| [002](002-dynamic-testing-architecture.md) | Adopción de una arquitectura de testing dinámica por capas | Testing & QA | Aceptada | 2025-07 |
 | [003](003-third-party-mocks.md) | Mocks de servicios de terceros en tests E2E | Testing & QA | Aceptada | 2025-07 |
-| [004](004-linting-any-ban-style-conventions.md) | Linting, prohibición de `any` y convenciones de estilo | Código & Calidad | Parcial | 2025-07 |
+| [004](004-linting.md) | Linting y análisis estático como garantía de calidad estructural | Código & Calidad | Aceptada | 2025-07 |
 | [005](005-ia-development-integration.md) | Integración de asistentes IA en el flujo de desarrollo | Architecture | Aceptada | 2026-01 |
 | [006](006-unificacion-manejo-borradores.md) | Unificación del manejo de borradores (`draft`) | Contenido & Traducciones | Aceptada | 2026-02 |
-| [007](007-domain-i18n-unificacion.md) | Unificación de dominio e i18n — `postId`, mapas de locales y SEO centralizado | Router & i18n | Aceptada | 2026-03 |
+| [007](007-domain-i18n-unificacion.md) | Unificación de dominio e i18n | Router & i18n | Aceptada | 2026-03 |
 | [008](008-client-scripts-unit-testing.md) | Estrategia de pruebas client-side y reorganización del cliente | Testing & QA | Aceptada | 2026-04 |
 | [009](009-markdown-validation.md) | Validación de Markdown (formato y sincronización de documentación) | Código & Calidad | Aceptada | 2026-05 |
-| [010](010-plantilla-estandar-adr.md) | Plantilla estándar de ADRs | Proceso | Propuesta | 2026-05 |
-| [011](011-i18n-translationkey.md) | `translationKey` como llave canónica | Router & i18n | Aceptada | 2026-05 |
-| [012](012-formatting-proposal.md) | Formateo y herramienta de estilo propuesta | Código & Calidad | Propuesta | 2026-05 |
-| [013](013-lint-rule-changes.md) | Actualización a ESLint 10 y eliminación temporal de plugins | Código & Calidad | Aceptada | 2026-05 |
+| [010](010-plantilla-estandar-adr.md) | Plantilla estándar de ADRs | Proceso | Aceptada | 2026-05 |
+| [011](011-i18n-translationkey.md) | Llave canónica de traducción | Router & i18n | Aceptada | 2026-05 |
+| [012](012-formatting.md) | Formateo y herramienta de estilo | Código & Calidad | Propuesta | 2026-05 |
+| [013](013-dependencias-bloqueantes.md) | Manejo de dependencias externas que bloquean la evolución del sistema | Architecture | Aceptada | 2026-05 |
 | [014](014-page-objects-hierarchy-separation-of-concerns.md) | Jerarquía de Page Objects con separación clara de responsabilidades | Testing & QA | Aceptada | 2026-07 |
-| [016](016-monorepo-workspace-pnpm.md) | Adoptar un monorepo con pnpm workspace para el sitio web | Architecture | Propuesta | 2026-08 |
+| [015](015-consolidated-e2e-assertions-soft-expect.md) | Consolidación de aserciones E2E mediante soft expect semánticamente guiado | Testing & QA | Aceptada | 2026-08 |
+| [016](016-monorepo-architecture.md) | Adoptar un monorepo con pnpm workspace para el sitio web | Architecture | Aceptada | 2026-08 |
 
 ## Convenciones
 

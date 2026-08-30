@@ -1,59 +1,67 @@
 ---
-title: ADR 009: Validación de Markdown (formato y sincronización de documentación)
+id: ADR-009
+title: Validación de Markdown (formato y sincronización de documentación)
 status: accepted
 date: 2026-05-01
-last_updated: 2026-05-02
+last_updated: 2026-08-29
 categories:
   - Content
   - Tooling
 ---
 
-**Alcance:** Este ADR cubre la adopción e integración de `markdownlint-cli2`
-como herramienta de validación sintáctica y de estilo de Markdown.
-
 ## Contexto
 
-En los últimos cambios se han recibido numerosos comentarios en PRs por mal formato en Markdown
-(encabezados inconsistentes, código sin fences adecuados,
-line endings/whitespace, URLs desnudas, etc.).
-El problema principal a resolver es operativo y de comunicación:
-reducir el ruido en PRs aplicando reglas reproducibles
-que eviten correcciones manuales repetidas.
+El repositorio presenta inconsistencias frecuentes en archivos Markdown: encabezados desalineados,
+uso irregular de fences, URLs sin formato, variaciones en whitespace y otros problemas de estilo.
+Estos defectos generan ruido en revisiones de PR y dificultan mantener una base documental coherente.
+
+El problema no es técnico sino de **gobernanza editorial**:
+se requiere una herramienta que aplique reglas reproducibles tanto localmente como en CI,
+evitando correcciones manuales repetitivas.
+
+## Objetivo
+
+Establecer un mecanismo único y consistente para validar el formato Markdown en todo el proyecto,
+garantizando que las reglas de estilo se apliquen de manera uniforme en cualquier entorno.
 
 ## Decisión
 
-Usar `markdownlint-cli2` con un archivo de reglas (`.markdownlint.jsonc`)
-y un archivo de opciones para la CLI (`.markdownlint-cli2.jsonc`) que controle patterns/exclusiones; ambos
-archivos serán consumidos por CI cuando el pipeline ejecute `markdownlint-cli2` (por ejemplo vía
-`npm run lint:md`), de modo que las mismas reglas se apliquen en CI y localmente.
+Adoptar un sistema de validación automática de Markdown que garantice reglas editoriales
+reproducibles en cualquier entorno. Actualmente se utiliza **markdownlint-cli2** por cumplir
+estos requisitos, pero la decisión se centra en el mecanismo y no en una herramienta específica.
 
-## Implementación
-
-- Mantener dos archivos de configuración consumidos por CI y localmente:
-  - `.markdownlint.jsonc` — reglas y `severity`
-  - `.markdownlint-cli2.jsonc` — globs/exclusiones y opciones de ejecución
-- Añadir scripts en `package.json`:
-  - `npm run lint:md` — validar markdown
-  - `npm run lint:md:fix` — correcciones automáticas
-- Documentar en [docs/MARKDOWN_VALIDATION.md](../MARKDOWN_VALIDATION.md) los comandos mínimos y enlace al ADR
+El sistema debe permitir separar reglas editoriales del proyecto de los patrones de ejecución
+dependientes del entorno, asegurando una fuente única de verdad para estilo y evitando
+duplicación de configuración.
 
 ## Alternativas consideradas
 
-- **Dos archivos de reglas distintas (local vs CI)**:
-  - ❌ Rechazada: provoca deriva de reglas y bloqueos inesperados
-  - ❌ Motivo: `severity` permite la flexibilidad necesaria sin duplicar reglas
+- **Reglas distintas para CI y local**
+  Rechazada: mantener configuraciones divergentes entre entornos genera deriva, inconsistencias y
+  comportamientos inesperados. La gobernanza editorial requiere un conjunto único de reglas.
 
-- **Separar reglas vs patterns/CLI (adoptada)** (`.markdownlint.jsonc` + `.markdownlint-cli2.jsonc`):
-  - ✅ Ventaja: reglas centralizadas y patterns ajustables por entorno
-  - ⚠️ Desventaja: requiere documentación y controles para evitar confusiones
+- **Validación solo en el editor**
+  Rechazada: mejora la experiencia local, pero no garantiza obligatoriedad ni coherencia en PRs.
+  La validación debe ser parte del pipeline para asegurar consistencia en todo el repositorio.
 
-- **Solo linters en editor**:
-  - ❌ Rechazada: reduce errores locales pero no garantiza calidad en CI
-  - ⚠️ Desventaja: depende de la configuración individual y no es obligatorio en CI
+- **Separación entre reglas editoriales y patrones de ejecución (adoptada)**
+  Permite centralizar las reglas del proyecto y ajustar la ejecución según el entorno sin duplicar
+  configuración. Este modelo asegura una fuente única de verdad y una validación reproducible.
 
-## Criterios de aceptación
+## Consecuencias
 
-- `npm run lint:md` y `npm run lint:md:fix` funcionan localmente
-- `.markdownlint.jsonc` existe y contiene reglas con `severity`
-- `.markdownlint-cli2.jsonc` contiene las reglas de ejecución, por ejemplo patrones a ignorar
-- `docs/MARKDOWN_VALIDATION.md` muestra los comandos mínimos y enlaza al ADR
+### Positivas
+
+- Reglas de estilo unificadas y reproducibles en cualquier entorno.
+- Reducción significativa de ruido en PRs por problemas de formato.
+- Base sólida para futuras validaciones automáticas más estrictas.
+- Mejora en la coherencia editorial del repositorio.
+
+### A considerar
+
+- Requiere documentación clara para evitar confusiones entre reglas y patrones.
+- La configuración puede evolucionar, pero la decisión arquitectónica permanece estable.
+
+## Referencias
+
+- [Markdown validation](../MARKDOWN_VALIDATION.md) - Documentación operativa y comandos

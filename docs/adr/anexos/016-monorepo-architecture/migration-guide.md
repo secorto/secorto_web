@@ -1,4 +1,4 @@
-# Anexo ADR 017: Migration Guide — Referencia de Extracción
+# Migration Guide — Referencia de Extracción
 
 **Propósito:** Inventario de primitivas agnósticas a extraer, criterios de validación y checklist
 de refactoring. Este documento es descriptivo (QUÉ extraer), no prescriptivo (HOW implementar).
@@ -168,24 +168,19 @@ type SectionDictionary<Section extends string, Language extends string, TValue>
 
 ### Refactor apps/web
 
-- [ ] Delete `src/domain/section.ts` completamente
-- [ ] Crear instancias de primitivas en `src/i18n/config.ts`:
-  - [ ] `languages = createLocales(['es', 'en'])`
-  - [ ] `collectionRoutesByLocale = createSectionRoutes({blog: {es: 'blog', en: 'blog'}, talk: {es: 'charla', en: 'talk'}, ...})`
-    - Estructura retornada: `Record<Section, Record<Language, Slug>>` — sección primero, luego idioma
-    - Acceso: `collectionRoutesByLocale[section][language]` → slug localizado
-  - [ ] `tagRoutesByLocale = createRouteMap({...})` (dinámico, si se usa)
-  - [ ] `singletonPagesByLocale = createRouteMap({...})` (about, tags-page)
-- [ ] Crear mapas granulares: `src/i18n/uiMap.ts` (translationKey, ctaKey, showFeaturedImage)
-- [ ] **Reorganizar helpers Astro por bounded context:**
-  - [ ] `src/i18n/astro/index.ts` — `createLocalePathsForCollections()` (list pages)
-  - [ ] `src/i18n/astro/details.ts` — `createDetailPathsForCollection()` (detail pages)
-  - [ ] `src/i18n/astro/tags.ts` — `createLocalePathsForTags()` (tag pages)
-  - [ ] `src/i18n/astro/pages.ts` — `createSingletonPaths()` (about, tags-page)
-- [ ] Refactorizar `createLocalizedEntryLinks()` en `languagePickerUtils.ts` para usar mapas indexados
-- [ ] Update all imports de `sectionsConfig` en páginas, componentes, tests
-- [ ] Update E2E tests con nuevos nombres de mapas
-- [ ] Validar `pnpm test:unit` pasa
-- [ ] Validar `pnpm test:e2e` pasa
-- [ ] Validar `pnpm type-check` clean
-- [ ] Validar `pnpm lint` clean
+- Eliminar `src/domain/section.ts`.
+- Crear `src/i18n/config.ts` o similar que instancie:
+  - el universo de idiomas,
+  - los mapas de rutas por sección,
+  - los mapas de rutas para páginas singleton,
+  - los mapas dinámicos (tags, si aplica).
+- Crear mapas granulares de UI en `src/i18n/uiMap.ts` para metadata no i18n.
+- Reorganizar helpers Astro por bounded context:
+  - list pages,
+  - detail pages,
+  - tag pages,
+  - singleton pages.
+- Actualizar `createLocalizedEntryLinks()` para usar los nuevos mapas indexados.
+- Actualizar imports en páginas, componentes y tests.
+- Actualizar E2E tests con los nuevos nombres de mapas.
+- Validar que los comandos de calidad (`test`, `e2e`, `type-check`, `lint`) pasen.

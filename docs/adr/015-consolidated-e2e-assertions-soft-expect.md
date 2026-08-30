@@ -1,8 +1,9 @@
 ---
-title: ADR 015: Consolidación de aserciones E2E mediante soft expect semánticamente guiado
+id: ADR-015
+title: Consolidación de aserciones E2E mediante soft expect semánticamente guiado
 status: accepted
 date: 2026-07-20
-last_updated: null
+last_updated: 2026-08-29
 categories:
   - Testing
   - E2E
@@ -62,9 +63,13 @@ asegurando que:
 
 - Requiere disciplina: no consolidar indiscriminadamente (ver criterio arriba)
 - Nuevo contribuidor debe entender límites semánticos
-- Mitigación: ver [E2E_CONSOLIDATION.md](../architecture/E2E_CONSOLIDATION.md) con contraejemplos
+- Mitigación: ver [E2E_CONSOLIDATION.md](./anexos/015-consolidated-e2e-assertions-soft-expect/E2E_CONSOLIDATION.md)
+  con contraejemplos
 
 ## Referencias
 
-- [E2E_CONSOLIDATION.md](../architecture/E2E_CONSOLIDATION.md) — Guía técnica de implementación
-- [TESTING_STRATEGY.md](../architecture/TESTING_STRATEGY.md) — Estrategia general
+- [TESTING_STRATEGY.md](../architecture/TESTING_STRATEGY.md) — Estrategia de pruebas
+
+## Anexos
+
+- [E2E_CONSOLIDATION.md](./anexos/015-consolidated-e2e-assertions-soft-expect/E2E_CONSOLIDATION.md) — Guía técnica de implementación

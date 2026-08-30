@@ -1,77 +1,88 @@
 ---
-title: ADR 011: `translationKey` como llave canónica
+id: ADR-011
+title: Llave canónica de traducción
 status: accepted
 date: 2026-05-18
-last_updated: 2026-05-21
+last_updated: 2026-08-29
 categories:
   - Architecture
   - i18n
   - Domain
-supersedes:
-  - 007
 ---
 
 ## Contexto
 
-ADR 007 proponía usar `postId` como llave de traducción. Durante la discusión
-se identificó confusión semántica entre identificadores de recurso y llaves de
-traducción; además, mezclar responsabilidades puede provocar duplicidad y errores
-al migrar contenidos.
+Cuando la identidad del recurso y la identidad del mensaje traducible se mezclan,
+la arquitectura se vuelve ambigua. El mismo identificador termina sirviendo para
+varios propósitos distintos: localizar un recurso, resolver una variante por
+locale y seleccionar el texto final para un usuario.
+
+Esto no es un problema de sintaxis, sino de semántica: el sistema necesita un
+contrato claro para distinguir entre “esta entidad es la misma” y “este mensaje
+es el mismo texto traducible”.
+
+## Objetivo
+
+Definir una regla de diseño que mantenga separadas la identidad del contenido y
+la identidad del mensaje en todas las capas del sistema de i18n.
 
 ## Decisión
 
-Adoptar `translationKey` como la llave canónica para todos los mensajes de UI y
-contenido. No se mantendrá compatibilidad automática con `postId` como llave de
-traducción: evitar la coexistencia de dos identificadores actuando como clave
-previene duplicidad y ambigüedad.
+Adoptar una llave canónica de traducción, estable y semántica, separada de la
+identidad del recurso. El nombre concreto del campo puede variar en la
+implementación (por ejemplo, `translationKey`, `messageKey`, o un equivalente),
+pero la regla no cambia:
 
-## Justificación
+> La identidad del recurso no debe confundirse con la identidad del mensaje.
+> La traducción debe resolverse por una clave estable y semánticamente clara.
 
-- Claridad: `translationKey` expresa explícitamente su propósito y reduce
-  ambigüedad en frontmatter y plantillas.
-- Riesgo reducido: no mezclar identidad de recurso y de mensaje evita
-  conflictos semánticos cuando cambian rutas o IDs internos.
+La clave de traducción debe ser independiente de rutas, slugs, IDs de contenido
+u otros datos que puedan cambiar sin que cambie el significado del mensaje.
 
-Nota: técnicamente `postId` podría funcionar si se mantiene estable, pero la
-decisión prioriza un contrato semántico claro entre contenido y traducciones.
+## Rol dentro del sistema i18n
+
+Este ADR es deliberadamente agnóstico a la implementación concreta y se
+complementa con las decisiones de diseño de dominio y routing:
+
+- ADR 001 define la resolución de rutas y aliases de secciones.
+- ADR 007 define la identidad del contenido y sus invariantes por locale.
+- ADR 011 define la identidad semántica del texto traducible.
+
+La intención es que cada ADR responda a una pregunta distinta y no solape
+responsabilidades.
+
+## Implementación
+
+La adopción de una llave canónica de traducción implica:
+
+- mantener una clave estable y semántica para cada mensaje traducible,
+- separar esa clave de la identidad del recurso o de la URL,
+- usar esa clave como contrato de referencia en plantillas, contenido y
+  validaciones,
+- y permitir que la implementación concreta cambie sin alterar la regla de
+  diseño.
+
+La norma es conceptual: la forma exacta del campo puede cambiar, pero el
+principio de separación semántica no.
 
 ## Consecuencias
 
-- Positivas:
-  - Mejora la claridad semántica del modelo de contenido.
+### Positivas
 
-- Costos:
-  - Trabajo de adopción en plantillas, editores y posible migración de contenido.
+- Reduce ambigüedad semántica entre contenido, rutas y traducciones.
+- Mejora la claridad de modelos, plantillas y validaciones.
+- Hace más robusta la evolución del contenido y de la i18n.
+- Mantiene la decisión válida aunque cambie el nombre técnico del campo.
 
-## Migración (alcance y plan)
+### A considerar
 
-Al validar el repo, `translationKey` aparece actualmente en 2 posts (4 archivos):
+- Requiere una adopción consistente en contenidos y plantillas.
+- No reemplaza la identidad del dominio; complementa la decisión de negocio del
+  contenido con una convención semántica de traducción.
+- La regla debe mantenerse estable aunque la implementación técnica cambie.
 
-- `src/content/blog/es/2026-04-25-mis-primeros-pasos-en-linux.md`
-- `src/content/blog/en/2026-04-25-my-first-steps-in-linux.md`
-- `src/content/blog/es/2026-04-23-como-uso-linux-hoy.md`
-- `src/content/blog/en/2026-04-23-how-i-use-linux-today.md`
+## Referencias
 
-Dado el alcance limitado, la migración se realizará como un cambio atómico
-
-1. Verificar y consolidar `translationKey` en los 4 archivos listados (asegurar
-  que el valor es correcto y consistente entre locales).
-2. Actualizar plantillas/editores si procede para exponer y favorecer
-  `translationKey` en nuevos contenidos.
-3. Ejecutar la suite de pruebas y `tsc --noEmit`; corregir cualquier fallo.
-4. Habilitar en CI una verificación (p. ej. script `check-translation-keys`) que
-  valide la presencia/consistencia de `translationKey` en los posts críticos.
-5. Documentar la operación en el changelog/PR y cerrar la migración.
-
-Nota: no es necesario ahora mantener `postId` como llave de traducción; el cambio
-se aplica de forma dirigida y atómica sobre los posts afectados.
-
-## Alcance
-
-- Este ADR formaliza únicamente la llave canónica de traducción. Las políticas
-  operativas de testing, validación y uso de `i18n/ui.ts` se documentarán en un
-  ADR separado.
-
-## Aprobación
-
-Firmado por el equipo de i18n / mantenedores del repositorio.
+- [ADR 001](./001-i18n-router-framework.md) — resolución de rutas y aliasing de secciones.
+- [ADR 007](./007-domain-i18n-unificacion.md) — identidad del contenido y locales.
+- [ADR 010](./010-plantilla-estandar-adr.md) — plantilla estándar de ADRs.

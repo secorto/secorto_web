@@ -9,7 +9,7 @@ Incluye elección de frameworks, patrones recomendados y cómo ejecutar cada tip
 - **Escribir test E2E (Playwright)** → Sigue leyendo, luego ve a [PAGE_OBJECTS.md](PAGE_OBJECTS.md)
   para patrón de Page Object Model
 - **Escribir test unitario (Vitest)** → Sigue leyendo sección "Pruebas Unitarias"
-- **Entender por qué estos frameworks** → [ADR 002 — Testing Framework Migration](../adr/002-testing-framework-migration.md)
+- **Entender por qué estos frameworks** → [ADR 002 — Testing Framework Migration](../adr/002-dynamic-testing-architecture.md)
 - **Usar soft assertions en E2E** → [ADR 015 — Consolidated E2E Assertions](../adr/015-consolidated-e2e-assertions-soft-expect.md)
 - **Reglas de estilo** → [CODING_GUIDELINES.md](../CODING_GUIDELINES.md)
 
@@ -31,7 +31,7 @@ Incluye elección de frameworks, patrones recomendados y cómo ejecutar cada tip
 - E2E — `Playwright`
 
 Para el razonamiento y la justificación de cada elección, ver
-[ADR 002](../adr/002-testing-framework-migration.md).
+[ADR 002](../adr/002-dynamic-testing-architecture.md).
 
 ## Análisis Estático: Primera Línea de Defensa
 
@@ -39,7 +39,7 @@ Antes de ejecutar pruebas dinámicas, validación estática asegura contractos e
 y previene categorías de errores que serían costosas en tests:
 
 - **TypeScript strict**: Tipos en `domain/`, componentes, utils. Sin `any` sin justificación.
-- **ESLint**: Reglas de estilo + convenciones (ver [ADR 004](../adr/004-linting-any-ban-style-conventions.md) y [ADR 013](../adr/013-lint-rule-changes.md))
+- **ESLint**: Reglas de estilo + convenciones (ver [ADR 004](../adr/004-linting.md))
 - **Markdownlint**: Documentación consistente (ver [MARKDOWN_VALIDATION.md](../MARKDOWN_VALIDATION.md))
 - **Build-time validation**: Astro valida `src/content.config.ts`, `i18n`, rutas dinámicas
 
@@ -69,7 +69,7 @@ Aplican a **Unit** y **E2E**:
 
 - **Nombres descriptivos**: `describe('contexto') / it('debe X cuando Y')`
 - **AAA**: Arrange / Act / Assert
-- **Evitar `any`**: Preferir datos fuertemente tipados (ver [ADR 004](../adr/004-linting-any-ban-style-conventions.md))
+- **Evitar `any`**: Preferir datos fuertemente tipados (ver [ADR 004](../adr/004-linting.md))
 - **Mockear dependencias externas**: Aislar el código bajo prueba de terceros
 
 ---

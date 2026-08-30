@@ -68,7 +68,7 @@ const parseEntry = (entry: EntryData): Computed => { /* ... */ }
 
 **Referencias:**
 
-- [ADR 004: Linting, tipo `any` y convenciones](./adr/004-linting-any-ban-style-conventions.md)
+- [ADR 004: Linting, tipo `any` y convenciones](./adr/004-linting.md)
 - [copilot-instructions.md](../.github/copilot-instructions.md) — "Avoid `any` type"
 
 ---
@@ -217,11 +217,11 @@ class ContentListPage {
   // Responsabilidad 1: Vista de LISTA
   shouldHaveListHeaderTitle() { /* ... */ }
   filterByTag() { /* ... */ }
-  
+
   // Responsabilidad 2: Vista de DETALLE
   shouldHaveDetailTitle() { /* ... */ }
   shouldHaveComments() { /* ... */ }
-  
+
   // Responsabilidad 3: Vista de TAGS
   shouldHaveTagsInFilter() { /* ... */ }
 }
@@ -302,8 +302,8 @@ const { locale, id: postId } = extractCleanId(entry.id)
 
 **Referencias:**
 
-- [docs/CODING_GUIDELINES.md](./CODING_GUIDELINES.md) — DRY, domain layer
-- [docs/architecture/DETAIL_VIEW_COMPONENTS.md](./architecture/DETAIL_VIEW_COMPONENTS.md)
+- [CODING_GUIDELINES.md](./CODING_GUIDELINES.md) — DRY, domain layer
+- [DETAIL_VIEW_COMPONENTS.md](./adr/anexos/001-i18n-router-framework/DETAIL_VIEW_COMPONENTS.md)
 
 ---
 
