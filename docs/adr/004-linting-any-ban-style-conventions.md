@@ -1,7 +1,7 @@
 ---
 id: ADR-004
 title: Linting, análisis estático y reglas de calidad de código
-status: superseded
+status: accepted
 date: 2026-02-15
 categories:
   - Tooling

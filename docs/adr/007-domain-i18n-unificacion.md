@@ -1,7 +1,7 @@
 ---
 id: ADR-007
 title: Unificación de dominio e i18n
-status: superseded
+status: accepted
 date: 2026-03-24
 last_updated: 2026-05-21
 categories:

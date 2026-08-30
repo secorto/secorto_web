@@ -1,7 +1,7 @@
 ---
 id: ADR-001
 title: Router polimórfico de secciones
-status: superseded
+status: accepted
 date: 2025-06
 last_updated: 2026-08-29
 categories:
