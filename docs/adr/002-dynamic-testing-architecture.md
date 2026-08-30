@@ -58,7 +58,8 @@ Adoptar una **arquitectura de testing dinámica por capas**, compuesta por:
 
 - La fase de convivencia requiere criterios claros de paridad.
 - La eliminación del runner antiguo implica revisar artefactos, configuraciones y dependencias históricas.
-- Las decisiones operativas relacionadas con dependencias bloqueantes se alinean con la política transversal definida en ADR‑013.
+- Las decisiones operativas relacionadas con dependencias bloqueantes se alinean con la política transversal
+  definida en ADR‑013.
 
 ## Referencias
 

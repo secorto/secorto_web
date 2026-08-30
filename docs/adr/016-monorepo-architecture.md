@@ -24,7 +24,8 @@ pero el repositorio todavía se comporta como una sola aplicación arraigada en 
 
 Un espacio de trabajo (workspace) de monorepo permitiría que el proyecto evolucione sin forzar una reescritura
 completa del modelo de la aplicación. También se alinea con los principios constitucionales de
-"El Dominio Primero" (Domain First), "Núcleo Agnóstico al Framework" (Framework-Agnostic Core) y "Calidad por Diseño" (Quality by Design).
+"El Dominio Primero" (Domain First), "Núcleo Agnóstico al Framework" (Framework-Agnostic Core) y
+"Calidad por Diseño"(Quality by Design).
 
 ## Objetivo
 

@@ -63,7 +63,8 @@ asegurando que:
 
 - Requiere disciplina: no consolidar indiscriminadamente (ver criterio arriba)
 - Nuevo contribuidor debe entender límites semánticos
-- Mitigación: ver [E2E_CONSOLIDATION.md](./anexos/015-consolidated-e2e-assertions-soft-expect/E2E_CONSOLIDATION.md) con contraejemplos
+- Mitigación: ver [E2E_CONSOLIDATION.md](./anexos/015-consolidated-e2e-assertions-soft-expect/E2E_CONSOLIDATION.md)
+  con contraejemplos
 
 ## Referencias
 

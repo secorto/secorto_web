@@ -1,7 +1,7 @@
 ---
 id: ADR-XXX
 title: Título breve de la decisión
-tatus: proposed
+status: proposed
 date: 2026-08-29
 last_updated: 2026-08-29
 categories:

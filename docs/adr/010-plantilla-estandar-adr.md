@@ -40,7 +40,8 @@ secciones obligatorias y metadatos normalizados mediante `frontmatter` YAML.
 
 Los ADRs deben mantener la decisión **agnóstica a detalles de implementación concretos**:
 los contextos y decisiones deben abordar problemas y patrones abstractos,
-mientras que los archivos de arquitectura específicos se encargarán de mapear el diseño con las clases, herramientas o archivos reales.
+mientras que los archivos de arquitectura específicos se encargarán de mapear el diseño con las clases,
+herramientas o archivos reales.
 
 ## Implementación
 
