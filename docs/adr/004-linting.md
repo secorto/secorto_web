@@ -61,4 +61,3 @@ ecosistema.
 ## Referencias
 
 - [ADR-012](012-formatting.md) Formateo
-- [ADR-013](013-lint-rule-changes.md) Actualización eslint

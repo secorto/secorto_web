@@ -36,7 +36,7 @@ completa del proyecto a través de tres reescrituras en diferentes frameworks.
 | [010](010-plantilla-estandar-adr.md) | Plantilla estándar de ADRs | Proceso | Aceptada | 2026-05 |
 | [011](011-i18n-translationkey.md) | Llave canónica de traducción | Router & i18n | Aceptada | 2026-05 |
 | [012](012-formatting.md) | Formateo y herramienta de estilo | Código & Calidad | Propuesta | 2026-05 |
-| [013](013-lint-rule-changes.md) | Actualización a ESLint 10 y eliminación temporal de plugins | Código & Calidad | Aceptada | 2026-05 |
+| [013](013-dependencias-bloqueantes.md) | Manejo de dependencias externas que bloquean la evolución del sistema | Architecture | Aceptada | 2026-05 |
 | [014](014-page-objects-hierarchy-separation-of-concerns.md) | Jerarquía de Page Objects con separación clara de responsabilidades | Testing & QA | Aceptada | 2026-07 |
 | [015](015-consolidated-e2e-assertions-soft-expect.md) | Consolidación de aserciones E2E mediante soft expect semánticamente guiado | Testing & QA | Aceptada | 2026-08 |
 | [016](016-monorepo-architecture.md) | Adoptar un monorepo con pnpm workspace para el sitio web | Architecture | Aceptada | 2026-08 |
