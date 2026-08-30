@@ -61,7 +61,7 @@ export function createTranslationIndex<
 
     let group = map.get(key)
     if (!group) {
-      group = {} as TranslationGroup<L, TEntry>
+      group = Object.create(null) as TranslationGroup<L, TEntry>
       map.set(key, group)
     } else if (locale in group) {
       throw new Error(

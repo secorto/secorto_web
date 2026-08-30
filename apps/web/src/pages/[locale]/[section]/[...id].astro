@@ -33,10 +33,10 @@ const pageDescription = getSeoDescription(entry.original.data)
   <SEOHead
     slot="seo-head"
     links={links}
-    noindex={Boolean(entry.original.data.draft)}
+    noindex={entry.draft}
   />
   <LanguagePicker slot="langpicker" links={links} />
-  {entry.original.data.draft && (
+  {entry.draft && (
     <div class="untranslated-notice" role="status">
       <p>{t('post.draft_notice')}</p>
     </div>
