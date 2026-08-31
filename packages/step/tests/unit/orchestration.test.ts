@@ -12,12 +12,20 @@ const createMockExpect = (): MockExpect => (_actual: unknown) => ({
 describe('createTestingStep (Integration Adapter)', () => {
   const runner: StepRunner = vi.fn(async (_title, action) => action())
 
-  it('creates a testing bundle with both step helpers', () => {
+  it('assembles the definitive 4-primitive testing bundle with lazy execution guarantees', () => {
+    // Arrange
     const expectMock = createMockExpect()
-    const { step, verifyStep } = createTestingStep(runner, expectMock, expectMock)
 
-    expect(typeof step).toBe('function')
-    expect(typeof verifyStep).toBe('function')
+    // Act
+    const bundle = createTestingStep(runner, expectMock, expectMock)
+
+    // Assert (Flawless bundle exposure)
+    expect(typeof bundle.step).toBe('function')
+    expect(typeof bundle.verifyStep).toBe('function')
+    expect(typeof bundle.contractStep).toBe('function')
+    expect(typeof bundle.contractVerifyStep).toBe('function')
+
+    // Assert (Lazy verification: initialization must never trigger side-effects)
     expect(runner).not.toHaveBeenCalled()
   })
 })
