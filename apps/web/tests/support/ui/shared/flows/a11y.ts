@@ -1,9 +1,9 @@
 import type { Page } from '@playwright/test'
 import { AxeBuilder } from '@axe-core/playwright'
 import type axe from 'axe-core'
-import { contractStep, step, verifyStep, type ContractStep, type Verification } from '@tests/step'
+import { contractStep, step, verifyStep, type ContractStep } from '@tests/step'
 
-export type A11y = ContractStep<axe.AxeResults, Verification<void>>
+export type A11y = ContractStep<axe.AxeResults, void>
 
 const DEFAULT_EXCLUDES = [
   '[data-netlify-deploy-id]',
@@ -19,8 +19,8 @@ export function a11yFlow(page: Page) {
         DEFAULT_EXCLUDES.forEach(ex => builder.exclude(ex))
         return builder.analyze()
       }),
-    (results: axe.AxeResults) =>
-      verifyStep('verify a11y results', async ({ expect }) => {
+    async (results: axe.AxeResults) =>
+      await verifyStep('verify a11y results', ({ expect }) => {
         expect(results.violations ?? []).toEqual([])
       })
   )
