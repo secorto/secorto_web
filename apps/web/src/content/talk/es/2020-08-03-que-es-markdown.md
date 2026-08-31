@@ -11,6 +11,7 @@ image: "@assets/img/talks/que-es-markdown.png"
 excerpt: Esta presentación da una introducción acerca de que es Markdown y por qué es importante para el stack JAMstack
 ---
 
-Esta presentación da una introducción acerca de que es Markdown y por qué es importante para el stack JAMstack que consiste en javascript y marcado
+Esta presentación da una introducción acerca de que es Markdown y por qué es importante para el stack JAMstack que consiste
+en javascript y marcado
 
 [Presentación](https://slides-markdown.secorto.com/)
