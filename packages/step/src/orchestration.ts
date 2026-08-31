@@ -2,6 +2,7 @@ import { createStep, type StepRunner } from './execution'
 import { createContextStep } from './context'
 import { createVerifyStep } from './verification'
 import { createContractStep } from './contract'
+import { createContractVerifyStep } from './contract-verification'
 
 /**
  * Creates a testing helper bundle around a step runner and assertion set.
@@ -26,5 +27,6 @@ export const createTestingStep = <TExpect>(
     step: createStep(runner, 'StepAction'),
     verifyStep: createVerifyStep(defaultExpect, softExpect, createContextStep(runner, 'VerifyStep')),
     contractStep: createContractStep(runner, 'ContractStepAction'),
+    contractVerifyStep: createContractVerifyStep(runner, defaultExpect, softExpect, 'ContractVerifyStep'),
   }
 }

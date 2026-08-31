@@ -1,290 +1,196 @@
-# @secorto/step
+# @secorto/step | Test Automation with Real Cohesion
 
-Composable actions and verifications for test automation.
+## Purpose: Why this library exists
 
-`@secorto/step` provides three small primitives:
+**The missing bridge between user stories and code execution.**
 
-- `step()` for observable actions (Arrange / Act)
-- `verifyStep()` for observable verifications (Assert)
-- `contractStep()` for API contract definitions
+Most test automation suites suffer from a critical architectural flaw: **the disconnection between business intent and technical implementation**.
 
-Together they produce readable tests, reusable behaviours and meaningful reports.
+Whether you use traditional *Page Objects* or complex abstraction layers, the human-readable description of a step
+and the technical code that runs it usually live in completely different places.
+This separation forces developers to constantly jump between contexts, breeds massive maintenance overhead,
+and turns test suites into brittle nightmares that are a pain to refactor.
 
-```ts
-const home = await userInHome(page)
+`@secorto/step` fixes this by bringing back **cohesion**. It is intentionally tiny, framework-agnostic,
+and designed to make your automation suites stop squeaking.
 
-await home.shouldBeLoaded()
-await home.shouldBeLoaded().soft()
-```
+## How it works: The 4 Core Primitives
 
----
+`@secorto/step` provides four self-contained building blocks to ensure your code structure matches
+your reporting structure perfectly.
 
-## Why?
+### 1. `step()` (Cohesive Actions)
 
-Most test suites eventually become collections of selectors and assertions:
-
-```ts
-await page.goto('/')
-
-await expect(page.getByRole('heading')).toBeVisible()
-await expect(page.locator('footer')).toBeVisible()
-```
-
-The test explains **how** verification happens.
-
-With `@secorto/step`:
+Binds a business action name directly to its functional code block. Perfect for packaging browser interactions
+and returning clean domain objects.
 
 ```ts
-const home = await userInHome(page)
-
-await home.shouldBeLoaded()
-```
-
-The test explains **what** is being verified.
-
-Implementation details stay encapsulated.
-
----
-
-## Quick Start
-
-```ts
-import { test, expect } from '@playwright/test'
-import { createTestingStep } from '@secorto/step'
-
-export const { step, verifyStep, contractStep } = createTestingStep(
-  test.step,
-  expect,
-  expect.soft,
-)
-```
-
----
-
-## Actions with `step()`
-
-Actions model Arrange and Act phases.
-
-```ts
-export const userInHome = (page: Page) =>
-  step('user in homepage', async () => {
-    await page.goto('/')
+export const userInHome = (page: Page, locale: UILanguages) =>
+  step(`user opens homepage in ${locale}`, async () => {
+    await page.goto(`/${locale}/`)
     return homePage(page)
   })
 ```
 
-Usage:
+### 2. `verifyStep()` (Cohesive Verifications)
+
+Encapsulates a visual or UI assertion alongside its human-readable description.
 
 ```ts
-const home = await userInHome(page)
-```
-
-The action becomes visible in reports and can return domain objects.
-
----
-
-## Verifications with `verifyStep()`
-
-Verifications model Assert.
-
-```ts
-shouldBeLoaded() {
-  return verifyStep(
-    'home is loaded',
-    async ({ expect }) => {
-      await expect(this.header).toBeVisible()
-      await expect(this.footer).toBeVisible()
-    },
-  )
+shouldBeInLocale(locale: UILanguages) {
+  return verifyStep('url matches locale pattern', async ({ expect }) => {
+    await expect(page).toHaveURL(new RegExp(`/${locale}(/|$)`))
+  })
 }
 ```
 
-Execute normally:
+### 3. `contractStep()` (Cohesive Data Transformers)
 
-```ts
-await home.shouldBeLoaded()
-```
-
-Or using soft assertions:
-
-```ts
-await home.shouldBeLoaded().soft()
-```
-
----
-
-## API Contracts with `contractStep()`
-
-Define API contracts as observable steps. Compose fetch, parse, and validation into a single readable action.
+Pure asynchronous data fetching and parsing. It transforms raw network payloads into clean domain objects
+using your preferred schema utility (Zod, ArkType) before they reach the UI.
 
 ```ts
 export const fetchUser = (id: string) =>
   contractStep(
-    'fetch and parse user',
+    'fetch and parse user data',
     async () => await api.getUser(id),
-    (json) => parseUserSchema(json),
+    (json) => userSchema.parse(json)
   )
 ```
 
-Usage:
+### 4. `contractVerifyStep()` (Cohesive Verification & Transformation Streams) 🌟
+
+The ultimate tool for end-to-end integration. It bridges a data contract with a verification block.
+It handles asynchronous data fetching,
+passes the raw payload directly into an assertion block that has full access to the active execution context (`expect`),
+and simultaneously returns the transformed data.
 
 ```ts
-const user = await fetchUser('123')
-
-// or get raw data before transformation
-const raw = await fetchUser('123').raw()
-
-// or inspect both raw and parsed
-const { raw, parsed } = await fetchUser('123').detailed()
+export const syncAndVerifyUser = (id: string) =>
+  contractVerifyStep(
+    'fetch user and verify profile layout',
+    async () => await api.getUser(id),
+    async (raw, { expect }) => {
+      await expect(page.locator('#email')).hasText(raw.email)
+      return { id: raw.id, email: raw.email }
+    }
+  )
 ```
 
-Visible in test reports as a single logical step.
+## The Paradigm Shift: Real Cohesion Across All Layers
 
----
+At this point, traditional testing purists might blink. For years,the industry dogmatized
+that business intent and technical implementation must be strictly separated
+into isolated helper files or heavy global adapters.
 
-## Example
+But that artificial separation comes with a hidden tax: it destroys focus and creates brittle structures.
+
+`@secorto/step` brings back **Real Cohesion**. It is designed under a radical premise:
+**semantic steps shouldn't live trapped inside a single adapter file;**
+**they should naturally permeate every single layer of your test architecture.**
+
+Whether it is an atomic UI component validating its own state, a data client enforcing an API schema,
+or a high-level page object orchestrating a complex user flow—description and execution live together where they belong,
+as a single, unbreakable unit across your entire repository.
+
+## Fractal Composition & Strategy Control: The Power of `.with()`
+
+Because `@secorto/step` primitives are completely *lazy* and driven by Dependency Injection (DI),
+your verification blocks enable a **fractal design pattern**.
+
+Instead of building massive, unmaintainable *God Classes*, you can break your UI down into infinitely nested components.
+High-level structures seamlessly forward the active execution engine down to individual subcomponents using `.with(expect)`.
+
+### Unlocking Fractal Page Objects
+
+A parent page component doesn't know (and shouldn't care) if a test case is evaluating assertions strictly
+or via a soft strategy. By utilizing `.with(expect)`, the execution engine cascades down to the atomic level naturally:
 
 ```ts
-test('loads correctly', async ({ page }) => {
-  const home = await userInHome(page)
+export class HomePageMain {
+  constructor(readonly avatar: TargetComponent, readonly bioText: TargetComponent) {}
 
-  await home.shouldBeLoaded().soft()
-  await home.shouldBeLoaded()
-})
+  shouldBeLocalized(locale: UILanguages) {
+    return verifyStep('homepage main is localized', async ({ expect }) => {
+      // Deeply nesting and forwarding the runtime engine polimorphically
+      await this.avatar.shouldBeVisible().with(expect)
+      await this.bioText.shouldBeVisible().with(expect)
+    })
+  }
+}
+
+export class HomePage {
+  constructor(readonly main: HomePageMain, readonly mainLayout: MainLayoutComponent) {}
+
+  shouldBeLocalized(locale: UILanguages) {
+    return verifyStep(`homepage is localized in ${locale}`, async ({ expect }) => {
+      // Triggering nested components while maintaining the same strategy
+      await this.shouldBeInLocale(locale).with(expect)
+      await this.main.shouldBeLocalized(locale).with(expect)
+      await this.mainLayout.shouldBeLocalized(locale).with(expect)
+    })
+  }
+}
 ```
 
-Resulting report:
+### Deferred Runtime Strategy Control
 
-```text
-user in homepage
-└─ Navigate to '/'
-
-home is loaded (soft)
-├─ Expect soft toBeVisible header
-└─ Expect soft toBeVisible footer
-
-home is loaded
-├─ Expect toBeVisible header
-└─ Expect toBeVisible footer
-```
-
----
-
-## Design Philosophy
-
-`@secorto/step` is intentionally small.
-
-It is not a testing framework.
-
-It is not a DSL.
-
-It is a library for building:
-
-- Observable actions
-- Reusable verifications
-- Composable contracts
-- Framework-agnostic adapters
-
----
-
-## Advanced: Custom Assertion Providers
-
-Soft assertions are a convenience API.
-
-The underlying model allows the assertion provider to be selected at execution time.
+The execution strategy is decided **at the call site** of the test case,
+while your complex fractal page definitions remain entirely agnostic:
 
 ```ts
-await home.shouldBeLoaded().with(expect)
+const home = await userInHome(page, 'en')
+
+// Standard / Hard Assertion: Halts the entire suite immediately if any nested element fails.
+await home.shouldBeLocalized('en')
+
+// Soft Assertion: Captures any deep nested failure softly inside the report, letting the test continue.
+await home.shouldBeLocalized('en').soft()
 ```
 
+## Advanced Execution Control
+
+### `.raw()` — Bypassing Verification & Transformations
+
+For specialized scenarios (like negative testing, testing error payload structures,
+or using contracts in utility scripts), `.raw()` allows you to skip transformation and verification blocks entirely,
+returning the raw payload directly from `contractStep` or `contractVerifyStep`:
+
 ```ts
-await home.shouldBeLoaded().with(expect.soft)
+// Bypasses assertions and transforms completely to inspect raw endpoint responses
+const rawJson = await syncAndVerifyUser('123').raw()
+const rawUserPayload = await fetchUser('123').raw()
 ```
 
-```ts
-await home.shouldBeLoaded().with(customExpect)
-```
+## The Setup: Project Adapter
 
-This enables verification composition while keeping execution strategies configurable.
+To unlock strong TypeScript auto-completion and bind @secorto/step to your specific test runner,
+you need to create an adapter file within your project's test support or configuration folder
+(for instance, under tests/step or your local setup directory).
+This thin layer bridges the library's generic interfaces with your framework's concrete types (e.g., Playwright).
 
----
-
-## API Reference
-
-### createTestingStep
+Create your custom step adapter file where it best fits your folder structure:
 
 ```ts
-const { step, verifyStep, contractStep } = createTestingStep(
-  runner,
+import { expect, test } from '@playwright/test'
+import {
+  createTestingStep,
+  type GenericVerification,
+  type GenericContractVerify
+} from '@secorto/step'
+
+// Bind your framework's concrete types for flawless IDE auto-completion
+export type Verification<T> = GenericVerification<T, typeof expect | typeof expect.soft>
+export type ContractVerification<TRaw, TTransform> =
+  GenericContractVerification<TRaw, TTransform, typeof expect | typeof expect.soft>
+
+// Export your project-scoped atomic factories
+export const { step, verifyStep, contractStep, contractVerifyStep } = createTestingStep(
+  test.step,
   expect,
-  expect.soft,
+  expect.soft
 )
+
+// Re-export core contracts
+export type { Step, ContractStep } from '@secorto/step'
 ```
-
-Creates a project adapter.
-
-### step
-
-```ts
-await step('open checkout', async () => {
-  await page.goto('/checkout')
-})
-```
-
-Observable action.
-
-### verifyStep
-
-```ts
-await verifyStep(
-  'checkout is loaded',
-  async ({ expect }) => {
-    await expect(title).toBeVisible()
-  },
-)
-```
-
-Observable verification.
-
-### contractStep
-
-```ts
-const user = await contractStep(
-  'fetch user from API',
-  async () => fetchUserJSON(),
-  (json) => JSON.parse(json) as User
-)
-```
-
-Observable API contract. Execute both functions in sequence (default), or `.raw()` for origin only, or `.detailed()`
-for both results.
-
----
-
-## Architecture
-
-Internally, verifications follow a compositional model.
-
-Small verifications can be combined into larger ones:
-
-```ts
-await avatar.shouldBeVisible().with(expect)
-await bio.shouldBeVisible().with(expect)
-await cards.shouldBeValid().with(expect)
-```
-
-Page-level verifications can then be composed into application-level verifications.
-
-The core abstraction is a reusable verification that remains independent from the assertion strategy used to execute it.
-
----
-
-## Learn More
-
-For detailed API documentation, factory patterns, integration examples, and design rationale, see [ADVANCED.md](./ADVANCED.md).
-
----
-
-## License
-
-MIT
