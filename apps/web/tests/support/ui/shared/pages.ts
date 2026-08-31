@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test'
-import { contractStep, type Step } from '@tests/step'
+import { contractVerifyStep, type Step } from '@tests/step'
 import { mockThirdParty } from '@tests/support/mocks/mockThirdParty'
-import type { AuditablePage, Loadable, LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
+import type { Loadable, LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
 import type { MainLayoutComponent } from '@tests/support/ui/shared/components/MainLayout'
 import { mainLayout, defaultMainLayout } from '@tests/support/ui/shared/components/MainLayout'
 import { target } from '@tests/support/ui/components/Target'
@@ -12,7 +12,7 @@ import { a11yFlow, type A11y } from '@tests/support/ui/shared/flows/a11y'
  * Clase abstracta base para todas las páginas navegables.
  * Delega carga y auditoría a11y al layout.
  */
-export abstract class NavigablePage implements Loadable, AuditablePage {
+export abstract class NavigablePage implements Loadable {
   constructor(
     readonly mainLayout: MainLayoutComponent,
     readonly a11y: A11y,
@@ -23,7 +23,7 @@ export abstract class NavigablePage implements Loadable, AuditablePage {
   }
 
   auditA11y() {
-    return this.a11y.audit()
+    return this.a11y
   }
 }
 
@@ -38,15 +38,15 @@ export const visit = <T extends Loadable>(
   factory: (page: Page) => T | Promise<T> | Step<T>,
   preAct?: (page: Page) => Step<void> | void,
   gotoOptions?: Parameters<Page['goto']>[1],
-) => contractStep(
+) => contractVerifyStep(
     title,
     async () => {
       if (preAct) await preAct(page)
       await mockThirdParty(page)
       await page.goto(url, gotoOptions)
       return await factory(page)
-    }, async (pageObject) => {
-      await pageObject.shouldBeLoaded()
+    }, async (pageObject, { expect }) => {
+      await pageObject.shouldBeLoaded().with(expect)
       return pageObject
     }
   )

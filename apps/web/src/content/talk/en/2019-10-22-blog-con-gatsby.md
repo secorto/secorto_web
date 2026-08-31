@@ -11,6 +11,7 @@ image: "@assets/img/talks/blog-gatsby.png"
 excerpt: This presentation (in Spanish) demonstrates the use of Gatsby to create a static website from scratch
 ---
 
-This presentation (in Spanish) demonstrates the use of Gatsby to create a static website from scratch, and provides multiple examples of sites built with Gatsby.
+This presentation (in Spanish) demonstrates the use of Gatsby to create a static website from scratch,
+and provides multiple examples of sites built with Gatsby.
 
 [Slides](https://gatsby-node-decks.secorto.com/)

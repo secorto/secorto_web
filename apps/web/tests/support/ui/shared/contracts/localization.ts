@@ -12,7 +12,3 @@ export interface LocalizedPage<T = void> {
 export interface LocalizedUrl {
   shouldBeInLocale(locale: UILanguages): Verification<void>
 }
-
-export interface AuditablePage {
-  auditA11y(): Verification<void>
-}

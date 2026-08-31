@@ -26,7 +26,8 @@ FLISOL is an annual decentralized event that promotes free software, open educat
 - **2011:** Participant in Software Freedom Day Barranquilla
 - **2012:** Organizer of FLISOL Barranquilla (decentralized event of FSLCol)
 
-**Note:** The original FSLCol organization has evolved over the years. Information is documented in historical community wikis.
+**Note:** The original FSLCol organization has evolved over the years.
+Information is documented in historical community wikis.
 
 ## Ubuntu-CO
 
