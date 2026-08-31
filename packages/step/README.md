@@ -4,7 +4,8 @@
 
 **The missing bridge between user stories and code execution.**
 
-Most test automation suites suffer from a critical architectural flaw: **the disconnection between business intent and technical implementation**.
+Most test automation suites suffer from a critical architectural flaw:
+**the disconnection between business intent and technical implementation**.
 
 Whether you use traditional *Page Objects* or complex abstraction layers, the human-readable description of a step
 and the technical code that runs it usually live in completely different places.
