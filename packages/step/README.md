@@ -71,7 +71,7 @@ export const syncAndVerifyUser = (id: string) =>
     'fetch user and verify profile layout',
     async () => await api.getUser(id),
     async (raw, { expect }) => {
-      await expect(page.locator('#email')).hasText(raw.email)
+      await expect(page.locator('#email')).toHaveText(raw.email)
       return { id: raw.id, email: raw.email }
     }
   )
@@ -79,7 +79,7 @@ export const syncAndVerifyUser = (id: string) =>
 
 ## The Paradigm Shift: Real Cohesion Across All Layers
 
-At this point, traditional testing purists might blink. For years,the industry dogmatized
+At this point, traditional testing purists might blink. For years, the industry dogmatized
 that business intent and technical implementation must be strictly separated
 into isolated helper files or heavy global adapters.
 
@@ -176,7 +176,7 @@ import { expect, test } from '@playwright/test'
 import {
   createTestingStep,
   type GenericVerification,
-  type GenericContractVerify
+  type GenericContractVerification,
 } from '@secorto/step'
 
 // Bind your framework's concrete types for flawless IDE auto-completion

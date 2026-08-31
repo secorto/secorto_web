@@ -1,6 +1,6 @@
 import { createContextStep } from './context'
-import { StepRunner, type Step } from './execution'
-import { GenericVerification } from './verification'
+import type { StepRunner } from './execution'
+import type { GenericVerification } from './verification'
 
 /**
  * Context passed into a verification action.

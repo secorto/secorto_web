@@ -17,7 +17,7 @@ export interface ContractStep<TRaw, TParsed> extends Step<TParsed> {
   originFn: () => TRaw | Promise<TRaw>
   transformFn: (raw: TRaw) => TParsed | Promise<TParsed>
   raw: () => Promise<TRaw>
-  /** @deprecated You can return it from final transformation by yourself. */
+  /** @deprecated Return it from the final transformation yourself. */
   detailed: () => Promise<{ parsed: TParsed; raw: TRaw }>
 }
 

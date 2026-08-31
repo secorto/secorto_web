@@ -45,7 +45,7 @@ export const visit = <T extends Loadable>(
       await mockThirdParty(page)
       await page.goto(url, gotoOptions)
       return await factory(page)
-    }, async (pageObject, {expect}) => {
+    }, async (pageObject, { expect }) => {
       await pageObject.shouldBeLoaded().with(expect)
       return pageObject
     }
