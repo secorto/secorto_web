@@ -1,4 +1,4 @@
-import { bind, enhance } from '@secorto/step'
+import { bind, enhance } from '@secorto/target'
 import { describe, expect, it } from 'vitest'
 
 
