@@ -14,7 +14,7 @@ export type Target<T> = {
  */
 export const createTarget = <
   T,
-  const TEnhancers extends readonly Enhancer<{ name: string; element: T }, Record<string, unknown>>[]
+  const TEnhancers extends readonly Enhancer<Target<T>, Record<string, unknown>>[]
 >(
   name: string,
   element: T,
