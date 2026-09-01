@@ -11,12 +11,20 @@ export class Target {
     await expect(this.locator, `${this.name} should be visible`).toBeVisible()
   }
 
+  async shouldNotBeVisible(expect: ExpectLike) {
+    await expect(this.locator, `${this.name} should not be visible`).not.toBeVisible()
+  }
+
   async shouldHaveText(expect: ExpectLike, textOrRegex: string | RegExp) {
     await expect(this.locator, `${this.name} should have text ${textOrRegex}`).toHaveText(textOrRegex)
   }
 
   async shouldHaveClass(expect: ExpectLike, re: RegExp) {
     await expect(this.locator, `${this.name} should have class ${re}`).toHaveClass(re)
+  }
+
+  async shouldNotHaveClass(expect: ExpectLike, re: RegExp) {
+    await expect(this.locator, `${this.name} should not have class ${re}`).not.toHaveClass(re)
   }
 
   async shouldHaveAttribute(expect: ExpectLike, name: string, value: string) {
