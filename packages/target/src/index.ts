@@ -1,2 +1,2 @@
-export { enhance, bind } from './ability'
+export { enhance, withAbilities } from './ability'
 export { createTarget } from './target'

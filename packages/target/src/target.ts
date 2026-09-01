@@ -1,13 +1,17 @@
-import { Binding, enhance } from "./ability";
+import { Enhancer, enhance } from "./ability";
 
+/**
+ * Creates an immutable target enhanced with specific capabilities.
+ */
 export const createTarget = <
   T,
-  const TBindings extends readonly Binding<unknown, unknown>[]
+  const TEnhancers extends readonly Enhancer<{ name: string; element: T }, Record<string, unknown>>[]
 >(
-    name: string,
-    element: T,
-    ...bindings: TBindings
-  ) =>
+  name: string,
+  element: T,
+  ...bindings: TEnhancers
+) =>
+  Object.freeze(
     enhance(
       {
         name,
@@ -15,3 +19,4 @@ export const createTarget = <
       },
       ...bindings,
     )
+  )
