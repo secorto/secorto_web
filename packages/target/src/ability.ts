@@ -1,7 +1,7 @@
 /**
  * Factory that produces a capability bound to a target.
  */
-export type Ability<
+export type AbilityFactory<
   TDependency,
   TTarget,
   TResult,
