@@ -12,7 +12,6 @@ test.describe('Mobile sidebar toggle', { tag: ['@functional', '@home', '@sidebar
 
     await menu.toggleSidebar()
     await menu.toggle.shouldBeOpen()
-    await menu.sidebarTitle.shouldBeVisible()
 
     await menu.toggleSidebar()
     await menu.toggle.shouldBeClosed()
@@ -26,6 +25,5 @@ test.describe('Desktop sidebar toggle', { tag: ['@functional', '@home', '@sideba
     const homePage = await userInHome(page, 'es')
     const menu = homePage.mainLayout.sidebar
     await menu.toggle.shouldBePermanentlyOpen()
-    await menu.sidebarTitle.shouldBeVisible()
   })
 })

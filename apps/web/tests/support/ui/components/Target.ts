@@ -1,5 +1,5 @@
 import type { Locator } from '@playwright/test'
-import { verifyStep, step } from '@tests/step'
+import { verifyStep, step, type ExpectLike } from '@tests/step'
 
 export class Target {
   constructor(
@@ -7,47 +7,24 @@ export class Target {
     readonly locator: Locator,
   ) {}
 
-  shouldBeVisible() {
-    return verifyStep(`${this.name} should be visible`, async ({ expect }) => {
-      await expect(this.locator).toBeVisible()
-    })
+  async shouldBeVisible(expect: ExpectLike) {
+    await expect(this.locator, `${this.name} should be visible`).toBeVisible()
   }
 
-  shouldHaveText(textOrRegex: string | RegExp) {
-    return verifyStep(`${this.name} should have text`, async ({ expect }) => {
-      await expect(this.locator).toHaveText(textOrRegex)
-    })
+  async shouldHaveText(expect: ExpectLike, textOrRegex: string | RegExp) {
+    await expect(this.locator, `${this.name} should have text ${textOrRegex}`).toHaveText(textOrRegex)
   }
 
-  shouldContainText(textOrRegex: string | RegExp) {
-    return verifyStep(`${this.name} should contain text`, async ({ expect }) => {
-      await expect(this.locator).toContainText(textOrRegex)
-    })
+  async shouldHaveClass(expect: ExpectLike, re: RegExp) {
+    await expect(this.locator, `${this.name} should have class ${re}`).toHaveClass(re)
   }
 
-  shouldHaveVisibleText(textOrRegex: string | RegExp) {
-    return verifyStep(`${this.name} visible and has text`, async ({ expect }) => {
-      await expect(this.locator).toBeVisible()
-      await expect(this.locator).toHaveText(textOrRegex)
-    })
+  async shouldHaveAttribute(expect: ExpectLike, name: string, value: string) {
+    await expect(this.locator, `${this.name} should have attribute ${name} with value ${value}`).toHaveAttribute(name, value)
   }
 
-  shouldHaveClass(re: RegExp) {
-    return verifyStep(`${this.name} should have class`, async ({ expect }) => {
-      await expect(this.locator).toHaveClass(re)
-    })
-  }
-
-  shouldHaveAttribute(name: string, value: string) {
-    return verifyStep(`${this.name} should have attribute ${name} with value ${value}`, async ({ expect }) => {
-      await expect(this.locator).toHaveAttribute(name, value)
-    })
-  }
-
-  shouldHaveCount(count: number) {
-    return verifyStep(`${this.name} should have count ${String(count)}`, async ({ expect }) => {
-      await expect(this.locator).toHaveCount(count)
-    })
+  async shouldHaveCount(expect: ExpectLike, count: number) {
+    await expect(this.locator, `${this.name} should  have ${String(count)} nodes`).toHaveCount(count)
   }
 
   click() {

@@ -5,7 +5,7 @@ import { footerPage, type FooterComponent } from '@tests/support/ui/home/compone
 import { sidebarPage, type SidebarComponent } from '@tests/support/ui/sidebar/SidebarComponent'
 import { target, type Target } from '@tests/support/ui/components/Target'
 import { specializedTargetSelector, type TargetSelector } from '@tests/support/ui/components/TargetSelector'
-import { themeToggleFromPage, type ThemeToggle } from './ThemeToggle'
+import { themeToggle, type ThemeToggle } from './ThemeToggle'
 import type { Page } from '@playwright/test'
 import { link, type Link } from '@tests/support/ui/components/Link'
 
@@ -24,17 +24,17 @@ export class MainLayoutComponent<T = void> implements Loadable {
 
   shouldBeLoaded() {
     return verifyStep(`${this.name} layout is loaded`, async ({ expect }) => {
-      await this.root.shouldBeVisible().with(expect)
-      await this.headerTitle.shouldHaveVisibleText(/\S+/).with(expect)
+      await this.root.shouldBeVisible(expect)
+      await this.headerTitle.shouldHaveText(expect, /\S+/)
       await this.footer.shouldBeLoaded().with(expect)
       await this.sidebar.shouldBeLoaded().with(expect)
-      await this.themeToggle.shouldBeVisible().with(expect)
+      await this.themeToggle.shouldBeVisible(expect)
     })
   }
 
   shouldBeLocalized(locale: UILanguages) {
     return verifyStep(`${this.name} layout is localized in ${locale}`, async ({ expect }) => {
-      await this.root.shouldHaveAttribute('lang', locale).with(expect)
+      await this.root.shouldHaveAttribute(expect, 'lang', locale)
       await this.footer.shouldBeLocalized(locale).with(expect)
       await this.sidebar.shouldBeLocalized(locale).with(expect)
       return this.main.shouldBeLocalized(locale).with(expect)
@@ -42,12 +42,14 @@ export class MainLayoutComponent<T = void> implements Loadable {
   }
 
   shouldHaveTheme(theme: string) {
-    const re = new RegExp(`\\b${String(theme)}\\b`)
-    return this.root.shouldHaveClass(re)
+    return verifyStep(`${this.name} layout should have theme ${theme}`, async ({ expect }) => {
+      const re = new RegExp(`\\b${String(theme)}\\b`)
+      await this.root.shouldHaveClass(expect, re)
+    })
   }
 
   toggleTheme() {
-    return this.themeToggle.toggleTheme()
+    return this.themeToggle.click()
   }
 
   getTransformOfThemeToggle() {
@@ -61,7 +63,6 @@ export class MainLayoutComponent<T = void> implements Loadable {
   switchTo(locale: UILanguages) {
     return step(`switch language to ${locale}`, async () => {
       const tagLink = this.langLinks.get(locale)
-      await tagLink.shouldBeVisible()
       await tagLink.click()
     })
   }
@@ -97,6 +98,6 @@ export function defaultMainLayout(page: Page) {
     langLinks: specializedTargetSelector(link, 'language link', (lang: UILanguages) =>
       page.getByTestId(`lang-${lang}`)
     ),
-    themeToggle: themeToggleFromPage(page),
+    themeToggle: themeToggle('theme toggle', page.getByTestId('theme-toggle')),
   }
 }

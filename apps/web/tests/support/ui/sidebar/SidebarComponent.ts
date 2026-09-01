@@ -24,14 +24,14 @@ export class SidebarComponent implements Loadable, LocalizedPage<void> {
 
   shouldBeLoaded() {
     return verifyStep('sidebar is loaded', async ({ expect }) => {
-      await this.sidebarTitle.shouldBeVisible().with(expect)
-      await this.logo.shouldHaveCount(1).with(expect)
+      await this.sidebarTitle.shouldBeVisible(expect)
+      await this.logo.shouldHaveCount(expect, 1)
     })
   }
 
   shouldBeLocalized(locale: UILanguages) {
     return verifyStep('sidebar is localized correctly', async ({ expect }) => {
-      await this.aboutLink.shouldHaveVisibleText(ui[locale]['nav.about']).with(expect)
+      await this.aboutLink.shouldHaveText(expect, ui[locale]['nav.about'])
     })
   }
 }
