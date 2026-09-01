@@ -16,17 +16,17 @@ export class SidebarToggle {
 
   shouldBeOpen() {
     return verifyStep('sidebar should be open', async ({ expect }) => {
-      await expect(this.hamburger).toBeVisible()
-      await expect(this.sidebar).toHaveClass(/sidebar-open/)
-      await expect(this.hamburger).toHaveClass(/sidebar-open/)
+      await expect(this.hamburger, `Hamburger button should be visible`).toBeVisible()
+      await expect(this.sidebar, `Sidebar should have sidebar-open class`).toHaveClass(/sidebar-open/)
+      await expect(this.hamburger, `Hamburger button should have sidebar-open class`).toHaveClass(/sidebar-open/)
     })
   }
 
   shouldBeClosed() {
     return verifyStep('sidebar should be closed', async ({ expect }) => {
-      await expect(this.hamburger).toBeVisible()
-      await expect(this.sidebar).not.toHaveClass(/sidebar-open/)
-      await expect(this.hamburger).not.toHaveClass(/sidebar-open/)
+      await expect(this.hamburger, `Hamburger button should be visible`).toBeVisible()
+      await expect(this.sidebar, `Sidebar should not have sidebar-open class`).not.toHaveClass(/sidebar-open/)
+      await expect(this.hamburger, `Hamburger button should not have sidebar-open class`).not.toHaveClass(/sidebar-open/)
     })
   }
 

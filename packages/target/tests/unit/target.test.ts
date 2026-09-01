@@ -1,4 +1,4 @@
-import { withAbilities, createTarget } from '@secorto/target'
+import { withAbilities, createTarget, Target } from '@secorto/target'
 import { describe, expect, it, expectTypeOf } from 'vitest'
 
 describe('createTarget', () => {
@@ -19,7 +19,7 @@ describe('createTarget', () => {
       withAbilities({
         // Interacts directly with 'name' and 'element' properties
         click:
-          (target: { name: string; element: string }, dependency: string) =>
+          (target: Target<string>, dependency: string) =>
             () => `Clicking ${target.name} via ${target.element} [Env: ${dependency}]`,
       }, 'production'),
     )
@@ -36,13 +36,13 @@ describe('createTarget', () => {
       withAbilities({
         // First binding reads the base target layout
         getSelector:
-          (target: { element: string }) =>
+          (target: Target<string>) =>
             () => target.element,
       }),
       withAbilities({
         // Second binding combines target details with its own discrete dependency
         identify:
-          (target: { name: string }, prefix: string) =>
+          (target: Target<string>, prefix: string) =>
             () => `${prefix}-${target.name}`,
       }, 'id'),
     )
@@ -80,7 +80,7 @@ describe('createTarget', () => {
       'cosito',
       '#cosito',
       withAbilities({
-        doSomething: (target: { name: string }, d: string) => () => d,
+        doSomething: (_target: Target<string>, d: string) => () => d,
       }, 'step'),
       withAbilities({
         greet: () => (user: string) => `hi ${user}`,
@@ -96,7 +96,7 @@ describe('createTarget', () => {
     expectTypeOf(result.greet).toEqualTypeOf<(user: string) => string>()
 
     // 3. Assert complete intersection topology matching expected outcome
-    expectTypeOf(result).toMatchTypeOf<{
+    expectTypeOf(result).toExtend<{
       name: string
       element: string
       doSomething: () => string

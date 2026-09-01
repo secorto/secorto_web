@@ -1,4 +1,13 @@
-import { Enhancer, enhance } from "./ability";
+import { Enhancer, enhance } from "./ability"
+
+/**
+ * Represents a target object that can be enhanced with abilities.
+ * @template T - The type of the target's element.
+ */
+export type Target<T> = {
+  name: string
+  element: T
+}
 
 /**
  * Creates an immutable target enhanced with specific capabilities.
