@@ -25,6 +25,7 @@ export class MainLayoutComponent<T = void> implements Loadable {
   shouldBeLoaded() {
     return verifyStep(`${this.name} layout is loaded`, async ({ expect }) => {
       await this.root.shouldBeVisible(expect)
+      await this.headerTitle.shouldBeVisible(expect)
       await this.headerTitle.shouldHaveText(expect, /\S+/)
       await this.footer.shouldBeLoaded().with(expect)
       await this.sidebar.shouldBeLoaded().with(expect)
@@ -49,7 +50,9 @@ export class MainLayoutComponent<T = void> implements Loadable {
   }
 
   toggleTheme() {
-    return this.themeToggle.click()
+    return step('toggle theme', async () => {
+      await this.themeToggle.click()
+    })
   }
 
   getTransformOfThemeToggle() {

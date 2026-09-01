@@ -1,5 +1,5 @@
 import type { Locator } from '@playwright/test'
-import { verifyStep, step, type ExpectLike } from '@tests/step'
+import { verifyStep, type ExpectLike } from '@tests/step'
 
 export class Target {
   constructor(
@@ -32,13 +32,11 @@ export class Target {
   }
 
   async shouldHaveCount(expect: ExpectLike, count: number) {
-    await expect(this.locator, `${this.name} should  have ${String(count)} nodes`).toHaveCount(count)
+    await expect(this.locator, `${this.name} should have ${String(count)} nodes`).toHaveCount(count)
   }
 
-  click() {
-    return step(`click ${this.name}`, async () => {
-      await this.locator.click()
-    })
+  async click() {
+    await this.locator.click()
   }
 
   /**

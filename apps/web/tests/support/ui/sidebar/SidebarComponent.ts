@@ -24,6 +24,7 @@ export class SidebarComponent implements Loadable, LocalizedPage<void> {
     return verifyStep('sidebar is loaded', async ({ expect }) => {
       await this.sidebarTitle.shouldBeVisible(expect)
       await this.logo.shouldHaveCount(expect, 1)
+      await this.aboutLink.shouldBeVisible(expect)
     })
   }
 
@@ -52,6 +53,7 @@ export class SidebarComponent implements Loadable, LocalizedPage<void> {
 
   shouldBePermanentlyOpen() {
     return verifyStep('sidebar should be permanently open', async ({ expect }) => {
+      await this.sidebarToggle.shouldBeVisible(expect)
       await this.hamburger.shouldNotBeVisible(expect)
       await this.hamburger.shouldNotHaveClass(expect, /sidebar-open/)
     })

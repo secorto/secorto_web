@@ -6,7 +6,7 @@ import type { ContentListComponent } from './components/ContentList'
 import type { SectionType } from '@domain/section'
 import { sectionsConfig, getURLForSection, getEntryTagURL } from '@domain/section'
 import { urlValidator } from '@tests/support/ui/shared/flows/urlValidator'
-import { verifyStep } from '@tests/step'
+import { step, verifyStep } from '@tests/step'
 import { NavigablePage, visit, createPageContext } from '@tests/support/ui/shared/pages'
 import type { LocalizedPage, LocalizedUrl } from '@tests/support/ui/shared/contracts/localization'
 import { tagsComponent } from './components/Tags'
@@ -96,9 +96,11 @@ export class ContentListPage extends NavigablePage implements LocalizedPage<void
    * Abre un item específico por su href.
    */
   async openItem(href: string) {
-    const slug = href.split('/').pop() || 'item'
-    const title = slug.replace(/-/g, ' ')
-    return this.list.clickItem(href, title)
+    return step(`open item ${href}`, async () => {
+      const slug = href.split('/').pop() || 'item'
+      const title = slug.replace(/-/g, ' ')
+      return this.list.clickItem(href, title)
+    })
   }
 
   // Delegadores de conveniencia para tests
