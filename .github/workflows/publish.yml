@@ -17,9 +17,6 @@ jobs:
           runtime: node@24
           cache: true
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
       - name: Build package
         run: pnpm build
 
