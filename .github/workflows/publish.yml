@@ -1,0 +1,27 @@
+name: Publish Package
+
+on:
+  release:
+    types: [published] # Triggers when you create a GitHub Release
+  workflow_dispatch: # Allows you to trigger the workflow manually
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - uses: pnpm/setup@v2
+        with:
+          runtime: node@24
+          cache: true
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build package
+        run: pnpm build
+
+      - name: Publish to NPM
+        run: pnpm publish --no-git-checks
