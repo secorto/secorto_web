@@ -1,36 +1,36 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro'
+import { sectionRoutes } from '@domain/section'
 import SEOHead from '@components/SEOHead.astro'
 import Tags from '@components/Tags.astro'
 import LanguagePicker from '@components/LanguagePicker.astro'
-import { useTranslations } from '@i18n/utils'
 import { filterByLocale, getUniqueTags, mapEntryId } from '@utils/paths'
 import ListContent from '@components/list/ListContent.astro'
-import { buildSectionIndexPaths } from '@utils/staticPathsBuilder.adapters'
 import { getCollection } from 'astro:content'
-import { type SectionPath } from '@utils/staticPathsBuilder'
+import { createAvailableLinks, getStaticPathsSections } from '@secorto/i18n'
+import { languages, sections } from '@i18n/ui'
 
 export async function getStaticPaths() {
-  return await buildSectionIndexPaths()
+  return await getStaticPathsSections(sectionRoutes, languages)
 }
 
-export type Props = SectionPath['props']
-export type Params = SectionPath['params']
+export type Props = Awaited<ReturnType<typeof getStaticPaths>>[number]['props']
+export type Params = Awaited<ReturnType<typeof getStaticPaths>>[number]['params']
 
 const { locale } = Astro.params
-const sectionProps = Astro.props
-const config = sectionProps.config
-const links = sectionProps.links
-const t = useTranslations(locale)
-const pageTitle = t(config.translationKey)
-const rawPosts = filterByLocale(await getCollection(config.name), locale)
+const { section } = Astro.props
+const pageTitle = sections[section][locale]
+const rawPosts = filterByLocale(await getCollection(section), locale)
 const tags = getUniqueTags(rawPosts)
 const posts = mapEntryId(rawPosts)
+const links = createAvailableLinks(languages, (lang) =>
+  sectionRoutes.getSectionURL(section, lang)
+)
 ---
 
 <BaseLayout pageTitle={pageTitle}>
   <SEOHead slot="seo-head" links={links} />
   <LanguagePicker slot="langpicker" links={links} />
-  <Tags locale={locale} section={config.name} tags={tags} />
-  <ListContent section={sectionProps.config.name} posts={posts} locale={locale} cta={t(config.ctaKey)} />
+  <Tags locale={locale} section={section} tags={tags} />
+  <ListContent section={section} posts={posts} locale={locale} />
 </BaseLayout>

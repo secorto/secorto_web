@@ -10,7 +10,6 @@
  */
 import { describe, test, expect, vi } from 'vitest'
 import {
-  buildSectionIndexPaths,
   buildTagPaths,
   buildTagIndexPaths
 } from '@utils/staticPathsBuilder.adapters'
@@ -22,18 +21,10 @@ import type { FetchCollection } from '@utils/staticPathsBuilder'
 // Se mockea solo esa para no tocar red/FS; sectionsConfig se usa sin modificar.
 vi.mock('astro:content', () => ({ getCollection: vi.fn(async () => []) }))
 
-const sectionCount = Object.keys(sectionsConfig).length
 const localeCount = languageKeys.length
 const emptyFetch: FetchCollection = vi.fn(async () => [])
 
 describe('staticPathsBuilder.adapters — contrato con sectionsConfig real', () => {
-  test('buildSectionIndexPaths: genera paths para cada sección x locale', async () => {
-    const result = await buildSectionIndexPaths()
-
-    expect(result).toHaveLength(sectionCount * localeCount)
-    expect(result[0]).toMatchObject({ params: expect.objectContaining({ locale: expect.any(String), section: expect.any(String) }) })
-  })
-
   test('buildTagIndexPaths: genera un path por locale con allSectionEntries cacheado', async () => {
     const result = await buildTagIndexPaths(emptyFetch)
 

@@ -27,17 +27,6 @@ import { rootMap } from '@i18n/rootMap'
 /** Minimal shape for the injected collection fetcher — easier to mock than the full generic overload. */
 export type FetchCollection = (collection: CollectionKey) => Promise<CollectionEntry<CollectionKey>[]>
 
-export interface SectionPath {
-  params: {
-    locale: UILanguages
-    section: string
-  }
-  props:  {
-    config: SectionConfig
-    links: TranslationLink[]
-  }
-}
-
 export interface TagPath {
   params: {
     locale: UILanguages
@@ -63,44 +52,6 @@ export interface TagIndexPath {
     allSectionEntries: Record<string, PostEntry<CollectionKey>[]>
     links: TranslationLink[]
   }
-}
-
-
-/**
- * Core: Construye rutas de locales para una sección sin acoplamiento.
- * Recibe la sección como parámetro explícito (objeto).
- * @param config - Configuración de la sección a procesar (inyectada)
- * @returns Array de paths para getStaticPaths
- */
-export function buildLocalePathsForSection(
-  config: SectionConfig,
-): SectionPath[] {
-  const links = languageKeys.map(l =>
-    availableLink(`${buildLangPrefix(l)}/${config.routes[l]}`, l)
-  )
-  return languageKeys.map(locale => {
-    return {
-      params: { locale, section: config.routes[locale] },
-      props: { config, links }
-    }
-  })
-}
-
-/**
- * Core: Construye rutas de índices de secciones sin acoplamiento.
- * Recibe las secciones como parámetro explícito (array).
- * @param sections - Secciones a procesar (inyectadas)
- * @returns Array de paths para getStaticPaths
- */
-export async function buildSectionIndexPathsCore(
-  sections: SectionConfig[],
-): Promise<SectionPath[]> {
-  const pathGroups = await Promise.all(
-    sections.map(async config => {
-      return buildLocalePathsForSection(config)
-    })
-  )
-  return pathGroups.flat()
 }
 
 /**

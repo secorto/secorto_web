@@ -6,7 +6,7 @@ import WorkDateRange from '@components/WorkDateRange.astro'
 import type { ExperienceLikeEntry } from '@domain/post'
 import type { UILanguages } from '@i18n/ui'
 import { sortExperienceByPriority } from '@utils/sorting'
-import { getEntryURL, type SectionType } from '@domain/section'
+import { sectionRoutes, type SectionType } from '@domain/section'
 
 export interface Props {
   section: SectionType
@@ -22,7 +22,7 @@ const { posts, locale, cta, section } = Astro.props
   {sortExperienceByPriority(posts).map((post) =>
     <PostItem
       image={post.data.image}
-      url={getEntryURL(section, locale, post.cleanId)}
+      url={sectionRoutes.getEntryURL(section, locale, post.cleanId)}
       title={post.data.title}
       cta={cta}
       locale={locale}

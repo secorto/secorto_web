@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
 import type { SectionType } from '@domain/section'
-import { sectionsConfig, getEntryURL } from '@domain/section'
+import { sectionRoutes, sectionsConfig } from '@domain/section'
 import { NavigablePage, visit, createPageContext } from '@tests/support/ui/shared/pages'
 import type { MainLayoutComponent } from '@tests/support/ui/shared/components/MainLayout'
 import { target, type Target } from '@tests/support/ui/components/Target'
@@ -117,7 +117,7 @@ export function userIsOnContentDetail(
   locale: UILanguages,
   slug: string,
 ): Step<ContentDetailPage> {
-  const url = getEntryURL(sectionName, locale, slug)
+  const url = sectionRoutes.getEntryURL(sectionName, locale, slug)
   return visit(
     `a user in ${sectionName} detail ${locale} ${slug}`,
     page,

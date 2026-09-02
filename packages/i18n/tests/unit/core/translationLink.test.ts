@@ -8,6 +8,8 @@ import {
   isDraft,
   isMissing,
   resolveDefaultAccessibleLink,
+  createAvailableLinks,
+  createLocales,
 } from '@secorto/i18n'
 
 describe('availableLink', () => {
@@ -35,6 +37,17 @@ describe('draftLink', () => {
     expect(isDraft(result)).toBe(true)
     expect(isAccessible(result)).toBe(true)
     expect(isAvailable(result)).toBe(false)
+  })
+})
+
+describe('createAvailableLinks', () => {
+  it('creates available links for every configured locale', () => {
+    const locales = createLocales(['es', 'en'] as const)
+
+    expect(createAvailableLinks(locales, locale => `/${locale}/blog`)).toEqual([
+      { type: 'available', href: '/es/blog', locale: 'es' },
+      { type: 'available', href: '/en/blog', locale: 'en' },
+    ])
   })
 })
 

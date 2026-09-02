@@ -6,7 +6,7 @@ import type { PostLikeEntry } from '@domain/post'
 import type { UILanguages } from '@i18n/ui'
 import { sortPostsByPriority } from '@utils/sorting'
 import { full } from '@i18n/dateFormat'
-import { getEntryURL, type SectionType } from '@domain/section'
+import { sectionRoutes, type SectionType } from '@domain/section'
 
 export interface Props {
   section: SectionType
@@ -23,7 +23,7 @@ const dateFormat = new Intl.DateTimeFormat(locale, full)
   {sortPostsByPriority(posts).map((post) =>
     <PostItem
       image={post.data.image}
-      url={getEntryURL(section, locale, post.cleanId)}
+      url={sectionRoutes.getEntryURL(section, locale, post.cleanId)}
       title={post.data.title}
       excerpt={post.data.excerpt}
       cta={cta}

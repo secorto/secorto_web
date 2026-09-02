@@ -1,3 +1,4 @@
+import type { SectionType } from '@domain/section'
 import { createLocales } from '@secorto/i18n'
 export const defaultLang = 'es'
 
@@ -24,9 +25,7 @@ export const ui = {
     'work.activity': 'Activity',
     'work.today': 'today',
     'featured_image': 'Featured image for {0}',
-    'blog.tagged': 'Blog tagged with',
     'talk.slides': 'Slides of talk',
-    'talk.tagged': 'Talks tagged with',
     'post.view_original': 'View original',
     'post.draft_notice': 'This post is a draft and not yet ready for public viewing.',
     'post.translation_pending': 'Translation pending',
@@ -46,16 +45,6 @@ export const ui = {
     'footer.role': 'Software developer',
     'footer.follow': 'Follow me: ',
     'footer.tags': 'Browse tags',
-    'cta.blog': 'Read more',
-    'cta.talk': 'Watch talk',
-    'cta.project': 'View project',
-    'cta.work': 'View more',
-    'cta.community': 'Learn more',
-    'home.pybaq_role': 'Organizer',
-    'home.pybaq_label': 'Python Barranquilla',
-    'home.pybaq_since': 'Since August 2018',
-    'home.pybaq_desc': 'I help organize events, maintain the website, and give talks about testing and software development.',
-    'home.pybaq_cta': 'View my profile'
   },
   es: {
     'site.description': 'Blog personal de Sergio Orozco - Desarrollador, Conferencista, Entusiasta del Open Source',
@@ -68,9 +57,7 @@ export const ui = {
     'work.activity': 'Actividad',
     'work.today': 'actualidad',
     'featured_image': 'Imagen destacada para {0}',
-    'blog.tagged': 'Entradas etiquetadas con',
     'talk.slides': 'Presentación de la charla',
-    'talk.tagged': 'Charlas etiquetadas con',
     'post.view_original': 'Ver original',
     'post.draft_notice': 'Este post está en borrador y aún no está listo para publicación pública.',
     'post.translation_pending': 'Traducción pendiente',
@@ -90,18 +77,32 @@ export const ui = {
     'footer.role': 'Desarrollador de software',
     'footer.follow': 'Sígueme en: ',
     'footer.tags': 'Explorar etiquetas',
-    'cta.blog': 'Leer más',
-    'cta.talk': 'Ver charla',
-    'cta.project': 'Ver proyecto',
-    'cta.work': 'Ver más',
-    'cta.community': 'Saber más',
-    'home.pybaq_role': 'Organizador',
-    'home.pybaq_label': 'Python Barranquilla',
-    'home.pybaq_since': 'Desde agosto de 2018',
-    'home.pybaq_desc': 'Ayudo a organizar eventos, mantengo el sitio web y doy charlas sobre testing y desarrollo de software.',
-    'home.pybaq_cta': 'Ver mi perfil'
   },
-} as const;
+} as const
+
+export const sections = {
+  blog: {en: 'Blog', es: 'Blog'},
+  talk: {en: 'Talks', es: 'Charlas'},
+  projects: {en: 'Projects', es: 'Proyectos'},
+  work: {en: 'Work', es: 'Trabajo'},
+  community: {en: 'Community', es: 'Comunidad'}
+} satisfies Record<SectionType, Record<UILanguages, string>>
+
+export const cta = {
+  blog: {en: 'Read more', es: 'Leer más'},
+  talk: {en: 'Watch talk', es: 'Ver charla'},
+  projects: {en: 'View project', es: 'Ver proyecto'},
+  work: {en: 'View more', es: 'Ver más'},
+  community: {en: 'Learn more', es: 'Saber más'}
+} satisfies Record<SectionType, Record<UILanguages, string>>
+
+export const tagged = {
+  blog: {en: 'Posts tagged with', es: 'Entradas etiquetadas con'},
+  talk: {en: 'Talks tagged with', es: 'Charlas etiquetadas con'},
+  projects: {en: 'Projects tagged with', es: 'Proyectos etiquetados con'},
+  work: {en: 'Work tagged with', es: 'Trabajos etiquetados con'},
+  community: {en: 'Community tagged with', es: 'Comunidad etiquetada con'}
+} satisfies Record<SectionType, Record<UILanguages, string>>
 
 export const icons = {
   missing: '🔒',

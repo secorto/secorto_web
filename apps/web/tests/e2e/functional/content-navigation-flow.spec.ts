@@ -1,5 +1,5 @@
 import { test } from '@tests/fixtures'
-import { getEntryURL, sectionsConfig } from '@domain/section'
+import { sectionRoutes, sectionsConfig } from '@domain/section'
 import { userIsOnContentList } from '@tests/support/ui/content/ContentListPage'
 import { contentDetailPage } from '@tests/support/ui/content/ContentDetailPage'
 import { testContents } from '@tests/support/data/testContents'
@@ -37,7 +37,7 @@ for (const content of testContents) {
         await list.shouldBeFiltered(content.testTag).soft()
 
         // 4. Click en el item con testSlug (sin navegar por URL)
-        const entryUrl = getEntryURL(content.name, content.locale, content.testSlug)
+        const entryUrl = sectionRoutes.getEntryURL(content.name, content.locale, content.testSlug)
         await list.openItem(entryUrl)
 
         // 5. Validar que el detail page se cargó correctamente
