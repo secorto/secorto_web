@@ -7,7 +7,6 @@ describe('buildGlobalTagGroups', () => {
     const sections: TagGroupSectionInput[] = [
       {
         section: 'blog',
-        sectionSlug: 'blog',
         sectionLabel: 'Blog',
         entries: [
           { data: { tags: ['python', 'tools'] } },
@@ -16,7 +15,6 @@ describe('buildGlobalTagGroups', () => {
       },
       {
         section: 'talk',
-        sectionSlug: 'talk',
         sectionLabel: 'Talks',
         entries: [
           { data: { tags: ['python'] } },
@@ -36,7 +34,6 @@ describe('buildGlobalTagGroups', () => {
     const sections: TagGroupSectionInput[] = [
       {
         section: 'blog',
-        sectionSlug: 'blog',
         sectionLabel: 'Blog',
         entries: [
           { data: { tags: ['herramientas'] } }
@@ -56,7 +53,6 @@ describe('buildGlobalTagGroups', () => {
     const sections: TagGroupSectionInput[] = [
       {
         section: 'talk',
-        sectionSlug: 'talk',
         sectionLabel: 'Talks',
         entries: [
           { data: { tags: ['python'] } }
@@ -64,7 +60,6 @@ describe('buildGlobalTagGroups', () => {
       },
       {
         section: 'blog',
-        sectionSlug: 'blog',
         sectionLabel: 'Blog',
         entries: [
           { data: { tags: ['python', 'astro'] } }
@@ -82,7 +77,6 @@ describe('buildGlobalTagGroups', () => {
     const sections: TagGroupSectionInput[] = [
       {
         section: 'blog',
-        sectionSlug: 'blog',
         sectionLabel: 'Blog',
         entries: [
           { data: {} }

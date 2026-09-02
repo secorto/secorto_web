@@ -86,11 +86,8 @@ export function createStandalonePageLinks<
     }
 
     const href = `/${locale}/${entry.route}`
-
-    if (entry.draft) {
-      return draftLink(href, locale)
-    }
-
-    return availableLink(href, locale)
+    return entry.draft
+      ? draftLink(href, locale)
+      : availableLink(href, locale)
   })
 }

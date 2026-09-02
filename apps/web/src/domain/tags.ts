@@ -48,8 +48,6 @@ export interface TaggableEntry {
 export interface TagGroupSectionInput {
   /** Tipo de sección (blog, charla, trabajo, etc.) */
   section: SectionType
-  /** Slug de la URL para esta sección */
-  sectionSlug: string
   /** Etiqueta de traducción o nombre legible de la sección */
   sectionLabel: string
   /** Entries de la sección que contienen los tags */
@@ -59,8 +57,6 @@ export interface TagGroupSectionInput {
 export interface TagSectionReference {
   /** Tipo de sección que contiene este tag */
   section: SectionType
-  /** Slug de la URL para esta sección */
-  sectionSlug: string
   /** Etiqueta de traducción o nombre legible de la sección */
   sectionLabel: string
   /** Slug del tag localizado para esta sección */
@@ -121,7 +117,6 @@ function addTagReference(
   if (!current.references.has(section.section)) {
     current.references.set(section.section, {
       section: section.section,
-      sectionSlug: section.sectionSlug,
       sectionLabel: section.sectionLabel,
       tagSlug: localizedTag
     })
