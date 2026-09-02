@@ -27,19 +27,24 @@ export function resolveTranslationKey<T extends object>(
  * Extracts the locale and clean ID from the entry ID and resolves the
  * translation key used to group translations of the same content.
  *
+ * @template TSection Section identifier (for example: `'blog' | 'docs'`).
+ * @template TOriginalEntry The raw data schema type inside the entry (e.g., frontmatter shape).
+ * @template TLocale Locale identifier (for example: `'en' | 'es'`).
+ * @template TEntry The full collection entry object shape containing both id and data.
+ *
  * @param entry Collection entry to adapt.
  * @param locales Supported locales used to parse the entry ID.
  * @returns The corresponding localized entry.
  */
 export function adaptToLocalizedEntry<
   TSection extends string,
-  T extends object,
-  L extends string,
-  TEntry extends GenericCollectionEntry<TSection, T>
+  TOriginalEntry extends object,
+  TLocale extends string,
+  TEntry extends GenericCollectionEntry<TSection, TOriginalEntry>
 >(
   entry: TEntry,
-  locales: Locales<L>
-): LocalizedEntry<TSection, TEntry, L> {
+  locales: Locales<TLocale>
+): LocalizedEntry<TSection, TEntry, TLocale> {
   const { locale, id: cleanId } =
     extractCleanId(entry.id, locales)
 
