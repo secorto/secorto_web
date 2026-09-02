@@ -1,5 +1,5 @@
-import type { Locales } from "../core"
-import type { SectionRoutes } from "./routes"
+import type { Locales } from '../core'
+import type { SectionRoutes } from './routes'
 
 export interface SectionPath<
   TLocale extends string,
@@ -14,7 +14,7 @@ export interface SectionPath<
   }
 }
 
-export async function getStaticPathSection<
+export async function getStaticPathsSections<
   C extends string,
   L extends string,
 >(

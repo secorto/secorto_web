@@ -7,11 +7,11 @@ import LanguagePicker from '@components/LanguagePicker.astro'
 import { filterByLocale, getUniqueTags, mapEntryId } from '@utils/paths'
 import ListContent from '@components/list/ListContent.astro'
 import { getCollection } from 'astro:content'
-import { createAvailableLinks, getStaticPathSection } from '@secorto/i18n'
+import { createAvailableLinks, getStaticPathsSections } from '@secorto/i18n'
 import { languages, sections } from '@i18n/ui'
 
 export async function getStaticPaths() {
-  return await getStaticPathSection(sectionRoutes, languages)
+  return await getStaticPathsSections(sectionRoutes, languages)
 }
 
 export type Props = Awaited<ReturnType<typeof getStaticPaths>>[number]['props']

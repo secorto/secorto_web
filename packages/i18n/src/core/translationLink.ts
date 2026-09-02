@@ -1,4 +1,4 @@
-import { Locales } from "./locale"
+import type { Locales } from './locale'
 
 /**
  * Represents a translation that is available and can be accessed by users.

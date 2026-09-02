@@ -3,10 +3,10 @@ import { describe, expect, it } from 'vitest'
 import {
   createLocales,
   createSectionRoutes,
-  getStaticPathSection,
+  getStaticPathsSections,
 } from '@secorto/i18n'
 
-describe('getStaticPathSection', () => {
+describe('getStaticPathsSections', () => {
   it('generates one path per section and locale', async () => {
     const routes = createSectionRoutes({
       blog: {
@@ -21,7 +21,7 @@ describe('getStaticPathSection', () => {
 
     const locales = createLocales(['es', 'en'] as const)
 
-    await expect(getStaticPathSection(routes, locales)).resolves.toEqual([
+    await expect(getStaticPathsSections(routes, locales)).resolves.toEqual([
       {
         params: {
           locale: 'es',
@@ -74,7 +74,7 @@ describe('getStaticPathSection', () => {
     })
 
     const locales = createLocales(['es', 'en'] as const)
-    const result = await getStaticPathSection(routes, locales)
+    const result = await getStaticPathsSections(routes, locales)
 
     expect(result.map(path => ({
       id: path.props.section,
