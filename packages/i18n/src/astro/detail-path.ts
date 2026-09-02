@@ -13,9 +13,9 @@ import type { GenericCollectionEntry } from './entry-adapter'
 import type { SectionRoutes } from '../section/routes'
 
 export type DetailPath<
-  C extends string,
+  TSection extends string,
   L extends string,
-  TEntry extends GenericCollectionEntry<C, object>,
+  TEntry extends GenericCollectionEntry<TSection, object>,
 > = {
   params: {
     locale: L
@@ -23,9 +23,9 @@ export type DetailPath<
     id: string
   }
   props: {
-    entry: LocalizedEntry<TEntry, L>
-    section: C
-    siblings: NonNullable<TranslationIndex<L, TEntry>[string]>
+    entry: LocalizedEntry<TSection, TEntry, L>
+    section: TSection
+    siblings: NonNullable<TranslationIndex<TSection, L, TEntry>[string]>
   }
 }
 
@@ -54,25 +54,25 @@ export type DetailPath<
  * @param allowedLocales Supported locales
  */
 export async function getStaticPathsEntries<
-  C extends string,
+  TSection extends string,
   E extends object,
   L extends string,
-  TEntry extends GenericCollectionEntry<C, E>,
+  TEntry extends GenericCollectionEntry<TSection, E>,
 >(
-  routes: SectionRoutes<C, L>,
+  routes: SectionRoutes<TSection, L>,
   fetchCollection: (
-    collection: C,
+    collection: TSection,
   ) => Promise<TEntry[]>,
   allowedLocales: Locales<L>,
-): Promise<DetailPath<C, L, TEntry>[]> {
+): Promise<DetailPath<TSection, L, TEntry>[]> {
 
-  const allPaths: DetailPath<C, L, TEntry>[] = []
+  const allPaths: DetailPath<TSection, L, TEntry>[] = []
 
   for (const sectionKey of routes.getSections()) {
     const rawEntries = await fetchCollection(sectionKey)
 
     const localizedEntries = rawEntries.map(entry =>
-      adaptToLocalizedEntry(entry, allowedLocales),
+      adaptToLocalizedEntry<TSection, E, L, TEntry>(entry, allowedLocales),
     )
 
     const index = createTranslationIndex(localizedEntries)

@@ -17,7 +17,7 @@ const section = 'blog'
 function localizedEntry(
   locale: Locale,
   cleanId: string,
-): LocalizedEntry<BlogEntry, Locale> {
+): LocalizedEntry<Section, BlogEntry, Locale> {
   return {
     section,
     cleanId,

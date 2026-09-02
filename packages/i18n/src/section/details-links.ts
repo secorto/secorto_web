@@ -16,14 +16,14 @@ import type { LocalizedEntry } from './translation-index'
  * @returns One translation link per supported locale.
  */
 export function createDetailTranslationLinks<
-  C extends string,
-  L extends string,
+  TSection extends string,
+  TLocale extends string,
   TEntry,
 >(
-  siblings: Partial<Record<L, LocalizedEntry<TEntry, L>>>,
-  sectionRoutes: SectionRoutes<C, L>,
-  locales: Locales<L>,
-): TranslationLink<L>[] {
+  siblings: Partial<Record<TLocale, LocalizedEntry<TSection, TEntry, TLocale>>>,
+  sectionRoutes: SectionRoutes<TSection, TLocale>,
+  locales: Locales<TLocale>,
+): TranslationLink<TLocale>[] {
   return locales.all.map(locale => {
     const sibling = siblings[locale]
 
@@ -32,7 +32,7 @@ export function createDetailTranslationLinks<
     }
 
     const href = sectionRoutes.getEntryURL(
-      sibling.section as C,
+      sibling.section,
       locale,
       sibling.cleanId,
     )

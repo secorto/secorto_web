@@ -5,10 +5,11 @@
  * @template L - The language code (e.g., 'es', 'en').
  */
 export interface LocalizedEntry<
+  TSection,
   TEntry,
   L extends string
 > {
-  section: string
+  section: TSection
   cleanId: string
   translationKey: string
   locale: L
@@ -23,14 +24,16 @@ export interface LocalizedEntry<
  * @template C - The section of the application (e.g., 'blog', 'docs').
  */
 export type TranslationGroup<
+  TSection extends string,
   L extends string,
   TEntry,
-> = Partial<Record<L, LocalizedEntry<TEntry, L>>>
+> = Partial<Record<L, LocalizedEntry<TSection, TEntry, L>>>
 
 export type TranslationIndex<
+  TSection extends string,
   L extends string,
   TEntry
-> = Partial<Record<string, TranslationGroup<L, TEntry>>>
+> = Partial<Record<string, TranslationGroup<TSection, L, TEntry>>>
 
 /**
  * Builds a translation index from an array of localized entries.
@@ -48,13 +51,14 @@ export type TranslationIndex<
  * @throws Error if duplicate entries for the same translation key and locale are found
  */
 export function createTranslationIndex<
+  TSection extends string,
   L extends string,
   TEntry
 >(
-  entries: readonly LocalizedEntry<TEntry, L>[]
-): TranslationIndex<L, TEntry> {
+  entries: readonly LocalizedEntry<TSection, TEntry, L>[]
+): TranslationIndex<TSection, L, TEntry> {
   // Using map to safely mutate internally without lying to TypeScript.
-  const map = new Map<string, TranslationGroup<L, TEntry>>()
+  const map = new Map<string, TranslationGroup<TSection, L, TEntry>>()
 
   for (const entry of entries) {
     const key = entry.translationKey
@@ -62,7 +66,7 @@ export function createTranslationIndex<
 
     let group = map.get(key)
     if (!group) {
-      group = Object.create(null) as TranslationGroup<L, TEntry>
+      group = Object.create(null) as TranslationGroup<TSection, L, TEntry>
       map.set(key, group)
     } else if (locale in group) {
       throw new Error(
