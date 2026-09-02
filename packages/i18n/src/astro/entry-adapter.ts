@@ -28,7 +28,7 @@ export function resolveTranslationKey<T extends object>(
  * translation key used to group translations of the same content.
  *
  * @template TSection Section identifier (for example: `'blog' | 'docs'`).
- * @template TOriginalEntry The raw data schema type inside the entry (e.g., frontmatter shape).
+ * @template TData The raw data schema type inside the entry (e.g., frontmatter shape).
  * @template TLocale Locale identifier (for example: `'en' | 'es'`).
  * @template TEntry The full collection entry object shape containing both id and data.
  *
@@ -38,9 +38,9 @@ export function resolveTranslationKey<T extends object>(
  */
 export function adaptToLocalizedEntry<
   TSection extends string,
-  TOriginalEntry extends object,
+  TData extends object,
   TLocale extends string,
-  TEntry extends GenericCollectionEntry<TSection, TOriginalEntry>
+  TEntry extends GenericCollectionEntry<TSection, TData>
 >(
   entry: TEntry,
   locales: Locales<TLocale>

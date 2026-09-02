@@ -7,12 +7,12 @@
 export interface LocalizedEntry<
   TSection,
   TEntry,
-  L extends string
+  TLocale extends string
 > {
   section: TSection
   cleanId: string
   translationKey: string
-  locale: L
+  locale: TLocale
   draft: boolean
   original: TEntry
 }
@@ -25,9 +25,9 @@ export interface LocalizedEntry<
  */
 export type TranslationGroup<
   TSection extends string,
-  L extends string,
+  TLocale extends string,
   TEntry,
-> = Partial<Record<L, LocalizedEntry<TSection, TEntry, L>>>
+> = Partial<Record<TLocale, LocalizedEntry<TSection, TEntry, TLocale>>>
 
 export type TranslationIndex<
   TSection extends string,
@@ -52,13 +52,13 @@ export type TranslationIndex<
  */
 export function createTranslationIndex<
   TSection extends string,
-  L extends string,
+  TLocale extends string,
   TEntry
 >(
-  entries: readonly LocalizedEntry<TSection, TEntry, L>[]
-): TranslationIndex<TSection, L, TEntry> {
+  entries: readonly LocalizedEntry<TSection, TEntry, TLocale>[]
+): TranslationIndex<TSection, TLocale, TEntry> {
   // Using map to safely mutate internally without lying to TypeScript.
-  const map = new Map<string, TranslationGroup<TSection, L, TEntry>>()
+  const map = new Map<string, TranslationGroup<TSection, TLocale, TEntry>>()
 
   for (const entry of entries) {
     const key = entry.translationKey
@@ -66,7 +66,7 @@ export function createTranslationIndex<
 
     let group = map.get(key)
     if (!group) {
-      group = Object.create(null) as TranslationGroup<TSection, L, TEntry>
+      group = Object.create(null) as TranslationGroup<TSection, TLocale, TEntry>
       map.set(key, group)
     } else if (locale in group) {
       throw new Error(

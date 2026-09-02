@@ -44,7 +44,7 @@ export type DetailPath<
  * translations.
  *
  * @template TSection Section identifiers (for example: `'blog' | 'docs'`).
- * @template TOriginalEntry The raw data schema type inside the entry (e.g., frontmatter shape).
+ * @template TData The raw data schema type inside the entry (e.g., frontmatter shape).
  * @template TLocale Locale identifiers (for example: `'en' | 'es'`).
  * @template TEntry The full collection entry object shape containing both id and data.
  *
@@ -54,9 +54,9 @@ export type DetailPath<
  */
 export async function getStaticPathsEntries<
   TSection extends string,
-  TOriginalEntry extends object,
+  TData extends object,
   TLocale extends string,
-  TEntry extends GenericCollectionEntry<TSection, TOriginalEntry>,
+  TEntry extends GenericCollectionEntry<TSection, TData>,
 >(
   routes: SectionRoutes<TSection, TLocale>,
   fetchCollection: (
@@ -71,7 +71,7 @@ export async function getStaticPathsEntries<
     const rawEntries = await fetchCollection(sectionKey)
 
     const localizedEntries = rawEntries.map(entry =>
-      adaptToLocalizedEntry<TSection, TOriginalEntry, TLocale, TEntry>(entry, allowedLocales),
+      adaptToLocalizedEntry<TSection, TData, TLocale, TEntry>(entry, allowedLocales),
     )
 
     const index = createTranslationIndex(localizedEntries)
