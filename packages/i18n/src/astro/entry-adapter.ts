@@ -2,17 +2,34 @@ import { extractCleanId } from '../core'
 import type { Locales } from '../core'
 import type { LocalizedEntry } from '../section/translation-index'
 
+/**
+ * Represents a generic entry from a content source mapped to the application domain.
+ *
+ * @template TSection Section identifier (for example: `'blog' | 'docs'`).
+ * @template TData The raw data schema type inside the entry (e.g., frontmatter shape).
+ */
 export interface GenericCollectionEntry<
-  C extends string,
+  TSection extends string,
   TData
 > {
   id: string
-  collection: C
+  collection: TSection
   data: TData
 }
 
-export function resolveTranslationKey<T extends object>(
-  data: T,
+/**
+ * Resolves the translation key used to group related content entries together.
+ *
+ * Checks if a custom `translationKey` string exists inside the entry data. 
+ * If it does not exist, it falls back to the provided clean identifier.
+ *
+ * @template TData The raw data schema type inside the entry.
+ * @param data The entry data object to inspect.
+ * @param cleanId The identifier used as a fallback if no translation key is found.
+ * @returns The resolved translation key.
+ */
+export function resolveTranslationKey<TData extends object>(
+  data: TData,
   cleanId: string
 ): string {
   return 'translationKey' in data &&
