@@ -1,5 +1,3 @@
-import type { Locales } from './locale'
-
 /**
  * Represents a translation that is available and can be accessed by users.
  */
@@ -129,15 +127,4 @@ export function resolveDefaultAccessibleLink<TLocale extends string>(
   throw new Error(
     'resolveDefaultAccessibleLink: expected at least one accessible link'
   )
-}
-
-export function createAvailableLinks<TLocale extends string>(
-  locales: Locales<TLocale>,
-  getHref: (locale: TLocale) => string
-): AvailableLink<TLocale>[] {
-  return locales.all.map(locale => ({
-    type: 'available',
-    href: getHref(locale),
-    locale
-  }))
 }

@@ -5,7 +5,7 @@ import LanguagePicker from '@components/LanguagePicker.astro'
 import { languages, sections } from '@i18n/ui'
 import { useTranslations } from '@i18n/utils'
 import { buildGlobalTagGroups, type TagGroup, type TagGroupSectionInput } from '@domain/tags'
-import { createAvailableLinks, getStaticPathsLocales } from '@secorto/i18n'
+import { availableLink, getStaticPathsLocales } from '@secorto/i18n'
 import { sectionKeys, sectionRoutes } from '@domain/section'
 import { getCollection } from 'astro:content'
 import { filterByLocale } from '@utils/paths'
@@ -20,9 +20,7 @@ const { locale } = Astro.params
 const t = useTranslations(locale)
 const pageTitle = t('tags.index_title')
 
-const links = createAvailableLinks(languages, (lang) =>
-  `/${lang}/tags`
-)
+const links = languages.all.map(locale => availableLink(`/${locale}/tags`, locale))
 
 // Construir sectionInputs a partir de datos cacheados (sin fetch)
 const sectionInputs: TagGroupSectionInput[] = []

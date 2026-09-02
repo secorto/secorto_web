@@ -7,7 +7,7 @@ import LanguagePicker from '@components/LanguagePicker.astro'
 import { filterByLocale, getUniqueTags, mapEntryId } from '@utils/paths'
 import ListContent from '@components/list/ListContent.astro'
 import { getCollection } from 'astro:content'
-import { createAvailableLinks, getStaticPathsSections } from '@secorto/i18n'
+import { availableLink, getStaticPathsSections } from '@secorto/i18n'
 import { languages, sections } from '@i18n/ui'
 
 export async function getStaticPaths() {
@@ -23,9 +23,7 @@ const pageTitle = sections[section][locale]
 const rawPosts = filterByLocale(await getCollection(section), locale)
 const tags = getUniqueTags(rawPosts)
 const posts = mapEntryId(rawPosts)
-const links = createAvailableLinks(languages, (lang) =>
-  sectionRoutes.getSectionURL(section, lang)
-)
+const links = languages.all.map(locale => availableLink(sectionRoutes.getSectionURL(section, locale), locale))
 ---
 
 <BaseLayout pageTitle={pageTitle}>
