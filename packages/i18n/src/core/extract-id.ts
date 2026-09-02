@@ -4,15 +4,17 @@ import type { Locales } from './locale'
  * Extracts the locale and cleanId from an entryId of the form "es/my-post".
  * Locale validation is delegated to the Locales value object.
  *
- * @param entryId Raw entry identifier (e.g., "es/my-post")
- * @param locales Locales value object created via createLocales()
- * @returns An object containing the validated locale and cleanId
- * @throws Error if the entryId is malformed or the locale is invalid
+ * @template TLocale Locale identifier (for example: `'en' | 'es'`).
+ *
+ * @param entryId Raw entry identifier (e.g., "es/my-post").
+ * @param locales Locales value object created via createLocales().
+ * @returns An object containing the validated locale and cleanId.
+ * @throws {Error} If the entryId is empty, malformed, or the locale is invalid.
  */
-export function extractCleanId<L extends string>(
+export function extractCleanId<TLocale extends string>(
   entryId: string,
-  locales: Locales<L>
-): { locale: L; id: string } {
+  locales: Locales<TLocale>
+): { locale: TLocale; id: string } {
   if (!entryId) {
     throw new Error('entryId cannot be empty')
   }

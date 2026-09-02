@@ -1,19 +1,19 @@
-export interface Locales<L extends string> {
-  readonly all: readonly L[]
-  fromString(lang: string | undefined): L
-  isValid(lang: string): lang is L
+export interface Locales<TLocale extends string> {
+  readonly all: readonly TLocale[]
+  fromString(lang: string | undefined): TLocale
+  isValid(lang: string): lang is TLocale
 }
 
-function isLocale<L extends string>(
-  locales: readonly L[],
+function isLocale<TLocale extends string>(
+  locales: readonly TLocale[],
   lang: string
-): lang is L {
-  return locales.includes(lang as L)
+): lang is TLocale {
+  return locales.includes(lang as TLocale)
 }
 
-export function createLocales<L extends string>(
-  locales: readonly L[]
-): Locales<L> {
+export function createLocales<TLocale extends string>(
+  locales: readonly TLocale[]
+): Locales<TLocale> {
   return {
     all: locales,
 
@@ -23,7 +23,7 @@ export function createLocales<L extends string>(
       throw new TypeError(`Invalid language: ${lang}`)
     },
 
-    isValid(lang): lang is L {
+    isValid(lang): lang is TLocale {
       return isLocale(locales, lang)
     }
   }

@@ -30,10 +30,10 @@ export interface StandalonePageEntry {
 */
 export type StandalonePageIndex<
   K extends string,
-  L extends string,
+  TLocale extends string,
 > = Record<
   K,
-  Partial<Record<L, StandalonePageEntry>>
+  Partial<Record<TLocale, StandalonePageEntry>>
 >
 
 /**
@@ -44,13 +44,13 @@ export type StandalonePageIndex<
  * - the current route belongs to the indexed translation group
  */
 export function createStandalonePageLinks<
-  L extends string,
+  TLocale extends string,
 >(
   path: string,
   translationKey: string,
-  index: StandalonePageIndex<string, L>,
-  locales: Locales<L>,
-): TranslationLink<L>[] {
+  index: StandalonePageIndex<string, TLocale>,
+  locales: Locales<TLocale>,
+): TranslationLink<TLocale>[] {
   const { locale: currentLocale, id: currentRoute } = extractCleanId(
     path,
     locales,
