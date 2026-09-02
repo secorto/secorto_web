@@ -7,14 +7,16 @@ import { useTranslations } from '@i18n/utils'
 import { sectionsConfig, type SectionType } from '@domain/section'
 import { buildGlobalTagGroups, type TagGroup, type TagGroupSectionInput } from '@domain/tags'
 import { filterByLocale } from '@utils/paths'
-import { buildTagIndexPaths, type TagIndexPath } from '@utils/staticPathsBuilder.adapters'
+import { buildTagIndexPaths } from '@utils/staticPathsBuilder.adapters'
 
 export async function getStaticPaths() {
   return await buildTagIndexPaths()
 }
 
+export type Props = Awaited<ReturnType<typeof getStaticPaths>>[number]['props']
+
 const { locale } = Astro.params as { locale: UILanguages }
-const { allSectionEntries, links } = Astro.props as TagIndexPath['props']
+const { allSectionEntries, links } = Astro.props
 const t = useTranslations(locale)
 const pageTitle = t('tags.index_title')
 

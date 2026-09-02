@@ -1,7 +1,6 @@
 ---
-import { getEntryURL, sectionsConfig, type SectionType } from '@domain/section'
-import { type UILanguages } from '@i18n/ui'
-import { useTranslations } from '@i18n/utils'
+import { sectionRoutes, type SectionType } from '@domain/section'
+import { cta, sections, type UILanguages } from '@i18n/ui'
 import { adaptToDomainEntry } from '@utils/entryAdapter'
 import { getEntry } from 'astro:content'
 
@@ -20,13 +19,11 @@ if(!rawEntry) {
 
 const entry = adaptToDomainEntry(rawEntry)
 
-const sectionConfig = sectionsConfig[section]
-const t = useTranslations(locale)
 ---
 
-<a class="highlight-card" href={getEntryURL(section, locale, entry.cleanId)}>
-  <span class="highlight-label">{t(sectionConfig.translationKey)}</span>
+<a class="highlight-card" href={sectionRoutes.getEntryURL(section, locale, entry.cleanId)}>
+  <span class="highlight-label">{sections[section][locale]}</span>
   <h2 class="highlight-title">{entry.data.title}</h2>
   {entry.data.excerpt && <p class="highlight-excerpt">{entry.data.excerpt}</p>}
-  <span class="highlight-cta">{t(sectionConfig.ctaKey)}</span>
+  <span class="highlight-cta">{cta[section][locale]}</span>
 </a>

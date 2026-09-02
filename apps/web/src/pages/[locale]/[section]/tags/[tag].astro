@@ -8,6 +8,7 @@ import { useTranslations } from '@i18n/utils'
 import { buildTagPaths } from '@utils/staticPathsBuilder.adapters'
 import type { TagPath } from '@utils/staticPathsBuilder'
 import { filterByLocale, getUniqueTags } from '@utils/paths'
+import { sections, tagged } from '@i18n/ui'
 
 export async function getStaticPaths() {
   return await buildTagPaths()
@@ -23,15 +24,15 @@ const t = useTranslations(locale)
 const localePosts = filterByLocale(allEntries, locale)
 const posts = localePosts.filter((post) => post.data.tags?.includes(tag))
 const tags = getUniqueTags(localePosts)
-const pageTitle = `${t(config.translationKey)} - ${tag}`
-const metaDescription = `${config.taggedKey ? t(config.taggedKey) : t(config.translationKey)} ${tag}`
+const pageTitle = `${sections[config.name][locale]} - ${tag}`
+const metaDescription = `${tagged[config.name][locale]} ${tag}`
 ---
 
 <BaseLayout pageTitle={pageTitle} description={metaDescription}>
   <SEOHead slot="seo-head" links={links} />
   <LanguagePicker slot="langpicker" links={links} />
   <Tags locale={locale} section={config.name} tags={tags} current={tag} />
-  {config.taggedKey && <p>{t(config.taggedKey)} {tag}</p>}
+  <p>{tagged[config.name][locale]} {tag}</p>
 
   {posts.length === 0 ? (
     <div class="warning">
@@ -39,7 +40,7 @@ const metaDescription = `${config.taggedKey ? t(config.taggedKey) : t(config.tra
     </div>
   ) : (
     <div>
-      <ListContent section={config.name} posts={posts} cta={t(config.ctaKey)} locale={locale} />
+      <ListContent section={config.name} posts={posts} locale={locale} />
     </div>
   )}
 </BaseLayout>

@@ -1,7 +1,5 @@
 import { test, expect, describe, vi } from 'vitest'
 import {
-  buildSectionIndexPathsCore,
-  buildLocalePathsForSection,
   buildTagPathsCore,
   buildTagIndexPathsCore,
   type FetchCollection
@@ -18,37 +16,6 @@ const talkSection = sectionsConfig['talk']
 const onlyBlogSections = [blogSection]
 const blogAndTalkSections = [blogSection, talkSection]
 const emptySections: SectionConfig[] = []
-
-describe('buildLocalePathsForSection', () => {
-  test('genera paths para todos los locales configurados', () => {
-    const result = buildLocalePathsForSection(blogSection)
-    expect(result).toHaveLength(2) // es + en
-    expect(result.map(p => p.params.locale).sort()).toEqual(['en', 'es'])
-  })
-})
-
-describe('buildSectionIndexPathsCore', () => {
-  test('builds paths for provided sections and locales', async () => {
-    const result = await buildSectionIndexPathsCore(blogAndTalkSections)
-    // 2 sections × 2 locales = 4 paths
-    expect(result).toHaveLength(4)
-  })
-
-  test('includes correct structure per locale', async () => {
-    const result = await buildSectionIndexPathsCore(onlyBlogSections)
-    expect(result).toHaveLength(2) // blog × 2 locales
-    for (const path of result) {
-      expect(path.params.locale).toMatch(/es|en/)
-      expect(path.params.section).toBeDefined()
-      expect(path.props.config).toBeDefined()
-    }
-  })
-
-  test('handles empty sections', async () => {
-    const result = await buildSectionIndexPathsCore(emptySections)
-    expect(result).toEqual([])
-  })
-})
 
 describe('buildTagPathsCore', () => {
   test('generates tag paths for provided sections', async () => {

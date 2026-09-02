@@ -31,6 +31,13 @@ describe('getEntryURL', ()=> {
   })
 })
 
+describe('getEntryTagURL', () => {
+  it('builds the localized tag page url and encodes the tag', () => {
+    expect(routes.getEntryTagURL('blog', 'es', 'javascript')).toBe('/es/blog/tags/javascript')
+    expect(routes.getEntryTagURL('talk', 'en', 'my tag')).toBe('/en/talk/tags/my%20tag')
+  })
+})
+
 describe('sectionRoutes', () => {
   it('throws an error when duplicate routes are found', () => {
     const duplicateRoutes = {

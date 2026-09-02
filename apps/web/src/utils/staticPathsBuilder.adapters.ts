@@ -7,24 +7,13 @@
 import { getCollection } from 'astro:content'
 import { sectionsConfig } from '@domain/section'
 import {
-  buildSectionIndexPathsCore,
   buildTagPathsCore,
   buildTagIndexPathsCore,
   type FetchCollection,
-  type SectionPath,
   type TagPath,
   type TagIndexPath
 } from './staticPathsBuilder'
 
-/**
- * Adapter: Construye rutas de índices de secciones para producción.
- * Inyecta automáticamente sectionsConfig al Core.
- * @returns Array de paths para getStaticPaths
- */
-export async function buildSectionIndexPaths(
-): Promise<SectionPath[]> {
-  return buildSectionIndexPathsCore(Object.values(sectionsConfig))
-}
 
 /**
  * Adapter: Construye rutas de páginas de tags para producción.
@@ -50,7 +39,3 @@ export async function buildTagIndexPaths(
 ): Promise<TagIndexPath[]> {
   return buildTagIndexPathsCore(Object.values(sectionsConfig), fetchCollection)
 }
-
-// Re-export del Core para casos específicos
-export { buildSectionIndexPathsCore, buildTagPathsCore, buildTagIndexPathsCore }
-export type { SectionPath, TagPath, TagIndexPath, FetchCollection }
