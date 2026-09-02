@@ -2,34 +2,38 @@
 import BaseLayout from '@layouts/BaseLayout.astro'
 import SEOHead from '@components/SEOHead.astro'
 import LanguagePicker from '@components/LanguagePicker.astro'
-import { type UILanguages } from '@i18n/ui'
+import { languages, sections } from '@i18n/ui'
 import { useTranslations } from '@i18n/utils'
-import { sectionsConfig, type SectionType } from '@domain/section'
 import { buildGlobalTagGroups, type TagGroup, type TagGroupSectionInput } from '@domain/tags'
+import { createAvailableLinks, getStaticPathsLocales } from '@secorto/i18n'
+import { sectionKeys, sectionRoutes } from '@domain/section'
+import { getCollection } from 'astro:content'
 import { filterByLocale } from '@utils/paths'
-import { buildTagIndexPaths } from '@utils/staticPathsBuilder.adapters'
 
-export async function getStaticPaths() {
-  return await buildTagIndexPaths()
+export function getStaticPaths() {
+  return getStaticPathsLocales(languages)
 }
 
-export type Props = Awaited<ReturnType<typeof getStaticPaths>>[number]['props']
+export type Params = Awaited<ReturnType<typeof getStaticPaths>>[number]['params']
 
-const { locale } = Astro.params as { locale: UILanguages }
-const { allSectionEntries, links } = Astro.props
+const { locale } = Astro.params
 const t = useTranslations(locale)
 const pageTitle = t('tags.index_title')
+
+const links = createAvailableLinks(languages, (lang) =>
+  `/${lang}/tags`
+)
 
 // Construir sectionInputs a partir de datos cacheados (sin fetch)
 const sectionInputs: TagGroupSectionInput[] = []
 
-for (const [sectionKey, config] of Object.entries(sectionsConfig) as [SectionType, (typeof sectionsConfig)[SectionType]][]) {
-  const localeEntries = filterByLocale(allSectionEntries[config.name], locale)
+for (const section of sectionKeys) {
+  const localeEntries = filterByLocale(await getCollection(section), locale)
 
   sectionInputs.push({
-    section: sectionKey,
-    sectionSlug: config.routes[locale],
-    sectionLabel: t(config.translationKey),
+    section: section,
+    sectionSlug: section,
+    sectionLabel: sections[section][locale],
     entries: localeEntries
   })
 }
@@ -56,8 +60,8 @@ const tagGroups: TagGroup[] = buildGlobalTagGroups(locale, sectionInputs)
               {group.references.map((reference, index) => (
                 <Fragment>
                   {index > 0 && ' / '}
-                  <a href={`/${locale}/${reference.sectionSlug}/tags/${encodeURIComponent(reference.tagSlug)}`}>
-                    {reference.sectionLabel}
+                  <a href={sectionRoutes.getEntryTagURL(reference.section, locale, reference.tagSlug)}>
+                    {sections[reference.section][locale]}
                   </a>
                 </Fragment>
               ))}

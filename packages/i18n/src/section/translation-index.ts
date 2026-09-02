@@ -8,6 +8,7 @@ export interface LocalizedEntry<
   TEntry,
   L extends string
 > {
+  section: string
   cleanId: string
   translationKey: string
   locale: L

@@ -1,6 +1,5 @@
 import { availableLink, draftLink, missingLink } from '../core'
 import type { Locales, TranslationLink } from '../core'
-import type { GenericCollectionEntry } from './entry-adapter'
 import type { SectionRoutes } from './routes'
 import type { LocalizedEntry } from './translation-index'
 
@@ -19,7 +18,7 @@ import type { LocalizedEntry } from './translation-index'
 export function createDetailTranslationLinks<
   C extends string,
   L extends string,
-  TEntry extends GenericCollectionEntry<C, object>,
+  TEntry,
 >(
   siblings: Partial<Record<L, LocalizedEntry<TEntry, L>>>,
   sectionRoutes: SectionRoutes<C, L>,
@@ -33,7 +32,7 @@ export function createDetailTranslationLinks<
     }
 
     const href = sectionRoutes.getEntryURL(
-      sibling.original.collection,
+      sibling.section as C,
       locale,
       sibling.cleanId,
     )

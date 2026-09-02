@@ -1,5 +1,5 @@
 import type { Locales } from '../core'
-import type { SectionRoutes } from './routes'
+import type { SectionRoutes } from '../section/routes'
 
 export interface SectionPath<
   TLocale extends string,

@@ -1,6 +1,6 @@
 import { extractCleanId } from '../core'
 import type { Locales } from '../core'
-import type { LocalizedEntry } from './translation-index'
+import type { LocalizedEntry } from '../section/translation-index'
 
 export interface GenericCollectionEntry<
   C extends string,
@@ -46,6 +46,7 @@ export function adaptToLocalizedEntry<
   const draft = 'draft' in entry.data && entry.data.draft === true
 
   return {
+    section: entry.collection,
     cleanId,
     locale,
     translationKey: resolveTranslationKey(

@@ -1,13 +1,10 @@
 import { test, expect, describe, vi } from 'vitest'
 import {
   buildTagPathsCore,
-  buildTagIndexPathsCore,
   type FetchCollection
 } from '@utils/staticPathsBuilder'
-import type { CollectionEntry, CollectionKey } from 'astro:content'
 import { sectionsConfig, type SectionConfig } from '@domain/section'
 import {
-  collectionMocks,
   createPostEntries,
 } from './staticPathsBuilder.fixtures'
 
@@ -85,60 +82,5 @@ describe('buildTagPathsCore', () => {
     const mockGetCollection: FetchCollection = vi.fn(async () => [])
     const result = await buildTagPathsCore(emptySections, mockGetCollection)
     expect(result).toEqual([])
-  })
-})
-
-describe('buildTagIndexPathsCore', () => {
-  test('generates one path per locale', async () => {
-    const mockGetCollection: FetchCollection = vi.fn(async () => createPostEntries('blog', 1))
-    const result = await buildTagIndexPathsCore(onlyBlogSections, mockGetCollection)
-    expect(result).toHaveLength(2) // 2 locales (es, en)
-  })
-
-  test('includes correct structure with allSectionEntries', async () => {
-    const mockGetCollection: FetchCollection = vi.fn(async () => createPostEntries('blog', 1))
-    const result = await buildTagIndexPathsCore(onlyBlogSections, mockGetCollection)
-    expect(result.length).toBeGreaterThan(0)
-    for (const path of result) {
-      expect(path.params.locale).toMatch(/es|en/)
-      expect(path.props.allSectionEntries).toBeDefined()
-      expect(typeof path.props.allSectionEntries).toBe('object')
-    }
-  })
-
-  test('caches entries by collection', async () => {
-    const mockGetCollection: FetchCollection = vi.fn(async (collection: CollectionKey) => {
-      const collections: Partial<Record<CollectionKey, CollectionEntry<CollectionKey>[]>> = {
-        blog: collectionMocks.blog(2),
-        talk: collectionMocks.talk(1)
-      }
-      return collections[collection] || []
-    })
-    const result = await buildTagIndexPathsCore(blogAndTalkSections, mockGetCollection)
-    // Each route should have allSectionEntries with both collections
-    for (const path of result) {
-      expect(path.props.allSectionEntries).toHaveProperty('blog')
-      expect(path.props.allSectionEntries).toHaveProperty('talk')
-      expect(Array.isArray(path.props.allSectionEntries.blog)).toBe(true)
-      expect(Array.isArray(path.props.allSectionEntries.talk)).toBe(true)
-    }
-    expect(mockGetCollection).toHaveBeenCalledTimes(2)
-  })
-
-  test('handles empty sections gracefully', async () => {
-    const mockGetCollection: FetchCollection = vi.fn(async () => [])
-    const result = await buildTagIndexPathsCore(emptySections, mockGetCollection)
-    expect(result).toHaveLength(2) // 2 locales, but no collections
-    for (const path of result) {
-      expect(path.props.allSectionEntries).toEqual({})
-    }
-  })
-
-  test('properly injects all dependencies', async () => {
-    const mockEntries = createPostEntries('blog', 2)
-    const mockGetCollection: FetchCollection = vi.fn(async () => mockEntries)
-    const result = await buildTagIndexPathsCore(onlyBlogSections, mockGetCollection)
-    expect(mockGetCollection).toHaveBeenCalled()
-    expect(result.length).toBeGreaterThan(0)
   })
 })
