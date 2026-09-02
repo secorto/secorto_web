@@ -15,8 +15,8 @@ export class FooterComponent implements Loadable, LocalizedPage<void> {
 
   shouldBeLoaded() {
     return verifyStep('footer is loaded', async ({ expect }) => {
-      await this.role.shouldBeVisible().with(expect)
-      await this.follow.shouldBeVisible().with(expect)
+      await this.role.shouldBeVisible(expect)
+      await this.follow.shouldBeVisible(expect)
     })
   }
 
@@ -29,9 +29,9 @@ export class FooterComponent implements Loadable, LocalizedPage<void> {
   shouldBeLocalized(locale: UILanguages) {
     return verifyStep('footer is localized correctly', async ({ expect }) => {
       const i18n = ui[locale]
-      await this.role.shouldHaveVisibleText(i18n['footer.role']).with(expect)
-      await this.follow.shouldHaveVisibleText(i18n['footer.follow']).with(expect)
-      await this.avatar.shouldHaveAttribute('alt', i18n['footer.avatar_alt']).with(expect)
+      await this.role.shouldHaveText(expect, i18n['footer.role'])
+      await this.follow.shouldHaveText(expect, i18n['footer.follow'])
+      await this.avatar.shouldHaveAttribute(expect, 'alt', i18n['footer.avatar_alt'])
     })
   }
 }

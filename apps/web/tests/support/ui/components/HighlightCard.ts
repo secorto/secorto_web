@@ -13,8 +13,8 @@ export class HighlightCards {
 
   shouldBeValid() {
     return verifyStep('highlight cards are valid', async ({ expect }) => {
+      await this.parent.shouldHaveAtLeastOne().with(expect)
       const cardCount = await this.parent.locator.count()
-      expect(cardCount).toBeGreaterThan(0)
       for (let i = 0; i < cardCount; i++) {
         const card = this.parent.locator.nth(i)
         await this.shouldHaveValidCard(card).with(expect)
@@ -24,9 +24,9 @@ export class HighlightCards {
 
   shouldHaveValidCard(parent: Locator) {
     return verifyStep('highlight card is valid', async ({ expect }) => {
-      await this.title.get(parent).shouldBeVisible().with(expect)
-      await this.excerpt.get(parent).shouldBeVisible().with(expect)
-      await this.cta.get(parent).shouldBeVisible().with(expect)
+      await this.title.get(parent).shouldBeVisible(expect)
+      await this.excerpt.get(parent).shouldBeVisible(expect)
+      await this.cta.get(parent).shouldBeVisible(expect)
     })
   }
 }
