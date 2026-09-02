@@ -24,6 +24,7 @@ function createEntry<K extends string>(
   locale: TestLocales,
 ): LocalizedEntry<TestContent, TestLocales> {
   return {
+    section: 'blog',
     cleanId: 'default-id',
     original: {
       text: 'default content',

@@ -12,11 +12,14 @@ type BlogEntry = GenericCollectionEntry<
   }
 >
 
+const section = 'blog'
+
 function localizedEntry(
   locale: Locale,
   cleanId: string,
 ): LocalizedEntry<BlogEntry, Locale> {
   return {
+    section,
     cleanId,
     locale,
     translationKey: cleanId,
