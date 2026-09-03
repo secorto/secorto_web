@@ -23,7 +23,7 @@ const pageTitle = sections[section][locale]
 const rawPosts = filterByLocale(await getCollection(section), locale)
 const tags = getUniqueTags(rawPosts)
 const posts = mapEntryId(rawPosts)
-const links = languages.all.map(locale => availableLink(sectionRoutes.getSectionURL(section, locale), locale))
+const links = languages.all.map(lang => availableLink(sectionRoutes.getSectionURL(section, lang), lang))
 ---
 
 <BaseLayout pageTitle={pageTitle}>

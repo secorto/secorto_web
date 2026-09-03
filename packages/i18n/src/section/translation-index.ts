@@ -1,11 +1,11 @@
 /**
  * Represents a localized entry in the translation system.
- * @template E - The type of the content (e.g., { title: string, body: string }).
- * @template C - The section of the application (e.g., 'blog', 'docs').
- * @template L - The language code (e.g., 'es', 'en').
+ * @template TSection - The section of the application (e.g., 'blog', 'docs').
+ * @template TEntry - The type of the content (e.g., { title: string, body: string }).
+ * @template TLocale - The language code (e.g., 'es', 'en').
  */
 export interface LocalizedEntry<
-  TSection,
+  TSection extends string,
   TEntry,
   TLocale extends string
 > {
@@ -19,9 +19,9 @@ export interface LocalizedEntry<
 
 /**
  * Represents a translation index that groups localized entries by their translation key and locale.
- * @template L - The type of the language code (e.g., 'es', 'en').
- * @template E - The type of the content (e.g., { title: string, body: string }).
- * @template C - The section of the application (e.g., 'blog', 'docs').
+ * @template TSection - The section of the application (e.g., 'blog', 'docs').
+ * @template TLocale - The type of the language code (e.g., 'es', 'en').
+ * @template TEntry - The type of the content (e.g., { title: string, body: string }).
  */
 export type TranslationGroup<
   TSection extends string,
@@ -43,9 +43,9 @@ export type TranslationIndex<
  * Invariant: a key is only inserted into the map after at least one locale
  * has been assigned to it. An empty group is therefore an invalid state.
  *
- * @template E - The type of the content (e.g., { title: string, body: string }).
- * @template C - The section of the application (e.g., 'blog', 'docs').
- * @template L - The language code (e.g., 'es', 'en').
+ * @template TSection - The section of the application (e.g., 'blog', 'docs').
+ * @template TLocale - The language code (e.g., 'es', 'en').
+ * @template TEntry - The type of the content (e.g., { title: string, body: string }).
  * @param entries Entries to index
  * @returns The translation index, grouped by translation key and locale
  * @throws Error if duplicate entries for the same translation key and locale are found

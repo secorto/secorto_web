@@ -19,7 +19,7 @@ const { locale } = Astro.params
 const t = useTranslations(locale)
 const pageTitle = t('tags.index_title')
 
-const links = languages.all.map(locale => availableLink(`/${locale}/tags`, locale))
+const links = languages.all.map(lang => availableLink(`/${lang}/tags`, lang))
 
 const sectionInputs: TagGroupSectionInput[] = []
 

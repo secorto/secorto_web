@@ -1,4 +1,4 @@
-import type { Locales } from '../core/locale'
+import type { Locales } from '../core'
 
 export interface LocalePaths<TLocale extends string> {
   params: {
@@ -9,8 +9,8 @@ export interface LocalePaths<TLocale extends string> {
 /**
  * Generates the static path definitions required to build localized root pages.
  *
- * This function iterates through all supported locales and maps each one to a 
- * routing parameter object, enabling the creation of root localized landing pages 
+ * This function iterates through all supported locales and maps each one to a
+ * routing parameter object, enabling the creation of root localized landing pages
  * (for example: `/en` or `/es`).
  *
  * @template TLocale Locale identifiers (for example: `'en' | 'es'`).
