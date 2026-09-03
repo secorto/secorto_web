@@ -1,5 +1,4 @@
-import type { GenericCollectionEntry } from "@secorto/i18n"
-
+import type { GenericCollectionEntry } from './entry-adapter'
 export type Draftable = {
   draft?: boolean
 }
