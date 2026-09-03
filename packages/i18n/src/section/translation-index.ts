@@ -1,35 +1,39 @@
 /**
  * Represents a localized entry in the translation system.
- * @template E - The type of the content (e.g., { title: string, body: string }).
- * @template C - The section of the application (e.g., 'blog', 'docs').
- * @template L - The language code (e.g., 'es', 'en').
+ * @template TSection - The section of the application (e.g., 'blog', 'docs').
+ * @template TEntry - The type of the content (e.g., { title: string, body: string }).
+ * @template TLocale - The language code (e.g., 'es', 'en').
  */
 export interface LocalizedEntry<
+  TSection extends string,
   TEntry,
-  L extends string
+  TLocale extends string
 > {
+  section: TSection
   cleanId: string
   translationKey: string
-  locale: L
+  locale: TLocale
   draft: boolean
   original: TEntry
 }
 
 /**
  * Represents a translation index that groups localized entries by their translation key and locale.
- * @template L - The type of the language code (e.g., 'es', 'en').
- * @template E - The type of the content (e.g., { title: string, body: string }).
- * @template C - The section of the application (e.g., 'blog', 'docs').
+ * @template TSection - The section of the application (e.g., 'blog', 'docs').
+ * @template TLocale - The type of the language code (e.g., 'es', 'en').
+ * @template TEntry - The type of the content (e.g., { title: string, body: string }).
  */
 export type TranslationGroup<
-  L extends string,
+  TSection extends string,
+  TLocale extends string,
   TEntry,
-> = Partial<Record<L, LocalizedEntry<TEntry, L>>>
+> = Partial<Record<TLocale, LocalizedEntry<TSection, TEntry, TLocale>>>
 
 export type TranslationIndex<
-  L extends string,
+  TSection extends string,
+  TLocale extends string,
   TEntry
-> = Partial<Record<string, TranslationGroup<L, TEntry>>>
+> = Partial<Record<string, TranslationGroup<TSection, TLocale, TEntry>>>
 
 /**
  * Builds a translation index from an array of localized entries.
@@ -39,21 +43,22 @@ export type TranslationIndex<
  * Invariant: a key is only inserted into the map after at least one locale
  * has been assigned to it. An empty group is therefore an invalid state.
  *
- * @template E - The type of the content (e.g., { title: string, body: string }).
- * @template C - The section of the application (e.g., 'blog', 'docs').
- * @template L - The language code (e.g., 'es', 'en').
+ * @template TSection - The section of the application (e.g., 'blog', 'docs').
+ * @template TLocale - The language code (e.g., 'es', 'en').
+ * @template TEntry - The type of the content (e.g., { title: string, body: string }).
  * @param entries Entries to index
  * @returns The translation index, grouped by translation key and locale
  * @throws Error if duplicate entries for the same translation key and locale are found
  */
 export function createTranslationIndex<
-  L extends string,
+  TSection extends string,
+  TLocale extends string,
   TEntry
 >(
-  entries: readonly LocalizedEntry<TEntry, L>[]
-): TranslationIndex<L, TEntry> {
+  entries: readonly LocalizedEntry<TSection, TEntry, TLocale>[]
+): TranslationIndex<TSection, TLocale, TEntry> {
   // Using map to safely mutate internally without lying to TypeScript.
-  const map = new Map<string, TranslationGroup<L, TEntry>>()
+  const map = new Map<string, TranslationGroup<TSection, TLocale, TEntry>>()
 
   for (const entry of entries) {
     const key = entry.translationKey
@@ -61,7 +66,7 @@ export function createTranslationIndex<
 
     let group = map.get(key)
     if (!group) {
-      group = Object.create(null) as TranslationGroup<L, TEntry>
+      group = Object.create(null) as TranslationGroup<TSection, TLocale, TEntry>
       map.set(key, group)
     } else if (locale in group) {
       throw new Error(

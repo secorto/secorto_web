@@ -1,95 +1,93 @@
-import type { Locales } from './locale'
-
 /**
  * Represents a translation that is available and can be accessed by users.
  */
-export type AvailableLink<L extends string> = {
+export type AvailableLink<TLocale extends string> = {
   type: 'available'
   href: string
-  locale: L
+  locale: TLocale
 }
 
 /**
  * Represents a translation that does not exist for the given locale.
  */
-export type MissingLink<L extends string> = {
+export type MissingLink<TLocale extends string> = {
   type: 'missing'
   href: null
-  locale: L
+  locale: TLocale
 }
 
 /**
  * Represents a translation that exists as a draft but is not yet publicly available.
  */
-export type DraftLink<L extends string> = {
+export type DraftLink<TLocale extends string> = {
   type: 'draft'
   href: string
-  locale: L
+  locale: TLocale
 }
 
 /**
  * Represents the state of a translation for a locale.
  */
-export type TranslationLink<L extends string> =
-  | AvailableLink<L>
-  | MissingLink<L>
-  | DraftLink<L>
+export type TranslationLink<TLocale extends string> =
+  | AvailableLink<TLocale>
+  | MissingLink<TLocale>
+  | DraftLink<TLocale>
 
 /**
  * Represents a translation link that can be accessed, either as a published
  * translation (`available`) or as a draft (`draft`).
  */
-export type AccessibleTranslationLink<L extends string> =
-  | AvailableLink<L>
-  | DraftLink<L>
+export type AccessibleTranslationLink<TLocale extends string> =
+  | AvailableLink<TLocale>
+  | DraftLink<TLocale>
 
 
 /**
  * Creates an available translation link.
  */
-export function availableLink<L extends string>(
+export function availableLink<TLocale extends string>(
   href: string,
-  lang: L
-): AvailableLink<L> {
+  lang: TLocale
+): AvailableLink<TLocale> {
   return { type: 'available', href, locale: lang }
 }
 
 /**
  * Creates a missing translation link.
  */
-export function missingLink<L extends string>(
-  lang: L
-): MissingLink<L> {
+export function missingLink<TLocale extends string>(
+  lang: TLocale
+): MissingLink<TLocale> {
   return { type: 'missing', href: null, locale: lang }
 }
 
 /**
  * Creates a draft translation link.
  */
-export function draftLink<L extends string>(
+export function draftLink<TLocale extends string>(
   href: string,
-  lang: L
-): DraftLink<L> {
+  lang: TLocale
+): DraftLink<TLocale> {
   return { type: 'draft', href, locale: lang }
 }
 
 /** Returns whether the link is accessible. */
-export function isAccessible<L extends string>(link: TranslationLink<L>): link is AccessibleTranslationLink<L> {
+export function isAccessible<TLocale extends string>(link: TranslationLink<TLocale>): link is AccessibleTranslationLink<TLocale> {
   return link.type === 'available' || link.type === 'draft'
 }
 
 /** Returns whether the link is available. */
-export function isAvailable<L extends string>(link: TranslationLink<L>): link is AvailableLink<L> {
+export function isAvailable<TLocale extends string>(link: TranslationLink<TLocale>): link is AvailableLink<TLocale> {
   return link.type === 'available'
 }
 
 /** Returns whether the link is a draft. */
-export function isDraft<L extends string>(link: TranslationLink<L>): link is DraftLink<L> {
+export function isDraft<TLocale extends string>(link: TranslationLink<TLocale>): link is DraftLink<TLocale> {
   return link.type === 'draft'
 }
 
 /** Returns whether the link is missing. */
-export function isMissing<L extends string>(link: TranslationLink<L>): link is MissingLink<L> {
+export function isMissing<TLocale extends string>(link: TranslationLink<TLocale>): link is MissingLink<TLocale> {
   return link.type === 'missing'
 }
 
@@ -109,10 +107,10 @@ export function isMissing<L extends string>(link: TranslationLink<L>): link is M
  *
  * @throws {Error} If `links` is empty or if no accessible link exists.
  */
-export function resolveDefaultAccessibleLink<L extends string>(
-  links: TranslationLink<L>[],
-  defaultLang: L
-): AccessibleTranslationLink<L> {
+export function resolveDefaultAccessibleLink<TLocale extends string>(
+  links: TranslationLink<TLocale>[],
+  defaultLang: TLocale
+): AccessibleTranslationLink<TLocale> {
   if (!links || links.length === 0) throw new Error('resolveDefaultAccessibleLink: unexpected empty links array')
 
   const defaultAny = links.find(l => l.locale === defaultLang)
@@ -129,15 +127,4 @@ export function resolveDefaultAccessibleLink<L extends string>(
   throw new Error(
     'resolveDefaultAccessibleLink: expected at least one accessible link'
   )
-}
-
-export function createAvailableLinks<L extends string>(
-  locales: Locales<L>,
-  getHref: (locale: L) => string
-): AvailableLink<L>[] {
-  return locales.all.map(locale => ({
-    type: 'available',
-    href: getHref(locale),
-    locale
-  }))
 }

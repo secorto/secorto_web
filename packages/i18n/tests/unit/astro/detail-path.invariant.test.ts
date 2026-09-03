@@ -10,7 +10,7 @@
 import { describe, expect, it, vi } from 'vitest'
 
 import * as translationIndexModule from '../../../src/section/translation-index'
-import { getStaticPathsEntries } from '../../../src/section/detail-path'
+import { getStaticPathsEntries } from '../../../src/astro/detail-path'
 import {
   createLocales,
   createSectionRoutes,

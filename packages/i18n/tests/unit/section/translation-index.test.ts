@@ -16,14 +16,17 @@ type TestContent = {
   text: string
 }
 
+type Section = 'blog'
+
 /**
  * Factory function to create a LocalizedEntry with default values.
  */
 function createEntry<K extends string>(
   translationKey: K,
   locale: TestLocales,
-): LocalizedEntry<TestContent, TestLocales> {
+): LocalizedEntry<Section, TestContent, TestLocales> {
   return {
+    section: 'blog',
     cleanId: 'default-id',
     original: {
       text: 'default content',
@@ -120,11 +123,11 @@ describe('createTranslationIndex', () => {
     expect(missingGroup).toBeUndefined()
 
     expectTypeOf(group?.fr)
-      .toEqualTypeOf<LocalizedEntry<TestContent, TestLocales> | undefined>()
+      .toEqualTypeOf<LocalizedEntry<Section, TestContent, TestLocales> | undefined>()
 
     expectTypeOf(missingGroup)
       .toEqualTypeOf<
-        Partial<Record<string, TranslationGroup<TestLocales, TestContent>>>[string]
+        Partial<Record<string, TranslationGroup<Section, TestLocales, TestContent>>>[string]
       >()
   })
 })

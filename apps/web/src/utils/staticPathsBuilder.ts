@@ -22,7 +22,6 @@ import { buildLangPrefix } from '@i18n/languagePickerUtils'
 import type { TranslationLink } from '@domain/translationLink'
 import { tagTranslations } from '@domain/tags'
 import type { CollectionEntry, CollectionKey } from 'astro:content'
-import { rootMap } from '@i18n/rootMap'
 
 /** Minimal shape for the injected collection fetcher — easier to mock than the full generic overload. */
 export type FetchCollection = (collection: CollectionKey) => Promise<CollectionEntry<CollectionKey>[]>
@@ -92,35 +91,4 @@ export async function buildTagPathsCore(
   }
 
   return paths
-}
-
-/**
- * Core: Construye rutas del índice de tags global (sin acoplamiento).
- * Cachea las colecciones UNA sola vez en getStaticPaths y las comparte con todas las rutas locales.
- * Esto evita duplicar fetches (sections × locales = N fetches vs 1 cacheo).
- *
- * @param sections - Secciones a procesar (inyectadas)
- * @param fetchCollection - Función para obtener colecciones
- * @returns Array de paths para getStaticPaths (uno por locale, con datos cacheados)
- */
-export async function buildTagIndexPathsCore(
-  sections: SectionConfig[],
-  fetchCollection: FetchCollection
-): Promise<TagIndexPath[]> {
-  const allSectionEntries: Record<string, PostEntry<CollectionKey>[]> = {}
-
-  for (const config of sections) {
-    const entries = await fetchCollection(config.name)
-    allSectionEntries[config.name] = mapEntryId(entries)
-  }
-
-  const globalTagsLinks = languageKeys.map(l =>
-    availableLink(`${buildLangPrefix(l)}/${rootMap['tags'][l]}`, l)
-  )
-  return languageKeys.map((locale) => {
-    return {
-      params: { locale },
-      props: { allSectionEntries, links: globalTagsLinks }
-    }
-  })
 }

@@ -1,31 +1,31 @@
 import type { Locales } from '../core'
 import {
   createTranslationIndex,
-} from './translation-index'
+} from '../section/translation-index'
 import type {
   LocalizedEntry,
   TranslationIndex,
-} from './translation-index'
+} from '../section/translation-index'
 import {
   adaptToLocalizedEntry,
 } from './entry-adapter'
 import type { GenericCollectionEntry } from './entry-adapter'
-import type { SectionRoutes } from './routes'
+import type { SectionRoutes } from '../section/routes'
 
 export type DetailPath<
-  C extends string,
-  L extends string,
-  TEntry extends GenericCollectionEntry<C, object>,
+  TSection extends string,
+  TLocale extends string,
+  TEntry extends GenericCollectionEntry<TSection, object>,
 > = {
   params: {
-    locale: L
+    locale: TLocale
     section: string
     id: string
   }
   props: {
-    entry: LocalizedEntry<TEntry, L>
-    section: C
-    siblings: NonNullable<TranslationIndex<L, TEntry>[string]>
+    entry: LocalizedEntry<TSection, TEntry, TLocale>
+    section: TSection
+    siblings: NonNullable<TranslationIndex<TSection, TLocale, TEntry>[string]>
   }
 }
 
@@ -43,36 +43,35 @@ export type DetailPath<
  * localized detail pages with access to the current entry and all of its
  * translations.
  *
- * @template TEntry Entry type returned by the collection loader.
- * @template E Entry data type.
- * @template C Section identifiers (for example: `'blog' | 'docs'`).
- * @template L Locale identifiers (for example: `'en' | 'es'`).
+ * @template TSection Section identifiers (for example: `'blog' | 'docs'`).
+ * @template TData The raw data schema type inside the entry (e.g., frontmatter shape).
+ * @template TLocale Locale identifiers (for example: `'en' | 'es'`).
+ * @template TEntry The full collection entry object shape containing both id and data.
  *
  * @param routes Localized section routes used to resolve URL segments.
- * @param fetchCollection Function that retrieves all entries belonging
- * to a given section.
- * @param allowedLocales Supported locales
+ * @param fetchCollection Function that retrieves all entries belonging to a given section.
+ * @param allowedLocales Supported locales configurations.
  */
 export async function getStaticPathsEntries<
-  C extends string,
-  E extends object,
-  L extends string,
-  TEntry extends GenericCollectionEntry<C, E>,
+  TSection extends string,
+  TData extends object,
+  TLocale extends string,
+  TEntry extends GenericCollectionEntry<TSection, TData>,
 >(
-  routes: SectionRoutes<C, L>,
+  routes: SectionRoutes<TSection, TLocale>,
   fetchCollection: (
-    collection: C,
+    collection: TSection,
   ) => Promise<TEntry[]>,
-  allowedLocales: Locales<L>,
-): Promise<DetailPath<C, L, TEntry>[]> {
+  allowedLocales: Locales<TLocale>,
+): Promise<DetailPath<TSection, TLocale, TEntry>[]> {
 
-  const allPaths: DetailPath<C, L, TEntry>[] = []
+  const allPaths: DetailPath<TSection, TLocale, TEntry>[] = []
 
   for (const sectionKey of routes.getSections()) {
     const rawEntries = await fetchCollection(sectionKey)
 
     const localizedEntries = rawEntries.map(entry =>
-      adaptToLocalizedEntry(entry, allowedLocales),
+      adaptToLocalizedEntry<TSection, TData, TLocale, TEntry>(entry, allowedLocales),
     )
 
     const index = createTranslationIndex(localizedEntries)

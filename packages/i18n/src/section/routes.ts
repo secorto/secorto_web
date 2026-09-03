@@ -1,10 +1,10 @@
 export type SectionDictionary<
-  Section extends string,
-  Language extends string,
+  TSection extends string,
+  TLocale extends string,
   TValue
 > = Record<
-  Section,
-  Record<Language, TValue>
+  TSection,
+  Record<TLocale, TValue>
 >
 
 /**
@@ -15,23 +15,23 @@ export type SectionDictionary<
  * - Each (locale, slug) pair must be unique across all sections.
  * - The object is constructed exclusively through `createSectionRoutes`.
  *
- * @template Section - Section keys (e.g., 'blog', 'talk').
- * @template Language - Locale keys (e.g., 'es', 'en').
+ * @template TSection - Section keys (e.g., 'blog', 'talk').
+ * @template TLocale - Locale keys (e.g., 'es', 'en').
  */
 export interface SectionRoutes<
-  Section extends string,
-  Language extends string
+  TSection extends string,
+  TLocale extends string
 > {
   /**
    * Raw dictionary of localized slugs per section.
    * This structure is immutable once the value object is created.
    */
-  readonly routes: Record<Section, Record<Language, string>>
+  readonly routes: Record<TSection, Record<TLocale, string>>
 
   /**
    * Returns the configured section identifiers.
    */
-  getSections(): readonly Section[]
+  getSections(): readonly TSection[]
 
   /**
    * Returns the localized slug for a section.
@@ -40,7 +40,7 @@ export interface SectionRoutes<
    * @param locale Locale identifier.
    * @returns Localized slug for the section.
    */
-  getSectionRoute(section: Section, locale: Language): string
+  getSectionRoute(section: TSection, locale: TLocale): string
 
   /**
    * Returns the localized URL for a section, including locale prefix.
@@ -49,7 +49,7 @@ export interface SectionRoutes<
    * @param locale Locale identifier.
    * @returns URL string for the section in the given locale.
    */
-  getSectionURL(section: Section, locale: Language): string
+  getSectionURL(section: TSection, locale: TLocale): string
 
   /**
    * Returns the localized URL for a content entry inside a section.
@@ -59,7 +59,7 @@ export interface SectionRoutes<
    * @param slug Entry slug.
    * @returns Full URL for the entry.
    */
-  getEntryURL(section: Section, locale: Language, slug: string): string
+  getEntryURL(section: TSection, locale: TLocale, slug: string): string
 
   /**
    * Returns the localized URL for a tag page inside a section.
@@ -69,7 +69,7 @@ export interface SectionRoutes<
    * @param tag Tag name.
    * @returns Full URL for the tag page.
    */
-  getEntryTagURL(section: Section, locale: Language, tag: string): string
+  getEntryTagURL(section: TSection, locale: TLocale, tag: string): string
 }
 
 /**
@@ -82,24 +82,24 @@ export interface SectionRoutes<
  * If any invariant is violated, an error is thrown and the SectionRoutes value
  * is not constructed.
  *
- * @template Section - The section keys (e.g., 'blog', 'docs').
- * @template Language - The language codes (e.g., 'es', 'en').
+ * @template TSection - The section keys (e.g., 'blog', 'docs').
+ * @template TLocale - The language codes (e.g., 'es', 'en').
  * @param routes Raw dictionary of localized slugs per section.
  * @returns A branded SectionRoutes value.
  */
 export function createSectionRoutes<
-  Section extends string,
-  Language extends string
+  TSection extends string,
+  TLocale extends string
 >(
-  routes: SectionDictionary<Section, Language, string>
-): SectionRoutes<Section, Language> {
-  const seen = new Map<string, Section>()
-  const sections = Object.freeze(Object.keys(routes) as Section[])
+  routes: SectionDictionary<TSection, TLocale, string>
+): SectionRoutes<TSection, TLocale> {
+  const seen = new Map<string, TSection>()
+  const sections = Object.freeze(Object.keys(routes) as TSection[])
 
   for (const section of sections) {
     const localized = routes[section]
 
-    for (const locale of Object.keys(localized) as Language[]) {
+    for (const locale of Object.keys(localized) as TLocale[]) {
       const slug = localized[locale]
       const key = `${locale}:${slug}`
 
@@ -120,24 +120,24 @@ export function createSectionRoutes<
   }
   Object.freeze(routes)
 
-  const getSections = (): readonly Section[] => sections
+  const getSections = (): readonly TSection[] => sections
 
-  const getSectionRoute = (section: Section, locale: Language): string =>
+  const getSectionRoute = (section: TSection, locale: TLocale): string =>
     routes[section][locale]
 
-  const getSectionURL = (section: Section, locale: Language): string =>
+  const getSectionURL = (section: TSection, locale: TLocale): string =>
     `/${locale}/${getSectionRoute(section, locale)}`
 
   const getEntryTagURL = (
-    section: Section,
-    locale: Language,
+    section: TSection,
+    locale: TLocale,
     tag: string
   ): string =>
     `${getSectionURL(section, locale)}/tags/${encodeURIComponent(tag)}`
 
   const getEntryURL = (
-    section: Section,
-    locale: Language,
+    section: TSection,
+    locale: TLocale,
     slug: string
   ): string =>
     `${getSectionURL(section, locale)}/${slug}`

@@ -5,9 +5,9 @@
   "sideEffects": false,
   "description": "Framework-agnostic i18n primitive",
   "keywords": [
-    "steps",
-    "playwright",
-    "testing"
+    "i18n",
+    "astro",
+    "routing"
   ],
   "homepage": "https://github.com/secorto/secorto_web/blob/master/packages/i18n#readme",
   "bugs": {

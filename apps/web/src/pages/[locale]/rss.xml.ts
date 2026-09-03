@@ -4,6 +4,7 @@ import { languages } from '@i18n/ui'
 import type { APIContext } from 'astro'
 import type { UILanguages } from '@i18n/ui'
 import { buildRSSItems } from '@utils/rssBuilder'
+import { getStaticPathsLocales } from '@secorto/i18n'
 
 const LOCALE_COUNTRY: Record<UILanguages, string> = {
   es: 'es-co',
@@ -11,7 +12,7 @@ const LOCALE_COUNTRY: Record<UILanguages, string> = {
 }
 
 export function getStaticPaths() {
-  return languages.all.map((locale) => ({ params: { locale } }))
+  return getStaticPathsLocales(languages)
 }
 
 export async function GET(context: APIContext) {
