@@ -31,9 +31,9 @@ export type TranslationGroup<
 
 export type TranslationIndex<
   TSection extends string,
-  L extends string,
+  TLocale extends string,
   TEntry
-> = Partial<Record<string, TranslationGroup<TSection, L, TEntry>>>
+> = Partial<Record<string, TranslationGroup<TSection, TLocale, TEntry>>>
 
 /**
  * Builds a translation index from an array of localized entries.
