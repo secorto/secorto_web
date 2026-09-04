@@ -55,6 +55,7 @@ export class ExperienceListPageMain implements LocalizedPage<void> {
  */
 export class ContentListPage extends NavigablePage implements LocalizedPage<void>, LocalizedUrl {
   constructor(
+    readonly section: SectionType,
     mainLayout: MainLayoutComponent,
     readonly tags: TagsComponent,
     readonly list: ContentListComponent,
@@ -83,12 +84,10 @@ export class ContentListPage extends NavigablePage implements LocalizedPage<void
 
   /**
    * Valida que el filtrado por tag fue exitoso.
-   * Comprueba: URL contiene /tags/${tag} (escapado) y lista tiene resultados.
    */
-  shouldBeFiltered(tag: string) {
+  shouldBeFiltered(locale: UILanguages, tag: Tag) {
     return verifyStep(`content is filtered by tag ${tag}`, async ({ expect }) => {
-      const escapedTag = tag.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-      await this.validateUrl(new RegExp(`/tags/${escapedTag}\/?$`)).with(expect)
+      await this.validateUrl(tagRoutes.getSectionTagURL(this.section, locale, tag),).with(expect)
       return this.list.shouldHaveResults().with(expect)
     })
   }
@@ -126,7 +125,7 @@ export function contentListPage(
   const { layout, validateUrl, a11y } = createPageContext(page, `${sectionName} list`, mainPageInstance)
   const tagsComp = tagsComponent(page.locator('main'))
   const listComp = contentListComponent(page.locator('main'))
-  return new ContentListPage(layout, tagsComp, listComp, validateUrl, a11y)
+  return new ContentListPage(sectionName, layout, tagsComp, listComp, validateUrl, a11y)
 }
 
 /**
