@@ -173,11 +173,9 @@ export function buildGlobalTagGroups(
 
 export const tagRoutes = createTagRoutes(
   sectionRoutes,
+  { en: 'tags', es: 'tags' },
   {
-    en: 'tags',
-    es: 'tags',
-  },
-  {
+    containers: {en: 'containers', es: 'containers'},
     dev: { en: 'dev', es: 'desarrollo' },
     frontend: { en: 'frontend', es: 'frontend' },
     gis: { en: 'gis', es: 'gis' },
@@ -190,3 +188,5 @@ export const tagRoutes = createTagRoutes(
     testing: { en: 'testing', es: 'pruebas' },
   },
 )
+
+export type Tag = ReturnType<typeof tagRoutes.getTags>[number]

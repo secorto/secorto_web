@@ -1,4 +1,4 @@
-export function compareByPriorityAndDate<T extends { cleanId: string; data: { priority?: number } }>(
+export function compareByPriorityAndDate<T extends { id: string; data: { priority?: number } }>(
   a: T,
   b: T,
   getDate: (item: T) => Date | undefined,
@@ -11,7 +11,7 @@ export function compareByPriorityAndDate<T extends { cleanId: string; data: { pr
   const tb = getComparableTimestamp(getDate(b))
   if (ta !== tb) return tb - ta
 
-  return a.cleanId.localeCompare(b.cleanId)
+  return a.id.localeCompare(b.id)
 }
 
 export function getPriority<T extends { data: { priority?: number } }>(item: T): number {
@@ -28,7 +28,7 @@ function getComparableTimestamp(date: Date | undefined): number {
 /**
  * Ordena entradas de tipo blog/publicación por prioridad y fecha de publicación.
  */
-export function sortPostsByPriority<T extends { cleanId: string; data: { priority?: number; date?: Date } }>(
+export function sortPostsByPriority<T extends { id: string; data: { priority?: number; date?: Date } }>(
   items: T[]
 ): T[] {
   return items.slice().sort((a, b) => compareByPriorityAndDate(a, b, item => item.data.date))
@@ -37,7 +37,7 @@ export function sortPostsByPriority<T extends { cleanId: string; data: { priorit
 /**
  * Ordena entradas de tipo experiencia por prioridad y fecha de inicio.
  */
-export function sortExperienceByPriority<T extends { cleanId: string; data: { priority?: number; startDate?: Date } }>(
+export function sortExperienceByPriority<T extends { id: string; data: { priority?: number; startDate?: Date } }>(
   items: T[]
 ): T[] {
   return items.slice().sort((a, b) => compareByPriorityAndDate(a, b, item => item.data.startDate))

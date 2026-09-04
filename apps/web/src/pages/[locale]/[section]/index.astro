@@ -4,11 +4,11 @@ import { sectionRoutes } from '@domain/section'
 import SEOHead from '@components/SEOHead.astro'
 import Tags from '@components/Tags.astro'
 import LanguagePicker from '@components/LanguagePicker.astro'
-import { filterByLocale, getUniqueTags, mapEntryId } from '@utils/paths'
 import ListContent from '@components/list/ListContent.astro'
 import { getCollection } from 'astro:content'
-import { availableLink, getStaticPathsSections } from '@secorto/i18n'
+import { availableLink, getStaticPathsSections, availableAtLocale } from '@secorto/i18n'
 import { languages, sections } from '@i18n/ui'
+import { tagRoutes } from '@domain/tags'
 
 export async function getStaticPaths() {
   return await getStaticPathsSections(sectionRoutes, languages)
@@ -20,10 +20,12 @@ export type Params = Awaited<ReturnType<typeof getStaticPaths>>[number]['params'
 const { locale } = Astro.params
 const { section } = Astro.props
 const pageTitle = sections[section][locale]
-const rawPosts = filterByLocale(await getCollection(section), locale)
-const tags = getUniqueTags(rawPosts)
-const posts = mapEntryId(rawPosts)
+const posts = await getCollection(section, availableAtLocale(locale))
 const links = languages.all.map(lang => availableLink(sectionRoutes.getSectionURL(section, lang), lang))
+const tags = tagRoutes.getTags()
+  .filter(tag =>
+    posts.some(post => post.data.tags.includes(tag)),
+  )
 ---
 
 <BaseLayout pageTitle={pageTitle}>

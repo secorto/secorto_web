@@ -58,6 +58,18 @@ export type TagRoutes<
     locale: TLocale,
     tag: TTag,
   ) => string
+
+  /**
+   * Returns the localized route segment used for the tag index page.
+   *
+   * Examples:
+   * - en → "tags"
+   * - es → "etiquetas"
+   *
+   * @param locale - The locale whose tag index route should be resolved.
+   * @returns The localized tag index route segment.
+   */
+  getTagIndexRoute: (locale: TLocale) => string
 }
 
 /**
@@ -119,6 +131,8 @@ export function createTagRoutes<
     locale: TLocale,
   ): string => routes[tag][locale]
 
+  const getTagIndexRoute = (locale: TLocale) => tagIndexRoutes[locale]
+
   const getSectionTagURL = (
     section: TSection,
     locale: TLocale,
@@ -133,5 +147,6 @@ export function createTagRoutes<
     getTags,
     getTagRoute,
     getSectionTagURL,
+    getTagIndexRoute
   }
 }
