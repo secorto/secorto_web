@@ -1,6 +1,6 @@
 import type { SectionRoutes } from '../section'
-import { GenericCollectionEntry } from './entry-adapter'
-import { Draftable } from './filters'
+import type { GenericCollectionEntry } from './entry-adapter'
+import type { Draftable } from './filters'
 
 /**
  * Collection entries grouped by section.

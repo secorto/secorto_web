@@ -45,7 +45,7 @@ const tagsWithSections = tagRoutes.getTags().map(tag => ({
     (entry, currentTag) =>
       entry.data.tags?.includes(currentTag) ?? false,
   ),
-}))
+})).filter(({ sections }) => sections.length > 0)
 ---
 
 <BaseLayout
@@ -60,34 +60,30 @@ const tagsWithSections = tagRoutes.getTags().map(tag => ({
       {t('tags.index_description')}
     </p>
 
-    {tagsWithSections.length === 0 ? (
-      <p>{t('tags.index_no_tags')}</p>
-    ) : (
-      <ul class="tag-groups" data-testid="global-tag-groups">
-        {tagsWithSections.map(({ tag, sections: availableSections }) => (
-          <li
-            class="tag-group"
-            data-testid={`global-tag-${tag}`}
-          >
-            <h2>{tagRoutes.getTagRoute(tag, locale)}</h2>
+    <ul class="tag-groups" data-testid="global-tag-groups">
+      {tagsWithSections.map(({ tag, sections: availableSections }) => (
+        <li
+          class="tag-group"
+          data-testid={`global-tag-${tag}`}
+        >
+          <h2>{tagRoutes.getTagRoute(tag, locale)}</h2>
 
-            <p>
-              {t('tags.available_in')}:{' '}
-              {availableSections.map(
-                ({ section, count }, index) => (
-                  <Fragment>
-                    {index > 0 && ' / '}
-                    <a href={tagRoutes.getSectionTagURL(section, locale, tag)}>
-                      {sections[section][locale]} ({count})
-                    </a>
-                  </Fragment>
-                ),
-              )}
-            </p>
-          </li>
-        ))}
-      </ul>
-    )}
+          <p>
+            {t('tags.available_in')}:{' '}
+            {availableSections.map(
+              ({ section, count }, index) => (
+                <Fragment>
+                  {index > 0 && ' / '}
+                  <a href={tagRoutes.getSectionTagURL(section, locale, tag)}>
+                    {sections[section][locale]} ({count})
+                  </a>
+                </Fragment>
+              ),
+            )}
+          </p>
+        </li>
+      ))}
+    </ul>
   </section>
 </BaseLayout>
 

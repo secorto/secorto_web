@@ -87,7 +87,9 @@ export class ContentListPage extends NavigablePage implements LocalizedPage<void
    */
   shouldBeFiltered(locale: UILanguages, tag: Tag) {
     return verifyStep(`content is filtered by tag ${tag}`, async ({ expect }) => {
-      await this.validateUrl(tagRoutes.getSectionTagURL(this.section, locale, tag),).with(expect)
+      const expectedUrl = tagRoutes.getSectionTagURL(this.section, locale, tag)
+      const escapedUrl = expectedUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      await this.validateUrl(new RegExp(`${escapedUrl}(/|$)`)).with(expect)
       return this.list.shouldHaveResults().with(expect)
     })
   }

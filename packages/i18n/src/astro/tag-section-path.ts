@@ -1,8 +1,9 @@
-import { Locales } from "../core"
-import { SectionRoutes } from "../section"
-import { TagRoutes } from "../tags"
-import { GenericCollectionEntry } from './entry-adapter'
-import { Draftable, withTag } from './filters'
+import type { Locales } from '../core'
+import type { SectionRoutes } from '../section'
+import type { TagRoutes } from '../tags'
+import type { GenericCollectionEntry } from './entry-adapter'
+import { withTag } from './filters'
+import type { Draftable } from './filters'
 import { getEntriesBySection } from './entries-by-section'
 import { getSectionsWithTagContent } from '../tags'
 

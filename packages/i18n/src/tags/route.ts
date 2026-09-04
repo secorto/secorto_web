@@ -121,8 +121,8 @@ export function createTagRoutes<
   for (const tag of tags) {
     Object.freeze(routes[tag])
   }
-
   Object.freeze(routes)
+  Object.freeze(tagIndexRoutes)
 
   const getTags = (): readonly TTag[] => tags
 

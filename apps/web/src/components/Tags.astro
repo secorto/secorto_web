@@ -7,7 +7,7 @@ interface Props {
 	tags: readonly Tag[],
   section: SectionType
   locale: UILanguages
-  current?: string
+  current?: Tag
 }
 const { tags, section, locale, current } = Astro.props;
 ---
