@@ -58,4 +58,3 @@ export const sectionRoutes: SectionRoutes<SectionType, UILanguages> = createSect
   projects: { es: 'proyecto', en: 'project' },
   community: { es: 'comunidad', en: 'community' },
 })
-

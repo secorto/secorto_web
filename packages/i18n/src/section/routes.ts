@@ -1,3 +1,5 @@
+import { ensureNoRouteCollisions } from "../core"
+
 export type SectionDictionary<
   TSection extends string,
   TLocale extends string,
@@ -93,26 +95,8 @@ export function createSectionRoutes<
 >(
   routes: SectionDictionary<TSection, TLocale, string>
 ): SectionRoutes<TSection, TLocale> {
-  const seen = new Map<string, TSection>()
+  ensureNoRouteCollisions(routes, 'SectionRoutes')
   const sections = Object.freeze(Object.keys(routes) as TSection[])
-
-  for (const section of sections) {
-    const localized = routes[section]
-
-    for (const locale of Object.keys(localized) as TLocale[]) {
-      const slug = localized[locale]
-      const key = `${locale}:${slug}`
-
-      if (seen.has(key)) {
-        const other = seen.get(key)!
-        throw new Error(
-          `Duplicated route for locale "${locale}" and slug "${slug}" between sections "${other}" and "${section}".`
-        )
-      }
-
-      seen.set(key, section)
-    }
-  }
 
   // Enforce runtime immutability for the value object invariants.
   for (const section of sections) {

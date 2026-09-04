@@ -3,8 +3,6 @@ title: How I use Linux today
 date: 2026-04-23
 tags:
   - linux
-  - current
-  - experiences
 excerpt: Draft describing my current Linux usage and how it differs from my early experiments.
 translationKey: 'como-uso-linux-hoy'
 draft: true

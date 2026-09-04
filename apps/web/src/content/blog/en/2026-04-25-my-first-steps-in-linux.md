@@ -3,7 +3,6 @@ title: My first steps in Linux
 date: 2026-04-25
 tags:
   - linux
-  - experiences
 excerpt: A concise personal roundup of lessons learned using several distributions and desktop environments.
 gallery:
   - image: "@assets/img/post/chakra/openbox.png"

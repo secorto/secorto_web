@@ -1,5 +1,6 @@
 import type { UILanguages } from '@i18n/ui'
-import type { SectionType } from '@domain/section'
+import { sectionRoutes, type SectionType } from '@domain/section'
+import { createTagRoutes } from '@secorto/i18n'
 
 /**
  * Mapa de traducción de tags: canónico → { idioma → slug }
@@ -169,3 +170,23 @@ export function buildGlobalTagGroups(
 
   return formatTagGroups(groupedTags)
 }
+
+export const tagRoutes = createTagRoutes(
+  sectionRoutes,
+  {
+    en: 'tags',
+    es: 'etiquetas',
+  },
+  {
+    dev: { en: 'dev', es: 'desarrollo' },
+    frontend: { en: 'frontend', es: 'frontend' },
+    gis: { en: 'gis', es: 'gis' },
+    jamstack: { en: 'jamstack', es: 'jamstack' },
+    java: { en: 'java', es: 'java' },
+    javascript: { en: 'javascript', es: 'javascript' },
+    linux: { en: 'linux', es: 'linux' },
+    opensource: { en: 'opensource', es: 'codigo-abierto' },
+    python: { en: 'python', es: 'python' },
+    testing: { en: 'testing', es: 'pruebas' },
+  },
+)
