@@ -175,7 +175,7 @@ export const tagRoutes = createTagRoutes(
   sectionRoutes,
   {
     en: 'tags',
-    es: 'etiquetas',
+    es: 'tags',
   },
   {
     dev: { en: 'dev', es: 'desarrollo' },
