@@ -62,16 +62,6 @@ export interface SectionRoutes<
    * @returns Full URL for the entry.
    */
   getEntryURL(section: TSection, locale: TLocale, slug: string): string
-
-  /**
-   * Returns the localized URL for a tag page inside a section.
-   *
-   * @param section Section identifier.
-   * @param locale Locale identifier.
-   * @param tag Tag name.
-   * @returns Full URL for the tag page.
-   */
-  getEntryTagURL(section: TSection, locale: TLocale, tag: string): string
 }
 
 /**
@@ -112,13 +102,6 @@ export function createSectionRoutes<
   const getSectionURL = (section: TSection, locale: TLocale): string =>
     `/${locale}/${getSectionRoute(section, locale)}`
 
-  const getEntryTagURL = (
-    section: TSection,
-    locale: TLocale,
-    tag: string
-  ): string =>
-    `${getSectionURL(section, locale)}/tags/${encodeURIComponent(tag)}`
-
   const getEntryURL = (
     section: TSection,
     locale: TLocale,
@@ -132,6 +115,5 @@ export function createSectionRoutes<
     getSectionRoute,
     getSectionURL,
     getEntryURL,
-    getEntryTagURL
   }
 }

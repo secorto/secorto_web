@@ -1,6 +1,7 @@
 import { type UILanguages } from '@i18n/ui'
 import type { SectionType } from '@domain/section'
 import { enabledA11yLanguages } from './a11yLanguages'
+import type { Tag } from '@domain/tags'
 
 export const testContents = [
   { name: 'blog', locale: 'es', testSlug: '2022-07-11-intro-python', testTag: 'python' },
@@ -17,7 +18,7 @@ export const testContents = [
   name: SectionType
   locale: UILanguages
   testSlug: string
-  testTag: string
+  testTag: Tag
 }>
 
 /**

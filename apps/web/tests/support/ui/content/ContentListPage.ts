@@ -12,6 +12,7 @@ import type { LocalizedPage, LocalizedUrl } from '@tests/support/ui/shared/contr
 import { tagsComponent } from './components/Tags'
 import { contentListComponent } from './components/ContentList'
 import { type A11y } from '@tests/support/ui/shared/flows/a11y'
+import { tagRoutes, type Tag } from '@domain/tags'
 
 /**
  * Main para listas de posts (blog, talk).
@@ -152,9 +153,9 @@ export async function userInContentTag(
   page: Page,
   contentType: SectionType,
   locale: UILanguages,
-  tag: string
+  tag: Tag
 ): Promise<ContentListPage> {
-  const url = sectionRoutes.getEntryTagURL(contentType, locale, tag)
+  const url = tagRoutes.getSectionTagURL(contentType, locale, tag)
   return visit(
     `navigate to ${contentType} list in ${locale}`,
     page,
