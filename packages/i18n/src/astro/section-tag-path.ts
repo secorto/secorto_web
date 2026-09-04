@@ -2,10 +2,8 @@ import type { Locales } from '../core'
 import type { SectionRoutes } from '../section'
 import type { TagRoutes } from '../tags'
 import type { GenericCollectionEntry } from './entry-adapter'
-import { withTag } from './filters'
+import { availableAtLocale, withTag } from './filters'
 import type { Draftable } from './filters'
-import { getEntriesBySection } from './entries-by-section'
-import { getSectionsWithTagContent } from '../tags'
 
 export type StaticPathSectionTag<
   TTag extends string,
@@ -21,6 +19,7 @@ export type StaticPathSectionTag<
   props: {
     section: TSection
     tag: TTag
+    siblings: readonly TLocale[]
   }
 }
 
@@ -69,7 +68,6 @@ export async function getStaticPathsSectionTags<
   tagRoutes: TagRoutes<TTag, TSection, TLocale>,
   getEntries: (
     section: TSection,
-    locale: TLocale,
   ) => Promise<TEntry[]>,
 ): Promise<
   StaticPathSectionTag<
@@ -84,24 +82,25 @@ export async function getStaticPathsSectionTags<
     TLocale
   >[] = []
 
-  for (const locale of locales.all) {
-    const entriesBySection =
-      await getEntriesBySection(
-        sectionRoutes,
-        section =>
-          getEntries(section, locale),
-      )
+  for (const section of sectionRoutes.getSections()) {
+    const entries = await getEntries(section)
 
     for (const tag of tagRoutes.getTags()) {
-      const sectionsWithTag =
-        getSectionsWithTagContent(
-          sectionRoutes,
-          entriesBySection,
-          tag,
-          withTag(tag),
+      const entriesWithTag =
+        entries.filter(withTag(tag))
+
+      if (!entriesWithTag.length) {
+        continue
+      }
+
+      const siblings =
+        locales.all.filter(locale =>
+          entriesWithTag.some(
+            availableAtLocale(locale),
+          ),
         )
 
-      for (const { section } of sectionsWithTag) {
+      for (const locale of siblings) {
         paths.push({
           params: {
             locale,
@@ -122,6 +121,7 @@ export async function getStaticPathsSectionTags<
           props: {
             section,
             tag,
+            siblings,
           },
         })
       }

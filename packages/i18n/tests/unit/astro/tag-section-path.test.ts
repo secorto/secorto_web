@@ -6,6 +6,8 @@ import {
   getStaticPathsSectionTags,
 } from '@secorto/i18n'
 
+import type { GenericCollectionEntry } from '@secorto/i18n'
+
 const locales = createLocales(['es', 'en'] as const)
 
 const sectionRoutes = createSectionRoutes({
@@ -37,8 +39,6 @@ const tagRoutes = createTagRoutes(
   },
 )
 
-import type { GenericCollectionEntry } from '@secorto/i18n'
-
 type Entry = GenericCollectionEntry<
   'blog' | 'talk',
   {
@@ -46,21 +46,28 @@ type Entry = GenericCollectionEntry<
     tags: string[]
   }
 >
+
 describe('getStaticPathsSectionTags', () => {
   it('builds localized params and props', async () => {
-
     const paths = await getStaticPathsSectionTags(
       locales,
       sectionRoutes,
       tagRoutes,
       async (
         section: 'blog' | 'talk',
-        _locale: 'es' | 'en',
       ): Promise<Entry[]> => {
         if (section === 'blog') {
           return [
             {
-              id: 'post-1',
+              id: 'es/post-1',
+              collection: 'blog',
+              data: {
+                draft: false,
+                tags: ['javascript'],
+              },
+            },
+            {
+              id: 'en/post-1',
               collection: 'blog',
               data: {
                 draft: false,
@@ -72,7 +79,7 @@ describe('getStaticPathsSectionTags', () => {
 
         return [
           {
-            id: 'talk-1',
+            id: 'en/talk-1',
             collection: 'talk',
             data: {
               draft: false,
@@ -93,6 +100,7 @@ describe('getStaticPathsSectionTags', () => {
       props: {
         section: 'blog',
         tag: 'javascript',
+        siblings: ['es', 'en'],
       },
     })
 
@@ -106,6 +114,7 @@ describe('getStaticPathsSectionTags', () => {
       props: {
         section: 'talk',
         tag: 'tools',
+        siblings: ['en'],
       },
     })
   })
@@ -119,7 +128,7 @@ describe('getStaticPathsSectionTags', () => {
         if (section === 'blog') {
           return [
             {
-              id: 'post-1',
+              id: 'es/post-1',
               collection: 'blog',
               data: {
                 draft: false,
@@ -133,7 +142,7 @@ describe('getStaticPathsSectionTags', () => {
       },
     )
 
-    expect(paths).toHaveLength(2)
+    expect(paths).toHaveLength(1)
 
     expect(
       paths.every(
@@ -162,7 +171,15 @@ describe('getStaticPathsSectionTags', () => {
       tagRoutes,
       async section => [
         {
-          id: `${section}-1`,
+          id: 'es/post-1',
+          collection: section,
+          data: {
+            draft: false,
+            tags: ['javascript'],
+          },
+        },
+        {
+          id: 'en/post-1',
           collection: section,
           data: {
             draft: false,
@@ -196,7 +213,7 @@ describe('getStaticPathsSectionTags', () => {
       tagRoutes,
       async section => [
         {
-          id: `${section}-1`,
+          id: 'es/post-1',
           collection: section,
           data: {
             draft: false,
@@ -211,5 +228,106 @@ describe('getStaticPathsSectionTags', () => {
         path => path.props.tag === 'tools',
       ),
     ).toBe(false)
+  })
+
+  it('includes siblings for all locales that contain content', async () => {
+    const paths = await getStaticPathsSectionTags(
+      locales,
+      sectionRoutes,
+      tagRoutes,
+      async section => [
+        {
+          id: 'es/post-1',
+          collection: section,
+          data: {
+            draft: false,
+            tags: ['javascript'],
+          },
+        },
+        {
+          id: 'en/post-1',
+          collection: section,
+          data: {
+            draft: false,
+            tags: ['javascript'],
+          },
+        },
+      ],
+    )
+
+    expect(
+      paths.every(path =>
+        JSON.stringify(path.props.siblings) ===
+        JSON.stringify(['es', 'en']),
+      ),
+    ).toBe(true)
+  })
+
+  it('includes only existing locales in siblings', async () => {
+    const paths = await getStaticPathsSectionTags(
+      locales,
+      sectionRoutes,
+      tagRoutes,
+      async section => {
+        if (section !== 'blog') {
+          return []
+        }
+
+        return [
+          {
+            id: 'es/post-1',
+            collection: 'blog',
+            data: {
+              draft: false,
+              tags: ['javascript'],
+            },
+          },
+        ]
+      },
+    )
+
+    expect(paths).toHaveLength(1)
+
+    expect(paths[0]?.props.siblings).toEqual([
+      'es',
+    ])
+  })
+
+  it('excludes draft translations from siblings', async () => {
+    const paths = await getStaticPathsSectionTags(
+      locales,
+      sectionRoutes,
+      tagRoutes,
+      async section => {
+        if (section !== 'blog') {
+          return []
+        }
+
+        return [
+          {
+            id: 'es/post-1',
+            collection: 'blog',
+            data: {
+              draft: false,
+              tags: ['javascript'],
+            },
+          },
+          {
+            id: 'en/post-1',
+            collection: 'blog',
+            data: {
+              draft: true,
+              tags: ['javascript'],
+            },
+          },
+        ]
+      },
+    )
+
+    expect(paths).toHaveLength(1)
+
+    expect(paths[0]?.props.siblings).toEqual([
+      'es',
+    ])
   })
 })
