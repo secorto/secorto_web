@@ -37,68 +37,179 @@ const tagRoutes = createTagRoutes(
   },
 )
 
+import type { GenericCollectionEntry } from '@secorto/i18n'
+
+type Entry = GenericCollectionEntry<
+  'blog' | 'talk',
+  {
+    draft: boolean
+    tags: string[]
+  }
+>
 describe('getStaticPathsSectionTags', () => {
-  it('generates all combinations of sections, locales and tags', () => {
-    const paths = getStaticPathsSectionTags(
+  it('builds localized params and props', async () => {
+
+    const paths = await getStaticPathsSectionTags(
       locales,
       sectionRoutes,
       tagRoutes,
-    )
+      async (
+        section: 'blog' | 'talk',
+        _locale: 'es' | 'en',
+      ): Promise<Entry[]> => {
+        if (section === 'blog') {
+          return [
+            {
+              id: 'post-1',
+              collection: 'blog',
+              data: {
+                draft: false,
+                tags: ['javascript'],
+              },
+            },
+          ]
+        }
 
-    expect(paths).toHaveLength(8)
-  })
-
-  it('builds localized params and props', () => {
-    const paths = getStaticPathsSectionTags(
-      locales,
-      sectionRoutes,
-      tagRoutes,
+        return [
+          {
+            id: 'talk-1',
+            collection: 'talk',
+            data: {
+              draft: false,
+              tags: ['tools'],
+            },
+          },
+        ]
+      },
     )
 
     expect(paths).toContainEqual({
       params: {
         locale: 'es',
-        section: 'charla',
+        section: 'blog',
         tagIndex: 'etiquetas',
-        tag: 'herramientas',
+        tag: 'javascript',
       },
       props: {
-        section: 'talk',
-        tag: 'tools',
+        section: 'blog',
+        tag: 'javascript',
       },
     })
 
     expect(paths).toContainEqual({
       params: {
         locale: 'en',
-        section: 'blog',
+        section: 'talk',
         tagIndex: 'tags',
-        tag: 'javascript',
+        tag: 'tools',
       },
       props: {
-        section: 'blog',
-        tag: 'javascript',
+        section: 'talk',
+        tag: 'tools',
       },
     })
   })
 
-  it('returns paths for every tag in every section', () => {
-    const paths = getStaticPathsSectionTags(
+  it('generates paths only for tags that exist in a section', async () => {
+    const paths = await getStaticPathsSectionTags(
       locales,
       sectionRoutes,
       tagRoutes,
+      async section => {
+        if (section === 'blog') {
+          return [
+            {
+              id: 'post-1',
+              collection: 'blog',
+              data: {
+                draft: false,
+                tags: ['javascript'],
+              },
+            },
+          ]
+        }
+
+        return []
+      },
+    )
+
+    expect(paths).toHaveLength(2)
+
+    expect(
+      paths.every(
+        path =>
+          path.props.section === 'blog' &&
+          path.props.tag === 'javascript',
+      ),
+    ).toBe(true)
+  })
+
+  it('does not generate paths for empty tag pages', async () => {
+    const paths = await getStaticPathsSectionTags(
+      locales,
+      sectionRoutes,
+      tagRoutes,
+      async () => [],
+    )
+
+    expect(paths).toEqual([])
+  })
+
+  it('generates paths for every locale where content exists', async () => {
+    const paths = await getStaticPathsSectionTags(
+      locales,
+      sectionRoutes,
+      tagRoutes,
+      async section => [
+        {
+          id: `${section}-1`,
+          collection: section,
+          data: {
+            draft: false,
+            tags: ['javascript'],
+          },
+        },
+      ],
     )
 
     expect(
       paths.filter(
-        path => path.props.section === 'blog',
+        path =>
+          path.props.tag === 'javascript' &&
+          path.props.section === 'blog',
       ),
-    ).toHaveLength(4)
+    ).toHaveLength(2)
 
     expect(
       paths.filter(
-        path => path.props.section === 'talk',
+        path =>
+          path.props.tag === 'javascript' &&
+          path.props.section === 'talk',
       ),
-    ).toHaveLength(4)
+    ).toHaveLength(2)
+  })
+
+  it('does not generate routes for configured tags without content', async () => {
+    const paths = await getStaticPathsSectionTags(
+      locales,
+      sectionRoutes,
+      tagRoutes,
+      async section => [
+        {
+          id: `${section}-1`,
+          collection: section,
+          data: {
+            draft: false,
+            tags: ['javascript'],
+          },
+        },
+      ],
+    )
+
+    expect(
+      paths.some(
+        path => path.props.tag === 'tools',
+      ),
+    ).toBe(false)
   })
 })

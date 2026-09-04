@@ -1,6 +1,10 @@
 import { Locales } from "../core"
 import { SectionRoutes } from "../section"
 import { TagRoutes } from "../tags"
+import { GenericCollectionEntry } from './entry-adapter'
+import { Draftable, withTag } from './filters'
+import { getEntriesBySection } from './entries-by-section'
+import { getSectionsWithTagContent } from '../tags'
 
 export type StaticPathSectionTag<
   TTag extends string,
@@ -20,10 +24,12 @@ export type StaticPathSectionTag<
 }
 
 /**
- * Generates static paths for all localized combinations of sections and tags.
+ * Generates static paths only for section-tag combinations that contain
+ * content.
  *
- * For every section, locale, and tag, a path definition is created with the
- * corresponding route parameters and page props.
+ * For each locale, entries are loaded and grouped by section. Tags are then
+ * evaluated against those entries and paths are generated only for sections
+ * where the tag is actually present.
  *
  * Generated URL format:
  * - /{locale}/{section}/{tagIndex}/{tag}
@@ -32,39 +38,81 @@ export type StaticPathSectionTag<
  * - /en/blog/tags/tools
  * - /es/blog/etiquetas/herramientas
  *
+ * Unlike the basic cartesian-product approach, this implementation skips
+ * empty tag pages and generates routes only when matching content exists.
+ *
  * @template TTag - Supported tag identifiers.
  * @template TSection - Supported section identifiers.
  * @template TLocale - Supported locale identifiers.
+ * @template TEntry - Collection entry type.
  *
  * @param locales - Available locales.
  * @param sectionRoutes - Section route definitions.
  * @param tagRoutes - Tag route definitions.
+ * @param getEntries - Function that retrieves entries for a section and locale.
  *
- * @returns An array of static path definitions for all section-tag
- * combinations.
+ * @returns Static path definitions for all localized section-tag combinations
+ * that contain content.
  */
-export function getStaticPathsSectionTags<
+export async function getStaticPathsSectionTags<
   TTag extends string,
   TSection extends string,
   TLocale extends string,
+  TEntry extends GenericCollectionEntry<
+    TSection,
+    Draftable & { tags?: string[] }
+  >,
 >(
   locales: Locales<TLocale>,
   sectionRoutes: SectionRoutes<TSection, TLocale>,
   tagRoutes: TagRoutes<TTag, TSection, TLocale>,
-): StaticPathSectionTag<TTag, TSection, TLocale>[] {
-  const paths = []
+  getEntries: (
+    section: TSection,
+    locale: TLocale,
+  ) => Promise<TEntry[]>,
+): Promise<
+  StaticPathSectionTag<
+    TTag,
+    TSection,
+    TLocale
+  >[]
+> {
+  const paths: StaticPathSectionTag<
+    TTag,
+    TSection,
+    TLocale
+  >[] = []
 
-  for (const section of sectionRoutes.getSections()) {
-    for (const locale of locales.all) {
-      for (const tag of tagRoutes.getTags()) {
+  for (const locale of locales.all) {
+    const entriesBySection =
+      await getEntriesBySection(
+        sectionRoutes,
+        section =>
+          getEntries(section, locale),
+      )
+
+    for (const tag of tagRoutes.getTags()) {
+      const sectionsWithTag =
+        getSectionsWithTagContent(
+          sectionRoutes,
+          entriesBySection,
+          tag,
+          withTag(tag),
+        )
+
+      for (const { section } of sectionsWithTag) {
         paths.push({
           params: {
             locale,
-            section: sectionRoutes.getSectionRoute(
-              section,
-              locale,
-            ),
-            tagIndex: tagRoutes.getTagIndexRoute(locale),
+            section:
+              sectionRoutes.getSectionRoute(
+                section,
+                locale,
+              ),
+            tagIndex:
+              tagRoutes.getTagIndexRoute(
+                locale,
+              ),
             tag: tagRoutes.getTagRoute(
               tag,
               locale,
@@ -72,8 +120,8 @@ export function getStaticPathsSectionTags<
           },
           props: {
             section,
-            tag
-          }
+            tag,
+          },
         })
       }
     }

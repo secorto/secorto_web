@@ -11,8 +11,17 @@ import { sectionRoutes } from '@domain/section'
 import { tagRoutes } from '@domain/tags'
 import { getCollection } from 'astro:content'
 
-export function getStaticPaths() {
-  return getStaticPathsSectionTags(languages, sectionRoutes, tagRoutes)
+export async function getStaticPaths() {
+  return getStaticPathsSectionTags(
+    languages,
+    sectionRoutes,
+    tagRoutes,
+    (section, locale) =>
+      getCollection(
+        section,
+        availableAtLocale(locale),
+      ),
+  )
 }
 
 const { locale } = Astro.params
