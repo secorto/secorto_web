@@ -101,5 +101,5 @@ export function createTagRoutes<TTag extends string, TLocale extends string>(
     getTags,
     getTagRoute,
     getTagIndexURL
-  } as unknown as TagRoutes<TTag, TLocale>
+  }
 }

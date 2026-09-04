@@ -6,7 +6,7 @@ import { languages, sections } from '@i18n/ui'
 import { useTranslations } from '@i18n/utils'
 import { buildGlobalTagGroups, type TagGroup, type TagGroupSectionInput } from '@domain/tags'
 import { availableLink, getStaticPathsLocales, availableAtLocale } from '@secorto/i18n'
-import { sectionKeys, sectionRoutes } from '@domain/section'
+import { sectionRoutes } from '@domain/section'
 import { getCollection } from 'astro:content'
 
 export function getStaticPaths() {
@@ -23,7 +23,7 @@ const links = languages.all.map(lang => availableLink(`/${lang}/tags`, lang))
 
 const sectionInputs: TagGroupSectionInput[] = []
 
-for (const section of sectionKeys) {
+for (const section of sectionRoutes.getSections()) {
   const localeEntries = await getCollection(section, availableAtLocale(locale))
 
   sectionInputs.push({
