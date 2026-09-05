@@ -7,10 +7,9 @@ export type PostEntry<C extends CollectionKey> = CollectionEntry<C> & ComputedFi
  * Contrato mínimo del componente ListPost.
  * Tipo estructural — no re-declara el schema de Astro,
  * solo describe exactamente los campos que ListPost accede.
- * `CollectionEntry<'blog'> & { cleanId: string }` satisface este tipo estructuralmente.
  */
 export interface PostLikeEntry {
-  cleanId: string
+  id: string
   data: {
     title: string
     image?: ImageMetadata
@@ -27,7 +26,7 @@ export interface PostLikeEntry {
  * projects y community no lo tienen, pero el tipo los acepta como opcionales.
  */
 export interface ExperienceLikeEntry {
-  cleanId: string
+  id: string
   data: {
     title: string
     image?: ImageMetadata

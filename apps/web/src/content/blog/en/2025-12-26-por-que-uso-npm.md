@@ -2,7 +2,7 @@
 title: Why I use npm (updated)
 tags:
   - dev
-  - tools
+  - javascript
 excerpt: npm is a solid ally for frontend development; in this update I explain why I use it and how it compares to Yarn and pnpm
 date: 2025-12-26
 ---

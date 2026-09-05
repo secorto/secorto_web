@@ -3,8 +3,6 @@ title: Estado actual cómo uso Linux hoy
 date: 2026-04-23
 tags:
   - linux
-  - actualidad
-  - experiencias
 excerpt: Borrador sobre mi uso actual de Linux y cómo difiere de mis primeros pasos.
 translationKey: 'como-uso-linux-hoy'
 draft: true

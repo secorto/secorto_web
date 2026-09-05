@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { availableAtLocale } from '@secorto/i18n'
+import { availableAtLocale, withTag } from '@secorto/i18n'
 
 describe('availableAtLocale', () => {
   const filter = availableAtLocale("es")
@@ -49,5 +49,71 @@ describe('availableAtLocale', () => {
     }
 
     expect(filter(entry)).toBe(true)
+  })
+})
+
+describe('withTag', () => {
+  it('returns true when the entry contains the tag', () => {
+    const hasJavascript = withTag('javascript')
+
+    expect(
+      hasJavascript({
+        id: '1',
+        collection: 'blog',
+        data: {
+          tags: ['javascript', 'typescript'],
+        },
+      }),
+    ).toBe(true)
+  })
+
+  it('returns false when the entry does not contain the tag', () => {
+    const hasJavascript = withTag('javascript')
+
+    expect(
+      hasJavascript({
+        id: '1',
+        collection: 'blog',
+        data: {
+          tags: ['typescript'],
+        },
+      }),
+    ).toBe(false)
+  })
+
+  it('returns false when tags are undefined', () => {
+    const hasJavascript = withTag('javascript')
+
+    expect(
+      hasJavascript({
+        id: '1',
+        collection: 'blog',
+        data: {},
+      }),
+    ).toBe(false)
+  })
+
+  it('creates a predicate bound to the provided tag', () => {
+    const hasAstro = withTag('astro')
+
+    expect(
+      hasAstro({
+        id: '1',
+        collection: 'blog',
+        data: {
+          tags: ['astro'],
+        },
+      }),
+    ).toBe(true)
+
+    expect(
+      hasAstro({
+        id: '2',
+        collection: 'blog',
+        data: {
+          tags: ['javascript'],
+        },
+      }),
+    ).toBe(false)
   })
 })

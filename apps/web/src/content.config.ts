@@ -1,6 +1,9 @@
 import { defineCollection, type ImageFunction } from 'astro:content'
 import { z } from 'astro/zod'
 import { glob } from 'astro/loaders'
+import { tagRoutes } from '@domain/tags'
+
+const TagSchema = z.enum(tagRoutes.getTags())
 
 /**
  * Schema base para todos los posts
@@ -8,7 +11,7 @@ import { glob } from 'astro/loaders'
  */
 const createBasePostSchema = (imageHelper: ImageFunction) => z.object({
   title: z.string(),
-  tags: z.array(z.string()).nonempty('Tags are required'),
+  tags: z.array(TagSchema).nonempty('Tags are required'),
   image: imageHelper().optional(),
   excerpt: z.string().optional(),
   description: z.string().optional(),

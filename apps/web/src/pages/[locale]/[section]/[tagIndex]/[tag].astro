@@ -1,0 +1,58 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro'
+import SEOHead from '@components/SEOHead.astro'
+import Tags from '@components/Tags.astro'
+import LanguagePicker from '@components/LanguagePicker.astro'
+import ListContent from '@components/list/ListContent.astro'
+import { useTranslations } from '@i18n/utils'
+import { languages, sections, tagged } from '@i18n/ui'
+import { availableAtLocale,  createSectionTagTranslationLinks, getStaticPathsSectionTags, withTag } from '@secorto/i18n'
+import { sectionRoutes } from '@domain/section'
+import { tagRoutes } from '@domain/tags'
+import { getCollection } from 'astro:content'
+
+export async function getStaticPaths() {
+  return getStaticPathsSectionTags(
+    languages,
+    sectionRoutes,
+    tagRoutes,
+    (section) => getCollection(section),
+  )
+}
+
+const { locale } = Astro.params
+const { section, tag, siblings } = Astro.props
+const t = useTranslations(locale)
+
+const tagRoute = tagRoutes.getTagRoute(tag, locale)
+const pageTitle = `${sections[section][locale]} - ${tagRoute}`
+const metaDescription = `${tagged[section][locale]} ${tagRoute}`
+const links = createSectionTagTranslationLinks(
+  languages.all,
+  siblings,
+  section,
+  tag,
+  tagRoutes
+)
+const posts = await getCollection(section, availableAtLocale(locale))
+const tags = tagRoutes.getTags()
+  .filter(tag =>
+    posts.some(post => post.data.tags.includes(tag)),
+  )
+const postWithTag = posts.filter(withTag(tag))
+---
+
+<BaseLayout pageTitle={pageTitle} description={metaDescription}>
+  <SEOHead slot="seo-head" links={links} />
+  <LanguagePicker slot="langpicker" links={links} />
+  <Tags locale={locale} section={section} tags={tags} current={tag} />
+  {postWithTag.length === 0 ? (
+    <div class="warning">
+      <p>{t('tags.untranslated_notice')}</p>
+    </div>
+  ) : (
+    <div>
+      <ListContent section={section} posts={postWithTag} locale={locale} />
+    </div>
+  )}
+</BaseLayout>

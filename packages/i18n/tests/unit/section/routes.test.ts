@@ -31,13 +31,6 @@ describe('getEntryURL', ()=> {
   })
 })
 
-describe('getEntryTagURL', () => {
-  it('builds the localized tag page url and encodes the tag', () => {
-    expect(routes.getEntryTagURL('blog', 'es', 'javascript')).toBe('/es/blog/tags/javascript')
-    expect(routes.getEntryTagURL('talk', 'en', 'my tag')).toBe('/en/talk/tags/my%20tag')
-  })
-})
-
 describe('sectionRoutes', () => {
   it('throws an error when duplicate routes are found', () => {
     const duplicateRoutes = {
@@ -54,7 +47,7 @@ describe('sectionRoutes', () => {
     expect(() => {
       createSectionRoutes(duplicateRoutes)
     }).toThrow(
-      'Duplicated route for locale "es" and slug "blog" between sections "blog" and "talk".'
+      'Route collision detected in SectionRoutes: The slug "blog" for locale "es" is duplicated between "blog" and "talk".'
     )
   })
 })

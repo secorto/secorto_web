@@ -13,3 +13,10 @@ export const availableAtLocale = <TLocale extends string>(locale: TLocale) =>
     TEntry extends GenericCollectionEntry<TSection, Draftable>
   >(entry: TEntry) => entry.id.startsWith(`${locale}/`) &&
       entry.data.draft !== true
+
+export const withTag =
+  (tag: string) =>
+  <TSection extends string>(
+      entry: GenericCollectionEntry<TSection, { tags?: string[] }>
+    ) =>
+      entry.data.tags?.includes(tag) ?? false

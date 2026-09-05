@@ -12,6 +12,7 @@ import type { LocalizedPage, LocalizedUrl } from '@tests/support/ui/shared/contr
 import { tagsComponent } from './components/Tags'
 import { contentListComponent } from './components/ContentList'
 import { type A11y } from '@tests/support/ui/shared/flows/a11y'
+import { tagRoutes, type Tag } from '@domain/tags'
 
 /**
  * Main para listas de posts (blog, talk).
@@ -54,6 +55,7 @@ export class ExperienceListPageMain implements LocalizedPage<void> {
  */
 export class ContentListPage extends NavigablePage implements LocalizedPage<void>, LocalizedUrl {
   constructor(
+    readonly section: SectionType,
     mainLayout: MainLayoutComponent,
     readonly tags: TagsComponent,
     readonly list: ContentListComponent,
@@ -82,12 +84,12 @@ export class ContentListPage extends NavigablePage implements LocalizedPage<void
 
   /**
    * Valida que el filtrado por tag fue exitoso.
-   * Comprueba: URL contiene /tags/${tag} (escapado) y lista tiene resultados.
    */
-  shouldBeFiltered(tag: string) {
+  shouldBeFiltered(locale: UILanguages, tag: Tag) {
     return verifyStep(`content is filtered by tag ${tag}`, async ({ expect }) => {
-      const escapedTag = tag.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-      await this.validateUrl(new RegExp(`/tags/${escapedTag}\/?$`)).with(expect)
+      const expectedUrl = tagRoutes.getSectionTagURL(this.section, locale, tag)
+      const escapedUrl = expectedUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      await this.validateUrl(new RegExp(`${escapedUrl}(/|$)`)).with(expect)
       return this.list.shouldHaveResults().with(expect)
     })
   }
@@ -125,7 +127,7 @@ export function contentListPage(
   const { layout, validateUrl, a11y } = createPageContext(page, `${sectionName} list`, mainPageInstance)
   const tagsComp = tagsComponent(page.locator('main'))
   const listComp = contentListComponent(page.locator('main'))
-  return new ContentListPage(layout, tagsComp, listComp, validateUrl, a11y)
+  return new ContentListPage(sectionName, layout, tagsComp, listComp, validateUrl, a11y)
 }
 
 /**
@@ -152,9 +154,9 @@ export async function userInContentTag(
   page: Page,
   contentType: SectionType,
   locale: UILanguages,
-  tag: string
+  tag: Tag
 ): Promise<ContentListPage> {
-  const url = sectionRoutes.getEntryTagURL(contentType, locale, tag)
+  const url = tagRoutes.getSectionTagURL(contentType, locale, tag)
   return visit(
     `navigate to ${contentType} list in ${locale}`,
     page,

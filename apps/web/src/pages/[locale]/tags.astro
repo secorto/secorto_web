@@ -2,69 +2,88 @@
 import BaseLayout from '@layouts/BaseLayout.astro'
 import SEOHead from '@components/SEOHead.astro'
 import LanguagePicker from '@components/LanguagePicker.astro'
+
 import { languages, sections } from '@i18n/ui'
 import { useTranslations } from '@i18n/utils'
-import { buildGlobalTagGroups, type TagGroup, type TagGroupSectionInput } from '@domain/tags'
-import { availableLink, getStaticPathsLocales, availableAtLocale } from '@secorto/i18n'
-import { sectionKeys, sectionRoutes } from '@domain/section'
+
+import { availableLink, getStaticPathsLocales } from '@secorto/i18n'
+
+import { sectionRoutes } from '@domain/section'
+import { tagRoutes } from '@domain/tags'
+
+import { getEntriesBySection, getSectionsWithTagContent, availableAtLocale } from '@secorto/i18n'
 import { getCollection } from 'astro:content'
 
 export function getStaticPaths() {
   return getStaticPathsLocales(languages)
 }
 
-export type Params = Awaited<ReturnType<typeof getStaticPaths>>[number]['params']
+export type Params =
+  Awaited<ReturnType<typeof getStaticPaths>>[number]['params']
 
 const { locale } = Astro.params
+
 const t = useTranslations(locale)
+
 const pageTitle = t('tags.index_title')
 
-const links = languages.all.map(lang => availableLink(`/${lang}/tags`, lang))
+const links = languages.all.map(lang =>
+  availableLink(`/${lang}/tags`, lang),
+)
 
-const sectionInputs: TagGroupSectionInput[] = []
+const sectionEntries = await getEntriesBySection(
+  sectionRoutes,
+  section => getCollection(section, availableAtLocale(locale)),
+)
 
-for (const section of sectionKeys) {
-  const localeEntries = await getCollection(section, availableAtLocale(locale))
-
-  sectionInputs.push({
-    section: section,
-    sectionLabel: sections[section][locale],
-    entries: localeEntries
-  })
-}
-
-const tagGroups: TagGroup[] = buildGlobalTagGroups(locale, sectionInputs)
+const tagsWithSections = tagRoutes.getTags().map(tag => ({
+  tag,
+  sections: getSectionsWithTagContent(
+    sectionRoutes,
+    sectionEntries,
+    tag,
+    (entry, currentTag) =>
+      entry.data.tags?.includes(currentTag) ?? false,
+  ),
+})).filter(({ sections }) => sections.length > 0)
 ---
 
-<BaseLayout pageTitle={pageTitle} description={t('tags.index_description')}>
+<BaseLayout
+  pageTitle={pageTitle}
+  description={t('tags.index_description')}
+>
   <SEOHead slot="seo-head" links={links} />
+
   <LanguagePicker slot="langpicker" links={links} />
-
   <section>
-    <p data-testid="tags-description">{t('tags.index_description')}</p>
+    <p data-testid="tags-description">
+      {t('tags.index_description')}
+    </p>
 
-    {tagGroups.length === 0 ? (
-      <p>{t('tags.index_no_tags')}</p>
-    ) : (
-      <ul class="tag-groups" data-testid="global-tag-groups">
-        {tagGroups.map((group) => (
-          <li class="tag-group" data-testid={`global-tag-${group.canonicalTag}`}>
-            <h2>{group.localizedTag}</h2>
-            <p>
-              {t('tags.available_in')}:
-              {group.references.map((reference, index) => (
+    <ul class="tag-groups" data-testid="global-tag-groups">
+      {tagsWithSections.map(({ tag, sections: availableSections }) => (
+        <li
+          class="tag-group"
+          data-testid={`global-tag-${tag}`}
+        >
+          <h2>{tagRoutes.getTagRoute(tag, locale)}</h2>
+
+          <p>
+            {t('tags.available_in')}:{' '}
+            {availableSections.map(
+              ({ section, count }, index) => (
                 <Fragment>
                   {index > 0 && ' / '}
-                  <a href={sectionRoutes.getEntryTagURL(reference.section, locale, reference.tagSlug)}>
-                    {sections[reference.section][locale]}
+                  <a href={tagRoutes.getSectionTagURL(section, locale, tag)}>
+                    {sections[section][locale]} ({count})
                   </a>
                 </Fragment>
-              ))}
-            </p>
-          </li>
-        ))}
-      </ul>
-    )}
+              ),
+            )}
+          </p>
+        </li>
+      ))}
+    </ul>
   </section>
 </BaseLayout>
 
@@ -78,11 +97,11 @@ const tagGroups: TagGroup[] = buildGlobalTagGroups(locale, sectionInputs)
 
   .tag-group {
     border: dotted 2px var(--colors-primary);
-    border-radius: .5em;
+    border-radius: 0.5em;
     padding: 1rem;
   }
 
   .tag-group h2 {
-    margin: 0 0 .5rem;
+    margin: 0 0 0.5rem;
   }
 </style>

@@ -34,7 +34,7 @@ for (const content of testContents) {
         await list.shouldBeLocalized(content.locale).soft()
 
         // 3. Validar filtrado fue exitoso
-        await list.shouldBeFiltered(content.testTag).soft()
+        await list.shouldBeFiltered(content.locale, content.testTag).soft()
 
         // 4. Click en el item con testSlug (sin navegar por URL)
         const entryUrl = sectionRoutes.getEntryURL(content.name, content.locale, content.testSlug)
