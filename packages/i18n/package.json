@@ -1,6 +1,6 @@
 {
   "name": "@secorto/i18n",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": false,
   "sideEffects": false,
   "description": "Framework-agnostic i18n primitive",
