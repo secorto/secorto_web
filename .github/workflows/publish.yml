@@ -24,65 +24,77 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0 # Crucial para que 'gh' calcule el historial y las notas correctamente
+
 
       - uses: pnpm/setup@v2
         with:
           runtime: node@24
           cache: false
 
-      - name: Create Release Branch and Bump
-        id: git_setup
+      # =========================================================================
+      # CICLO DE GIT ABSOLUTO (Notas -> Bump -> Commit Enriquecido -> Push -> Release)
+      # =========================================================================
+      - name: Generate Notes, Bump and Create GitHub Release
+        id: release_core
         run: |
+          # 1. Configurar identidad del Bot
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@://github.com"
 
-          # Hacemos el bump de los package.json
+          # 2. CALCULAR NOTAS PRIMERO (Con el repositorio limpio apuntando a master remoto)
+          gh release notes "v-temp" --target "master" > $HOME/changelog.txt
+
+          # 3. BUMP: pnpm reescribe los package.json localmente
           pnpm -r version ${{ github.event.inputs.version }} --no-git-tag-version
 
+          # 4. LEER VERSIÓN DEFINITIVA: Extraemos el número real que escribió pnpm
           VERSION_CLEAN=$(node -p "require('./package.json').version")
-          echo "VERSION=$VERSION_CLEAN" >> $GITHUB_ENV
-
           BRANCH_NAME="release/v$VERSION_CLEAN"
+
+          echo "VERSION=$VERSION_CLEAN" >> $GITHUB_ENV
           echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
 
-          # Nos cambiamos a la nueva rama de release
-          git checkout -b $BRANCH_NAME
+          # 5. CREAR RAMA LOCAL: Nos movemos a la rama release
+          git checkout -b "$BRANCH_NAME"
 
-      - name: Build package
-        run: pnpm build
-
-      - name: Generate Notes, Commit and Create GitHub Release
-        run: |
-          # Generamos el changelog automático basado en master y lo guardamos en un archivo
-          gh release notes "v${{ env.VERSION }}" --target "master" > changelog.txt
-
-          # Estructuramos el mensaje del commit: Título + Notas de la Release
-          echo "chore: bump version to ${{ env.VERSION }}" > commit_msg.txt
+          # 6. COMMIT ENRIQUECIDO: Mensaje inyectando el changelog del paso 2
+          echo "chore: bump version to $VERSION_CLEAN" > commit_msg.txt
           echo "" >> commit_msg.txt
-          cat changelog.txt >> commit_msg.txt
+          cat $HOME/changelog.txt >> commit_msg.txt
 
-          # Hacemos el commit usando el archivo generado y empujamos la rama
+          # 7. INDEXAR Y PUSH: Usando tus rutas reales del monorrepo
           git add "packages/**/package.json" package.json
           git commit -F commit_msg.txt
-          git push origin "${{ env.BRANCH_NAME }}"
+          git push origin "$BRANCH_NAME"
 
-          # Creamos la GitHub Release oficial usando las mismas notas guardadas
-          gh release create "v${{ env.VERSION }}" \
-            --title "Release v${{ env.VERSION }}" \
-            --target "${{ env.BRANCH_NAME }}" \
-            --notes-file changelog.txt
+          # 8. GITHUB RELEASE: Creamos la release oficial en la nube
+          gh release create "v$VERSION_CLEAN" \
+            --title "Release v$VERSION_CLEAN" \
+            --target "$BRANCH_NAME" \
+            --notes-file $HOME/changelog.txt
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Publish to NPM
-        run: pnpm -r --filter "./packages/**" stage publish
+      # =========================================================================
+      # CONSTRUCCIÓN Y PUBLICACIÓN EN NPM
+      # =========================================================================
+      - name: Build package
+        run: pnpm build
 
+      # Comando seguro 'stage publish' con NPM Provenance OIDC
+      - name: Publish to NPM
+        run: pnpm -r --filter "./packages/**" stage publish --provenance
+
+      # =========================================================================
+      # SINCRONIZACIÓN AUTOMÁTICA HACIA MASTER
+      # =========================================================================
       - name: Open PR and Enable Auto-Merge
         run: |
-          # Extraemos el changelog del archivo para ponerlo también en el cuerpo de la PR
           PR_URL=$(gh pr create \
             --title "chore: sync release v${{ env.VERSION }} to master" \
-            --body-file changelog.txt \
+            --body-file $HOME/changelog.txt \
             --base master \
             --head "${{ env.BRANCH_NAME }}")
 
