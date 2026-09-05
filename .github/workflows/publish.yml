@@ -43,15 +43,15 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # 2. CALCULAR NOTAS PRIMERO (Con el repositorio limpio apuntando a la rama por defecto remota)
-          gh release notes "v-temp" --target "${{ github.event.repository.default_branch }}" > $HOME/changelog.txt
-
-          # 3. BUMP: pnpm reescribe los package.json localmente
+          # 2. BUMP: pnpm reescribe los package.json localmente
           pnpm -r version ${{ github.event.inputs.version }} --no-git-tag-version
 
-          # 4. LEER VERSIÓN DEFINITIVA: Extraemos el número real que escribió pnpm
+          # 3. LEER VERSIÓN DEFINITIVA: Extraemos el número real que escribió pnpm
           VERSION_CLEAN=$(node -p "require('./package.json').version")
           BRANCH_NAME="release/v$VERSION_CLEAN"
+
+          # 4. GENERAR NOTAS CON EL TAG REAL: evita inconsistencias entre la release y el changelog
+          gh release notes "v$VERSION_CLEAN" --target "${{ github.event.repository.default_branch }}" > $HOME/changelog.txt
 
           echo "VERSION=$VERSION_CLEAN" >> $GITHUB_ENV
           echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
@@ -59,14 +59,15 @@ jobs:
           # 5. CREAR RAMA LOCAL: Nos movemos a la rama release
           git checkout -b "$BRANCH_NAME"
 
-          # 6. COMMIT ENRIQUECIDO: Mensaje inyectando el changelog del paso 2
-          echo "chore: bump version to $VERSION_CLEAN" > commit_msg.txt
-          echo "" >> commit_msg.txt
-          cat $HOME/changelog.txt >> commit_msg.txt
+          # 6. COMMIT ENRIQUECIDO: El mensaje vive fuera del working tree para no incluirlo accidentalmente
+          COMMIT_MSG_FILE="$RUNNER_TEMP/commit_msg.txt"
+          echo "chore: bump version to $VERSION_CLEAN" > "$COMMIT_MSG_FILE"
+          echo "" >> "$COMMIT_MSG_FILE"
+          cat $HOME/changelog.txt >> "$COMMIT_MSG_FILE"
 
           # 7. INDEXAR Y PUSH: Usando tus rutas reales del monorrepo
           git add .
-          git commit -F commit_msg.txt
+          git commit -F "$COMMIT_MSG_FILE"
           git push origin "$BRANCH_NAME"
 
           # 8. GITHUB RELEASE: Creamos la release oficial en la nube
