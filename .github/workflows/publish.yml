@@ -40,10 +40,10 @@ jobs:
         run: |
           # 1. Configurar identidad del Bot
           git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@://github.com"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # 2. CALCULAR NOTAS PRIMERO (Con el repositorio limpio apuntando a master remoto)
-          gh release notes "v-temp" --target "master" > $HOME/changelog.txt
+          # 2. CALCULAR NOTAS PRIMERO (Con el repositorio limpio apuntando a la rama por defecto remota)
+          gh release notes "v-temp" --target "${{ github.event.repository.default_branch }}" > $HOME/changelog.txt
 
           # 3. BUMP: pnpm reescribe los package.json localmente
           pnpm -r version ${{ github.event.inputs.version }} --no-git-tag-version
