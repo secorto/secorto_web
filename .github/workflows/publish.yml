@@ -69,12 +69,6 @@ jobs:
           git add .
           git commit -F "$COMMIT_MSG_FILE"
           git push origin "$BRANCH_NAME"
-
-          # 8. GITHUB RELEASE: Creamos la release oficial en la nube
-          gh release create "v$VERSION_CLEAN" \
-            --title "Release v$VERSION_CLEAN" \
-            --target "$BRANCH_NAME" \
-            --notes-file $HOME/changelog.txt
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -87,6 +81,25 @@ jobs:
       # Comando seguro 'stage publish' con NPM Provenance OIDC
       - name: Publish to NPM
         run: pnpm -r --filter "./packages/**" stage publish --provenance
+
+      - name: Create GitHub Release
+        if: success()
+        run: |
+          gh release create "v${{ env.VERSION }}" \
+            --title "Release v${{ env.VERSION }}" \
+            --target "${{ env.BRANCH_NAME }}" \
+            --notes-file $HOME/changelog.txt
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cleanup GitHub release on failure
+        if: failure() && env.VERSION != ''
+        run: |
+          if gh release view "v${{ env.VERSION }}" >/dev/null 2>&1; then
+            gh release delete "v${{ env.VERSION }}" --yes --cleanup-tag
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # =========================================================================
       # SINCRONIZACIÓN AUTOMÁTICA HACIA MASTER
