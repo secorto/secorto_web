@@ -46,7 +46,6 @@ const postWithTag = posts.filter(withTag(tag))
   <SEOHead slot="seo-head" links={links} />
   <LanguagePicker slot="langpicker" links={links} />
   <Tags locale={locale} section={section} tags={tags} current={tag} />
-  <p>{tagged[section][locale]} {tag}</p>
   {postWithTag.length === 0 ? (
     <div class="warning">
       <p>{t('tags.untranslated_notice')}</p>
