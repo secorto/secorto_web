@@ -1,13 +1,14 @@
 name: Publish Package
 
 on:
-  release:
-    types: [published] # Triggers when you create a GitHub Release
-  workflow_dispatch: # Allows you to trigger the workflow manually
+  push:
+    branches:
+      - 'release/v*' # Se dispara limpiamente cuando subes una rama tipo release/v1.0.0
 
 permissions:
   id-token: write  # Required for OIDC
-  contents: read
+  contents: write
+  pull-requests: write
 
 jobs:
   publish:
@@ -21,8 +22,34 @@ jobs:
           runtime: node@24
           cache: false
 
+      - name: Bump Version
+        run: |
+          VERSION_CLEAN=$(echo "${{ github.ref_name }}" | sed 's/^release\/v//')
+          pnpm -r version $VERSION_CLEAN --no-git-tag-version
+
       - name: Build package
         run: pnpm build
 
       - name: Publish to NPM
-        run: pnpm -r --filter "./packages/**" publish --no-git-checks
+        run: pnpm -r --filter "./packages/**" stage publish --no-git-checks
+
+      - name: Create Tag and GitHub Release
+        run: |
+          VERSION_CLEAN=$(echo "${{ github.ref_name }}" | sed 's/^release\/v//')
+          gh release create "v$VERSION_CLEAN" \
+            --title "Release v$VERSION_CLEAN" \
+            --target "${{ github.ref_name }}" \
+            --generate-notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # ¡Cambiado a GH_TOKEN!
+
+      - name: Create Pull Request to Master
+        run: |
+          VERSION_CLEAN=$(echo "${{ github.ref_name }}" | sed 's/^release\/v//')
+          gh pr create \
+            --title "chore: sync release v$VERSION_CLEAN to master" \
+            --body "PR automática generada por el pipeline tras publicar con éxito en NPM. Por favor, fusiona para mantener los package.json actualizados." \
+            --base master \
+            --head "${{ github.ref_name }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # ¡Cambiado a GH_TOKEN!
