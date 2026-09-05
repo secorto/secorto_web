@@ -65,7 +65,7 @@ jobs:
           cat $HOME/changelog.txt >> commit_msg.txt
 
           # 7. INDEXAR Y PUSH: Usando tus rutas reales del monorrepo
-          git add "packages/**/package.json" package.json
+          git add .
           git commit -F commit_msg.txt
           git push origin "$BRANCH_NAME"
 
@@ -93,9 +93,9 @@ jobs:
       - name: Open PR and Enable Auto-Merge
         run: |
           PR_URL=$(gh pr create \
-            --title "chore: sync release v${{ env.VERSION }} to master" \
+            --title "chore: sync release v${{ env.VERSION }} to ${{ github.event.repository.default_branch }}" \
             --body-file $HOME/changelog.txt \
-            --base master \
+            --base ${{ github.event.repository.default_branch }} \
             --head "${{ env.BRANCH_NAME }}")
 
           gh pr merge "$PR_URL" --auto --merge
