@@ -23,7 +23,7 @@ jobs:
 
       - name: Bump Version
         run: |
-          VERSION_CLEAN=$(echo "${{ github.event.release.tag_name }}" | sed 's/^v//')
+          VERSION_CLEAN=$(echo "${{ github.ref_name }}" | sed 's/^release\/v//')
           pnpm -r version $VERSION_CLEAN --no-git-tag-version
 
       - name: Build package
