@@ -1,5 +1,6 @@
-import { availableLink, missingLink, TranslationLink } from "../core";
-import { TagRoutes } from "./route";
+import { availableLink, missingLink } from "../core";
+import type { TranslationLink } from "../core";
+import type { TagRoutes } from "./route";
 
 /**
  * Creates translation links for a section tag page across all supported locales.

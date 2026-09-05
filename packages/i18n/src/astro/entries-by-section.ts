@@ -14,7 +14,7 @@ export type EntriesBySection<
 > = Record<TSection, readonly TEntry[]>
 
 /**
- * Fetches all available entries for a locale and groups them by section.
+ * Fetches all available entries and groups them by section.
  *
  * Collections are loaded in parallel using Promise.all().
  *
@@ -23,8 +23,8 @@ export type EntriesBySection<
  * @template TEntry - Collection entry type containing draft metadata.
  *
  * @param sectionRoutes - Section routes value object.
- * @param locale - Locale to filter entries by.
- * @param fetchCollection - Collection retrieval function.
+ * @param getEntries - Function that retrieves entries for a section.
+ *
  * @returns Entries grouped by section.
  */
 export async function getEntriesBySection<
