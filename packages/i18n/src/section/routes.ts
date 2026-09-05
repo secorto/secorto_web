@@ -1,4 +1,4 @@
-import { ensureNoRouteCollisions } from "../core"
+import { ensureNoRouteCollisions } from '../core'
 
 export type SectionDictionary<
   TSection extends string,
