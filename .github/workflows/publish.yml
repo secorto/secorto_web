@@ -8,6 +8,7 @@ on:
 permissions:
   id-token: write  # Required for OIDC
   contents: write
+  pull-requests: write
 
 jobs:
   publish:
@@ -32,22 +33,23 @@ jobs:
       - name: Publish to NPM
         run: pnpm -r --filter "./packages/**" stage publish --no-git-checks
 
-      - name: Sync Back to Master (Create PR)
+      - name: Create Tag and GitHub Release
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          VERSION_CLEAN=$(echo "${{ github.ref_name }}" | sed 's/^release\/v//')
+          gh release create "v$VERSION_CLEAN" \
+            --title "Release v$VERSION_CLEAN" \
+            --target "${{ github.ref_name }}" \
+            --generate-notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # ¡Cambiado a GH_TOKEN!
 
-          BRANCH_NAME="chore/sync-release-${{ github.event.release.tag_name }}"
-          git checkout -b $BRANCH_NAME
-
-          # Only add package.json files that have changed to avoid unnecessary commits
-          git add "packages/**/package.json" package.json
-
-          git commit -m "chore: sync workspace versions to ${{ github.event.release.tag_name }} [skip ci]"
-          git push origin $BRANCH_NAME
-
+      - name: Create Pull Request to Master
+        run: |
+          VERSION_CLEAN=$(echo "${{ github.ref_name }}" | sed 's/^release\/v//')
           gh pr create \
-            --title "Sync: Release ${{ github.event.release.tag_name }}" \
-            --body "Automatic PR to update the versions of package.json files in master." \
+            --title "chore: sync release v$VERSION_CLEAN to master" \
+            --body "PR automática generada por el pipeline tras publicar con éxito en NPM. Por favor, fusiona para mantener los package.json actualizados." \
             --base master \
-            --head $BRANCH_NAME
+            --head "${{ github.ref_name }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # ¡Cambiado a GH_TOKEN!
