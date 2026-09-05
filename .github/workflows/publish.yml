@@ -1,9 +1,9 @@
 name: Publish Package
 
 on:
-  release:
-    types: [published] # Triggers when you create a GitHub Release
-  workflow_dispatch: # Allows you to trigger the workflow manually
+  push:
+    branches:
+      - 'release/v*' # Se dispara limpiamente cuando subes una rama tipo release/v1.0.0
 
 permissions:
   id-token: write  # Required for OIDC
@@ -21,8 +21,33 @@ jobs:
           runtime: node@24
           cache: false
 
+      - name: Bump Version
+        run: |
+          VERSION_CLEAN=$(echo "${{ github.event.release.tag_name }}" | sed 's/^v//')
+          pnpm -r version $VERSION_CLEAN --no-git-tag-version
+
       - name: Build package
         run: pnpm build
 
       - name: Publish to NPM
-        run: pnpm -r --filter "./packages/**" publish --no-git-checks
+        run: pnpm -r --filter "./packages/**" stage publish --no-git-checks
+
+      - name: Sync Back to Master (Create PR)
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          BRANCH_NAME="chore/sync-release-${{ github.event.release.tag_name }}"
+          git checkout -b $BRANCH_NAME
+
+          # Only add package.json files that have changed to avoid unnecessary commits
+          git add "packages/**/package.json" package.json
+
+          git commit -m "chore: sync workspace versions to ${{ github.event.release.tag_name }} [skip ci]"
+          git push origin $BRANCH_NAME
+
+          gh pr create \
+            --title "Sync: Release ${{ github.event.release.tag_name }}" \
+            --body "Automatic PR to update the versions of package.json files in master." \
+            --base master \
+            --head $BRANCH_NAME
