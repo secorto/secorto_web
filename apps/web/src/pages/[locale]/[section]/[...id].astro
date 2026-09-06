@@ -5,7 +5,6 @@ import BaseLayout from '@layouts/BaseLayout.astro'
 import Comments from '@components/Comments.astro'
 import DetailContent from '@components/detail/DetailContent.astro'
 import SEOHead from '@components/SEOHead.astro'
-import LanguagePicker from '@components/LanguagePicker.astro'
 import { useTranslations } from '@i18n/utils'
 import { getSeoDescription } from '@domain/post'
 import { languages } from '@i18n/ui'
@@ -29,13 +28,12 @@ const { Content } = await render(entry.original)
 const pageDescription = getSeoDescription(entry.original.data)
 ---
 
-<BaseLayout pageTitle={entry.original.data.title} description={pageDescription}>
+<BaseLayout pageTitle={entry.original.data.title} description={pageDescription} links={links}>
   <SEOHead
     slot="seo-head"
     links={links}
     noindex={entry.draft}
   />
-  <LanguagePicker slot="langpicker" links={links} />
   {entry.draft && (
     <div class="untranslated-notice" role="status">
       <p>{t('post.draft_notice')}</p>

@@ -1,7 +1,6 @@
 ---
 import type { MarkdownLayoutProps } from 'astro'
 import BaseLayout from '@layouts/BaseLayout.astro'
-import LanguagePicker from '@components/LanguagePicker.astro'
 import { createStandalonePageLinks } from '@secorto/i18n'
 import SEOHead from '@components/SEOHead.astro'
 import { languages } from '@i18n/ui'
@@ -25,8 +24,7 @@ const links = createStandalonePageLinks(
 )
 ---
 
-<BaseLayout pageTitle={title}>
-  <LanguagePicker slot="langpicker" links={links} />
+<BaseLayout pageTitle={title} links={links}>
   <SEOHead
     slot="seo-head"
     links={links}

@@ -3,7 +3,6 @@ import BaseLayout from '@layouts/BaseLayout.astro'
 import { sectionRoutes } from '@domain/section'
 import SEOHead from '@components/SEOHead.astro'
 import Tags from '@components/Tags.astro'
-import LanguagePicker from '@components/LanguagePicker.astro'
 import ListContent from '@components/list/ListContent.astro'
 import { getCollection } from 'astro:content'
 import { availableLink, getStaticPathsSections, availableAtLocale } from '@secorto/i18n'
@@ -28,9 +27,8 @@ const tags = tagRoutes.getTags()
   )
 ---
 
-<BaseLayout pageTitle={pageTitle}>
+<BaseLayout pageTitle={pageTitle} links={links}>
   <SEOHead slot="seo-head" links={links} />
-  <LanguagePicker slot="langpicker" links={links} />
   <Tags locale={locale} section={section} tags={tags} />
   <ListContent section={section} posts={posts} locale={locale} />
 </BaseLayout>
