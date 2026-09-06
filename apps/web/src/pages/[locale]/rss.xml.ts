@@ -20,7 +20,9 @@ export async function GET(context: APIContext) {
   const locale = languages.fromString(context.params.locale)
   const t = useTranslations(locale)
 
-  const posts = await getCollection('blog', availableAtLocale(locale))
+  const posts = (await getCollection('blog', availableAtLocale(locale)))
+    .filter((post) => post.data.draft !== true)
+    .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
 
   const items = posts.map((post) => mapPostToRSSItem(post, 'blog', locale))
 
