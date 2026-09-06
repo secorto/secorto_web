@@ -2,7 +2,6 @@
 import type { MarkdownLayoutProps } from 'astro'
 import BaseLayout from '@layouts/BaseLayout.astro'
 import SEOHead from '@components/SEOHead.astro'
-import LanguagePicker from '@components/LanguagePicker.astro'
 import HomeHighlights from '@components/HomeHighlights.astro'
 
 import intro from '@assets/img/intro.inline.svg?raw'
@@ -24,9 +23,8 @@ const links = languages.all.map(lang =>
 import '../styles/home.css'
 ---
 
-<BaseLayout pageTitle={title}>
+<BaseLayout pageTitle={title} links={links}>
   <SEOHead slot="seo-head" links={links} noindex={Boolean(draft)} />
-  <LanguagePicker slot="langpicker" links={links} />
 
   <section class="home-bio">
     <div class="home-avatar" set:html={intro} />

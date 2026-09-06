@@ -8,12 +8,15 @@ interface Props {
 
 const { item } = Astro.props
 const text = languagesMap[item.locale]
+const isCurrentPage = Astro.url.pathname === item.href
 ---
 
 <a
   href={item.href}
   aria-label={text}
+  {...isCurrentPage && { 'aria-current': 'page' }}
   data-testid={`lang-${item.locale}`}
+  class:list={[{ active: isCurrentPage }]}
 >
   {text}
 </a>

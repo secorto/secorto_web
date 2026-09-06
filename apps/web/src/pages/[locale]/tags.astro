@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro'
 import SEOHead from '@components/SEOHead.astro'
-import LanguagePicker from '@components/LanguagePicker.astro'
 
 import { languages, sections } from '@i18n/ui'
 import { useTranslations } from '@i18n/utils'
@@ -51,10 +50,10 @@ const tagsWithSections = tagRoutes.getTags().map(tag => ({
 <BaseLayout
   pageTitle={pageTitle}
   description={t('tags.index_description')}
+  links={links}
 >
   <SEOHead slot="seo-head" links={links} />
 
-  <LanguagePicker slot="langpicker" links={links} />
   <section>
     <p data-testid="tags-description">
       {t('tags.index_description')}

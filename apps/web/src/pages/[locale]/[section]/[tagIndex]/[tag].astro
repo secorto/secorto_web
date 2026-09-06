@@ -2,7 +2,6 @@
 import BaseLayout from '@layouts/BaseLayout.astro'
 import SEOHead from '@components/SEOHead.astro'
 import Tags from '@components/Tags.astro'
-import LanguagePicker from '@components/LanguagePicker.astro'
 import ListContent from '@components/list/ListContent.astro'
 import { useTranslations } from '@i18n/utils'
 import { languages, sections, tagged } from '@i18n/ui'
@@ -42,9 +41,8 @@ const tags = tagRoutes.getTags()
 const postWithTag = posts.filter(withTag(tag))
 ---
 
-<BaseLayout pageTitle={pageTitle} description={metaDescription}>
+<BaseLayout pageTitle={pageTitle} description={metaDescription} links={links}>
   <SEOHead slot="seo-head" links={links} />
-  <LanguagePicker slot="langpicker" links={links} />
   <Tags locale={locale} section={section} tags={tags} current={tag} />
   {postWithTag.length === 0 ? (
     <div class="warning">

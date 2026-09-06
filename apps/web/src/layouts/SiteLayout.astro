@@ -4,14 +4,15 @@ import Hamburger from '../components/Hamburger.astro'
 import Sidebar from '../components/Sidebar.astro'
 import { useTranslations } from '@i18n/utils'
 import { languages } from '@i18n/ui'
-
+import type { TranslationLink } from '@domain/translationLink'
 
 interface Props {
   pageTitle: string
   description?: string
+  links: TranslationLink[]
 }
 
-const { pageTitle, description } = Astro.props
+const { pageTitle, description, links } = Astro.props
 const locale = languages.fromString(Astro.currentLocale)
 const t = useTranslations(locale)
 const siteDescription = description || t('site.description')
@@ -58,9 +59,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site)
   </head>
   <body>
     <Hamburger />
-    <Sidebar>
-      <slot name="langpicker" slot="langpicker" />
-    </Sidebar>
+    <Sidebar links={links} />
     <div class="content">
       <slot />
     </div>

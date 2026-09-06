@@ -2,18 +2,18 @@
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import { useTranslations } from '../i18n/utils';
 import { navSections, sectionRoutes } from '@domain/section'
-import { sections } from '@i18n/ui'
+import { languages, sections } from '@i18n/ui'
 import { standalonePageRoutes } from '@domain/standalonePage'
 
 import ThemeIcon from './ThemeIcon.astro';
-import { languages } from '@i18n/ui';
+import LanguagePicker from './LanguagePicker.astro'
+import type { TranslationLink } from '@domain/translationLink'
 
-export interface Props {}
-
-export interface Slots {
-  langpicker?: Record<string, never>
+export interface Props {
+  links: TranslationLink[]
 }
 
+const { links } = Astro.props
 const currentLocale = languages.fromString(Astro.currentLocale);
 const t = useTranslations(currentLocale);
 ---
@@ -40,6 +40,6 @@ const t = useTranslations(currentLocale);
       ))}
     </div>
     <ThemeIcon />
-    <slot name="langpicker" />
+    <LanguagePicker links={links} />
   </div>
 </nav>
