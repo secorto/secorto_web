@@ -28,7 +28,7 @@ const t = useTranslations(locale)
 const pageTitle = t('tags.index_title')
 
 const links = languages.all.map(lang =>
-  availableLink(`/${lang}/tags`, lang),
+  availableLink(tagRoutes.getTagIndexURL(lang), lang)
 )
 
 const sectionEntries = await getEntriesBySection(
