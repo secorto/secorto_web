@@ -14,10 +14,9 @@ const title = ui[item.locale]['translation.disabled.draft']
 
 <a
   href={item.href}
-  aria-label={title}
+  aria-label={`${title}: ${label}`}
   title={title}
   data-testid={`lang-${item.locale}`}
-  aria-disabled="true"
 >
   {text}
 </a>
