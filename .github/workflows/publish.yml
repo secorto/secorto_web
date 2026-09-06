@@ -53,8 +53,13 @@ jobs:
           VERSION_CLEAN=$(node -p "require('./package.json').version")
           BRANCH_NAME="release/v$VERSION_CLEAN"
 
-          # 4. GENERAR NOTAS CON EL TAG REAL: evita inconsistencias entre la release y el changelog
-          gh release notes "v$VERSION_CLEAN" --target "${{ github.event.repository.default_branch }}" > $HOME/changelog.txt
+          # 4. GENERAR NOTAS CON EL TAG REAL: usa la API compatible con la versión de gh instalada
+          gh api \
+            -X POST \
+            "repos/${{ github.repository }}/releases/generate-notes" \
+            -f "tag_name=v$VERSION_CLEAN" \
+            -f "target_commitish=${{ env.BRANCH_NAME }}" \
+            --jq '.body' > $HOME/changelog.txt
 
           echo "VERSION=$VERSION_CLEAN" >> $GITHUB_ENV
           echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
