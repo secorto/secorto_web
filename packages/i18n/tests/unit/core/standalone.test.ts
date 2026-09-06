@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest'
 
-import { createLocales, createStandalonePageLinks } from '@secorto/i18n'
+import {
+  createLocales,
+  createStandalonePageLinks,
+  createStandalonePageRoutes,
+} from '@secorto/i18n'
 
 const locales = createLocales(['en', 'es', 'fr'])
 
@@ -57,6 +61,13 @@ describe('createStandalonePageLinks', () => {
     ).toThrow(
       "Route 'en/wrong-route' does not belong to standalone page 'home'.",
     )
+  })
+
+  it('creates a standalone page route resolver and localized URLs', () => {
+    const routes = createStandalonePageRoutes(index)
+
+    expect(routes.getPageRoute('home', 'es')).toBe('inicio')
+    expect(routes.getPageURL('home', 'es')).toBe('/es/inicio')
   })
 
   it('returns links for all available locales', () => {

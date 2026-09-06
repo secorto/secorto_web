@@ -1,3 +1,4 @@
+import { ensureNoRouteCollisions } from './route'
 import { extractCleanId } from './extract-id'
 import type { Locales } from './locale'
 import {
@@ -35,6 +36,81 @@ export type StandalonePageIndex<
   K,
   Partial<Record<TLocale, StandalonePageEntry>>
 >
+
+/**
+ * Value object that encapsulates localized slugs for standalone pages and
+ * exposes URL builders without depending on a global rootMap.
+ */
+export interface StandalonePageRoutes<
+  TPage extends string,
+  TLocale extends string,
+> {
+  readonly routes: Record<TPage, Partial<Record<TLocale, StandalonePageEntry>>>
+
+  getPages(): readonly TPage[]
+
+  getPageRoute(page: TPage, locale: TLocale): string
+
+  getPageURL(page: TPage, locale: TLocale): string
+}
+
+/**
+ * Creates an immutable standalone page route resolver.
+ */
+export function createStandalonePageRoutes<
+  TPage extends string,
+  TLocale extends string,
+>(
+  index: StandalonePageIndex<TPage, TLocale>,
+): StandalonePageRoutes<TPage, TLocale> {
+  const pages = Object.freeze(Object.keys(index) as TPage[])
+
+  const routeMap = Object.fromEntries(
+    pages.map(page => [
+      page,
+      Object.fromEntries(
+        Object.entries(index[page] ?? {}).map(([locale, entry]) => [locale, entry.route]),
+      ) as Record<TLocale, string>,
+    ]),
+  ) as Record<TPage, Record<TLocale, string>>
+
+  ensureNoRouteCollisions(routeMap, 'StandalonePageRoutes')
+
+  for (const page of pages) {
+    const pageEntries = index[page]
+    if (pageEntries) {
+      Object.freeze(pageEntries)
+      for (const entry of Object.values(pageEntries)) {
+        if (entry) {
+          Object.freeze(entry)
+        }
+      }
+    }
+  }
+  Object.freeze(index)
+
+  const getPages = (): readonly TPage[] => pages
+
+  const getPageRoute = (page: TPage, locale: TLocale): string => {
+    const entry = index[page]?.[locale]
+    if (!entry) {
+      throw new Error(
+        `Standalone page '${page}' has no entry for locale '${locale}'.`,
+      )
+    }
+    return entry.route
+  }
+
+  const getPageURL = (page: TPage, locale: TLocale): string =>
+    `/${locale}/${getPageRoute(page, locale)}`
+
+  return {
+    routes: index,
+    getPages,
+    getPageRoute,
+    getPageURL,
+  }
+}
 
 /**
  * Creates translation links for a standalone page.
