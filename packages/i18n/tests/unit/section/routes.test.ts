@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { createSectionRoutes } from '@secorto/i18n'
+import { createLocales, createSectionRoutes } from '@secorto/i18n'
+
+const locales = createLocales(['es', 'en'] as const)
 
 const routes = createSectionRoutes({
   blog: {
@@ -10,10 +12,13 @@ const routes = createSectionRoutes({
     es: 'charla',
     en: 'talk'
   }
-})
+}, locales)
 
 describe('getSectionURL', () => {
-  it('builds localized section urls', () => {
+  it('builds localized section urls from the locale path resolver', () => {
+    expect(locales.getPath('es')).toBe('/es')
+    expect(locales.getPath('en')).toBe('/en')
+
     expect(
       routes.getSectionURL('talk', 'es')
     ).toBe('/es/charla')

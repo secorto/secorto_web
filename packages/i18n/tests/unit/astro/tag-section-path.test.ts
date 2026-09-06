@@ -19,7 +19,7 @@ const sectionRoutes = createSectionRoutes({
     es: 'charla',
     en: 'talk',
   },
-})
+}, locales)
 
 const tagRoutes = createTagRoutes(
   sectionRoutes,

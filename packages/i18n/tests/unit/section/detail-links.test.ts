@@ -43,7 +43,7 @@ describe("createDetailTranslationLinks", () => {
       es: "blog",
       fr: "blog",
     },
-  })
+  }, locales)
 
   it("returns available links for existing translations", () => {
     const result = createDetailTranslationLinks(

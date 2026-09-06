@@ -2,18 +2,21 @@ import { describe, expect, it } from 'vitest'
 
 import {
   availableLink,
+  createLocales,
   createSectionRoutes,
   createSectionTagTranslationLinks,
   createTagRoutes,
   missingLink,
 } from '@secorto/i18n'
 
+const locales = createLocales(['es', 'en'] as const)
+
 const sectionRoutes = createSectionRoutes({
   blog: {
     es: 'blog',
     en: 'blog',
   },
-})
+}, locales)
 
 const tagRoutes = createTagRoutes(
   sectionRoutes,

@@ -1,4 +1,5 @@
 import { ensureNoRouteCollisions } from '../core'
+import type { Locales } from '../core/locale'
 
 export type SectionDictionary<
   TSection extends string,
@@ -7,6 +8,11 @@ export type SectionDictionary<
 > = Record<
   TSection,
   Record<TLocale, TValue>
+>
+
+export type LocalePathResolver<TLocale extends string> = Pick<
+  Locales<TLocale>,
+  'getPath'
 >
 
 /**
@@ -83,7 +89,8 @@ export function createSectionRoutes<
   TSection extends string,
   TLocale extends string
 >(
-  routes: SectionDictionary<TSection, TLocale, string>
+  routes: SectionDictionary<TSection, TLocale, string>,
+  localeResolver: LocalePathResolver<TLocale>
 ): SectionRoutes<TSection, TLocale> {
   ensureNoRouteCollisions(routes, 'SectionRoutes')
   const sections = Object.freeze(Object.keys(routes) as TSection[])
@@ -100,7 +107,7 @@ export function createSectionRoutes<
     routes[section][locale]
 
   const getSectionURL = (section: TSection, locale: TLocale): string =>
-    `/${locale}/${getSectionRoute(section, locale)}`
+    `${localeResolver.getPath(locale)}/${getSectionRoute(section, locale)}`
 
   const getEntryURL = (
     section: TSection,

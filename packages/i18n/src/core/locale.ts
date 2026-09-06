@@ -2,6 +2,7 @@ export interface Locales<TLocale extends string> {
   readonly all: readonly TLocale[]
   fromString(lang: string | undefined): TLocale
   isValid(lang: string): lang is TLocale
+  getPath(locale: string): string
 }
 
 function isLocale<TLocale extends string>(
@@ -25,6 +26,11 @@ export function createLocales<TLocale extends string>(
 
     isValid(lang): lang is TLocale {
       return isLocale(locales, lang)
+    },
+
+    getPath(locale) {
+      const normalized = this.fromString(locale)
+      return `/${normalized}`
     }
   }
 }
