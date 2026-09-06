@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { createTagRoutes } from '@secorto/i18n'
+import { createLocales, createTagRoutes } from '@secorto/i18n'
 
 const sectionRoutes = {
   getSectionURL: (
@@ -21,6 +21,8 @@ const sectionRoutes = {
   },
 }
 
+const locales = createLocales(['es', 'en'] as const)
+
 const routes = createTagRoutes(
   sectionRoutes,
   {
@@ -37,6 +39,7 @@ const routes = createTagRoutes(
       en: 'tools',
     },
   },
+  locales,
 )
 
 describe('getTags', () => {
@@ -61,7 +64,7 @@ describe('getTagRoute', () => {
 })
 
 describe('getTagIndexRoute', () => {
-  it('returns the localized tag index route', () => {
+  it('returns the localized tag index segment', () => {
     expect(
       routes.getTagIndexRoute('es'),
     ).toBe('etiquetas')
@@ -69,6 +72,18 @@ describe('getTagIndexRoute', () => {
     expect(
       routes.getTagIndexRoute('en'),
     ).toBe('tags')
+  })
+})
+
+describe('getTagIndexURL', () => {
+  it('returns the locale-prefixed tag index URL', () => {
+    expect(
+      routes.getTagIndexURL('es'),
+    ).toBe('/es/etiquetas')
+
+    expect(
+      routes.getTagIndexURL('en'),
+    ).toBe('/en/tags')
   })
 })
 
@@ -115,6 +130,7 @@ describe('tagRoutes', () => {
             en: 'tools',
           },
         },
+        locales,
       ),
     ).toThrow(
       'Route collision detected in TagRoutes: The slug "herramientas" for locale "es" is duplicated between "javascript" and "tools".',

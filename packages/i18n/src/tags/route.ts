@@ -1,4 +1,10 @@
 import { ensureNoRouteCollisions } from '../core'
+import type { Locales } from '../core'
+
+export type LocalePathResolver<TLocale extends string> = Pick<
+  Locales<TLocale>,
+  'getPath'
+>
 
 /**
  * Immutable value object that manages localized tag routes and generates
@@ -70,6 +76,18 @@ export type TagRoutes<
    * @returns The localized tag index route segment.
    */
   getTagIndexRoute: (locale: TLocale) => string
+
+  /**
+   * Returns the locale-prefixed URL for the tag index page.
+   *
+   * Examples:
+   * - /en/tags
+   * - /es/etiquetas
+   *
+   * @param locale - The locale whose tag index URL should be resolved.
+   * @returns The localized tag index URL.
+   */
+  getTagIndexURL: (locale: TLocale) => string
 }
 
 /**
@@ -114,6 +132,7 @@ export function createTagRoutes<
   sectionRoutes: SectionRouteResolver<TSection, TLocale>,
   tagIndexRoutes: Record<TLocale, string>,
   routes: Record<TTag, Record<TLocale, string>>,
+  locales: LocalePathResolver<TLocale>,
 ): TagRoutes<TTag, TSection, TLocale> {
   ensureNoRouteCollisions(routes, 'TagRoutes')
   const tags = Object.freeze(Object.keys(routes) as TTag[])
@@ -131,7 +150,10 @@ export function createTagRoutes<
     locale: TLocale,
   ): string => routes[tag][locale]
 
-  const getTagIndexRoute = (locale: TLocale) => tagIndexRoutes[locale]
+  const getTagIndexRoute = (locale: TLocale): string => tagIndexRoutes[locale]
+
+  const getTagIndexURL = (locale: TLocale): string =>
+    `${locales.getPath(locale)}/${getTagIndexRoute(locale)}`
 
   const getSectionTagURL = (
     section: TSection,
@@ -139,7 +161,7 @@ export function createTagRoutes<
     tag: TTag,
   ): string =>
     `${sectionRoutes.getSectionURL(section, locale)}/${
-      tagIndexRoutes[locale]
+      getTagIndexRoute(locale)
     }/${getTagRoute(tag, locale)}`
 
   return {
@@ -147,6 +169,7 @@ export function createTagRoutes<
     getTags,
     getTagRoute,
     getSectionTagURL,
-    getTagIndexRoute
+    getTagIndexRoute,
+    getTagIndexURL,
   }
 }
