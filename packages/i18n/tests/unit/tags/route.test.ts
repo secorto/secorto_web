@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { createLocales, createTagRoutes } from '@secorto/i18n'
+import { createTagRoutes } from '@secorto/i18n'
 
 const sectionRoutes = {
   getSectionURL: (
@@ -21,7 +21,9 @@ const sectionRoutes = {
   },
 }
 
-const locales = createLocales(['es', 'en'] as const)
+const locales = {
+  getPath: (locale: 'es' | 'en') => `/${locale}`,
+}
 
 const routes = createTagRoutes(
   sectionRoutes,

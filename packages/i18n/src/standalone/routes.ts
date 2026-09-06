@@ -1,4 +1,4 @@
-import type { Locales } from '../core/locale'
+import type { LocalePathResolver } from '../core/locale'
 
 export interface StandalonePageEntry {
   route: string
@@ -63,7 +63,7 @@ export function createStandalonePageRoutes<
   TLocale extends string,
 >(
   routes: Record<TPage, Partial<Record<TLocale, StandalonePageEntry>>>,
-  locales: Locales<TLocale>,
+  locales: LocalePathResolver<TLocale>,
 ): StandalonePageRoutes<TPage, TLocale> {
   ensureNoStandaloneRouteCollisions(routes, 'StandalonePageRoutes')
 

@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { createLocales, createStandalonePageRoutes } from '@secorto/i18n'
+import { createStandalonePageRoutes } from '@secorto/i18n'
 
 describe('createStandalonePageRoutes', () => {
-  const locales = createLocales(['en', 'es'] as const)
+  const locales = {
+    getPath: (locale: 'en' | 'es') => `/${locale}`,
+  }
 
   const routes = createStandalonePageRoutes({
     about: {

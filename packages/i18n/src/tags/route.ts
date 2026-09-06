@@ -1,10 +1,5 @@
 import { ensureNoRouteCollisions } from '../core'
-import type { Locales } from '../core'
-
-export type LocalePathResolver<TLocale extends string> = Pick<
-  Locales<TLocale>,
-  'getPath'
->
+import type { LocalePathResolver } from '../core/locale'
 
 /**
  * Immutable value object that manages localized tag routes and generates

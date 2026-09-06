@@ -37,6 +37,7 @@ const tagRoutes = createTagRoutes(
       en: 'tools',
     },
   },
+  locales,
 )
 
 type Entry = GenericCollectionEntry<

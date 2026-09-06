@@ -4,7 +4,17 @@
  *
  * @template TLocale - Supported locale codes, such as 'en' or 'es'.
  */
-export interface Locales<TLocale extends string> {
+export interface LocalePathResolver<TLocale extends string> {
+  /**
+   * Builds the locale-prefixed path for a supported locale.
+   *
+   * @param locale Locale identifier to resolve.
+   * @returns The path rooted at the locale, such as `/en`.
+   */
+  getPath(locale: TLocale): string
+}
+
+export interface Locales<TLocale extends string> extends LocalePathResolver<TLocale> {
   /**
    * Ordered list of locales accepted by this value object.
    */
@@ -26,14 +36,6 @@ export interface Locales<TLocale extends string> {
    * @returns `true` when the locale is supported.
    */
   isValid(lang: string): lang is TLocale
-
-  /**
-   * Builds the locale-prefixed path for a supported locale.
-   *
-   * @param locale Locale identifier to resolve.
-   * @returns The path rooted at the locale, such as `/en`.
-   */
-  getPath(locale: string): string
 }
 
 function isLocale<TLocale extends string>(

@@ -1,7 +1,9 @@
 import { describe, it, expect } from 'vitest'
-import { createLocales, createSectionRoutes } from '@secorto/i18n'
+import { createSectionRoutes } from '@secorto/i18n'
 
-const locales = createLocales(['es', 'en'] as const)
+const locales = {
+  getPath: (locale: 'es' | 'en') => `/${locale}`,
+}
 
 const routes = createSectionRoutes({
   blog: {
