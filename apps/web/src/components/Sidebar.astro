@@ -2,12 +2,11 @@
 import { getRelativeLocaleUrl } from 'astro:i18n';
 import { useTranslations } from '../i18n/utils';
 import { navSections, sectionRoutes } from '@domain/section'
-import { sections } from '@i18n/ui'
+import { languages, sections } from '@i18n/ui'
 import { standalonePageRoutes } from '@domain/standalonePage'
 
 import ThemeIcon from './ThemeIcon.astro';
 import LanguagePicker from './LanguagePicker.astro'
-import { languages } from '@i18n/ui';
 import type { TranslationLink } from '@domain/translationLink'
 
 export interface Props {
