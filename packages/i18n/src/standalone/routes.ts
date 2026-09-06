@@ -9,9 +9,48 @@ export interface StandalonePageRoutes<
   TPage extends string,
   TLocale extends string,
 > {
+  /**
+   * Immutable map of standalone pages keyed by their canonical page name.
+   * Each page contains a locale-indexed route entry for every supported locale.
+   */
   readonly routes: Record<TPage, Partial<Record<TLocale, StandalonePageEntry>>>
+
+  /**
+   * Lists the canonical standalone page keys registered in this value object.
+   */
   getPages(): readonly TPage[]
+
+  /**
+   * Resolves a raw page key string to its canonical registered value.
+   *
+   * This validation is part of the value object contract: if the input is not
+   * one of the indexed standalone pages, the method throws instead of silently
+   * accepting an unknown key.
+   *
+   * @param key Raw key provided by callers or route metadata.
+   * @returns The canonical page key stored in this routes definition.
+   * @throws {Error} When the key is not registered in the page index.
+   */
+  getPage(key: string): TPage
+
+  /**
+   * Returns the localized route slug for the given page and locale.
+   *
+   * @param page Canonical standalone page key.
+   * @param locale Locale whose slug should be resolved.
+   * @returns The route slug without the locale prefix.
+   * @throws {Error} When the page or locale combination is not registered.
+   */
   getPageRoute(page: TPage, locale: TLocale): string
+
+  /**
+   * Builds the URL for a standalone page in the given locale.
+   *
+   * @param page Canonical standalone page key.
+   * @param locale Locale used to build the URL.
+   * @returns The locale-prefixed URL for the page.
+   * @throws {Error} When the page or locale combination is not registered.
+   */
   getPageURL(page: TPage, locale: TLocale): string
 }
 
@@ -82,6 +121,16 @@ export function createStandalonePageRoutes<
 
   const getPages = (): readonly TPage[] => pages
 
+  const getPage = (key: string): TPage => {
+    const page = pages.find(page => page === key)
+
+    if (!page) {
+      throw new Error(`Standalone page '${key}' is not indexed.`)
+    }
+
+    return page
+  }
+
   const getPageRoute = (page: TPage, locale: TLocale): string => {
     const entry = routes[page]?.[locale]
     if (!entry) {
@@ -98,6 +147,7 @@ export function createStandalonePageRoutes<
   return {
     routes,
     getPages,
+    getPage,
     getPageRoute,
     getPageURL,
   }

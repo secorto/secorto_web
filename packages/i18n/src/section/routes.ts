@@ -1,4 +1,5 @@
-import { ensureNoRouteCollisions, LocalePathResolver } from '../core'
+import { ensureNoRouteCollisions } from '../core'
+import type { LocalePathResolver } from '../core'
 
 export type SectionDictionary<
   TSection extends string,

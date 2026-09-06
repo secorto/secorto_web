@@ -13,7 +13,7 @@ export function createStandalonePageLinks<
   TLocale extends string,
 >(
   path: string,
-  page: TPage,
+  paramPage: string,
   routes: StandalonePageRoutes<TPage, TLocale>,
   locales: Locales<TLocale>,
 ): TranslationLink<TLocale>[] {
@@ -21,15 +21,8 @@ export function createStandalonePageLinks<
     path,
     locales,
   )
-
+  const page = routes.getPage(paramPage)
   const pageRoutes = routes.routes[page]
-
-  if (!pageRoutes) {
-    throw new Error(
-      `Standalone page '${String(page)}' is not indexed.`,
-    )
-  }
-
   const currentEntry = pageRoutes[currentLocale]
 
   if (!currentEntry) {

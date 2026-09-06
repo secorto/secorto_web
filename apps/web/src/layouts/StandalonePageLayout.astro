@@ -15,9 +15,10 @@ type Props = MarkdownLayoutProps<{
 
 const { frontmatter } = Astro.props
 const { title, draft, translationKey } = frontmatter
+const path = Astro.url.pathname.slice(1).replace(/\/$/, '')
 
 const links = createStandalonePageLinks(
-  Astro.url.pathname.slice(1).replace(/\/$/, ''),
+  path,
   translationKey,
   standalonePageRoutes,
   languages,

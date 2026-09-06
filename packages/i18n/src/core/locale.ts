@@ -1,9 +1,3 @@
-/**
- * Immutable value object describing a supported locale set and the operations
- * used to validate and normalize locale identifiers.
- *
- * @template TLocale - Supported locale codes, such as 'en' or 'es'.
- */
 export interface LocalePathResolver<TLocale extends string> {
   /**
    * Builds the locale-prefixed path for a supported locale.
@@ -14,6 +8,12 @@ export interface LocalePathResolver<TLocale extends string> {
   getPath(locale: TLocale): string
 }
 
+/**
+ * Immutable value object describing a supported locale set and the operations
+ * used to validate and normalize locale identifiers.
+ *
+ * @template TLocale - Supported locale codes, such as 'en' or 'es'.
+ */
 export interface Locales<TLocale extends string> extends LocalePathResolver<TLocale> {
   /**
    * Ordered list of locales accepted by this value object.

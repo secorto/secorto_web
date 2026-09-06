@@ -21,6 +21,17 @@ describe('createStandalonePageRoutes', () => {
     expect(routes.getPages()).toEqual(['about', 'home'])
   })
 
+  it('resolves a registered page key from a raw string', () => {
+    expect(routes.getPage('about')).toBe('about')
+    expect(routes.getPage('home')).toBe('home')
+  })
+
+  it('throws when a page key is not indexed', () => {
+    expect(() => {
+      routes.getPage('missing')
+    }).toThrow("Standalone page 'missing' is not indexed.")
+  })
+
   it('returns the localized route for the given page and locale', () => {
     expect(routes.getPageRoute('about', 'es')).toBe('acerca-de')
     expect(routes.getPageRoute('home', 'en')).toBe('home')
