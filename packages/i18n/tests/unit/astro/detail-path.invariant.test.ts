@@ -22,6 +22,8 @@ type Entry = GenericCollectionEntry<Collection, { title: string }>
 
 describe('getStaticPathsEntries invariant safety', () => {
   it('throws when the translation index resolves an empty sibling group', async () => {
+    const locales = createLocales(['es', 'en'] as const)
+
     const routes = createSectionRoutes({
       blog: {
         es: 'blog/es',
@@ -31,9 +33,7 @@ describe('getStaticPathsEntries invariant safety', () => {
         es: 'charla/es',
         en: 'talk/en',
       },
-    })
-
-    const locales = createLocales(['es', 'en'] as const)
+    }, locales)
 
     const fetchCollection = vi.fn(async (): Promise<Entry[]> => [
       {

@@ -1,4 +1,5 @@
 import { sectionRoutes } from '@domain/section'
+import { languages } from '@i18n/ui'
 import { createTagRoutes } from '@secorto/i18n'
 
 export const tagRoutes = createTagRoutes(
@@ -17,6 +18,7 @@ export const tagRoutes = createTagRoutes(
     python: { en: 'python', es: 'python' },
     testing: { en: 'testing', es: 'pruebas' },
   },
+  languages,
 )
 
 export type Tag = ReturnType<typeof tagRoutes.getTags>[number]

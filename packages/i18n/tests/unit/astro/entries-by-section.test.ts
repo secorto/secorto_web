@@ -1,9 +1,12 @@
 import { describe, it, expect } from 'vitest'
 import {
+  createLocales,
   createSectionRoutes,
   GenericCollectionEntry,
   getEntriesBySection,
 } from '@secorto/i18n'
+
+const locales = createLocales(['es', 'en'] as const)
 
 const sectionRoutes = createSectionRoutes({
   blog: {
@@ -14,7 +17,7 @@ const sectionRoutes = createSectionRoutes({
     es: 'charla',
     en: 'talk',
   },
-})
+}, locales)
 
 type Entry = GenericCollectionEntry<
   'blog' | 'talk',

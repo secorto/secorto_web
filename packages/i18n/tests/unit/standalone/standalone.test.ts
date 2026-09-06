@@ -1,44 +1,55 @@
 import { describe, expect, it } from 'vitest'
 
-import { createLocales, createStandalonePageLinks } from '@secorto/i18n'
+import {
+  createLocales,
+  createStandalonePageLinks,
+  createStandalonePageRoutes,
+} from '@secorto/i18n'
 
 const locales = createLocales(['en', 'es', 'fr'])
 
 describe('createStandalonePageLinks', () => {
-  const index = {
-    home: {
-      en: { route: 'home' },
-      es: { route: 'inicio' },
-      fr: { route: 'accueil' },
+  const routes = createStandalonePageRoutes(
+    {
+      home: {
+        en: { route: 'home' },
+        es: { route: 'inicio' },
+        fr: { route: 'accueil' },
+      },
     },
-  }
+    locales,
+  )
 
   it('throws when translation key is not indexed', () => {
-    expect(() =>
+    expect(() => {
       createStandalonePageLinks(
         'en/home',
         'unknown',
-        index,
+        // @ts-expect-error unknown is not part of the standalone route contract
+        routes,
         locales,
-      ),
-    ).toThrow(
+      )
+    }).toThrow(
       "Standalone page 'unknown' is not indexed.",
     )
   })
 
   it('throws when current locale has no entry', () => {
-    const customIndex = {
-      home: {
-        en: { route: 'home' },
-        es: { route: 'inicio' },
+    const customRoutes = createStandalonePageRoutes(
+      {
+        home: {
+          en: { route: 'home' },
+          es: { route: 'inicio' },
+        },
       },
-    }
+      locales,
+    )
 
     expect(() =>
       createStandalonePageLinks(
         'fr/accueil',
         'home',
-        customIndex,
+        customRoutes,
         locales,
       ),
     ).toThrow(
@@ -51,7 +62,7 @@ describe('createStandalonePageLinks', () => {
       createStandalonePageLinks(
         'en/wrong-route',
         'home',
-        index,
+        routes,
         locales,
       ),
     ).toThrow(
@@ -63,7 +74,7 @@ describe('createStandalonePageLinks', () => {
     const result = createStandalonePageLinks(
       'en/home',
       'home',
-      index,
+      routes,
       locales,
     )
 
@@ -89,20 +100,21 @@ describe('createStandalonePageLinks', () => {
   })
 
   it('returns a draft link when the locale entry is marked as draft', () => {
-    const customIndex = {
-      home: {
-        en: { route: 'home' },
-        es: {
-          route: 'inicio',
-          draft: true,
+    const customRoutes = createStandalonePageRoutes(
+      {
+        home: {
+          en: { route: 'home' },
+          es: { route: 'inicio', draft: true },
+          fr: { route: 'accueil' },
         },
       },
-    }
+      locales,
+    )
 
     const result = createStandalonePageLinks(
       'en/home',
       'home',
-      customIndex,
+      customRoutes,
       locales,
     )
 
@@ -114,17 +126,20 @@ describe('createStandalonePageLinks', () => {
   })
 
   it('returns a missing link when a locale entry does not exist', () => {
-    const customIndex = {
-      home: {
-        en: { route: 'home' },
-        es: { route: 'inicio' },
+    const customRoutes = createStandalonePageRoutes(
+      {
+        home: {
+          en: { route: 'home' },
+          es: { route: 'inicio' },
+        },
       },
-    }
+      locales,
+    )
 
     const result = createStandalonePageLinks(
       'en/home',
       'home',
-      customIndex,
+      customRoutes,
       locales,
     )
 

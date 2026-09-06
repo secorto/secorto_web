@@ -1,6 +1,10 @@
 import { describe, it, expect } from 'vitest'
 import { createSectionRoutes } from '@secorto/i18n'
 
+const locales = {
+  getPath: (locale: 'es' | 'en') => `/${locale}`,
+}
+
 const routes = createSectionRoutes({
   blog: {
     es: 'blog',
@@ -10,10 +14,13 @@ const routes = createSectionRoutes({
     es: 'charla',
     en: 'talk'
   }
-})
+}, locales)
 
 describe('getSectionURL', () => {
-  it('builds localized section urls', () => {
+  it('builds localized section urls from the locale path resolver', () => {
+    expect(locales.getPath('es')).toBe('/es')
+    expect(locales.getPath('en')).toBe('/en')
+
     expect(
       routes.getSectionURL('talk', 'es')
     ).toBe('/es/charla')
@@ -45,7 +52,7 @@ describe('sectionRoutes', () => {
     }
 
     expect(() => {
-      createSectionRoutes(duplicateRoutes)
+      createSectionRoutes(duplicateRoutes, locales)
     }).toThrow(
       'Route collision detected in SectionRoutes: The slug "blog" for locale "es" is duplicated between "blog" and "talk".'
     )

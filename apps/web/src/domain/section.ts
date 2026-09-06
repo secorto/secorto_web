@@ -1,5 +1,5 @@
 import type { UILanguages } from '@i18n/ui'
-import { ui } from '@i18n/ui'
+import { ui, languages } from '@i18n/ui'
 import { createSectionRoutes, type SectionRoutes } from '@secorto/i18n'
 
 export const sectionKeys = ['blog', 'talk', 'work', 'projects', 'community'] as const
@@ -57,4 +57,12 @@ export const sectionRoutes: SectionRoutes<SectionType, UILanguages> = createSect
   work: { es: 'trabajo', en: 'work' },
   projects: { es: 'proyecto', en: 'project' },
   community: { es: 'comunidad', en: 'community' },
-})
+}, languages)
+
+export const navSections = [
+  'talk',
+  'blog',
+  'work',
+  'community',
+  'projects',
+] as const satisfies readonly SectionType[]

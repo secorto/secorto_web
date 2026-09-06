@@ -20,6 +20,8 @@ describe("getStaticPathsEntries", () => {
     vi.clearAllMocks()
   })
 
+  const locales = createLocales(["es", "en"] as const)
+
   const routes = createSectionRoutes({
     blog: {
       es: "blog/es",
@@ -29,9 +31,7 @@ describe("getStaticPathsEntries", () => {
       es: "charla/es",
       en: "talk/en",
     },
-  })
-
-  const locales = createLocales(["es", "en"] as const)
+  }, locales)
 
   const blogEntries: Entry[] = [
     {

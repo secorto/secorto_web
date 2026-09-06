@@ -21,6 +21,10 @@ const sectionRoutes = {
   },
 }
 
+const locales = {
+  getPath: (locale: 'es' | 'en') => `/${locale}`,
+}
+
 const routes = createTagRoutes(
   sectionRoutes,
   {
@@ -37,6 +41,7 @@ const routes = createTagRoutes(
       en: 'tools',
     },
   },
+  locales,
 )
 
 describe('getTags', () => {
@@ -61,7 +66,7 @@ describe('getTagRoute', () => {
 })
 
 describe('getTagIndexRoute', () => {
-  it('returns the localized tag index route', () => {
+  it('returns the localized tag index segment', () => {
     expect(
       routes.getTagIndexRoute('es'),
     ).toBe('etiquetas')
@@ -69,6 +74,18 @@ describe('getTagIndexRoute', () => {
     expect(
       routes.getTagIndexRoute('en'),
     ).toBe('tags')
+  })
+})
+
+describe('getTagIndexURL', () => {
+  it('returns the locale-prefixed tag index URL', () => {
+    expect(
+      routes.getTagIndexURL('es'),
+    ).toBe('/es/etiquetas')
+
+    expect(
+      routes.getTagIndexURL('en'),
+    ).toBe('/en/tags')
   })
 })
 
@@ -115,6 +132,7 @@ describe('tagRoutes', () => {
             en: 'tools',
           },
         },
+        locales,
       ),
     ).toThrow(
       'Route collision detected in TagRoutes: The slug "herramientas" for locale "es" is duplicated between "javascript" and "tools".',

@@ -8,12 +8,16 @@ import {
   missingLink,
 } from '@secorto/i18n'
 
+const locales = {
+  getPath: (locale: 'es' | 'en') => `/${locale}`,
+}
+
 const sectionRoutes = createSectionRoutes({
   blog: {
     es: 'blog',
     en: 'blog',
   },
-})
+}, locales)
 
 const tagRoutes = createTagRoutes(
   sectionRoutes,
@@ -31,6 +35,7 @@ const tagRoutes = createTagRoutes(
       en: 'dev',
     },
   },
+  locales,
 )
 
 describe('createSectionTagTranslationLinks', () => {

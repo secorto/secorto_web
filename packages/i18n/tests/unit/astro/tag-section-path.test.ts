@@ -19,7 +19,7 @@ const sectionRoutes = createSectionRoutes({
     es: 'charla',
     en: 'talk',
   },
-})
+}, locales)
 
 const tagRoutes = createTagRoutes(
   sectionRoutes,
@@ -37,6 +37,7 @@ const tagRoutes = createTagRoutes(
       en: 'tools',
     },
   },
+  locales,
 )
 
 type Entry = GenericCollectionEntry<

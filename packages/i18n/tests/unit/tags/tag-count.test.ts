@@ -1,10 +1,12 @@
 import { describe, it, expect } from 'vitest'
-import { createSectionRoutes, getSectionsWithTagContent } from '@secorto/i18n'
+import { createLocales, createSectionRoutes, getSectionsWithTagContent } from '@secorto/i18n'
+
+const locales = createLocales(['es', 'en'] as const)
 
 const sectionRoutes = createSectionRoutes({
   blog: {es: 'blog', en: 'blog'},
   talk: {es: 'talk', en: 'charla'}
-})
+}, locales)
 
 type Item = {
   tags: string[]

@@ -3,7 +3,7 @@ import { Image } from 'astro:assets'
 import Avatar from "@assets/img/avatar-64.jpg"
 import { useTranslations } from '@i18n/utils'
 import { languages } from '@i18n/ui'
-import { resolveLocalized } from '@i18n/rootMap'
+import { tagRoutes } from '@domain/tags'
 
 type Props = Record<string, never>
 const locale = languages.fromString(Astro.currentLocale)
@@ -26,7 +26,7 @@ const site = import.meta.env.SITE
           <a href="https://linkedin.com/in/scot3004" target="_blank" rel="noopener noreferrer" class="css-yze98l">LinkedIn</a>
         </div>
         <p>
-          <a href={`/${locale}/${resolveLocalized('tags', locale)}`}>{t('footer.tags')}</a>
+          <a href={tagRoutes.getTagIndexURL(locale)}>{t('footer.tags')}</a>
         </p>
       </div>
     </div>

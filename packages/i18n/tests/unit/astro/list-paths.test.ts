@@ -8,6 +8,8 @@ import {
 
 describe('getStaticPathsSections', () => {
   it('generates one path per section and locale', async () => {
+    const locales = createLocales(['es', 'en'] as const)
+
     const routes = createSectionRoutes({
       blog: {
         es: 'blog',
@@ -17,9 +19,7 @@ describe('getStaticPathsSections', () => {
         es: 'charla',
         en: 'talk',
       },
-    })
-
-    const locales = createLocales(['es', 'en'] as const)
+    }, locales)
 
     await expect(getStaticPathsSections(routes, locales)).resolves.toEqual([
       {
@@ -62,6 +62,8 @@ describe('getStaticPathsSections', () => {
   })
 
   it('keeps section order and locale order stable', async () => {
+    const locales = createLocales(['es', 'en'] as const)
+
     const routes = createSectionRoutes({
       docs: {
         es: 'documentacion',
@@ -71,9 +73,7 @@ describe('getStaticPathsSections', () => {
         es: 'blog',
         en: 'blog',
       },
-    })
-
-    const locales = createLocales(['es', 'en'] as const)
+    }, locales)
     const result = await getStaticPathsSections(routes, locales)
 
     expect(result.map(path => ({
