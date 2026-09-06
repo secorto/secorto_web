@@ -1,89 +1,31 @@
-import { describe, expect, test } from 'vitest'
-import { buildGlobalTagGroups } from '@domain/tags'
-import type { TagGroupSectionInput } from '@domain/tags'
+import { describe, expect, it } from 'vitest'
+import { tagRoutes } from '@domain/tags'
 
-describe('buildGlobalTagGroups', () => {
-  test('groups tags globally and deduplicates section references', () => {
-    const sections: TagGroupSectionInput[] = [
-      {
-        section: 'blog',
-        sectionLabel: 'Blog',
-        entries: [
-          { data: { tags: ['python', 'tools'] } },
-          { data: { tags: ['python'] } },
-        ]
-      },
-      {
-        section: 'talk',
-        sectionLabel: 'Talks',
-        entries: [
-          { data: { tags: ['python'] } },
-        ]
-      }
-    ]
+describe('tagRoutes value object', () => {
+  it('resolves the localized slug for each allowed tag', () => {
+    expect(tagRoutes.getTagRoute('dev', 'en')).toBe('dev')
+    expect(tagRoutes.getTagRoute('dev', 'es')).toBe('desarrollo')
 
-    const groups = buildGlobalTagGroups('en', sections)
+    expect(tagRoutes.getTagRoute('opensource', 'en')).toBe('opensource')
+    expect(tagRoutes.getTagRoute('opensource', 'es')).toBe('codigo-abierto')
 
-    const python = groups.find(group => group.canonicalTag === 'python')
-    expect(python).toBeDefined()
-    expect(python?.references).toHaveLength(2)
-    expect(python?.references.map(reference => reference.section)).toEqual(['blog', 'talk'])
+    expect(tagRoutes.getTagRoute('python', 'en')).toBe('python')
+    expect(tagRoutes.getTagRoute('python', 'es')).toBe('python')
   })
 
-  test('normalizes translated tags to canonical key and localizes output slug', () => {
-    const sections: TagGroupSectionInput[] = [
-      {
-        section: 'blog',
-        sectionLabel: 'Blog',
-        entries: [
-          { data: { tags: ['herramientas'] } }
-        ]
-      }
-    ]
+  it('builds section-aware URLs with the configured tag index route', () => {
+    expect(tagRoutes.getSectionTagURL('blog', 'es', 'python')).toBe(
+      '/es/blog/tags/python',
+    )
 
-    const groups = buildGlobalTagGroups('es', sections)
-
-    expect(groups).toHaveLength(1)
-    expect(groups[0].canonicalTag).toBe('tools')
-    expect(groups[0].localizedTag).toBe('herramientas')
-    expect(groups[0].references[0].tagSlug).toBe('herramientas')
+    expect(tagRoutes.getSectionTagURL('projects', 'en', 'testing')).toBe(
+      '/en/project/tags/testing',
+    )
   })
 
-  test('sorts references by section label and groups by localized tag', () => {
-    const sections: TagGroupSectionInput[] = [
-      {
-        section: 'talk',
-        sectionLabel: 'Talks',
-        entries: [
-          { data: { tags: ['python'] } }
-        ]
-      },
-      {
-        section: 'blog',
-        sectionLabel: 'Blog',
-        entries: [
-          { data: { tags: ['python', 'astro'] } }
-        ]
-      }
-    ]
-
-    const groups = buildGlobalTagGroups('en', sections)
-
-    expect(groups.map(group => group.localizedTag)).toEqual(['astro', 'python'])
-    expect(groups[1].references.map(reference => reference.sectionLabel)).toEqual(['Blog', 'Talks'])
-  })
-
-  test('returns empty array when there are no tags', () => {
-    const sections: TagGroupSectionInput[] = [
-      {
-        section: 'blog',
-        sectionLabel: 'Blog',
-        entries: [
-          { data: {} }
-        ]
-      }
-    ]
-
-    expect(buildGlobalTagGroups('en', sections)).toEqual([])
+  it('keeps the route definitions immutable', () => {
+    expect(Object.isFrozen(tagRoutes.routes)).toBe(true)
+    expect(Object.isFrozen(tagRoutes.routes.dev)).toBe(true)
+    expect(Object.isFrozen(tagRoutes.routes.python)).toBe(true)
   })
 })

@@ -1,6 +1,6 @@
-import type { UILanguages } from '@i18n/ui'
-import { getPostsByLocale } from './paths'
+import { languages, type UILanguages } from '@i18n/ui'
 import { sectionRoutes, type SectionType } from '@domain/section'
+import { extractCleanId } from '@secorto/i18n'
 
 interface RSSItem {
   title: string
@@ -10,25 +10,13 @@ interface RSSItem {
 }
 
 interface RSSSourcePost {
+  id: string
   data: {
     title: string
     excerpt?: string
     description?: string
-    date?: string
+    date: Date
   }
-  cleanId: string
-}
-
-/**
- * Construye items RSS para una colección específica y locale.
- * @param collection - Nombre de la colección (ej: 'blog', 'talk')
- * @param locale - Idioma
- * @returns Array de items RSS
- */
-export async function buildRSSItems(section: SectionType, locale: UILanguages): Promise<RSSItem[]> {
-  const posts = await getPostsByLocale(section, locale) as RSSSourcePost[]
-
-  return posts.map((post: RSSSourcePost) => mapPostToRSSItem(post, section, locale))
 }
 
 /**
@@ -36,12 +24,12 @@ export async function buildRSSItems(section: SectionType, locale: UILanguages): 
  */
 export function mapPostToRSSItem(post: RSSSourcePost, section: SectionType, locale: UILanguages): RSSItem {
   const data = post.data
-  const cleanId = post.cleanId
+  const cleanId = extractCleanId(post.id, languages).id
 
   return {
     title: data.title,
     description: data.excerpt || data.description || '',
     link: sectionRoutes.getEntryURL(section, locale, cleanId),
-    pubDate: new Date(data.date || 0)
+    pubDate: data.date
   }
 }
