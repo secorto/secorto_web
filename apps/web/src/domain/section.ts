@@ -58,3 +58,11 @@ export const sectionRoutes: SectionRoutes<SectionType, UILanguages> = createSect
   projects: { es: 'proyecto', en: 'project' },
   community: { es: 'comunidad', en: 'community' },
 }, languages)
+
+export const navSections = [
+  'talk',
+  'blog',
+  'work',
+  'community',
+  'projects',
+] as const satisfies readonly SectionType[]

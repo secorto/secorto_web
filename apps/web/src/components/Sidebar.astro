@@ -1,8 +1,9 @@
 ---
 import { getRelativeLocaleUrl } from 'astro:i18n';
-import { useTranslations, useTranslatedPath } from '../i18n/utils';
-import { resolveLocalized } from '@i18n/rootMap'
-import { NAV_LINKS } from '@domain/nav'
+import { useTranslations } from '../i18n/utils';
+import { navSections, sectionRoutes } from '@domain/section'
+import { sections } from '@i18n/ui'
+import { standalonePageRoutes } from '@domain/standalonePage'
 
 import ThemeIcon from './ThemeIcon.astro';
 import { languages } from '@i18n/ui';
@@ -15,7 +16,6 @@ export interface Slots {
 
 const currentLocale = languages.fromString(Astro.currentLocale);
 const t = useTranslations(currentLocale);
-const translatePath = useTranslatedPath(currentLocale);
 ---
 <nav class="sidebar sidebar-toggle">
   <div class="sidebar-content">
@@ -30,9 +30,12 @@ const translatePath = useTranslatedPath(currentLocale);
       <hr class="sidebar-separator">
     </div>
     <div class="sidebar-links" data-testid="sidebar-links">
-      {NAV_LINKS.map(({ routeKey, translationKey }) => (
-        <a href={translatePath(`/${resolveLocalized(routeKey, currentLocale)}`)} data-testid={`sidebar-${routeKey}`}>
-          {t(translationKey)}
+      <a href={standalonePageRoutes.getPageURL('about', currentLocale)} data-testid="sidebar-about">
+        {t('nav.about')}
+      </a>
+      {navSections.map((section) => (
+        <a href={sectionRoutes.getSectionURL(section, currentLocale)} data-testid={`sidebar-${section}`}>
+          {sections[section][currentLocale]}
         </a>
       ))}
     </div>

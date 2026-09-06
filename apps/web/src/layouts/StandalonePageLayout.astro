@@ -5,7 +5,7 @@ import LanguagePicker from '@components/LanguagePicker.astro'
 import { createStandalonePageLinks } from '@secorto/i18n'
 import SEOHead from '@components/SEOHead.astro'
 import { languages } from '@i18n/ui'
-import { standalonePageIndex } from '@domain/standalonePage'
+import { standalonePageRoutes } from '@domain/standalonePage'
 
 type Props = MarkdownLayoutProps<{
   title: string
@@ -19,7 +19,7 @@ const { title, draft, translationKey } = frontmatter
 const links = createStandalonePageLinks(
   Astro.url.pathname.slice(1).replace(/\/$/, ''),
   translationKey,
-  standalonePageIndex,
+  standalonePageRoutes,
   languages,
 )
 ---
