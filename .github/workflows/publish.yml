@@ -87,9 +87,10 @@ jobs:
       - name: Build package
         run: pnpm build
 
-      # Comando seguro 'stage publish' con NPM Provenance OIDC
+      # La publicación ocurre desde una rama de release/vX.Y.Z, así que desactivamos
+      # la validación de rama de pnpm para permitir el flujo de lanzamiento controlado.
       - name: Publish to NPM
-        run: pnpm -r --filter "./packages/**" stage publish --provenance
+        run: pnpm -r --filter "./packages/**" stage publish --provenance --no-git-checks
 
       - name: Create GitHub Release
         if: success()
