@@ -1,32 +1,27 @@
 import { describe, it, expect } from 'vitest'
-import { sectionsConfig } from '@domain/section'
+import * as sectionModule from '@domain/section'
+import { sectionRoutes } from '@domain/section'
 
-
-describe('sections config category', () => {
-  it('blog uses post category', () => {
-    expect(sectionsConfig.blog.category).toBe('post')
+describe('sectionRoutes value object', () => {
+  it('does not expose the legacy section config', () => {
+    expect('sectionsConfig' in sectionModule).toBe(false)
   })
 
-  it('talk uses post category', () => {
-    expect(sectionsConfig.talk.category).toBe('post')
+  it('resolves localized route data through the value object API', () => {
+    expect(sectionRoutes.getSectionRoute('blog', 'es')).toBe('blog')
+    expect(sectionRoutes.getSectionRoute('talk', 'en')).toBe('talk')
+    expect(sectionRoutes.getSectionRoute('work', 'es')).toBe('trabajo')
+
+    expect(sectionRoutes.getSectionURL('projects', 'en')).toBe('/en/project')
+    expect(sectionRoutes.getSectionURL('community', 'es')).toBe('/es/comunidad')
+
+    expect(sectionRoutes.getEntryURL('blog', 'es', 'mi-post')).toBe('/es/blog/mi-post')
+    expect(sectionRoutes.getEntryURL('work', 'en', 'design-sprint')).toBe('/en/work/design-sprint')
   })
 
-  it('work uses experience category', () => {
-    expect(sectionsConfig.work.category).toBe('experience')
-  })
-
-  it('projects uses experience category', () => {
-    expect(sectionsConfig.projects.category).toBe('experience')
-  })
-
-  it('community uses experience category', () => {
-    expect(sectionsConfig.community.category).toBe('experience')
-  })
-
-  it('all sections have category defined', () => {
-    Object.values(sectionsConfig).forEach(config => {
-      expect(config.category).toBeDefined()
-      expect(['post', 'experience']).toContain(config.category)
-    })
+  it('keeps the route dictionary immutable as part of the value object contract', () => {
+    expect(Object.isFrozen(sectionRoutes.routes)).toBe(true)
+    expect(Object.isFrozen(sectionRoutes.routes.blog)).toBe(true)
+    expect(Object.isFrozen(sectionRoutes.routes.projects)).toBe(true)
   })
 })

@@ -16,7 +16,7 @@ describe('i18n utils', () => {
     expect(tEs('nav.about')).toBe(ui.es['nav.about'])
 
     const tEn = useTranslations('en')
-    expect(tEn('nav.blog')).toBe(ui.en['nav.blog'])
+    expect(tEn('nav.about')).toBe(ui.en['nav.about'])
 
     // unknown key should return undefined (runtime)
     // intentionally pass an invalid key to test runtime behavior

@@ -17,11 +17,6 @@ export const ui = {
   en: {
     'site.description': 'Personal blog of Sergio Orozco - Developer, Speaker, Open Source Enthusiast',
     'nav.about': 'About',
-    'nav.blog': 'Blog',
-    'nav.work': 'Work',
-    'nav.talks': 'Talks',
-    'nav.community': 'Community',
-    'nav.projects': 'Projects',
     'work.activity': 'Activity',
     'work.today': 'today',
     'featured_image': 'Featured image for {0}',
@@ -49,11 +44,6 @@ export const ui = {
   es: {
     'site.description': 'Blog personal de Sergio Orozco - Desarrollador, Conferencista, Entusiasta del Open Source',
     'nav.about': 'Sobre mi',
-    'nav.blog': 'Blog',
-    'nav.work': 'Trabajo',
-    'nav.talks': 'Charlas',
-    'nav.community': 'Comunidad',
-    'nav.projects': 'Proyectos',
     'work.activity': 'Actividad',
     'work.today': 'actualidad',
     'featured_image': 'Imagen destacada para {0}',
@@ -103,8 +93,3 @@ export const tagged = {
   work: {en: 'Work tagged with', es: 'Trabajos etiquetados con'},
   community: {en: 'Community tagged with', es: 'Comunidad etiquetada con'}
 } satisfies Record<SectionType, Record<UILanguages, string>>
-
-export const icons = {
-  missing: '🔒',
-  draft: '⌛'
-} as const

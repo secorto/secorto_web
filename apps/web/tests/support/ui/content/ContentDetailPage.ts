@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
 import type { SectionType } from '@domain/section'
-import { sectionRoutes, sectionsConfig } from '@domain/section'
+import { sectionRoutes } from '@domain/section'
 import { NavigablePage, visit, createPageContext } from '@tests/support/ui/shared/pages'
 import type { MainLayoutComponent } from '@tests/support/ui/shared/components/MainLayout'
 import { target, type Target } from '@tests/support/ui/components/Target'
@@ -56,27 +56,43 @@ export class ExperienceDetailMain implements LocalizedPage<void> {
 }
 
 /**
- * Factory selector: crea el main component según categoría (post vs experience).
+ * Builder base para secciones tipo post.
  */
+function buildPostDetailMain(page: Page): PostDetailMain {
+  const dateContainer = page.getByTestId('post-date')
+  const comments = giscusComments(page)
+  return new PostDetailMain(target('post date', dateContainer), comments)
+}
+
+/**
+ * Builder base para secciones tipo experience.
+ */
+function buildExperienceDetailMain(page: Page): ExperienceDetailMain {
+  const mainContainer = page.locator('main')
+  return new ExperienceDetailMain(
+    target('experience metadata', mainContainer),
+    target('role field', mainContainer.getByTestId('post-role')),
+    target('responsibilities field', mainContainer.getByTestId('post-responsibilities')),
+    target('website link', mainContainer.getByTestId('post-website')),
+  )
+}
+
+/**
+ * Factory selector: cada sección se resuelve explícitamente a su builder base.
+ */
+const detailMainFactories = {
+  blog: buildPostDetailMain,
+  talk: buildPostDetailMain,
+  work: buildExperienceDetailMain,
+  projects: buildExperienceDetailMain,
+  community: buildExperienceDetailMain,
+} satisfies Record<SectionType, (page: Page) => LocalizedPage<void>>
+
 function buildDetailMain(
   page: Page,
   sectionName: SectionType,
 ): LocalizedPage<void> {
-  const config = sectionsConfig[sectionName]
-
-  if (config.category === 'post') {
-    const dateContainer = page.getByTestId('post-date')
-    const comments = giscusComments(page)
-    return new PostDetailMain(target('post date', dateContainer), comments)
-  } else {
-    const mainContainer = page.locator('main')
-    return new ExperienceDetailMain(
-      target('experience metadata', mainContainer),
-      target('role field', mainContainer.getByTestId('post-role')),
-      target('responsibilities field', mainContainer.getByTestId('post-responsibilities')),
-      target('website link', mainContainer.getByTestId('post-website')),
-    )
-  }
+  return detailMainFactories[sectionName](page)
 }
 
 /**
