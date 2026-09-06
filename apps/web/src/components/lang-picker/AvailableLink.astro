@@ -1,0 +1,19 @@
+---
+import { languagesMap, type UILanguages } from '@i18n/ui'
+import type { AvailableLink } from '@domain/translationLink'
+
+interface Props {
+  item: AvailableLink<UILanguages>
+}
+
+const { item } = Astro.props
+const text = languagesMap[item.locale]
+---
+
+<a
+  href={item.href}
+  aria-label={text}
+  data-testid={`lang-${item.locale}`}
+>
+  {text}
+</a>

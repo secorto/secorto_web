@@ -1,7 +1,7 @@
 import type { UILanguages } from './ui'
 import { defaultLang } from './ui'
 import type { TranslationLink } from '@domain/translationLink'
-import { availableLink, missingLink, isAccessible } from '@domain/translationLink'
+import { availableLink, missingLink } from '@domain/translationLink'
 import { showDefaultLang } from '@i18n/config'
 import { languages } from './ui'
 
@@ -28,18 +28,4 @@ export function buildHomeLinks(): TranslationLink[] {
  */
 export function buildMissingLanguageLinks(): TranslationLink[] {
   return languages.all.map(l => missingLink(l))
-}
-
-/**
- * Construye `alternates` (lista de objetos `{ locale, url }`) a partir
- * de un array de `links`, filtrando los que no son accesibles.
- *
- * Nota: el filtro usa `isAccessible`, por lo que se incluyen tanto
- * `available` como `draft` por diseño — `alternates` representa enlaces
- * que pueden montarse en la UI aunque algunos sean borradores.
- */
-export function buildAlternatesFromLinks<T extends TranslationLink>(links: T[]) {
-  return links
-    .filter(isAccessible)
-    .map(l => ({ locale: l.locale, url: l.href }))
 }

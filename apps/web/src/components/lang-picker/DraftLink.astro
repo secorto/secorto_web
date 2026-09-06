@@ -1,0 +1,22 @@
+---
+import type { DraftLink } from '@domain/translationLink'
+import { languagesMap, ui, type UILanguages } from '@i18n/ui'
+
+interface Props {
+  item: DraftLink<UILanguages>
+}
+
+const { item } = Astro.props
+const label = languagesMap[item.locale]
+const text = `${label} ⌛`
+const title = ui[item.locale]['translation.disabled.draft']
+---
+
+<a
+  href={item.href}
+  aria-label={`${title}: ${label}`}
+  title={title}
+  data-testid={`lang-${item.locale}`}
+>
+  {text}
+</a>

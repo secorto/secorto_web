@@ -1,0 +1,25 @@
+---
+import type { MissingLink } from '@domain/translationLink'
+import { languagesMap, ui, type UILanguages } from '@i18n/ui'
+
+interface Props {
+  item: MissingLink<UILanguages>
+}
+
+const { item } = Astro.props
+const label = languagesMap[item.locale]
+const text = `${label} 🔒`
+const title = ui[item.locale]['translation.disabled.missing']
+---
+
+<span
+  class="disabled"
+  role="link"
+  aria-disabled="true"
+  tabindex="-1"
+  aria-label={`${title}: ${label}`}
+  title={title}
+  data-testid={`lang-${item.locale}`}
+>
+  {text}
+</span>
