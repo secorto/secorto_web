@@ -1,5 +1,5 @@
 import { test } from '@tests/fixtures'
-import { sectionRoutes, sectionsConfig } from '@domain/section'
+import { sectionRoutes } from '@domain/section'
 import { userIsOnContentList } from '@tests/support/ui/content/ContentListPage'
 import { contentDetailPage } from '@tests/support/ui/content/ContentDetailPage'
 import { testContents } from '@tests/support/data/testContents'
@@ -13,14 +13,12 @@ import { testContents } from '@tests/support/data/testContents'
  * 5. Click en item de la lista (sin navegar por URL)
  *
  * Patrón: testContents con locale incluido para evitar variaciones de slugs por idioma.
- * Factories seleccionan automáticamente type basado en sectionsConfig.
- * Reporting: test.describe() agrupa por categoría (POST/EXPERIENCE) para mejor visibilidad.
+ * Reporting: test.describe() agrupa por sección para mejor visibilidad.
  */
 
 for (const content of testContents) {
-  const config = sectionsConfig[content.name]
 
-  test.describe(`[${config.category}] ${content.name}`, () => {
+  test.describe(`${content.name}`, () => {
     test(
       `navigation for ${content.name} content with slug ${content.testSlug} and tag ${content.testTag} in lang ${content.locale} `,
       { tag: [`@content-${content.name}`, `@${content.locale}`, '@navigation', '@functional'] },

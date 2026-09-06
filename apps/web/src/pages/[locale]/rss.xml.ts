@@ -1,6 +1,6 @@
 import rss from '@astrojs/rss'
 import { useTranslations } from '@i18n/utils'
-import { languages } from '@i18n/ui'
+import { languages, sections } from '@i18n/ui'
 import type { APIContext } from 'astro'
 import type { UILanguages } from '@i18n/ui'
 import { availableAtLocale, getStaticPathsLocales } from '@secorto/i18n'
@@ -26,7 +26,7 @@ export async function GET(context: APIContext) {
   const items = posts.map((post) => mapPostToRSSItem(post, 'blog', locale))
 
   return rss({
-    title: t('nav.blog'),
+    title: sections['blog'][locale],
     description: t('site.description') || 'Blog',
     site: context.site || import.meta.env.SITE,
     items: items,

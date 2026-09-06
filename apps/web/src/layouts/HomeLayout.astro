@@ -1,12 +1,13 @@
 ---
 import type { MarkdownLayoutProps } from 'astro'
-import BaseLayout from "@layouts/BaseLayout.astro"
+import BaseLayout from '@layouts/BaseLayout.astro'
 import SEOHead from '@components/SEOHead.astro'
 import LanguagePicker from '@components/LanguagePicker.astro'
 import HomeHighlights from '@components/HomeHighlights.astro'
 
 import intro from '@assets/img/intro.inline.svg?raw'
-import { buildHomeLinks } from '@i18n/languagePickerUtils'
+import { availableLink } from '@domain/translationLink'
+import { languages } from '@i18n/ui'
 import { HomeFrontmatterSchema, type HomeFrontmatter } from '@domain/home'
 
 type Props = MarkdownLayoutProps<HomeFrontmatter>
@@ -16,8 +17,9 @@ const parsed = HomeFrontmatterSchema.parse(frontmatter)
 
 const { title, subTitle, locale, highlights, draft } = parsed
 
-const links = buildHomeLinks()
-
+const links = languages.all.map(lang =>
+  availableLink(`${languages.getPath(lang)}/`, lang)
+)
 
 import '../styles/home.css'
 ---

@@ -4,7 +4,7 @@ import type { MainLayoutComponent } from '@tests/support/ui/shared/components/Ma
 import type { TagsComponent } from './components/Tags'
 import type { ContentListComponent } from './components/ContentList'
 import type { SectionType } from '@domain/section'
-import { sectionRoutes, sectionsConfig } from '@domain/section'
+import { sectionRoutes } from '@domain/section'
 import { urlValidator } from '@tests/support/ui/shared/flows/urlValidator'
 import { step, verifyStep } from '@tests/step'
 import { NavigablePage, visit, createPageContext } from '@tests/support/ui/shared/pages'
@@ -112,17 +112,35 @@ export class ContentListPage extends NavigablePage implements LocalizedPage<void
 }
 
 /**
- * Factory unificado: crea ContentListPage automáticamente.
- * Selecciona el mainPageClass correcto según sectionName (post vs experience).
+ * Builder base para secciones tipo post.
  */
+function buildPostListMain(page: Page): PostListPageMain {
+  return new PostListPageMain(page)
+}
+
+/**
+ * Builder base para secciones tipo experience.
+ */
+function buildExperienceListMain(page: Page): ExperienceListPageMain {
+  return new ExperienceListPageMain(page)
+}
+
+/**
+ * Factory unificado: cada sección se resuelve explícitamente a su builder base.
+ */
+const listMainFactories = {
+  blog: buildPostListMain,
+  talk: buildPostListMain,
+  work: buildExperienceListMain,
+  projects: buildExperienceListMain,
+  community: buildExperienceListMain,
+} satisfies Record<SectionType, (page: Page) => LocalizedPage<void>>
+
 export function contentListPage(
   page: Page,
   sectionName: SectionType,
 ): ContentListPage {
-  const config = sectionsConfig[sectionName]
-  const mainPageInstance = config.category === 'post'
-    ? new PostListPageMain(page)
-    : new ExperienceListPageMain(page)
+  const mainPageInstance = listMainFactories[sectionName](page)
 
   const { layout, validateUrl, a11y } = createPageContext(page, `${sectionName} list`, mainPageInstance)
   const tagsComp = tagsComponent(page.locator('main'))
