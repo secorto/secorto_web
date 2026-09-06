@@ -18,7 +18,7 @@ const parsed = HomeFrontmatterSchema.parse(frontmatter)
 const { title, subTitle, locale, highlights, draft } = parsed
 
 const links = languages.all.map(lang =>
-  availableLink(languages.getPath(lang), lang)
+  availableLink(`${languages.getPath(lang)}/`, lang)
 )
 
 import '../styles/home.css'

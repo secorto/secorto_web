@@ -13,7 +13,7 @@ import { testContents } from '@tests/support/data/testContents'
  * 5. Click en item de la lista (sin navegar por URL)
  *
  * Patrón: testContents con locale incluido para evitar variaciones de slugs por idioma.
- * Reporting: test.describe() agrupa por categoría (POST/EXPERIENCE) para mejor visibilidad.
+ * Reporting: test.describe() agrupa por sección para mejor visibilidad.
  */
 
 for (const content of testContents) {
