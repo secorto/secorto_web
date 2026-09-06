@@ -32,5 +32,12 @@ describe('createLocales', () => {
     expect(languages.getPath('fr')).toBe('/fr')
     expect(() => languages.getPath('xx')).toThrow('Invalid language: xx')
   })
+
+  it('keeps getPath safe when extracted without binding', () => {
+    const { getPath } = languages
+
+    expect(getPath('es')).toBe('/es')
+    expect(() => getPath('xx')).toThrow('Invalid language: xx')
+  })
 })
 

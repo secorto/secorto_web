@@ -15,22 +15,20 @@ function isLocale<TLocale extends string>(
 export function createLocales<TLocale extends string>(
   locales: readonly TLocale[]
 ): Locales<TLocale> {
+  const fromString = (lang: string | undefined): TLocale => {
+    if (!lang) throw new TypeError(`Invalid language: ${lang}`)
+    if (isLocale(locales, lang)) return lang
+    throw new TypeError(`Invalid language: ${lang}`)
+  }
+
+  const isValid = (lang: string): lang is TLocale => isLocale(locales, lang)
+
+  const getPath = (locale: string): string => `/${fromString(locale)}`
+
   return {
     all: locales,
-
-    fromString(lang) {
-      if (!lang) throw new TypeError(`Invalid language: ${lang}`)
-      if (isLocale(locales, lang)) return lang
-      throw new TypeError(`Invalid language: ${lang}`)
-    },
-
-    isValid(lang): lang is TLocale {
-      return isLocale(locales, lang)
-    },
-
-    getPath(locale) {
-      const normalized = this.fromString(locale)
-      return `/${normalized}`
-    }
+    fromString,
+    isValid,
+    getPath,
   }
 }
