@@ -1,0 +1,21 @@
+---
+import type { MarkdownLayoutProps } from 'astro'
+import BaseLayout from '@layouts/BaseLayout.astro'
+import LanguagePicker from '@components/LanguagePicker.astro'
+import { missingLink } from '@secorto/i18n'
+import { languages } from '@i18n/ui'
+
+type Props = MarkdownLayoutProps<{
+  title: string
+}>
+
+const { frontmatter } = Astro.props
+const { title } = frontmatter
+
+const links = languages.all.map(l => missingLink(l))
+---
+
+<BaseLayout pageTitle={title}>
+  <LanguagePicker slot="langpicker" links={links} />
+  <slot/>
+</BaseLayout>
