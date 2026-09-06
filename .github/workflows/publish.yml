@@ -1,9 +1,21 @@
 name: Publish Package
 
 on:
-  push:
-    branches:
-      - 'release/v*' # Se dispara limpiamente cuando subes una rama tipo release/v1.0.0
+  workflow_dispatch:
+    inputs:
+      version:
+        description: '¿Qué tipo de incremento vas a lanzar?'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+concurrency:
+  group: publish-${{ github.repository }}
+  cancel-in-progress: false
 
 permissions:
   id-token: write  # Required for OIDC
@@ -16,40 +28,93 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 0 # Crucial para que 'gh' calcule el historial y las notas correctamente
 
       - uses: pnpm/setup@v2
         with:
           runtime: node@24
           cache: false
 
-      - name: Bump Version
+      # =========================================================================
+      # CICLO DE GIT ABSOLUTO (Notas -> Bump -> Commit Enriquecido -> Push -> Release)
+      # =========================================================================
+      - name: Generate notes and bump version
         run: |
-          VERSION_CLEAN=$(echo "${{ github.ref_name }}" | sed 's/^release\/v//')
-          pnpm -r version $VERSION_CLEAN --no-git-tag-version
+          # 1. Configurar identidad del Bot
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+          # 2. BUMP: pnpm reescribe los package.json localmente
+          pnpm -r version ${{ github.event.inputs.version }} --no-git-tag-version
+
+          # 3. LEER VERSIÓN DEFINITIVA: Extraemos el número real que escribió pnpm
+          VERSION_CLEAN=$(node -p "require('./package.json').version")
+          BRANCH_NAME="release/v$VERSION_CLEAN"
+
+          # 4. GENERAR NOTAS CON EL TAG REAL: evita inconsistencias entre la release y el changelog
+          gh release notes "v$VERSION_CLEAN" --target "${{ github.event.repository.default_branch }}" > $HOME/changelog.txt
+
+          echo "VERSION=$VERSION_CLEAN" >> $GITHUB_ENV
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
+
+          # 5. CREAR RAMA LOCAL: Nos movemos a la rama release
+          git checkout -b "$BRANCH_NAME"
+
+          # 6. COMMIT ENRIQUECIDO: El mensaje vive fuera del working tree para no incluirlo accidentalmente
+          COMMIT_MSG_FILE="$RUNNER_TEMP/commit_msg.txt"
+          echo "chore: bump version to $VERSION_CLEAN" > "$COMMIT_MSG_FILE"
+          echo "" >> "$COMMIT_MSG_FILE"
+          cat $HOME/changelog.txt >> "$COMMIT_MSG_FILE"
+
+          # 7. INDEXAR Y PUSH: Usando tus rutas reales del monorrepo
+          git add .
+          git commit -F "$COMMIT_MSG_FILE"
+          git push origin "$BRANCH_NAME"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # =========================================================================
+      # CONSTRUCCIÓN Y PUBLICACIÓN EN NPM
+      # =========================================================================
       - name: Build package
         run: pnpm build
 
+      # Comando seguro 'stage publish' con NPM Provenance OIDC
       - name: Publish to NPM
-        run: pnpm -r --filter "./packages/**" stage publish --no-git-checks
+        run: pnpm -r --filter "./packages/**" stage publish --provenance
 
-      - name: Create Tag and GitHub Release
+      - name: Create GitHub Release
+        if: success()
         run: |
-          VERSION_CLEAN=$(echo "${{ github.ref_name }}" | sed 's/^release\/v//')
-          gh release create "v$VERSION_CLEAN" \
-            --title "Release v$VERSION_CLEAN" \
-            --target "${{ github.ref_name }}" \
-            --generate-notes
+          gh release create "v${{ env.VERSION }}" \
+            --title "Release v${{ env.VERSION }}" \
+            --target "${{ env.BRANCH_NAME }}" \
+            --notes-file $HOME/changelog.txt
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # ¡Cambiado a GH_TOKEN!
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create Pull Request to Master
+      # =========================================================================
+      # SINCRONIZACIÓN AUTOMÁTICA HACIA MASTER
+      # =========================================================================
+      - name: Open PR and Enable Auto-Merge
         run: |
-          VERSION_CLEAN=$(echo "${{ github.ref_name }}" | sed 's/^release\/v//')
-          gh pr create \
-            --title "chore: sync release v$VERSION_CLEAN to master" \
-            --body "PR automática generada por el pipeline tras publicar con éxito en NPM. Por favor, fusiona para mantener los package.json actualizados." \
-            --base master \
-            --head "${{ github.ref_name }}"
+          PR_URL=$(gh pr create \
+            --title "chore: sync release v${{ env.VERSION }} to ${{ github.event.repository.default_branch }}" \
+            --body-file $HOME/changelog.txt \
+            --base ${{ github.event.repository.default_branch }} \
+            --head "${{ env.BRANCH_NAME }}")
+
+          gh pr merge "$PR_URL" --auto --merge
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # ¡Cambiado a GH_TOKEN!
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cleanup GitHub release on failure
+        if: failure() && env.VERSION != ''
+        run: |
+          if gh release view "v${{ env.VERSION }}" >/dev/null 2>&1; then
+            gh release delete "v${{ env.VERSION }}" --yes
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
