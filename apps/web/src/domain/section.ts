@@ -9,9 +9,7 @@ export const sectionRoutes = createSectionRoutes({
   community: { es: 'comunidad', en: 'community' },
 }, languages)
 
-const sectionList = sectionRoutes.getSections()
-
-export type SectionType = typeof sectionList[number]
+export type SectionType = keyof typeof sectionRoutes.routes
 
 export const navSections = [
   'talk',
