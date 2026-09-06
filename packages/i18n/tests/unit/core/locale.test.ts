@@ -30,6 +30,7 @@ describe('createLocales', () => {
   it('builds the locale path only for supported locales', () => {
     expect(languages.getPath('en')).toBe('/en')
     expect(languages.getPath('fr')).toBe('/fr')
+    // @ts-expect-error 'xx' is not a supported locale; runtime should throw
     expect(() => languages.getPath('xx')).toThrow('Invalid language: xx')
   })
 
@@ -37,6 +38,7 @@ describe('createLocales', () => {
     const { getPath } = languages
 
     expect(getPath('es')).toBe('/es')
+    // @ts-expect-error 'xx' is not a supported locale; runtime should throw
     expect(() => getPath('xx')).toThrow('Invalid language: xx')
   })
 })

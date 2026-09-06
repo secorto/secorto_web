@@ -1,5 +1,4 @@
-import { ensureNoRouteCollisions } from '../core'
-import type { Locales } from '../core/locale'
+import { ensureNoRouteCollisions, LocalePathResolver } from '../core'
 
 export type SectionDictionary<
   TSection extends string,
@@ -8,11 +7,6 @@ export type SectionDictionary<
 > = Record<
   TSection,
   Record<TLocale, TValue>
->
-
-export type LocalePathResolver<TLocale extends string> = Pick<
-  Locales<TLocale>,
-  'getPath'
 >
 
 /**
