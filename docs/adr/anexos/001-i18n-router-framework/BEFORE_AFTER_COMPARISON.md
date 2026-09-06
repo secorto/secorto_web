@@ -163,6 +163,37 @@ Duplicación: 0% del código
 Configuración es metadata, no código
 ```
 
+### Primera centralización: ejemplo de la refactorización
+
+Este bloque representa la primera versión de la solución centralizada y es útil como
+referencia histórica de la transición, no como descripción del estado actual del proyecto:
+
+```typescript
+export const sectionsConfig: Record<SectionType, SectionConfig> = {
+  blog: {
+    collection: 'blog',
+    translationKey: 'nav.blog',
+    hasTags: true,
+    routes: { es: 'blog', en: 'blog' },
+    listComponent: 'ListPost',
+    showFeaturedImage: true
+  },
+  talk: {
+    collection: 'talk',
+    translationKey: 'nav.talks',
+    hasTags: true,
+    routes: { es: 'charla', en: 'talk' },
+    listComponent: 'ListPost',
+    showFeaturedImage: true
+  }
+}
+```
+
+La intención de este objeto era reducir la duplicación y concentrar el conocimiento de la
+sección en un solo punto. Esa idea fue valiosa, pero con el tiempo el modelo se fue
+simplificando y expandiendo hacia una librería reutilizable, por lo que no representa la
+arquitectura actual en su forma más reciente.
+
 ---
 
 ## 📊 Análisis de Escalabilidad
