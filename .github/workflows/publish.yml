@@ -13,6 +13,10 @@ on:
           - minor
           - major
 
+concurrency:
+  group: publish-${{ github.repository }}
+  cancel-in-progress: false
+
 permissions:
   id-token: write  # Required for OIDC
   contents: write
@@ -36,8 +40,7 @@ jobs:
       # =========================================================================
       # CICLO DE GIT ABSOLUTO (Notas -> Bump -> Commit Enriquecido -> Push -> Release)
       # =========================================================================
-      - name: Generate Notes, Bump and Create GitHub Release
-        id: release_core
+      - name: Generate notes and bump version
         run: |
           # 1. Configurar identidad del Bot
           git config --global user.name "github-actions[bot]"
@@ -92,15 +95,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Cleanup GitHub release on failure
-        if: failure() && env.VERSION != ''
-        run: |
-          if gh release view "v${{ env.VERSION }}" >/dev/null 2>&1; then
-            gh release delete "v${{ env.VERSION }}" --yes --cleanup-tag
-          fi
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       # =========================================================================
       # SINCRONIZACIÓN AUTOMÁTICA HACIA MASTER
       # =========================================================================
@@ -113,5 +107,14 @@ jobs:
             --head "${{ env.BRANCH_NAME }}")
 
           gh pr merge "$PR_URL" --auto --merge
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cleanup GitHub release on failure
+        if: failure() && env.VERSION != ''
+        run: |
+          if gh release view "v${{ env.VERSION }}" >/dev/null 2>&1; then
+            gh release delete "v${{ env.VERSION }}" --yes --cleanup-tag
+          fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
