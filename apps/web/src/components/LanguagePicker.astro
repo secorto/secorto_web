@@ -1,40 +1,22 @@
 ---
-import type { TranslationLink } from "@domain/translationLink"
-import { adaptLanguageLinks } from "@i18n/languagePickerAdapter"
+import type { TranslationLink } from '@domain/translationLink'
+import { isAvailable, isDraft, isMissing } from '@domain/translationLink'
+import AvailableLink from './lang-picker/AvailableLink.astro'
+import DraftLink from './lang-picker/DraftLink.astro'
+import MissingLink from './lang-picker/MissingLink.astro'
 
 interface Props {
   links: TranslationLink[]
 }
 
 const { links } = Astro.props
-const items = adaptLanguageLinks(links)
 ---
 
 <div class="language-picker">
-  {items.map((item) => {
-    if (!item.accessible) return (
-      <span
-        class="disabled"
-        role="link"
-        aria-disabled="true"
-        tabindex="-1"
-        aria-label={`${item.title}: ${item.label}`}
-        title={item.title}
-        data-testid={`lang-${item.locale}`}
-      >
-        {item.text}
-      </span>
-    )
-
-    return (
-      <a
-        href={item.href}
-        title={item.title}
-        aria-label={item.title ? `${item.title}: ${item.label}` : item.label}
-        data-testid={`lang-${item.locale}`}
-      >
-        {item.text}
-      </a>
-    )
+  {links.map((item) => {
+    if (isAvailable(item)) return <AvailableLink item={item} />
+    if (isDraft(item)) return <DraftLink item={item} />
+    if (isMissing(item)) return <MissingLink item={item} />
+    throw new Error(`TranslationLink type not recognized`)
   })}
 </div>
