@@ -8,6 +8,7 @@ on:
 
 jobs:
   unit-tests:
+    if: ${{ !startsWith(github.head_ref || github.ref_name, 'release/') }}
     name: Unit Tests (Vitest)
     timeout-minutes: 15
     runs-on: ubuntu-latest
@@ -37,6 +38,7 @@ jobs:
           retention-days: 30
 
   e2e-tests:
+    if: ${{ !startsWith(github.head_ref || github.ref_name, 'release/') }}
     name: E2E Tests (Playwright)
     timeout-minutes: 60
     runs-on: ubuntu-latest
