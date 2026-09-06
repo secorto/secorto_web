@@ -104,7 +104,7 @@ jobs:
       # =========================================================================
       # SINCRONIZACIÓN AUTOMÁTICA HACIA MASTER
       # =========================================================================
-      - name: Open PR and Enable Auto-Merge
+      - name: Open PR and merge it
         run: |
           PR_URL=$(gh pr create \
             --title "chore: sync release v${{ env.VERSION }} to ${{ github.event.repository.default_branch }}" \
@@ -112,7 +112,7 @@ jobs:
             --base ${{ github.event.repository.default_branch }} \
             --head "${{ env.BRANCH_NAME }}")
 
-          gh pr merge "$PR_URL" --auto --merge
+          gh pr merge "$PR_URL" --merge --delete-branch
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
