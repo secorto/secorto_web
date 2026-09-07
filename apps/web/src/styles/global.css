@@ -18,6 +18,7 @@
   --colors-sidebar-background: linear-gradient(180deg, #004f53, #002f33);
   --colors-sidebar-text: #fff;
   --colors-sidebar-hover: #B8FFFF;
+  --bg-color-warning: #F4EDC5;
 }
 
 .dark {
@@ -30,6 +31,7 @@
   --colors-highlight: #E7B8FF;
   --colors-heading: #fff;
   --colors-blogBg: #0a0a0a;
+  --bg-color-warning: #2E2918;
 }
 
 html {
@@ -46,7 +48,7 @@ body {
   margin: 0 auto;
   width: 100%;
   max-width: 120ch;
-  padding: 1rem 1rem 10rem;
+  padding: 1rem 1rem;
   line-height: 1.5;
   overflow-wrap: break-word;
 }
@@ -213,6 +215,10 @@ Sidebar
   justify-content: center;
 }
 
+.sidebar-image img {
+  border-radius: 50%;
+}
+
 .language-picker {
   display: flex;
   justify-content: space-around;
@@ -333,65 +339,6 @@ Sidebar
   font-size: 2.625rem;
 }
 
-.footer {
-  margin-top: 1rem;
-  margin-left: 0px;
-  margin-right: 0px;
-  position: absolute;
-  bottom: 1.5rem;
-  width: 100%;
-  height: 6rem;
-  padding-left: 2rem;
-  padding-right: 2rem;
-}
-
-.footer-profile {
-  box-sizing: border-box;
-  margin: 14.5px 0px;
-  min-width: 0px;
-  display: flex;
-  -moz-box-align: center;
-  align-items: center;
-  border-top: 1px solid var(--colors-primary);
-  padding-top: 14.5px;
-}
-
-.footer-name {
-  box-sizing: border-box;
-  margin: 0px;
-  min-width: 0px;
-  color: var(--colors-primary);
-  transition: color 0.3s linear;
-  overflow-wrap: break-word;
-  text-decoration: none;
-  font-family:'Dancing Script', 'Segoe Script', 'z003',  cursive;
-  font-size: 2rem;
-}
-
-.footer-avatar {
-  margin-right: 14.5px;
-  border-radius: 50%;
-}
-
-.footer-profile-text {
-  box-sizing: border-box;
-  min-width: 0px;
-  text-align: center;
-  margin: auto;
-}
-
-.footer-container {
-  box-sizing: border-box;
-  margin: 0px auto;
-  min-width: 0px;
-  width: 100%;
-  max-width: 1280px;
-  padding-bottom: 0.5rem;
-}
-
-.footer p {
-  margin: 0.5rem;
-}
 
 .content {
   min-height: 95vh;
@@ -497,8 +444,9 @@ Sidebar
 }
 
 .untranslated-notice {
-  background-color: var(--color-warning);
-  color: var(--color-on-warning);
+  background-color: var(--bg-color-warning);
+  border-left: 4px solid var(--colors-hover);
+  color: var(--colors-text);
   padding: 1rem;
   border-radius: 0.5rem;
   margin-bottom: 1rem;
@@ -516,4 +464,82 @@ Sidebar
   fill: var(--colors-hover);
   height: 1rem;
   width: 1rem;
+}
+
+/* 1. EL CONTENEDOR GENERAL
+   Mantiene el flujo de tu página y le da aire arriba y abajo. */
+.footer {
+  width: 100%;
+  padding: 2rem 0 4rem 0;
+}
+
+/* 2. EL ENVOLTORIO DE ANCHO MÁXIMO
+   Esta es la clave mágica. Al ponerle el mismo ancho de tus proyectos (1040px)
+   y usar margin: 0 auto, el bloque compacto se moverá hacia la derecha y
+   se alineará perfectamente con el inicio de tus tarjetas de arriba. */
+.footer-container {
+  box-sizing: border-box;
+  margin: 0 auto;         /* Centra este contenedor invisible respecto a tus proyectos */
+  width: 100%;
+  max-width: 120ch;
+  padding: 0 1rem;        /* Un pequeño colchón para que no toque los bordes en pantallas medianas */
+}
+
+/* 3. TU BLOQUE COMPACTO ORIGINAL
+   Mantiene tu logo al lado del texto, justo como lo diseñaste. */
+.footer-profile {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;    /* Centra verticalmente el círculo con el bloque de texto */
+  justify-content: flex-start; /* <── Hace que el bloque empiece pegado al ras izquierdo de tus proyectos */
+  gap: 2.2rem;            /* Espacio perfecto y moderno entre tu círculo y tus letras */
+}
+
+/* Tamaño de tu logotipo */
+.footer-profile-image {
+  width: 5.5rem;
+  height: 5.5rem;
+  flex-shrink: 0;         /* Evita que el círculo se aplaste */
+}
+
+.footer-profile-image svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Tu columna de textos original */
+.footer-profile-text {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;            /* Un espaciado sutil para que no se sienta amontonado */
+}
+
+/* Limpieza de márgenes heredados en tus textos */
+.footer-profile-text p,
+.footer-profile-text div {
+  margin: 0;
+  padding: 0;
+  line-height: 1.4;
+}
+
+/* Tu nombre limpio (sans-serif para hacer match con el sidebar) y sin subrayado tosco */
+.footer-profile-text .footer-name {
+  margin: 0;
+  color: var(--colors-primary);
+  text-decoration: none;  /* Removemos el subrayado azul grueso que se veía raro */
+  font-size: 1.6rem;
+  font-weight: 700;
+  font-family: inherit;   /* Hereda la fuente de tu menú */
+  letter-spacing: -0.3px;
+}
+
+/* Tu subtítulo de rol */
+.footer-profile-text .footer-role {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #666;            /* Un tono gris suave para darle jerarquía al nombre */
 }

@@ -70,62 +70,6 @@
   color: var(--colors-primary);
 }
 
-.pybaq-callout {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  padding: 1.25rem 1.5rem;
-  border-radius: 10px;
-  text-decoration: none;
-  background: var(--colors-sidebar-background);
-  color: var(--colors-sidebar-text);
-  transition: opacity 0.2s ease-out;
-}
-
-.pybaq-callout:hover {
-  opacity: 0.9;
-}
-
-.pybaq-header {
-  display: flex;
-  align-items: baseline;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
-.pybaq-label {
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--colors-sidebar-hover);
-}
-
-.pybaq-since {
-  font-size: 0.85rem;
-  color: var(--colors-sidebar-text);
-  opacity: 0.8;
-}
-
-.pybaq-role {
-  font-size: 0.85rem;
-  color: var(--colors-sidebar-text);
-  opacity: 0.95;
-}
-
-.pybaq-desc {
-  margin: 0;
-  font-size: 0.95rem;
-  line-height: 1.5;
-  color: var(--colors-sidebar-text);
-}
-
-.pybaq-cta {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--colors-sidebar-hover);
-  margin-top: 0.25rem;
-}
 .home-bio {
   display: flex;
   flex-wrap: wrap;
