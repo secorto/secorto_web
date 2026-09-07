@@ -16,7 +16,7 @@ const isCurrentPage = Astro.url.pathname === item.href
   aria-label={text}
   {...isCurrentPage && { 'aria-current': 'page' }}
   data-testid={`lang-${item.locale}`}
-  class:list={[{ active: isCurrentPage }]}
+  class:list={['lang-link', { 'is-active': isCurrentPage }]}
 >
   {text}
 </a>

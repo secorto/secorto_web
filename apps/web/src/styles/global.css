@@ -15,10 +15,9 @@
   --colors-highlight: rgba(255, 229, 100, 0.2);
   --colors-heading: #1F1E24;
   --colors-blogBg: #eee;
-  --colors-sidebar-background: #004f53;
+  --colors-sidebar-background: linear-gradient(180deg, #004f53, #002f33);
   --colors-sidebar-text: #fff;
   --colors-sidebar-hover: #B8FFFF;
-  --colors-sidebar-disabled: #D9BAE8;
 }
 
 .dark {
@@ -149,7 +148,7 @@ Sidebar
 .sidebar a, .sidebar .disabled {
   font-size: 1.2rem;
   font-weight: 500;
-  background: var(--colors-sidebar-background);
+  background: transparent;
   font-family: "Ubuntu", sans-serif;
   text-decoration: none;
   padding-top: 0.3em;
@@ -162,7 +161,6 @@ Sidebar
 }
 
 .sidebar .disabled {
-  color: var(--colors-sidebar-disabled);
   cursor: not-allowed;
 }
 
@@ -404,4 +402,77 @@ Sidebar
   .sidebar.sidebar-open {
     transform: translateX(0px);
   }
+}
+
+.lang-link {
+  text-decoration: none;
+  font-weight: 500; /* Peso base de tu sidebar */
+  color: var(--colors-sidebar-text); /* Color regular del menú */
+
+  /* RESERVA DE ESPACIO CLAVE: */
+  /* Inyectamos el mismo padding y un borde transparente del mismo grosor (3px) */
+  padding: 4px 12px;
+  border-left: 3px solid transparent;
+  border-radius: 6px;
+  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+/* Estado Hover para los idiomas que NO están activos */
+.lang-link:not(.is-active):hover {
+  color: var(--colors-sidebar-hover);
+}
+
+/* El estado activo consume el espacio previamente reservado */
+.lang-link.is-active {
+  color: var(--bg-color-light);
+  background-color: var(--bg-color-dark);
+  border-left-color: var(--colors-sidebar-hover); /* Solo pintamos el borde transparente */
+  pointer-events: none;
+
+  /* Tu truco maestro de 0.2px para dar presencia sin alterar el ancho */
+  text-shadow: 0.2px 0 0 currentColor, -0.2px 0 0 currentColor;
+}
+
+.language-picker {
+  display: flex;
+  justify-content: space-around;
+  min-height: 1.5rem;
+  align-items: center;
+  padding: 0.5rem;
+}
+
+/* Base común para los enlaces del menú principal (About, Blog, Charlas...) */
+.sidebar-links a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--colors-sidebar-text);
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: 500;
+  padding-top: 0.3em;
+  padding-bottom: 0.3em;
+  border-radius: 6px;
+
+
+  /* RESERVA DE ESPACIO CLAVE: */
+  /* Inyectamos el mismo padding izquierdo y un borde izquierdo invisible */
+  border-left: 3px solid transparent;
+  padding-left: 0.5rem;
+
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Estado Hover para las secciones inactivas */
+.sidebar-links a:not([aria-current="page"]):hover {
+  color: var(--colors-sidebar-hover);
+}
+
+/* Sección activa inyectada dinámicamente por tu Sidebar.astro */
+.sidebar-links a[aria-current="page"] {
+  border-left-color: var(--colors-sidebar-hover); /* Pintamos la línea turquesa */
+
+  /* Tu truco maestro milimétrico de presencia tipográfica */
+  text-shadow: 0.2px 0 0 currentColor, -0.2px 0 0 currentColor;
+  background: rgba(0,0,0,0.15);
 }
