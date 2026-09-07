@@ -1,8 +1,8 @@
 ---
 layout: "@layouts/HomeLayout.astro"
 locale: "en"
-title: "Homepage"
-subTitle: "I'm Sergio Carlos Orozco Torres"
+title: "SeCOrTo"
+subTitle: "Quality by design"
 highlights:
   - section: work
     slug: perficient
@@ -14,11 +14,12 @@ highlights:
     slug: 2023-09-27-devcontainers
 ---
 
-System Engineer specialized in quality.
+I'm Sergio Carlos Orozco Torres, a Systems Engineer specialized in software quality.
+
 I design reproducible pipelines and scalable test suites,
 with experience in banking, commerce, media, digital agencies, and public sector.
 
-This site ([secorto](/en/project/scot3004)) is a working demo:
-100% test coverage, E2E with Playwright, CI/CD in GitHub Actions.
+This site ([secorto](/en/project/scot3004)) is a on of those principles: 100% test coverage,
+E2E with Playwright, and CI/CD in GitHub Actions.
 
 Explore: [GitHub](https://github.com/scot3004) · [About me](/en/about)
