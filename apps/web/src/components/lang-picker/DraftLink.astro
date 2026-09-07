@@ -10,7 +10,7 @@ interface Props {
 const { item } = Astro.props
 const label = languagesMap[item.locale]
 const title = ui[item.locale]['translation.disabled.draft']
-const isCurrentPage = Astro.url.pathname === item.href
+const isCurrentLocale = Astro.currentLocale === item.locale
 ---
 
 <a
@@ -18,8 +18,8 @@ const isCurrentPage = Astro.url.pathname === item.href
   aria-label={`${title}: ${label}`}
   title={title}
   data-testid={`lang-${item.locale}`}
-  class:list={['lang-link', { 'is-active': isCurrentPage }]}
-  {...isCurrentPage && { 'aria-current': 'page' }}
+  class:list={['lang-link', { 'is-active': isCurrentLocale }]}
+  {...isCurrentLocale && { 'aria-current': 'page' }}
 >
   {label} <PreliminaryIcon />
 </a>
