@@ -224,6 +224,7 @@ Sidebar
   justify-content: space-around;
   min-height: 1.5rem;
   align-items: center;
+  padding: 0.5rem;
 }
 
 .language-picker a,
@@ -397,14 +398,6 @@ Sidebar
 
   /* Tu truco maestro de 0.2px para dar presencia sin alterar el ancho */
   text-shadow: 0.2px 0 0 currentColor, -0.2px 0 0 currentColor;
-}
-
-.language-picker {
-  display: flex;
-  justify-content: space-around;
-  min-height: 1.5rem;
-  align-items: center;
-  padding: 0.5rem;
 }
 
 /* Base común para los enlaces del menú principal (About, Blog, Charlas...) */

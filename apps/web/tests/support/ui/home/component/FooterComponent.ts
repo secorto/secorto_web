@@ -6,7 +6,7 @@ import type { Loadable, LocalizedPage } from '@tests/support/ui/shared/contracts
 
 export class FooterComponent implements Loadable, LocalizedPage<void> {
   constructor(
-    readonly avatar: TargetComponent,
+    readonly logo: TargetComponent,
     readonly follow: TargetComponent,
   ) {}
 
@@ -20,7 +20,7 @@ export class FooterComponent implements Loadable, LocalizedPage<void> {
     return verifyStep('footer is localized correctly', async ({ expect }) => {
       const i18n = ui[locale]
       await this.follow.shouldHaveText(expect, i18n['footer.follow'])
-      await this.avatar.shouldHaveText(expect, i18n['footer.logo_alt'])
+      await this.logo.shouldHaveText(expect, i18n['footer.logo_alt'])
     })
   }
 }

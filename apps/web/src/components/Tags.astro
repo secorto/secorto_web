@@ -36,7 +36,6 @@ const t = useTranslations(locale)
 </nav>
 
 <style>
-  /* 1. Semántica y Flexbox Limpio */
   .tags-list {
     display: flex;
     flex-wrap: wrap;
@@ -45,7 +44,6 @@ const t = useTranslations(locale)
     margin: 0;
   }
 
-  /* 2. El enlace es el contenedor directo del diseño (Adiós etiqueta <p> anidada) */
   .tag {
     display: inline-block;
     margin: 0.5rem;
@@ -58,8 +56,7 @@ const t = useTranslations(locale)
     transition: border-color 0.2s ease, color 0.2s ease;
   }
 
-  /* 3. Hover sutil */
-  .tag:focus {
+  .tag:focus, .tag:hover {
     border-color: var(--colors-hover);
     color: var(--colors-hover);
   }
@@ -71,7 +68,6 @@ const t = useTranslations(locale)
     outline-offset: 2px;
   }
 
-  /* 4. Estado activo e inaccesible a clics repetidos */
   .tag.is-active {
     border-style: dashed;
     border-color: var(--colors-hover);
