@@ -42,7 +42,7 @@ const isSectionActive = (targetUrl: string, isHome = false) => {
         {...isSectionActive(homeUrl, true) && { 'aria-current': 'page' }}
       >
         <div class="sidebar-image">
-          <Image src={Photo} alt={t('footer.avatar_alt')} width="256" height="256" class="footer-avatar" data-testid="footer-avatar" />
+          <Image src={Photo} alt={t('sidebar.photo_alt')} width="256" height="256" data-testid="sidebar-photo" />
         </div>
         <p class="sidebar-title" data-testid="sidebar-title">Sergio Carlos Orozco Torres</p>
       </a>

@@ -9,13 +9,11 @@ import type { Loadable, LocalizedPage } from '@tests/support/ui/shared/contracts
 export class FooterComponent implements Loadable, LocalizedPage<void> {
   constructor(
     readonly avatar: Image,
-    readonly role: TargetComponent,
     readonly follow: TargetComponent,
   ) {}
 
   shouldBeLoaded() {
     return verifyStep('footer is loaded', async ({ expect }) => {
-      await this.role.shouldBeVisible(expect)
       await this.follow.shouldBeVisible(expect)
     })
   }
@@ -29,17 +27,15 @@ export class FooterComponent implements Loadable, LocalizedPage<void> {
   shouldBeLocalized(locale: UILanguages) {
     return verifyStep('footer is localized correctly', async ({ expect }) => {
       const i18n = ui[locale]
-      await this.role.shouldHaveText(expect, i18n['footer.role'])
       await this.follow.shouldHaveText(expect, i18n['footer.follow'])
-      await this.avatar.shouldHaveAttribute(expect, 'alt', i18n['footer.avatar_alt'])
+      await this.avatar.shouldHaveText(expect, i18n['footer.logo_alt'])
     })
   }
 }
 
 export function footerPage(page: Page) {
   return new FooterComponent(
-    image('footer avatar', page.getByTestId('footer-avatar')),
-    target('footer role', page.getByTestId('footer-role')),
+    image('footer logo', page.getByTestId('footer-logo')),
     target('footer follow', page.getByTestId('footer-follow')),
   )
 }

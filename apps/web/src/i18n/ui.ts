@@ -37,11 +37,12 @@ export const ui = {
     'tags.index_description': 'Browse all tags grouped by content type.',
     'tags.index_no_tags': 'No tags available.',
     'tags.available_in': 'Available in',
-    'footer.avatar_alt': 'Featured image',
+    'footer.logo_alt': 'SeCOrTo logo',
     'footer.role': 'Software developer',
     'footer.follow': 'Follow me: ',
     'footer.tags': 'Browse tags',
     'tags.filter': 'Filter by tags',
+    'sidebar.photo_alt': 'Photo of Sergio Carlos Orozco Torres',
   },
   es: {
     'site.description': 'Blog personal de Sergio Orozco - Desarrollador, Conferencista, Entusiasta del Open Source',
@@ -66,11 +67,12 @@ export const ui = {
     'tags.index_description': 'Explora todas las etiquetas agrupadas por tipo de contenido.',
     'tags.index_no_tags': 'No hay etiquetas disponibles.',
     'tags.available_in': 'Disponible en',
-    'footer.avatar_alt': 'Foto destacada',
+    'footer.logo_alt': 'SeCOrTo logo',
     'footer.role': 'Desarrollador de software',
     'footer.follow': 'Sígueme en: ',
     'footer.tags': 'Explorar etiquetas',
     'tags.filter': 'Filtrar por etiquetas',
+    'sidebar.photo_alt': 'Foto de Sergio Carlos Orozco Torres'
   },
 } as const
 
