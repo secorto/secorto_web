@@ -41,6 +41,7 @@ export const ui = {
     'footer.role': 'Software developer',
     'footer.follow': 'Follow me: ',
     'footer.tags': 'Browse tags',
+    'tags.filter': 'Filter by tags',
   },
   es: {
     'site.description': 'Blog personal de Sergio Orozco - Desarrollador, Conferencista, Entusiasta del Open Source',
@@ -69,6 +70,7 @@ export const ui = {
     'footer.role': 'Desarrollador de software',
     'footer.follow': 'Sígueme en: ',
     'footer.tags': 'Explorar etiquetas',
+    'tags.filter': 'Filtrar por etiquetas',
   },
 } as const
 

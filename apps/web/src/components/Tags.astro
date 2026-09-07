@@ -2,6 +2,7 @@
 import { type SectionType } from '@domain/section'
 import { tagRoutes, type Tag } from '@domain/tags'
 import type { UILanguages } from '@i18n/ui'
+import { useTranslations } from '@i18n/utils'
 
 interface Props {
   tags: readonly Tag[]
@@ -11,9 +12,10 @@ interface Props {
 }
 
 const { tags, section, locale, current } = Astro.props;
+const t = useTranslations(locale)
 ---
 
-<nav class="tags-container" aria-label="Filtrar por etiquetas" data-testid="tags">
+<nav class="tags-container" aria-label={t('tags.filter')} data-testid="tags">
   <ul class="tags-list">
     {tags.map((tag) => {
       const isCurrentTag = current === tag;
@@ -57,11 +59,16 @@ const { tags, section, locale, current } = Astro.props;
   }
 
   /* 3. Hover sutil */
-  .tag:hover,
   .tag:focus {
     border-color: var(--colors-hover);
     color: var(--colors-hover);
-    outline: none;
+  }
+
+  .tag:focus-visible {
+    border-color: var(--colors-hover);
+    color: var(--colors-hover);
+    outline: 2px solid var(--colors-hover);
+    outline-offset: 2px;
   }
 
   /* 4. Estado activo e inaccesible a clics repetidos */

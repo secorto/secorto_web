@@ -235,6 +235,7 @@ Sidebar
   width: 1em;
   height: 1em;
   flex-shrink: 0;
+  fill: currentColor;
 }
 
 .hamburger {
@@ -436,7 +437,7 @@ Sidebar
 }
 
 /* Estado Hover para los idiomas que NO están activos */
-.lang-link:not(.is-active):hover {
+.lang-link:not(.is-active):not(.disabled):hover {
   color: var(--colors-sidebar-hover);
 }
 
