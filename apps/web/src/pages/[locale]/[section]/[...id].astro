@@ -37,7 +37,7 @@ const pageDescription = getSeoDescription(entry.original.data)
   />
   {entry.draft && (
     <div class="untranslated-notice" role="status">
-      <p><PreliminaryIcon /> {t('post.draft_notice')}</p>
+      <p><PreliminaryIcon aria-hidden="true" /> {t('post.draft_notice')}</p>
     </div>
   )}
 

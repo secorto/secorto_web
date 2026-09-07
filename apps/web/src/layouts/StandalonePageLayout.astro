@@ -37,7 +37,7 @@ const t = useTranslations(locale)
   />
   {draft && (
     <div class="untranslated-notice" role="status">
-      <p><PreliminaryIcon /> {t('page.draft_notice')}</p>
+      <p><PreliminaryIcon aria-hidden="true" /> {t('page.draft_notice')}</p>
     </div>
   )}
 
