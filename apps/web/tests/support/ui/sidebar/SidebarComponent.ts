@@ -66,6 +66,6 @@ export function sidebarPage(page: Page) {
     target('sidebar toggle', page.locator('.sidebar-toggle')),
     target('sidebar title', page.getByTestId('sidebar-title')),
     target('sidebar about link', page.getByTestId('sidebar-about')),
-    target('sidebar logo', page.locator('nav.sidebar svg.sidebar-logo')),
+    target('sidebar photo', page.getByTestId('sidebar-photo')),
   )
 }

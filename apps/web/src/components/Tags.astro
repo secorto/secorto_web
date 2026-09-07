@@ -1,53 +1,78 @@
 ---
-import { type SectionType } from '@domain/section';
-import { tagRoutes, type Tag } from '@domain/tags';
-import type { UILanguages } from '@i18n/ui';
+import { type SectionType } from '@domain/section'
+import { tagRoutes, type Tag } from '@domain/tags'
+import type { UILanguages } from '@i18n/ui'
+import { useTranslations } from '@i18n/utils'
 
 interface Props {
-	tags: readonly Tag[],
+  tags: readonly Tag[]
   section: SectionType
   locale: UILanguages
   current?: Tag
 }
-const { tags, section, locale, current } = Astro.props;
+
+const { tags, section, locale, current } = Astro.props
+const t = useTranslations(locale)
 ---
 
-<div class="tags" data-testid="tags">
-  {tags.map((tag) => (
-    <a href={tagRoutes.getSectionTagURL(section, locale, tag)} class={current === tag ? "tag active" : "tag"} data-testid={`tag-link-${tag}`}>
-      <p>{tagRoutes.getTagRoute(tag, locale)}</p>
-    </a>
-  ))}
-</div>
+<nav class="tags-container" aria-label={t('tags.filter')} data-testid="tags">
+  <ul class="tags-list">
+    {tags.map((tag) => {
+      const isCurrentTag = current === tag
+      return (
+        <li>
+          <a
+            href={tagRoutes.getSectionTagURL(section, locale, tag)}
+            class:list={['tag', { 'is-active': isCurrentTag }]}
+            {...isCurrentTag && { 'aria-current': 'location' }}
+            data-testid={`tag-link-${tag}`}
+          >
+            {tagRoutes.getTagRoute(tag, locale)}
+          </a>
+        </li>
+      )
+    })}
+  </ul>
+</nav>
 
 <style>
-  .tags {
+  .tags-list {
     display: flex;
     flex-wrap: wrap;
-  }
-
-  .tags a {
-    text-decoration: none;
+    list-style: none;
+    padding: 0;
+    margin: 0;
   }
 
   .tag {
+    display: inline-block;
     margin: 0.5rem;
     border: dotted 2px var(--colors-primary);
-    border-radius: .5em;
+    border-radius: 0.5em;
+    text-decoration: none;
+    font-size: 1.15em;
+    padding: 0.5rem 1rem;
+    color: var(--colors-primary); /* Asegura color base semántico */
+    transition: border-color 0.2s ease, color 0.2s ease;
   }
 
-  .tag.active {
-    border: dashed 2px var(--colors-hover);
+  .tag:focus, .tag:hover {
+    border-color: var(--colors-hover);
     color: var(--colors-hover);
   }
 
-  .tag p {
-    font-size: 1.15em;
-    padding: .5rem 1rem;
-    margin: 0 auto;
+  .tag:focus-visible {
+    border-color: var(--colors-hover);
+    color: var(--colors-hover);
+    outline: 2px solid var(--colors-hover);
+    outline-offset: 2px;
   }
 
-  .tag:hover {
+  .tag.is-active {
+    border-style: dashed;
     border-color: var(--colors-hover);
+    color: var(--colors-hover);
+    text-shadow: 0.2px 0 0 currentColor, -0.2px 0 0 currentColor;
+    pointer-events: none; /* Si ya está activo, no tiene sentido volver a hacer clic */
   }
 </style>

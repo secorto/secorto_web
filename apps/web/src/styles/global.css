@@ -15,10 +15,10 @@
   --colors-highlight: rgba(255, 229, 100, 0.2);
   --colors-heading: #1F1E24;
   --colors-blogBg: #eee;
-  --colors-sidebar-background: #004f53;
+  --colors-sidebar-background: linear-gradient(180deg, #004f53, #002f33);
   --colors-sidebar-text: #fff;
   --colors-sidebar-hover: #B8FFFF;
-  --colors-sidebar-disabled: #D9BAE8;
+  --bg-color-warning: #F4EDC5;
 }
 
 .dark {
@@ -31,6 +31,7 @@
   --colors-highlight: #E7B8FF;
   --colors-heading: #fff;
   --colors-blogBg: #0a0a0a;
+  --bg-color-warning: #2E2918;
 }
 
 html {
@@ -47,7 +48,7 @@ body {
   margin: 0 auto;
   width: 100%;
   max-width: 120ch;
-  padding: 1rem 1rem 10rem;
+  padding: 1rem 1rem;
   line-height: 1.5;
   overflow-wrap: break-word;
 }
@@ -149,7 +150,7 @@ Sidebar
 .sidebar a, .sidebar .disabled {
   font-size: 1.2rem;
   font-weight: 500;
-  background: var(--colors-sidebar-background);
+  background: transparent;
   font-family: "Ubuntu", sans-serif;
   text-decoration: none;
   padding-top: 0.3em;
@@ -162,7 +163,7 @@ Sidebar
 }
 
 .sidebar .disabled {
-  color: var(--colors-sidebar-disabled);
+  color: var(--colors-sidebar-text);
   cursor: not-allowed;
 }
 
@@ -214,11 +215,34 @@ Sidebar
   justify-content: center;
 }
 
+.sidebar-image img {
+  border-radius: 50%;
+}
+
 .language-picker {
   display: flex;
   justify-content: space-around;
   min-height: 1.5rem;
   align-items: center;
+  padding: 0.5rem;
+}
+
+.language-picker a,
+.language-picker span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  line-height: 1;
+}
+
+.language-picker a svg,
+.language-picker span svg {
+  display: block;
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  fill: currentColor;
 }
 
 .hamburger {
@@ -316,65 +340,6 @@ Sidebar
   font-size: 2.625rem;
 }
 
-.footer {
-  margin-top: 1rem;
-  margin-left: 0px;
-  margin-right: 0px;
-  position: absolute;
-  bottom: 1.5rem;
-  width: 100%;
-  height: 6rem;
-  padding-left: 2rem;
-  padding-right: 2rem;
-}
-
-.footer-profile {
-  box-sizing: border-box;
-  margin: 14.5px 0px;
-  min-width: 0px;
-  display: flex;
-  -moz-box-align: center;
-  align-items: center;
-  border-top: 1px solid var(--colors-primary);
-  padding-top: 14.5px;
-}
-
-.footer-name {
-  box-sizing: border-box;
-  margin: 0px;
-  min-width: 0px;
-  color: var(--colors-primary);
-  transition: color 0.3s linear;
-  overflow-wrap: break-word;
-  text-decoration: none;
-  font-family:'Dancing Script', 'Segoe Script', 'z003',  cursive;
-  font-size: 2rem;
-}
-
-.footer-avatar {
-  margin-right: 14.5px;
-  border-radius: 50%;
-}
-
-.footer-profile-text {
-  box-sizing: border-box;
-  min-width: 0px;
-  text-align: center;
-  margin: auto;
-}
-
-.footer-container {
-  box-sizing: border-box;
-  margin: 0px auto;
-  min-width: 0px;
-  width: 100%;
-  max-width: 1280px;
-  padding-bottom: 0.5rem;
-}
-
-.footer p {
-  margin: 0.5rem;
-}
 
 .content {
   min-height: 95vh;
@@ -404,4 +369,189 @@ Sidebar
   .sidebar.sidebar-open {
     transform: translateX(0px);
   }
+}
+
+.lang-link {
+  text-decoration: none;
+  font-weight: 500; /* Peso base de tu sidebar */
+  color: var(--colors-sidebar-text); /* Color regular del menú */
+
+  /* RESERVA DE ESPACIO CLAVE: */
+  /* Inyectamos el mismo padding y un borde transparente del mismo grosor (3px) */
+  padding: 4px 12px;
+  border-left: 3px solid transparent;
+  border-radius: 6px;
+  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+/* Estado Hover para los idiomas que NO están activos */
+.lang-link:not(.is-active):not(.disabled):hover {
+  color: var(--colors-sidebar-hover);
+}
+
+/* El estado activo consume el espacio previamente reservado */
+.lang-link.is-active {
+  color: var(--bg-color-light);
+  background-color: var(--bg-color-dark);
+  border-left-color: var(--colors-sidebar-hover); /* Solo pintamos el borde transparente */
+  pointer-events: none;
+
+  /* Tu truco maestro de 0.2px para dar presencia sin alterar el ancho */
+  text-shadow: 0.2px 0 0 currentColor, -0.2px 0 0 currentColor;
+}
+
+/* Base común para los enlaces del menú principal (About, Blog, Charlas...) */
+.sidebar-links a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--colors-sidebar-text);
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: 500;
+  padding-top: 0.3em;
+  padding-bottom: 0.3em;
+  border-radius: 6px;
+
+
+  /* RESERVA DE ESPACIO CLAVE: */
+  /* Inyectamos el mismo padding izquierdo y un borde izquierdo invisible */
+  border-left: 3px solid transparent;
+  padding-left: 0.5rem;
+
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Estado Hover para las secciones inactivas */
+.sidebar-links a:not([aria-current="page"]):hover {
+  color: var(--colors-sidebar-hover);
+}
+
+/* Sección activa inyectada dinámicamente por tu Sidebar.astro */
+.sidebar-links a[aria-current="page"] {
+  border-left-color: var(--colors-sidebar-hover); /* Pintamos la línea turquesa */
+
+  /* Tu truco maestro milimétrico de presencia tipográfica */
+  text-shadow: 0.2px 0 0 currentColor, -0.2px 0 0 currentColor;
+  background: rgba(0,0,0,0.15);
+}
+
+.untranslated-notice {
+  background-color: var(--bg-color-warning);
+  border-left: 4px solid var(--colors-hover);
+  color: var(--colors-text);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.untranslated-notice p {
+  margin: 0;
+  font-weight: bold;
+}
+
+.untranslated-notice svg {
+  margin-right: 0.5rem;
+  fill: var(--colors-hover);
+  height: 1rem;
+  width: 1rem;
+}
+
+/* 1. EL CONTENEDOR GENERAL
+   Mantiene el flujo de tu página y le da aire arriba y abajo. */
+.footer {
+  width: 100%;
+  padding: 2rem 0 4rem 0;
+}
+
+/* 2. EL ENVOLTORIO DE ANCHO MÁXIMO
+   Esta es la clave mágica. Al ponerle el mismo ancho de tus proyectos (1040px)
+   y usar margin: 0 auto, el bloque compacto se moverá hacia la derecha y
+   se alineará perfectamente con el inicio de tus tarjetas de arriba. */
+.footer-container {
+  box-sizing: border-box;
+  margin: 0 auto;         /* Centra este contenedor invisible respecto a tus proyectos */
+  width: 100%;
+  max-width: 120ch;
+  padding: 0 1rem;        /* Un pequeño colchón para que no toque los bordes en pantallas medianas */
+}
+
+/* 3. TU BLOQUE COMPACTO ORIGINAL
+   Mantiene tu logo al lado del texto, justo como lo diseñaste. */
+.footer-profile {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;    /* Centra verticalmente el círculo con el bloque de texto */
+  justify-content: flex-start; /* <── Hace que el bloque empiece pegado al ras izquierdo de tus proyectos */
+  gap: 2.2rem;            /* Espacio perfecto y moderno entre tu círculo y tus letras */
+}
+
+/* Tamaño de tu logotipo */
+.footer-profile-image {
+  width: 5.5rem;
+  height: 5.5rem;
+  flex-shrink: 0;         /* Evita que el círculo se aplaste */
+}
+
+.footer-profile-image svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Tu columna de textos original */
+.footer-profile-text {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;            /* Un espaciado sutil para que no se sienta amontonado */
+}
+
+/* Limpieza de márgenes heredados en tus textos */
+.footer-profile-text p,
+.footer-profile-text div {
+  margin: 0;
+  padding: 0;
+  line-height: 1.4;
+}
+
+/* Tu nombre limpio (sans-serif para hacer match con el sidebar) y sin subrayado tosco */
+.footer-profile-text .footer-name {
+  margin: 0;
+  color: var(--colors-primary);
+  text-decoration: none;  /* Removemos el subrayado azul grueso que se veía raro */
+  font-size: 1.6rem;
+  font-weight: 700;
+  font-family: inherit;   /* Hereda la fuente de tu menú */
+  letter-spacing: -0.3px;
+}
+
+/* Tu subtítulo de rol */
+.footer-profile-text .footer-role {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #666;            /* Un tono gris suave para darle jerarquía al nombre */
+}
+
+/* Contenedor que agrupa el texto "Follow me:" y tus redes */
+.footer-social-channels {
+  display: flex;
+  flex-wrap: wrap;          /* Permite que se acomoden si la pantalla es muy angosta */
+  align-items: center;
+  gap: 0.5rem;              /* ──> Crea un espacio uniforme de separación entre elementos */
+}
+
+/* Estilo para los enlaces individuales */
+.footer-social-channels a {
+  color: var(--colors-primary);
+  text-decoration: underline;
+  transition: opacity 0.2s ease;
+}
+
+.footer-social-channels a:hover {
+  opacity: 0.8;
 }

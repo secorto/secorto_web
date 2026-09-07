@@ -9,6 +9,7 @@ import { useTranslations } from '@i18n/utils'
 import { getSeoDescription } from '@domain/post'
 import { languages } from '@i18n/ui'
 import { sectionRoutes } from '@domain/section'
+import PreliminaryIcon from '@assets/img/preliminary.svg'
 
 export async function getStaticPaths() {
   return await getStaticPathsEntries(sectionRoutes, getCollection, languages)
@@ -36,7 +37,7 @@ const pageDescription = getSeoDescription(entry.original.data)
   />
   {entry.draft && (
     <div class="untranslated-notice" role="status">
-      <p>{t('post.draft_notice')}</p>
+      <p><PreliminaryIcon aria-hidden="true" /> {t('post.draft_notice')}</p>
     </div>
   )}
 

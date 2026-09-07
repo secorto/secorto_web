@@ -5,15 +5,16 @@ import { createStandalonePageLinks } from '@secorto/i18n'
 import SEOHead from '@components/SEOHead.astro'
 import { languages } from '@i18n/ui'
 import { standalonePageRoutes } from '@domain/standalonePage'
+import { useTranslations } from '@i18n/utils'
+import PreliminaryIcon from '@assets/img/preliminary.svg'
 
 type Props = MarkdownLayoutProps<{
   title: string
-  draft?: boolean
   translationKey: string
 }>
 
 const { frontmatter } = Astro.props
-const { title, draft, translationKey } = frontmatter
+const { title, translationKey } = frontmatter
 const path = Astro.url.pathname.slice(1).replace(/\/$/, '')
 
 const links = createStandalonePageLinks(
@@ -22,6 +23,10 @@ const links = createStandalonePageLinks(
   standalonePageRoutes,
   languages,
 )
+const locale = languages.fromString(Astro.currentLocale)
+const page = standalonePageRoutes.getPage(translationKey)
+const draft = standalonePageRoutes.routes[page][locale]?.draft ?? false
+const t = useTranslations(locale)
 ---
 
 <BaseLayout pageTitle={title} links={links}>
@@ -30,5 +35,11 @@ const links = createStandalonePageLinks(
     links={links}
     noindex={Boolean(draft)}
   />
+  {draft && (
+    <div class="untranslated-notice" role="status">
+      <p><PreliminaryIcon aria-hidden="true" /> {t('page.draft_notice')}</p>
+    </div>
+  )}
+
   <slot/>
 </BaseLayout>
