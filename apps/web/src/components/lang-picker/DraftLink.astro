@@ -1,6 +1,7 @@
 ---
 import type { DraftLink } from '@domain/translationLink'
 import { languagesMap, ui, type UILanguages } from '@i18n/ui'
+import PreliminaryIcon from '@assets/img/preliminary.svg'
 
 interface Props {
   item: DraftLink<UILanguages>
@@ -8,8 +9,8 @@ interface Props {
 
 const { item } = Astro.props
 const label = languagesMap[item.locale]
-const text = `${label} ⌛`
 const title = ui[item.locale]['translation.disabled.draft']
+const isCurrentPage = Astro.url.pathname === item.href
 ---
 
 <a
@@ -17,6 +18,8 @@ const title = ui[item.locale]['translation.disabled.draft']
   aria-label={`${title}: ${label}`}
   title={title}
   data-testid={`lang-${item.locale}`}
+  class:list={['lang-link', { 'is-active': isCurrentPage }]}
+  {...isCurrentPage && { 'aria-current': 'page' }}
 >
-  {text}
+  {label} <PreliminaryIcon />
 </a>

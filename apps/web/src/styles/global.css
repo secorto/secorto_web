@@ -161,6 +161,7 @@ Sidebar
 }
 
 .sidebar .disabled {
+  color: var(--colors-sidebar-text);
   cursor: not-allowed;
 }
 
@@ -217,6 +218,23 @@ Sidebar
   justify-content: space-around;
   min-height: 1.5rem;
   align-items: center;
+}
+
+.language-picker a,
+.language-picker span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  line-height: 1;
+}
+
+.language-picker a svg,
+.language-picker span svg {
+  display: block;
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
 }
 
 .hamburger {
@@ -475,4 +493,26 @@ Sidebar
   /* Tu truco maestro milimétrico de presencia tipográfica */
   text-shadow: 0.2px 0 0 currentColor, -0.2px 0 0 currentColor;
   background: rgba(0,0,0,0.15);
+}
+
+.untranslated-notice {
+  background-color: var(--color-warning);
+  color: var(--color-on-warning);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.untranslated-notice p {
+  margin: 0;
+  font-weight: bold;
+}
+
+.untranslated-notice svg {
+  margin-right: 0.5rem;
+  fill: var(--colors-hover);
+  height: 1rem;
+  width: 1rem;
 }
