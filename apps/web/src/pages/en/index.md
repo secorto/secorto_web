@@ -19,7 +19,7 @@ I'm Sergio Carlos Orozco Torres, a Systems Engineer specialized in software qual
 I design reproducible pipelines and scalable test suites,
 with experience in banking, commerce, media, digital agencies, and public sector.
 
-This site ([secorto](/en/project/scot3004)) is a on of those principles: 100% test coverage,
+This site ([secorto](/en/project/scot3004)) is a demonstration of those principles: 100% test coverage,
 E2E with Playwright, and CI/CD in GitHub Actions.
 
 Explore: [GitHub](https://github.com/scot3004) · [About me](/en/about)

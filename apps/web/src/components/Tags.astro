@@ -11,14 +11,14 @@ interface Props {
   current?: Tag
 }
 
-const { tags, section, locale, current } = Astro.props;
+const { tags, section, locale, current } = Astro.props
 const t = useTranslations(locale)
 ---
 
 <nav class="tags-container" aria-label={t('tags.filter')} data-testid="tags">
   <ul class="tags-list">
     {tags.map((tag) => {
-      const isCurrentTag = current === tag;
+      const isCurrentTag = current === tag
       return (
         <li>
           <a
@@ -30,7 +30,7 @@ const t = useTranslations(locale)
             {tagRoutes.getTagRoute(tag, locale)}
           </a>
         </li>
-      );
+      )
     })}
   </ul>
 </nav>
