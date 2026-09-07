@@ -543,3 +543,22 @@ Sidebar
   font-weight: 500;
   color: #666;            /* Un tono gris suave para darle jerarquía al nombre */
 }
+
+/* Contenedor que agrupa el texto "Follow me:" y tus redes */
+.footer-social-channels {
+  display: flex;
+  flex-wrap: wrap;          /* Permite que se acomoden si la pantalla es muy angosta */
+  align-items: center;
+  gap: 0.5rem;              /* ──> Crea un espacio uniforme de separación entre elementos */
+}
+
+/* Estilo para los enlaces individuales */
+.footer-social-channels a {
+  color: var(--colors-primary);
+  text-decoration: underline;
+  transition: opacity 0.2s ease;
+}
+
+.footer-social-channels a:hover {
+  opacity: 0.8;
+}
