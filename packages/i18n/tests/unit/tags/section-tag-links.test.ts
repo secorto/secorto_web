@@ -93,7 +93,7 @@ describe('createSectionTagTranslationLinks', () => {
       missingLink('es'),
     ])
   })
-  it('uses localized URLs from tag routes', () => {
+  it('uses localized paths from tag routes', () => {
     const links =
       createSectionTagTranslationLinks(
         ['en', 'es'],
