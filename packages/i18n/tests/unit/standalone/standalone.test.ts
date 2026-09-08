@@ -12,9 +12,9 @@ describe('createStandalonePageLinks', () => {
   const routes = createStandalonePageRoutes(
     {
       home: {
-        en: { route: 'home' },
-        es: { route: 'inicio' },
-        fr: { route: 'accueil' },
+        en: { slug: 'home' },
+        es: { slug: 'inicio' },
+        fr: { slug: 'accueil' },
       },
     },
     locales,
@@ -25,7 +25,6 @@ describe('createStandalonePageLinks', () => {
       createStandalonePageLinks(
         'en/home',
         'unknown',
-        // @ts-expect-error unknown is not part of the standalone route contract
         routes,
         locales,
       )
@@ -38,8 +37,8 @@ describe('createStandalonePageLinks', () => {
     const customRoutes = createStandalonePageRoutes(
       {
         home: {
-          en: { route: 'home' },
-          es: { route: 'inicio' },
+          en: { slug: 'home' },
+          es: { slug: 'inicio' },
         },
       },
       locales,
@@ -103,9 +102,9 @@ describe('createStandalonePageLinks', () => {
     const customRoutes = createStandalonePageRoutes(
       {
         home: {
-          en: { route: 'home' },
-          es: { route: 'inicio', draft: true },
-          fr: { route: 'accueil' },
+          en: { slug: 'home' },
+          es: { slug: 'inicio', draft: true },
+          fr: { slug: 'accueil' },
         },
       },
       locales,
@@ -129,8 +128,8 @@ describe('createStandalonePageLinks', () => {
     const customRoutes = createStandalonePageRoutes(
       {
         home: {
-          en: { route: 'home' },
-          es: { route: 'inicio' },
+          en: { slug: 'home' },
+          es: { slug: 'inicio' },
         },
       },
       locales,

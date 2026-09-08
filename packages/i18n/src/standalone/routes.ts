@@ -1,7 +1,7 @@
 import type { LocalePathResolver } from '../core/locale'
 
 export interface StandalonePageEntry {
-  route: string
+  slug: string
   draft?: boolean
 }
 
@@ -41,20 +41,20 @@ export interface StandalonePageRoutes<
    * @returns The route slug without the locale prefix.
    * @throws {Error} When the page or locale combination is not registered.
    */
-  getPageRoute(page: TPage, locale: TLocale): string
+  getPageSlug(page: TPage, locale: TLocale): string
 
   /**
-   * Builds the URL for a standalone page in the given locale.
+   * Builds the path for a standalone page in the given locale.
    *
    * @param page Canonical standalone page key.
-   * @param locale Locale used to build the URL.
-   * @returns The locale-prefixed URL for the page.
+   * @param locale Locale used to build the path.
+   * @returns The locale-prefixed path for the page.
    * @throws {Error} When the page or locale combination is not registered.
    */
-  getPageURL(page: TPage, locale: TLocale): string
+  getPagePath(page: TPage, locale: TLocale): string
 }
 
-function ensureNoStandaloneRouteCollisions<
+function ensureNoStandaloneSlugCollisions<
   TPage extends string,
   TLocale extends string,
 >(
@@ -83,12 +83,12 @@ function ensureNoStandaloneRouteCollisions<
         )
       }
 
-      const key = `${locale}:${entry.route}`
+      const key = `${locale}:${entry.slug}`
       const other = seen.get(key)
 
       if (other) {
         throw new Error(
-          `Route collision detected in ${contextName}: The slug "${entry.route}" for locale "${locale}" is duplicated between "${other}" and "${page}".`,
+          `Slug collision detected in ${contextName}: The slug "${entry.slug}" for locale "${locale}" is duplicated between "${other}" and "${page}".`,
         )
       }
 
@@ -104,7 +104,7 @@ export function createStandalonePageRoutes<
   routes: Record<TPage, Partial<Record<TLocale, StandalonePageEntry>>>,
   locales: LocalePathResolver<TLocale>,
 ): StandalonePageRoutes<TPage, TLocale> {
-  ensureNoStandaloneRouteCollisions(routes, 'StandalonePageRoutes')
+  ensureNoStandaloneSlugCollisions(routes, 'StandalonePageRoutes')
 
   const pages = Object.freeze(Object.keys(routes) as TPage[])
 
@@ -131,24 +131,24 @@ export function createStandalonePageRoutes<
     return page
   }
 
-  const getPageRoute = (page: TPage, locale: TLocale): string => {
+  const getPageSlug = (page: TPage, locale: TLocale): string => {
     const entry = routes[page]?.[locale]
     if (!entry) {
       throw new Error(
         `Standalone page '${String(page)}' has no entry for locale '${String(locale)}'.`,
       )
     }
-    return entry.route
+    return entry.slug
   }
 
-  const getPageURL = (page: TPage, locale: TLocale): string =>
-    `${locales.getPath(locale)}/${getPageRoute(page, locale)}`
+  const getPagePath = (page: TPage, locale: TLocale): string =>
+    `${locales.getPath(locale)}/${getPageSlug(page, locale)}`
 
   return {
     routes,
     getPages,
     getPage,
-    getPageRoute,
-    getPageURL,
+    getPageSlug,
+    getPagePath,
   }
 }

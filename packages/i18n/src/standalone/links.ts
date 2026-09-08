@@ -27,7 +27,7 @@ export function createStandalonePageLinks<
     )
   }
 
-  if (currentEntry.route !== currentRoute) {
+  if (currentEntry.slug !== currentRoute) {
     throw new Error(
       `Route '${path}' does not belong to standalone page '${String(page)}'.`,
     )
@@ -40,7 +40,7 @@ export function createStandalonePageLinks<
       return missingLink(locale)
     }
 
-    const href = routes.getPageURL(page, locale)
+    const href = routes.getPagePath(page, locale)
     return entry.draft ? draftLink(href, locale) : availableLink(href, locale)
   })
 }

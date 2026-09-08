@@ -24,8 +24,8 @@ const t = useTranslations(currentLocale)
 const currentPath = Astro.url.pathname
 
 // 2. Precalculamos las URLs de control para limpiar el marcado inferior
-const homeUrl = getRelativeLocaleUrl(currentLocale, '/')
-const aboutUrl = standalonePageRoutes.getPageURL('about', currentLocale)
+const homePath = getRelativeLocaleUrl(currentLocale, '/')
+const aboutPath = standalonePageRoutes.getPagePath('about', currentLocale)
 
 // 3. Función validadora sin puntos y comas
 const isSectionActive = (targetUrl: string, isHome = false) => {
@@ -38,8 +38,8 @@ const isSectionActive = (targetUrl: string, isHome = false) => {
     <div>
       <a
         class="sidebar-home-link"
-        href={homeUrl}
-        {...isSectionActive(homeUrl, true) && { 'aria-current': 'page' }}
+        href={homePath}
+        {...isSectionActive(homePath, true) && { 'aria-current': 'page' }}
       >
         <div class="sidebar-image">
           <Image src={Photo} alt={t('sidebar.photo_alt')} width="256" height="256" data-testid="sidebar-photo" />
@@ -50,8 +50,8 @@ const isSectionActive = (targetUrl: string, isHome = false) => {
     </div>
     <div class="sidebar-links" data-testid="sidebar-links">
       <a
-        href={aboutUrl}
-        {...isSectionActive(aboutUrl) && { 'aria-current': 'page' }}
+        href={aboutPath}
+        {...isSectionActive(aboutPath) && { 'aria-current': 'page' }}
         data-testid="sidebar-about"
       >
         {t('nav.about')}
