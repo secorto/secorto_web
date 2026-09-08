@@ -35,9 +35,9 @@ La capa agnóstica ya implementada incluye:
 
 La capa app-specific incluye:
 
-- `apps/web/src/domain/section.ts`: configuración concreta del sitio
+- `apps/web/src/domain/section.ts`: claves, rutas y tipos del sitio
 - `apps/web/src/i18n/ui.ts`: strings y labels del producto
-- `apps/web/src/i18n/rootMap.ts`: compatibilidad local y rutas de app
+- adaptadores locales de compatibilidad y routing del proyecto
 
 ## Qué ya está migrado
 
@@ -51,12 +51,23 @@ La capa app-specific incluye:
 - `createDetailTranslationLinks()`
 - `createSectionTagTranslationLinks()`
 
-## Qué sigue en la app
+## Estado actual tras la purga
 
-- `sectionKeys`, `SectionType`, `SectionConfig`
-- `sectionsConfig`
+La limpieza ya está realizada y no quedan restos de la configuración monolítica:
+
+- `SectionConfig` eliminado
+- `sectionsConfig` eliminado
+- `rootMap` eliminado
+- la app queda con los datos mínimos del sitio y las rutas locales necesarias
+
+Queda como configuración local, y solo por decisión del proyecto consumidor:
+
+- `sectionKeys`, `SectionType`, `sectionRoutes` y `navSections`
 - strings de UI y navegación
-- `rootMap` como adaptador local
+- mapas locales mínimos de routing y presentación
+
+La extracción del paquete `@secorto/i18n` ya no conserva ninguna capa de
+compatibilidad antigua ni modelos monolíticos heredados.
 
 ## Conclusión
 
