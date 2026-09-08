@@ -65,7 +65,7 @@ describe('createStandalonePageLinks', () => {
         locales,
       ),
     ).toThrow(
-      "Route 'en/wrong-route' does not belong to standalone page 'home'.",
+      "Path 'en/wrong-route' does not belong to standalone page 'home'.",
     )
   })
 

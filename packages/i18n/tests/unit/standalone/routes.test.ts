@@ -103,7 +103,7 @@ describe('createStandalonePageRoutes', () => {
         locales,
       )
     }).toThrow(
-      'Route collision detected in StandalonePageRoutes: The slug "home" for locale "en" is duplicated between "home" and "about".',
+      'Slug collision detected in StandalonePageRoutes: The slug "home" for locale "en" is duplicated between "home" and "about".',
     )
   })
 })
