@@ -92,6 +92,10 @@ export function createLocales<TLocale extends string>(
 
     const cleanId = entryId.slice(firstSlash + 1)
 
+    if (!cleanId || cleanId.startsWith('/')) {
+      throw new Error(`Invalid entryId "${entryId}" — missing locale prefix`)
+    }
+
     return {
       locale: rawLocale,
       cleanId

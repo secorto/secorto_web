@@ -98,5 +98,13 @@ describe('createLocales', () => {
       expect(result.cleanId).toBe('talks/2023-09-27-devcontainers')
       expect(result.locale).toBe('es')
     })
+
+    it('rejects locale-only entry ids', () => {
+      expect(() => languages.parseEntryId('es/')).toThrow('Invalid entryId "es/" — missing locale prefix')
+    })
+
+    it('rejects entry ids with a leading slash after locale', () => {
+      expect(() => languages.parseEntryId('es//post')).toThrow('Invalid entryId "es//post" — missing locale prefix')
+    })
   })
 })
