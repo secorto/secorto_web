@@ -4,7 +4,7 @@ Este documento queda como referencia corta y no como fuente canónica.
 
 La fuente definitiva de la migración es [inventory.md](./inventory.md).
 
-## Qué dejamos como canonico
+## Qué dejamos como canónico
 
 - [inventory.md](./inventory.md) describe el estado real del repo,
   la arquitectura actual y la separación entre librería agnóstica y app-specific.

@@ -239,7 +239,7 @@ const { Content } = await render(entry.original)
 
 ---
 
-## 3. Advanced Ecosytem: Asymmetric Tag Routing
+## 3. Advanced Ecosystem: Asymmetric Tag Routing
 
 `createTagRoutes` acts as a dedicated navigation and classification layer.
 The `getStaticPathsSectionTags` helper processes tag intersections natively,
@@ -275,12 +275,12 @@ const postWithTag = posts.filter(withTag(tag))
 ```
 
 *(Note: The package also provides `getEntriesBySection` and `getSectionsWithTagContent` primitives to
-effortlessly create global taxomony indexes like `/[locale]/tags/index.astro`,
+effortlessly create global taxonomy indexes like `/[locale]/tags/index.astro`,
 generating real-time item metrics and filtering empty terms out of layout loops).*
 
 ---
 
-## 4. Advanced Ecosytem: Strict Standalone Pages
+## 4. Advanced Ecosystem: Strict Standalone Pages
 
 For standalone static layout paths (e.g., `/about` or `/privacy`),
 the library bypasses filesystem guesswork entirely. It checks the live runtime `pathname` against your contract layer.
