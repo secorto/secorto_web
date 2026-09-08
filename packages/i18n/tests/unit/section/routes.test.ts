@@ -29,7 +29,7 @@ describe('getSectionPath', () => {
 })
 
 describe('getEntryPath', ()=> {
-  it('getEntryURL builds full url for entry with locale prefix', () => {
+  it('getEntryPath builds full url for entry with locale prefix', () => {
     expect(routes.getEntryPath('blog', 'es', 'my-post')).toBe('/es/blog/my-post')
     expect(routes.getEntryPath('talk', 'en', 'my-talk')).toBe('/en/talk/my-talk')
   })

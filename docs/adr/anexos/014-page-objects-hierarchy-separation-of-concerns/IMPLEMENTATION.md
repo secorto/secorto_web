@@ -155,7 +155,7 @@ for (const content of testContents) {
       await list.shouldBeFiltered(content.testTag).with(expect)
 
       // Paso 4-5: Detalle
-      const entryUrl = getEntryURL(content.name, content.locale, content.testSlug)
+      const entryUrl = getEntryPath(content.name, content.locale, content.testSlug)
       await list.openItem(entryUrl)
       const detail = contentDetailPage(page, content.name)
       await detail.shouldBeLoaded(content.locale).with(expect)

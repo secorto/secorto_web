@@ -22,12 +22,12 @@ const t = useTranslations(locale)
       return (
         <li>
           <a
-            href={tagRoutes.getSectionTagURL(section, locale, tag)}
+            href={tagRoutes.getSectionTagPath(section, locale, tag)}
             class:list={['tag', { 'is-active': isCurrentTag }]}
             {...isCurrentTag && { 'aria-current': 'location' }}
             data-testid={`tag-link-${tag}`}
           >
-            {tagRoutes.getTagRoute(tag, locale)}
+            {tagRoutes.getTagSlug(tag, locale)}
           </a>
         </li>
       )

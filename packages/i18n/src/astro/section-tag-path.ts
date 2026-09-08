@@ -102,10 +102,10 @@ export async function getStaticPathsSectionTags<
                 locale,
               ),
             tagIndex:
-              tagRoutes.getTagIndexRoute(
+              tagRoutes.getTagIndexSlug(
                 locale,
               ),
-            tag: tagRoutes.getTagRoute(
+            tag: tagRoutes.getTagSlug(
               tag,
               locale,
             ),

@@ -2,11 +2,11 @@ import { ensureNoRouteCollisions } from '../core'
 import type { LocalePathResolver } from '../core/locale'
 
 /**
- * Immutable value object that manages localized tag routes and generates
- * section-aware tag URLs.
+ * Immutable value object that manages localized tag slugs and generates
+ * section-aware tag paths.
  *
- * URL format:
- * - /{locale}/{section}/{tagsIndex}/{tag}
+ * Path format:
+ * - /{locale}/{section}/{tagsIndexSlug}/{tagSlug}
  *
  * Examples:
  * - /en/blog/tags/tools
@@ -22,7 +22,7 @@ export type TagRoutes<
   TLocale extends string,
 > = {
   /**
-   * Map of tags to their localized route slugs.
+   * Map of tags to their localized slugs.
    */
   routes: Record<TTag, Record<TLocale, string>>
 
@@ -34,16 +34,16 @@ export type TagRoutes<
   getTags: () => readonly TTag[]
 
   /**
-   * Returns the localized route slug for the specified tag and locale.
+   * Returns the localized slug for the specified tag and locale.
    *
-   * @param tag - The tag whose route should be resolved.
-   * @param locale - The locale for which the route should be returned.
-   * @returns The localized tag route slug.
+   * @param tag - The tag whose slug should be resolved.
+   * @param locale - The locale for which the slug should be returned.
+   * @returns The localized tag slug.
    */
-  getTagRoute: (tag: TTag, locale: TLocale) => string
+  getTagSlug: (tag: TTag, locale: TLocale) => string
 
   /**
-   * Returns the URL for a tag within a section.
+   * Returns the localized path for a tag within a section.
    *
    * Examples:
    * - /en/blog/tags/tools
@@ -51,69 +51,73 @@ export type TagRoutes<
    *
    * @param section - The section containing the tag.
    * @param locale - The locale to use.
-   * @param tag - The tag whose URL should be generated.
-   * @returns The localized section tag URL.
+   * @param tag - The tag whose path should be generated.
+   * @returns The localized section tag path.
    */
-  getSectionTagURL: (
+  getSectionTagPath: (
     section: TSection,
     locale: TLocale,
     tag: TTag,
   ) => string
 
   /**
-   * Returns the localized route segment used for the tag index page.
+   * Returns the localized slug used for the tag index page.
    *
    * Examples:
    * - en → "tags"
    * - es → "etiquetas"
    *
-   * @param locale - The locale whose tag index route should be resolved.
-   * @returns The localized tag index route segment.
+   * @param locale - The locale whose tag index slug should be resolved.
+   * @returns The localized tag index slug.
    */
-  getTagIndexRoute: (locale: TLocale) => string
+  getTagIndexSlug: (locale: TLocale) => string
 
   /**
-   * Returns the locale-prefixed URL for the tag index page.
+   * Returns the locale-prefixed path for the tag index page.
    *
    * Examples:
    * - /en/tags
    * - /es/etiquetas
    *
-   * @param locale - The locale whose tag index URL should be resolved.
-   * @returns The localized tag index URL.
+   * @param locale - The locale whose tag index path should be resolved.
+   * @returns The localized tag index path.
    */
-  getTagIndexURL: (locale: TLocale) => string
+  getTagIndexPath: (locale: TLocale) => string
 }
 
+
 /**
- * Minimal contract required from a section routes value object.
+ * Minimal contract required from a section paths value object.
  *
  * @template TSection - The union type representing available sections.
  * @template TLocale - The union type representing supported locales.
  */
-export type SectionRouteResolver<
+export type SectionPathResolver<
   TSection extends string,
   TLocale extends string,
 > = {
-  getSectionURL: (section: TSection, locale: TLocale) => string
+  getSectionPath: (
+    section: TSection,
+    locale: TLocale
+  ) => string
 }
 
 /**
  * Creates an immutable TagRoutes value object.
  *
  * The resulting object:
- * - Validates that no localized route collisions exist.
+ * - Validates that no localized slug collisions exist.
  * - Freezes all route definitions to enforce immutability.
- * - Exposes helper methods for resolving localized tag routes.
- * - Generates section-aware tag URLs by composing SectionRoutes.
+ * - Exposes helper methods for resolving localized tag slugs.
+ * - Generates section-aware tag paths by composing SectionRoutes.
  *
  * @template TTag - The union type representing available tags.
  * @template TSection - The union type representing available sections.
  * @template TLocale - The union type representing supported locales.
  *
- * @param sectionRoutes - Reference to the section route definitions.
- * @param tagIndexRoutes - Localized route segment for the tags index.
- * @param routes - A map of tags and their localized route slugs.
+ * @param sectionRoutes - Reference to the section path definitions.
+ * @param tagIndexRoutes - Localized slugs for the tag index page.
+ * @param routes - A map of tags and their localized slugs.
  *
  * @returns An immutable TagRoutes value object.
  *
@@ -124,7 +128,7 @@ export function createTagRoutes<
   TSection extends string,
   TLocale extends string,
 >(
-  sectionRoutes: SectionRouteResolver<TSection, TLocale>,
+  sectionRoutes: SectionPathResolver<TSection, TLocale>,
   tagIndexRoutes: Record<TLocale, string>,
   routes: Record<TTag, Record<TLocale, string>>,
   locales: LocalePathResolver<TLocale>,
@@ -140,31 +144,29 @@ export function createTagRoutes<
 
   const getTags = (): readonly TTag[] => tags
 
-  const getTagRoute = (
+  const getTagSlug = (
     tag: TTag,
     locale: TLocale,
   ): string => routes[tag][locale]
 
-  const getTagIndexRoute = (locale: TLocale): string => tagIndexRoutes[locale]
+  const getTagIndexSlug = (locale: TLocale): string => tagIndexRoutes[locale]
 
-  const getTagIndexURL = (locale: TLocale): string =>
-    `${locales.getPath(locale)}/${getTagIndexRoute(locale)}`
+  const getTagIndexPath = (locale: TLocale): string =>
+    `${locales.getPath(locale)}/${getTagIndexSlug(locale)}`
 
-  const getSectionTagURL = (
+  const getSectionTagPath = (
     section: TSection,
     locale: TLocale,
     tag: TTag,
   ): string =>
-    `${sectionRoutes.getSectionURL(section, locale)}/${
-      getTagIndexRoute(locale)
-    }/${getTagRoute(tag, locale)}`
+    `${sectionRoutes.getSectionPath(section, locale)}/${getTagIndexSlug(locale)}/${getTagSlug(tag, locale)}`
 
   return {
     routes,
     getTags,
-    getTagRoute,
-    getSectionTagURL,
-    getTagIndexRoute,
-    getTagIndexURL,
+    getTagSlug,
+    getSectionTagPath,
+    getTagIndexSlug,
+    getTagIndexPath,
   }
 }
