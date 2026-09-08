@@ -3,7 +3,7 @@ import { languages } from '@i18n/ui'
 import { createStandalonePageLinks } from '@secorto/i18n'
 import { expect, it } from 'vitest'
 
-it('uses the standalone route value object to resolve localized page URLs', () => {
+it('resolves localized page slugs and paths', () => {
   expect(standalonePageRoutes.getPageSlug('about', 'es')).toBe('acerca-de')
   expect(standalonePageRoutes.getPagePath('about', 'en')).toBe('/en/about')
 })

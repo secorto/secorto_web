@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { tagRoutes } from '@domain/tags'
 
-describe('getTagSlug value object', () => {
+describe('tagRoutes value object', () => {
   it('resolves the localized slug for each allowed tag', () => {
     expect(tagRoutes.getTagSlug('dev', 'en')).toBe('dev')
     expect(tagRoutes.getTagSlug('dev', 'es')).toBe('desarrollo')
@@ -13,7 +13,7 @@ describe('getTagSlug value object', () => {
     expect(tagRoutes.getTagSlug('python', 'es')).toBe('python')
   })
 
-  it('builds section-aware URLs with the configured tag index route', () => {
+  it('builds localized section tag paths', () => {
     expect(tagRoutes.getSectionTagPath('blog', 'es', 'python')).toBe(
       '/es/blog/tags/python',
     )

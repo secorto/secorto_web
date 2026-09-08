@@ -38,7 +38,7 @@ export interface StandalonePageRoutes<
    *
    * @param page Canonical standalone page key.
    * @param locale Locale whose slug should be resolved.
-   * @returns The route slug without the locale prefix.
+   * @returns The localized slug without the locale prefix.
    * @throws {Error} When the page or locale combination is not registered.
    */
   getPageSlug(page: TPage, locale: TLocale): string

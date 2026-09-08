@@ -32,7 +32,7 @@ describe('createStandalonePageRoutes', () => {
     }).toThrow("Standalone page 'missing' is not indexed.")
   })
 
-  it('returns the localized route for the given page and locale', () => {
+  it('returns the localized slug for the given page and locale', () => {
     expect(routes.getPageSlug('about', 'es')).toBe('acerca-de')
     expect(routes.getPageSlug('home', 'en')).toBe('home')
   })
@@ -49,7 +49,7 @@ describe('createStandalonePageRoutes', () => {
     }).toThrow("Standalone page 'missing' has no entry for locale 'en'.")
   })
 
-  it('builds the localized URL from the locale root and page route', () => {
+  it('builds the localized path from the locale root and page slug', () => {
     expect(routes.getPagePath('about', 'es')).toBe('/es/acerca-de')
     expect(routes.getPagePath('home', 'en')).toBe('/en/home')
   })

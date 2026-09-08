@@ -23,7 +23,7 @@ const t = useTranslations(currentLocale)
 // 1. Capturamos la ruta limpia actual para las comparaciones dinámicas
 const currentPath = Astro.url.pathname
 
-// 2. Precalculamos las URLs de control para limpiar el marcado inferior
+// 2. Precalculamos los paths de control para limpiar el marcado inferior
 const homePath = getRelativeLocaleUrl(currentLocale, '/')
 const aboutPath = standalonePageRoutes.getPagePath('about', currentLocale)
 
@@ -33,6 +33,7 @@ const isSectionActive = (targetUrl: string, isHome = false) => {
   return currentPath.startsWith(targetUrl)
 }
 ---
+
 <nav class="sidebar sidebar-toggle">
   <div class="sidebar-content">
     <div>

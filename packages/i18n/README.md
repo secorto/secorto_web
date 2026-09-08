@@ -113,7 +113,7 @@ hidden from canonical SEO indexing (`noindex`).
 The library exposes immutable Value Objects for locales, sections, standalone pages, and tag routes.
 These enforce strict constraints at construction time, ensuring **zero slug collisions**
 and failing fast (throwing explicit errors) during development or build time
-if empty or duplicated `(locale, route)` pairs occur.
+if empty or duplicated `(locale, slug)` pairs occur.
 
 Configure your single source of truth (e.g., `src/domain/i18n.ts`):
 
@@ -135,8 +135,8 @@ export const sectionRoutes = createSectionRoutes(
 export const standalonePageRoutes = createStandalonePageRoutes(
   {
     about: {
-      en: { route: 'about' },
-      es: { route: 'acerca-de' },
+      en: { slug: 'about' },
+      es: { slug: 'acerca-de' },
     },
   },
   languages,
@@ -193,7 +193,7 @@ const activeTags = tagRoutes.getTags().filter(tag =>
   </head>
   <body>
     <nav>
-      {activeTags.map(tag => <a href={tagRoutes.getTagPath(section, tag, locale)}>{tag}</a>)}
+      {activeTags.map(tag => <a href={tagRoutes.getSectionTagPath(section, locale, tag)}>{tag}</a>)}
     </nav>
     <main>
       {posts.map(post => <h2>{post.data.title}</h2>)}
