@@ -131,7 +131,7 @@ export const sectionRoutes = createSectionRoutes(
   languages,
 )
 
-// 3. Map fixed static page slugs (Strict Path Contract)
+// 3. Map fixed static page slugs
 export const standalonePageRoutes = createStandalonePageRoutes(
   {
     about: {

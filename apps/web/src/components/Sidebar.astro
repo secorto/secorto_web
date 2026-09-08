@@ -28,9 +28,9 @@ const homePath = getRelativeLocaleUrl(currentLocale, '/')
 const aboutPath = standalonePageRoutes.getPagePath('about', currentLocale)
 
 // 3. Función validadora sin puntos y comas
-const isSectionActive = (targetUrl: string, isHome = false) => {
-  if (isHome) return currentPath === targetUrl || currentPath === `${targetUrl}/`
-  return currentPath.startsWith(targetUrl)
+const isSectionActive = (targetPath: string, isHome = false) => {
+  if (isHome) return currentPath === targetPath || currentPath === `${targetPath}/`
+  return currentPath.startsWith(targetPath)
 }
 ---
 
