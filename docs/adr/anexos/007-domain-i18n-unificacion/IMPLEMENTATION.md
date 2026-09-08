@@ -1,15 +1,11 @@
 # Anexo técnico — Modelo de identidad de contenido e i18n
 
-Este anexo complementa el ADR-007 y separa dos cosas:
-
-- el contrato del dominio: qué es una entidad y cómo se identifica
-- la forma en que la implementación lo cumple: validación, normalización y mapeo
-
-No repite la motivación del ADR; aquí el foco está en la regla y en la garantía.
+Este anexo complementa el ADR-007 y deja clara la regla del dominio y la
+garantía que habilita la implementación actual.
 
 ## 1. Contrato del dominio
 
-La regla de negocio es simple y debe leerse como especificación:
+La regla de negocio es la especificación:
 
 - la identidad canónica de una entrada es `translationKey`
 - cada variante debe declarar su `locale`
@@ -25,83 +21,47 @@ La regla de negocio es simple y debe leerse como especificación:
 4. el dominio no debe re-parsingar IDs dispersos en cada capa.
 5. cualquier duplicado de `(translationKey, locale)` debe romper el build.
 
-Esto es lo importante del ADR: es la norma del dominio, no un detalle de implementación.
+Esto es la norma del dominio. La implementación solo la garantiza.
 
-## 2. Cómo se materializa en la implementación
+## 2. Qué habilita el flujo actual
 
-La implementación solo hace cumplir ese contrato. La capa de código no redefine la regla; la garantiza.
+La capa actual de `@secorto/i18n` no redefine la regla; la hace cumplir de forma
+centralizada en el paso de construir paths y resolver traducciones.
 
-### a. Validación del prefijo de idioma
+El flujo quedaría resumido así:
 
-`extractCleanId` valida que la entrada tenga un `locale` explícito y devuelve el identificador limpio.
+- se define la ruta de sección
+- cada entrada se normaliza con el contrato del dominio
+- se agrupan las variantes por `translationKey`
+- se construyen los paths de detalle y se resuelven `siblings`
 
-```text
-es/mi-post  -> { locale: 'es', id: 'mi-post' }
-```
+Eso es lo que habilita que una entidad pueda resolverse por idioma sin perder la
+identidad global.
 
-Si falta el locale o es inválido, la validación falla de forma temprana.
+La misma idea se aplica a páginas standalone, con la diferencia de que en ese
+caso la entidad no nace de una colección de contenido sino de un mapeo
+localizable de rutas. En ambos casos la identidad sigue siendo `translationKey`,
+la variante sigue siendo `locale` y el índice sigue siendo la fuente de verdad
+para resolver traducciones.
 
-### b. Normalización de la entrada
+## 3. Garantía del modelo
 
-`adaptToDomainEntry` convierte la entrada cruda en un modelo del dominio con los campos necesarios:
+La garantía importante no es “cómo se implementa internamente”, sino que el
+sistema puede afirmar con seguridad:
 
-- `translationKey`
-- `cleanId`
-- `locale`
+- qué variantes existen para una entidad
+- qué locale falta
+- qué translation está vinculada a cada slug
+- qué routes forman parte del mismo contenido traducido
 
-Eso permite que el resto del sistema use un objeto ya validado, sin volver a analizar `entry.id`.
+En otras palabras, la implementación actual hace posible que el dominio se
+reafirme en cada paso de generación de rutas y de links de traducción, sin que la
+lógica de identidad se disperse por la app.
 
-### c. Mapa por identidad y locale
+## 4. Resumen
 
-`buildLocaleEntryMap` agrupa todas las entradas por `translationKey` y construye un mapa por idioma.
+La parte esencial del ADR-007 es simple: una entidad se identifica por
+`translationKey` y cada variante tiene su `locale`.
 
-Si aparece el mismo `(translationKey, locale)` dos veces, lanza un error.
-Ese `throw` no es la regla; es la garantía que asegura que la regla se cumpla.
-
-### d. Enlaces de idioma y SEO
-
-Las funciones de link y alternates usan ese mapa para construir:
-
-- links de detalle por idioma
-- alternates de SEO
-- estado de enlace (`available`, `draft`, `missing`)
-
-La idea es clara: primero se resuelve qué variantes existen; luego se presenta ese estado en la UI o en la metadata.
-
-## 3. Ejemplo de flujo
-
-```typescript
-const entries = [
-  adaptToDomainEntry({ id: 'es/mi-post', data: { translationKey: 'mi-post' } }),
-  adaptToDomainEntry({ id: 'en/mi-post', data: { translationKey: 'mi-post' } })
-]
-
-const map = buildLocaleEntryMap(entries)
-```
-
-El flujo es:
-
-1. normalizar la entrada
-2. agrupar por `translationKey`
-3. construir enlaces y metadata desde ese resultado
-
-## 4. Regla de separación recomendada
-
-La documentación debe leer así:
-
-- la sección “Contrato del dominio” explica la norma
-- la sección “Cómo se materializa en la implementación” describe la garantía de cumplimiento
-
-No conviene mezclar ambas en el mismo bloque, porque la norma del dominio queda
-diluida entre validaciones, helpers y excepciones.
-
-Esta separación hace que el ADR siga siendo la decisión de arquitectura y el anexo
-sea un complemento técnico, no una segunda versión del ADR.
-
-## 5. Resumen
-
-La parte esencial de ADR-007 no es “cómo se parsea una ID”, sino “qué constituye la
-misma entidad y qué hace que una variante sea válida”.
-
-La implementación solo ofrece la protección necesaria para que ese contrato no se
-rompa en runtime ni en build.
+La implementación actual no cambia esa regla; simplemente la hace visible y
+aplicable en el flujo real de generación de paths y enlaces de traducción.

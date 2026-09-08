@@ -1,24 +1,82 @@
-# Arquitectura de Secciones - Sistema Polimórfico
+# Arquitectura de secciones - sistema polimórfico
 
-Arquitectura de la solución para internacionalización basado en secciones
+> Este documento es un anexo de evolución y diseño. Sirve para explicar la transición
+> de la duplicación inicial hacia un sistema basado en configuración y generación
+> dinámica. No es la fuente de verdad del estado actual del código; es una explicación
+> útil del patrón que motivó la migración y que aún conserva valor conceptual.
 
-## Problema Resuelto
+## Contexto
 
-**Antes**: Duplicación significativa en archivos como:
+Antes de la refactorización, los listados de contenido repetían casi la misma lógica en
+archivos distintos por sección, por ejemplo:
 
-- `src/pages/[locale]/blog/index.astro`
-- `src/pages/[locale]/charla/index.astro`
-- `src/pages/[locale]/trabajo/index.astro`
+- `blog/index.astro`
+- `charla/index.astro`
+- `trabajo/index.astro`
 
-Cada uno tenía lógica similar pero con valores hardcodeados específicos a la sección.
+Cada archivo tenía la misma estructura:
 
-**Después**: Única fuente de verdad con arquitectura polimórfica.
+- carga de la colección
+- generación de la lista de posts
+- cálculo de tags
+- render del componente de listado
+- rutas y traducciones hardcodeadas
 
-## Componentes Principales
+La relación entre esos archivos se puede resumir así:
 
-### 1. **`src/config/sections.ts`** - Configuración Centralizada
+```mermaid
+flowchart TB
+  subgraph Antes
+    B1[blog/index.astro]
+    B2[charla/index.astro]
+    B3[trabajo/index.astro]
+    B1 --> R1[Duplicación de routing]
+    B2 --> R1
+    B3 --> R1
+    R1 --> H1[Valores hardcodeados]
+  end
+```
 
-Define el contrato de cada sección (colección, rutas, traducciones, componentes).
+## Qué se resolvió
+
+La solución centralizó la descripción de cada sección en un registro compartido,
+permitiendo que la app pudiera tratar todas las secciones con el mismo patrón sin
+repetir la lógica de enrutado, carga y render.
+
+```mermaid
+flowchart LR
+  A[Sección] --> B[Config central]
+  B --> C[Generación de rutas]
+  B --> D[Carga de contenido]
+  B --> E[Render del listado]
+  E --> F[ListPost / ListWork / otros]
+```
+
+## Patrón que quedó vigente
+
+La idea útil que sí siguió siendo válida es esta:
+
+1. cada sección se describe en un único punto
+2. la ruta y el tipo de render se resuelven desde esa configuración
+3. la lógica compartida responde a la metadata, no a una serie de `if` por archivo
+
+Esto es lo que se entiende por diseño polimórfico: una misma plantilla general se adapta
+según los datos de la sección.
+
+## Estructura conceptual de la solución
+
+```mermaid
+flowchart TD
+  A[sectionsConfig] --> B[sectionLoader]
+  A --> C[SectionRenderer]
+  A --> D[router universal]
+  B --> E[posts + tags]
+  C --> F[ListPost]
+  C --> G[ListWork]
+  D --> H[rutas generadas]
+```
+
+## Ejemplo de configuración
 
 ```typescript
 export const sectionsConfig: Record<SectionType, SectionConfig> = {
@@ -34,181 +92,48 @@ export const sectionsConfig: Record<SectionType, SectionConfig> = {
     collection: 'talk',
     translationKey: 'nav.talks',
     hasTags: true,
-    routes: { es: 'charla', en: 'talk' },  // ← Alias por idioma
+    routes: { es: 'charla', en: 'talk' },
     listComponent: 'ListPost',
     showFeaturedImage: true
-  },
-  // ... más secciones
-}
-```
-
-**Ventajas**:
-
-- Aliasing multiidioma: `charla` (es) → `talk` (en)
-- Cambios en un solo lugar
-- Type-safe: TypeScript valida todas las claves
-
-### 2. **`src/utils/sectionLoader.ts`** - Cargador de Datos
-
-Centraliza la lógica de carga de posts y tags.
-
-```typescript
-export async function loadSectionByRoute(
-  sectionSlug: string,
-  locale: UILanguages
-) {
-  const config = getSectionConfigByRoute(sectionSlug, locale)
-  const posts = await getPostsByLocale(config.collection, locale)
-  const tags = config.hasTags ? getUniqueTags(posts) : []
-
-  return { config, posts, tags }
-}
-```
-
-Sin `if` eternos ni duplicación.
-
-### 3. **`src/components/SectionRenderer.astro`** - Renderizado Polimórfico
-
-Renderiza dinámicamente según la configuración:
-
-```astro
-{config.listComponent === 'ListPost' && (
-  <ListPost posts={posts} basePath={`${locale}/${routeSlug}`} />
-)}
-
-{config.listComponent === 'ListWork' && (
-  <ListWork posts={posts} basePath={`${locale}/${routeSlug}`} lang={locale} />
-)}
-```
-
-Si agregamos un nuevo componente, simplemente:
-
-1. Agregamos el tipo en `SectionConfig`
-2. Agregamos la rama en `SectionRenderer`
-
-### 4. **`src/pages/[locale]/[section]/index.astro`** - Router Universal
-
-Una única plantilla que maneja todas las rutas:
-
-```astro
-export async function getStaticPaths() {
-  const paths = []
-  for (const config of Object.values(sectionsConfig)) {
-    for (const locale of languageKeys) {
-      paths.push({
-        params: {
-          locale,
-          section: config.routes[locale]  // ← Genera rutas dinámicamente
-        }
-      })
-    }
   }
-  return paths
 }
 ```
 
-Genera automáticamente:
+Esto permite:
 
-- `/es/blog`, `/en/blog`
-- `/es/charla`, `/en/talk`
-- `/es/trabajo`, `/en/work`
-- Etc.
+- alias por idioma (`charla` en español, `talk` en inglés)
+- cambios en un único punto
+- validación por TypeScript
+- crecimiento sin duplicación de archivos
 
-## Beneficios
+## Beneficios del enfoque
 
 | Aspecto | Antes | Después |
 | --- | --- | --- |
-| **Duplicación** | ~100 líneas duplicadas | 0 líneas duplicadas |
-| **Agregar sección** | Crear 2-3 archivos nuevos | Agregar entrada en `sections.ts` |
-| **Cambiar alias** | Múltiples archivos | Un lugar |
-| **Tests** | Por cada sección | Genéricos + configuración |
-| **Complejidad** | `O(n)` por sección | `O(1)` constante |
+| Duplicación | Alta | Baja / centralizada |
+| Cambio de alias | Múltiples archivos | Un único punto |
+| Agregar sección | Crear más rutas y archivos | Añadir entrada en la config |
+| Mantenimiento | Fragmentado | Centralizado |
+| Complejidad | Crece con cada sección | Se mantiene por patrón |
 
-## Patrón de Diseño: Strategy + Composition
+## Qué no debe tomarse como verdad absoluta
 
-```text
-┌─────────────────────┐
-│  sections.ts        │ ← Configuration (meta-data)
-│  (SectionConfig)    │
-└──────────┬──────────┘
-           │
-           ├─→ sectionLoader.ts (Strategy: how to load)
-           │
-           └─→ SectionRenderer.astro (Strategy: how to render)
-                   ↓
-                   ├─→ ListPost (Component A)
-                   └─→ ListWork (Component B)
-```
+La implementación actual ya no se reduce exactamente a ese esquema original. El proyecto
+ha evolucionado hacia una librería reutilizable `@secorto/i18n` y a un modelo donde la
+indexación, las rutas y la traducción se resuelven con funciones compartidas.
 
-## Cómo Extender
+Por eso, este documento debe tratarse como:
 
-### Agregar Nueva Sección
+- una explicación de la idea que motivó la refactorización
+- un anexo de diseño y evolución
+- no como la descripción canónica del estado actual del código
 
-**Paso 1**: Agregar en `sections.ts`:
+## Conclusión
 
-```typescript
-export const sectionsConfig = {
-  // ... secciones existentes
+La arquitectura de secciones es una pieza muy útil para entender la transición de un
+sistema repetitivo a uno basado en configuración. Es un documento con valor arquitectónico,
+pero no es un “snapshot final” del código actual.
 
-  newsletter: {
-    collection: 'newsletter',
-    translationKey: 'nav.newsletter',
-    hasTags: false,
-    routes: { es: 'boletin', en: 'newsletter' },
-    listComponent: 'ListNewsletter',
-    showFeaturedImage: false
-  }
-}
-```
-
-**Paso 2**: Eso es TODO.
-
-Las rutas se generan automáticamente:
-  /es/boletin
-  /en/newsletter
-
-Sin tocar:
-
-- [section]/index.astro
-- sectionLoader.ts
-- SectionRenderer.astro
-
-Este es el poder del polimorfismo ✨
-
-## Patrones Implementados
-
-```text
-┌───────────────────────────────────────────────┐
-│ Configuration Pattern                          │
-│ (Toda la lógica guiada por datos)             │
-└──────────────────┬────────────────────────────┘
-                   │
-    ┌──────────────┼──────────────┐
-    │              │              │
-    ▼              ▼              ▼
-┌─────────┐ ┌──────────┐ ┌──────────────┐
-│Strategy │ │Composite │ │Factory       │
-│Pattern  │ │Pattern   │ │Pattern       │
-├─────────┤ ├──────────┤ ├──────────────┤
-│Polimor- │ │Basado en │ │Crea secciones│
-│fismo    │ │compo-    │ │dinámicamente │
-│según    │ │nentes    │ │desde config  │
-│config   │ │existen-  │ │              │
-│         │ │tes       │ │              │
-└─────────┘ └──────────┘ └──────────────┘
-
-    ▼              ▼              ▼
-    │              │              │
-    └──────────────┼──────────────┘
-                   │
-        ┌──────────┴────────────┐
-        │                       │
-        ▼                       ▼
-┌──────────────┐      ┌──────────────┐
-│ DRY          │      │ Type-Safe    │
-│(No repeat)   │      │(TypeScript)  │
-└──────────────┘      └──────────────┘
-```
-
-Este diagrama muestra cómo los patrones de diseño convergen en una arquitectura
-limpia, mantenible y escalable. ✨
+El punto más importante es que la idea que sigue siendo válida es la centralización del
+conocimiento de cada sección y la generación dinámica de rutas y render a partir de esa
+metadata.
