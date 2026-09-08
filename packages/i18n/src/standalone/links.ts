@@ -16,7 +16,7 @@ export function createStandalonePageLinks<
   routes: StandalonePageRoutes<TPage, TLocale>,
   locales: Locales<TLocale>,
 ): TranslationLink<TLocale>[] {
-  const { locale: currentLocale, cleanId } = locales.parseEntryId(path)
+  const { locale: currentLocale, cleanId: currentSlug } = locales.parseEntryId(path)
   const page = routes.getPage(paramPage)
   const pageRoutes = routes.routes[page]
   const currentEntry = pageRoutes[currentLocale]
@@ -27,7 +27,7 @@ export function createStandalonePageLinks<
     )
   }
 
-  if (currentEntry.slug !== cleanId) {
+  if (currentEntry.slug !== currentSlug) {
     throw new Error(
       `Path '${path}' does not belong to standalone page '${String(page)}'.`,
     )

@@ -23,7 +23,7 @@ const dateFormat = new Intl.DateTimeFormat(locale, full)
   {sortPostsByPriority(posts).map((post) =>
     <PostItem
       image={post.data.image}
-      url={sectionRoutes.getEntryPathFromId(section, locale, post.id)}
+      path={sectionRoutes.getEntryPathFromId(section, locale, post.id)}
       title={post.data.title}
       excerpt={post.data.excerpt}
       cta={cta}

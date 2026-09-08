@@ -189,7 +189,7 @@ const activeTags = tagRoutes.getTags().filter(tag =>
 ---
 <html>
   <head>
-    {links.map(({ url, locale }) => <link rel="alternate" hreflang={locale} href={url} />)}
+    {links.map(({ href, locale }) => <link rel="alternate" hreflang={locale} href={href} />)}
   </head>
   <body>
     <nav>
@@ -226,7 +226,7 @@ const { Content } = await render(entry.original)
 <html>
   <head>
     {entry.draft && <meta name="robots" content="noindex" />}
-    {links.map(({ url, locale }) => <link rel="alternate" hreflang={locale} href={url} />)}
+    {links.map(({ href, locale }) => <link rel="alternate" hreflang={locale} href={href} />)}
   </head>
   <body>
     {entry.draft && <div role="status">Draft Notice: This translation variant is a preliminary work.</div>}
@@ -265,7 +265,7 @@ const postWithTag = posts.filter(withTag(tag))
 ---
 <html>
   <head>
-    {links.map(({ url, locale }) => <link rel="alternate" hreflang={locale} href={url} />)}
+    {links.map(({ href, locale }) => <link rel="alternate" hreflang={locale} href={href} />)}
   </head>
   <body>
     <h1>Tag: {tagSlug}</h1>
@@ -309,7 +309,7 @@ const draft = standalonePageRoutes.routes[page][locale]?.draft ?? false
   <head>
     <title>{title}</title>
     {draft && <meta name="robots" content="noindex" />}
-    {links.map(({ url, locale }) => <link rel="alternate" hreflang={locale} href={url} />)}
+    {links.map(({ href, locale }) => <link rel="alternate" hreflang={locale} href={href} />)}
   </head>
   <body>
     <main>

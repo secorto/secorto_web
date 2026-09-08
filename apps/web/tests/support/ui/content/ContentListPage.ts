@@ -88,8 +88,8 @@ export class ContentListPage extends NavigablePage implements LocalizedPage<void
   shouldBeFiltered(locale: UILanguages, tag: Tag) {
     return verifyStep(`content is filtered by tag ${tag}`, async ({ expect }) => {
       const expectedTagPath = tagRoutes.getSectionTagPath(this.section, locale, tag)
-      const escapedUrl = expectedTagPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-      await this.validateUrl(new RegExp(`${escapedUrl}(/|$)`)).with(expect)
+      const escapedTagPath = expectedTagPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      await this.validateUrl(new RegExp(`${escapedTagPath}(/|$)`)).with(expect)
       return this.list.shouldHaveResults().with(expect)
     })
   }
@@ -156,11 +156,11 @@ export async function userIsOnContentList(
   contentType: SectionType,
   locale: UILanguages,
 ): Promise<ContentListPage> {
-  const url = sectionRoutes.getSectionPath(contentType, locale)
+  const sectionPath = sectionRoutes.getSectionPath(contentType, locale)
   return visit(
     `navigate to ${contentType} list in ${locale}`,
     page,
-    url,
+    sectionPath,
     (page) => contentListPage(page, contentType),
   )
 }

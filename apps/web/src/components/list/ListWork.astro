@@ -22,7 +22,7 @@ const { posts, locale, cta, section } = Astro.props
   {sortExperienceByPriority(posts).map((post) =>
     <PostItem
       image={post.data.image}
-      url={sectionRoutes.getEntryPathFromId(section, locale, post.id)}
+      path={sectionRoutes.getEntryPathFromId(section, locale, post.id)}
       title={post.data.title}
       cta={cta}
       locale={locale}
