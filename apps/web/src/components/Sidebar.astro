@@ -57,7 +57,7 @@ const isSectionActive = (targetUrl: string, isHome = false) => {
         {t('nav.about')}
       </a>
       {navSections.map((section) => {
-        const url = sectionRoutes.getSectionURL(section, currentLocale)
+        const url = sectionRoutes.getSectionPath(section, currentLocale)
         return (
           <a
             href={url}

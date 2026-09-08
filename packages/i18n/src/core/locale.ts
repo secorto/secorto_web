@@ -8,13 +8,25 @@ export interface LocalePathResolver<TLocale extends string> {
   getPath(locale: TLocale): string
 }
 
+export interface EntryIdResolver<TLocale extends string> {
+  /**
+   * Extracts the locale and cleanId from an entryId of the form "es/my-post".
+   * Locale validation is delegated to the Locales value object.
+   *
+   * @param entryId Raw entry identifier (e.g., "es/my-post").
+   * @returns An object containing the validated locale and cleanId.
+   * @throws {Error} If the entryId is empty, malformed, or the locale is invalid.
+   */
+  parseEntryId(entryId: string): { locale: TLocale; cleanId: string }
+}
+
 /**
  * Immutable value object describing a supported locale set and the operations
  * used to validate and normalize locale identifiers.
  *
  * @template TLocale - Supported locale codes, such as 'en' or 'es'.
  */
-export interface Locales<TLocale extends string> extends LocalePathResolver<TLocale> {
+export interface Locales<TLocale extends string> extends LocalePathResolver<TLocale>, EntryIdResolver<TLocale> {
   /**
    * Ordered list of locales accepted by this value object.
    */
@@ -60,10 +72,37 @@ export function createLocales<TLocale extends string>(
 
   const getPath = (locale: string): string => `/${fromString(locale)}`
 
+  const parseEntryId = (entryId: string) => {
+    if (!entryId) {
+      throw new Error('entryId cannot be empty')
+    }
+
+    const firstSlash = entryId.indexOf('/')
+    if (firstSlash <= 0) {
+      throw new Error(`Invalid entryId "${entryId}" — missing locale prefix`)
+    }
+
+    const rawLocale = entryId.slice(0, firstSlash)
+
+    if (!isValid(rawLocale)) {
+      throw new Error(
+        `Invalid entryId "${entryId}". Unknown locale prefix "${rawLocale}". Expected one of: ${stableLocales.join(', ')}.`
+      )
+    }
+
+    const cleanId = entryId.slice(firstSlash + 1)
+
+    return {
+      locale: rawLocale,
+      cleanId
+    }
+  }
+
   return Object.freeze({
     all: stableLocales,
     fromString,
     isValid,
     getPath,
+    parseEntryId
   })
 }

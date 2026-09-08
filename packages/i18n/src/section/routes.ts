@@ -1,5 +1,5 @@
 import { ensureNoRouteCollisions } from '../core'
-import type { LocalePathResolver } from '../core'
+import type { EntryIdResolver, LocalePathResolver } from '../core'
 
 export type SectionDictionary<
   TSection extends string,
@@ -12,10 +12,10 @@ export type SectionDictionary<
 
 /**
  * Value object that encapsulates localized slugs per section and exposes
- * a stable API for building localized URLs.
+ * a stable API for building localized paths.
  *
  * Invariants:
- * - Each (locale, slug) pair must be unique across all sections.
+ * - Each localized section slug must be unique within a locale.
  * - The object is constructed exclusively through `createSectionRoutes`.
  *
  * @template TSection - Section keys (e.g., 'blog', 'talk').
@@ -43,33 +43,43 @@ export interface SectionRoutes<
    * @param locale Locale identifier.
    * @returns Localized slug for the section.
    */
-  getSectionRoute(section: TSection, locale: TLocale): string
+  getSectionSlug(section: TSection, locale: TLocale): string
 
   /**
-   * Returns the localized URL for a section, including locale prefix.
+   * Returns the localized path for a section, including locale prefix.
    *
    * @param section Section identifier.
    * @param locale Locale identifier.
-   * @returns URL string for the section in the given locale.
+   * @returns Path for the section in the given locale.
    */
-  getSectionURL(section: TSection, locale: TLocale): string
+  getSectionPath(section: TSection, locale: TLocale): string
 
   /**
-   * Returns the localized URL for a content entry inside a section.
+   * Returns the localized path for a content entry inside a section.
    *
    * @param section Section identifier.
    * @param locale Locale identifier.
-   * @param slug Entry slug.
-   * @returns Full URL for the entry.
+   * @param cleanId Entry clean id.
+   * @returns Full path for the entry.
    */
-  getEntryURL(section: TSection, locale: TLocale, slug: string): string
+  getEntryPath(section: TSection, locale: TLocale, cleanId: string): string
+
+  /**
+   * Returns the localized path for a content entry from its localized entry identifier.
+   *
+   * @param section Section identifier.
+   * @param locale Locale identifier.
+   * @param entryId Entry identifier with locale prefix.
+   * @returns Full path for the entry.
+   */
+  getEntryPathFromId(section: TSection, locale: TLocale, entryId: string): string
 }
 
 /**
  * Constructs a nominal SectionRoutes value from a raw SectionDictionary.
  *
  * This function enforces the domain invariants for localized section routes:
- * - each (locale, slug) pair must be unique across all sections
+ * - each localized section slug must be unique within a locale
  * - the resulting value is branded as 'SectionRoutes'
  *
  * If any invariant is violated, an error is thrown and the SectionRoutes value
@@ -85,7 +95,7 @@ export function createSectionRoutes<
   TLocale extends string
 >(
   routes: SectionDictionary<TSection, TLocale, string>,
-  localeResolver: LocalePathResolver<TLocale>
+  locales: LocalePathResolver<TLocale> & EntryIdResolver<TLocale>
 ): SectionRoutes<TSection, TLocale> {
   ensureNoRouteCollisions(routes, 'SectionRoutes')
   const sections = Object.freeze(Object.keys(routes) as TSection[])
@@ -98,24 +108,36 @@ export function createSectionRoutes<
 
   const getSections = (): readonly TSection[] => sections
 
-  const getSectionRoute = (section: TSection, locale: TLocale): string =>
+  const getSectionSlug = (section: TSection, locale: TLocale): string =>
     routes[section][locale]
 
-  const getSectionURL = (section: TSection, locale: TLocale): string =>
-    `${localeResolver.getPath(locale)}/${getSectionRoute(section, locale)}`
+  const getSectionPath = (section: TSection, locale: TLocale): string =>
+    `${locales.getPath(locale)}/${getSectionSlug(section, locale)}`
 
-  const getEntryURL = (
+  const getEntryPath = (
     section: TSection,
     locale: TLocale,
-    slug: string
+    cleanId: string
   ): string =>
-    `${getSectionURL(section, locale)}/${slug}`
+    `${getSectionPath(section, locale)}/${cleanId}`
+
+  const getEntryPathFromId = (section: TSection, locale: TLocale, entryId: string): string => {
+    const parsed = locales.parseEntryId(entryId)
+
+    if (parsed.locale !== locale) {
+      throw new Error(
+        `Locale mismatch: entry "${entryId}" belongs to locale "${parsed.locale}" but locale "${locale}" was requested.`
+      )
+    }
+    return getEntryPath(section, locale, parsed.cleanId)
+  }
 
   return {
     routes,
     getSections,
-    getSectionRoute,
-    getSectionURL,
-    getEntryURL,
+    getSectionSlug,
+    getSectionPath,
+    getEntryPath,
+    getEntryPathFromId,
   }
 }

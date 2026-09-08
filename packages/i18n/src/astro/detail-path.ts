@@ -88,7 +88,7 @@ export async function getStaticPathsEntries<
       allPaths.push({
         params: {
           locale: localized.locale,
-          section: routes.getSectionRoute(sectionKey, localized.locale),
+          section: routes.getSectionSlug(sectionKey, localized.locale),
           id: localized.cleanId,
         },
         props: {

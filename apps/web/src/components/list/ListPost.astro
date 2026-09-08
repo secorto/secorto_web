@@ -3,11 +3,10 @@ import PostItem from '@components/PostItem.astro'
 import PostList from '@components/PostList.astro'
 import PostDate from '@components/PostDate.astro'
 import type { PostLikeEntry } from '@domain/post'
-import { languages, type UILanguages } from '@i18n/ui'
+import { type UILanguages } from '@i18n/ui'
 import { sortPostsByPriority } from '@utils/sorting'
 import { full } from '@i18n/dateFormat'
 import { sectionRoutes, type SectionType } from '@domain/section'
-import { extractCleanId } from '@secorto/i18n'
 
 export interface Props {
   section: SectionType
@@ -24,7 +23,7 @@ const dateFormat = new Intl.DateTimeFormat(locale, full)
   {sortPostsByPriority(posts).map((post) =>
     <PostItem
       image={post.data.image}
-      url={sectionRoutes.getEntryURL(section, locale, extractCleanId(post.id, languages).id)}
+      url={sectionRoutes.getEntryPathFromId(section, locale, post.id)}
       title={post.data.title}
       excerpt={post.data.excerpt}
       cta={cta}

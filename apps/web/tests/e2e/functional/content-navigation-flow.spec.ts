@@ -35,7 +35,7 @@ for (const content of testContents) {
         await list.shouldBeFiltered(content.locale, content.testTag).soft()
 
         // 4. Click en el item con testSlug (sin navegar por URL)
-        const entryUrl = sectionRoutes.getEntryURL(content.name, content.locale, content.testSlug)
+        const entryUrl = sectionRoutes.getEntryPath(content.name, content.locale, content.testSlug)
         await list.openItem(entryUrl)
 
         // 5. Validar que el detail page se cargó correctamente

@@ -133,7 +133,7 @@ export function userIsOnContentDetail(
   locale: UILanguages,
   slug: string,
 ): Step<ContentDetailPage> {
-  const url = sectionRoutes.getEntryURL(sectionName, locale, slug)
+  const url = sectionRoutes.getEntryPath(sectionName, locale, slug)
   return visit(
     `a user in ${sectionName} detail ${locale} ${slug}`,
     page,

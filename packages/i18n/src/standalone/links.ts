@@ -1,4 +1,3 @@
-import { extractCleanId } from '../core/extract-id'
 import type { Locales } from '../core/locale'
 import {
   availableLink,
@@ -17,10 +16,7 @@ export function createStandalonePageLinks<
   routes: StandalonePageRoutes<TPage, TLocale>,
   locales: Locales<TLocale>,
 ): TranslationLink<TLocale>[] {
-  const { locale: currentLocale, id: currentRoute } = extractCleanId(
-    path,
-    locales,
-  )
+  const { locale: currentLocale, cleanId: currentRoute } = locales.parseEntryId(path)
   const page = routes.getPage(paramPage)
   const pageRoutes = routes.routes[page]
   const currentEntry = pageRoutes[currentLocale]

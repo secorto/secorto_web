@@ -156,7 +156,7 @@ export async function userIsOnContentList(
   contentType: SectionType,
   locale: UILanguages,
 ): Promise<ContentListPage> {
-  const url = sectionRoutes.getSectionURL(contentType, locale)
+  const url = sectionRoutes.getSectionPath(contentType, locale)
   return visit(
     `navigate to ${contentType} list in ${locale}`,
     page,

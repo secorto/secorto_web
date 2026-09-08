@@ -97,7 +97,7 @@ export async function getStaticPathsSectionTags<
           params: {
             locale,
             section:
-              sectionRoutes.getSectionRoute(
+              sectionRoutes.getSectionSlug(
                 section,
                 locale,
               ),
