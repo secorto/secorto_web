@@ -14,7 +14,7 @@ const { slug, section, locale } = Astro.props
 const entry = await getEntry(section, `${locale}/${slug}`)
 
 if (!entry) {
-  throw new Error(`Entry "${slug}" with locale "${locale}" not found from section "${section}"`);
+  throw new Error(`Entry "${slug}" with locale "${locale}" not found from section "${section}"`)
 }
 ---
 

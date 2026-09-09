@@ -66,7 +66,7 @@ describe('home domain schemas', () => {
       ).toThrow(ZodError)
     })
 
-    it('rejects related content section  without required fields', () => {
+    it('rejects related content section without required fields', () => {
       expect(() => RelatedContentSchema.parse({})).toThrow(ZodError)
       expect(() => RelatedContentSchema.parse({ section: 'work' })).toThrow(ZodError)
     })

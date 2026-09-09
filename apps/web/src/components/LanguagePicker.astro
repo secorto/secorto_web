@@ -49,7 +49,11 @@ const { links } = Astro.props
     box-sizing: border-box;
     transition: all 0.2s ease-in-out;
     border: none;
-    outline: none;
+  }
+
+  .language-picker :global(a:focus-visible) {
+    outline: 2px solid var(--colors-sidebar-hover, #B8FFFF);
+    outline-offset: 2px;
   }
 
   /* 1. IDIOMA INACTIVO */

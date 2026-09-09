@@ -44,9 +44,16 @@ const { path, class: className = '' } = Astro.props
     }
   }
 
-  .card:hover,
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: var(--colors-hover);
+    box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.15),
+                 0 4px 10px -2px rgba(0, 0, 0, 0.05);
+  }
+
   .card:focus-visible {
-    outline: none;
+    outline: 2px solid var(--colors-hover);
+    outline-offset: 3px;
     transform: translateY(-4px);
     border-color: var(--colors-hover);
     box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.15),
