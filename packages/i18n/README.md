@@ -111,9 +111,9 @@ hidden from canonical SEO indexing (`noindex`).
 ## 1. Domain Configuration (The Invariant Contracts)
 
 The library exposes immutable Value Objects for locales, sections, standalone pages, and tag routes.
-These enforce strict constraints at construction time, ensuring **zero slug collisions**
-and failing fast (throwing explicit errors) during development or build time
-if empty or duplicated `(locale, slug)` pairs occur.
+These enforce strict constraints at construction time, ensuring **zero duplicated `(locale, slug)` pairs**
+and failing fast (throwing explicit errors) during development or build time when a route contract
+collides across contexts or is otherwise malformed.
 
 Configure your single source of truth (e.g., `src/domain/i18n.ts`):
 
