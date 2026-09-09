@@ -6,9 +6,6 @@ import { link, type Link } from '@tests/support/ui/components/Link'
 
 /**
  * Componente reutilizable para tags.
- * Patrón: Recibe Target + TargetSelector (DI), NO recibe page.
- * Selectores son inyectados, no hardcodeados.
- * Ejemplo: HighlightCard.ts
  */
 export class TagsComponent {
   constructor(
@@ -31,11 +28,6 @@ export class TagsComponent {
   }
 }
 
-/**
- * Factory inyecta los selectores.
- * Cambiar selector = modificar aquí (1 lugar).
- * Patrón: idéntico a highlightCards() en HighlightCard.ts
- */
 export function tagsComponent(containerLocator: Locator) {
   return new TagsComponent(
     target('tags container', containerLocator),

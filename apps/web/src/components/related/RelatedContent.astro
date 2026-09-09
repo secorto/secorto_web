@@ -1,0 +1,35 @@
+---
+import RelatedContentSection from './RelatedContentSection.astro'
+import type { SectionType } from '@domain/section'
+import type { UILanguages } from '@i18n/ui'
+
+interface Props {
+  relatedContent: { slug: string, section: SectionType }[]
+  locale: UILanguages
+}
+
+const { relatedContent, locale } = Astro.props
+---
+
+<div class="related-content">
+  <div class="related-cards">
+    {relatedContent.map(({ slug, section }) => (
+      <RelatedContentSection slug={slug} section={section} locale={locale} />
+    ))}
+  </div>
+</div>
+
+<style>
+  .related-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+
+  .related-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+    gap: 1.5rem;
+  }
+</style>

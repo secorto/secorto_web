@@ -3,7 +3,7 @@ import { verifyStep } from '@tests/step'
 import { Target, target } from './Target'
 import { TargetSelector, targetSelector } from './TargetSelector'
 
-export class HighlightCards {
+export class RelatedContentSection {
   constructor(
     readonly parent: Target,
     readonly title: TargetSelector<Locator>,
@@ -12,7 +12,7 @@ export class HighlightCards {
   ) {}
 
   shouldBeValid() {
-    return verifyStep('highlight cards are valid', async ({ expect }) => {
+    return verifyStep('related cards are valid', async ({ expect }) => {
       await this.parent.shouldHaveAtLeastOne().with(expect)
       const cardCount = await this.parent.locator.count()
       for (let i = 0; i < cardCount; i++) {
@@ -23,7 +23,7 @@ export class HighlightCards {
   }
 
   shouldHaveValidCard(parent: Locator) {
-    return verifyStep('highlight card is valid', async ({ expect }) => {
+    return verifyStep('related card is valid', async ({ expect }) => {
       await this.title.get(parent).shouldBeVisible(expect)
       await this.excerpt.get(parent).shouldBeVisible(expect)
       await this.cta.get(parent).shouldBeVisible(expect)
@@ -31,11 +31,11 @@ export class HighlightCards {
   }
 }
 
-export function highlightCards(containerLocator: Locator) {
-  return new HighlightCards(
-    target('container for highlight', containerLocator),
-    targetSelector('highlight card title', (card: Locator) => card.locator('.highlight-title')),
-    targetSelector('highlight card excerpt', (card: Locator) => card.locator('.highlight-excerpt')),
-    targetSelector('highlight card cta', (card: Locator) => card.locator('.highlight-cta')),
+export function relatedContentSection(containerLocator: Locator) {
+  return new RelatedContentSection(
+    target('container for related', containerLocator),
+    targetSelector('related card title', (card: Locator) => card.locator('.related-section-title')),
+    targetSelector('related card excerpt', (card: Locator) => card.locator('.related-section-excerpt')),
+    targetSelector('related card cta', (card: Locator) => card.locator('.related-section-cta')),
   )
 }

@@ -20,3 +20,58 @@ const { links } = Astro.props
     throw new Error(`TranslationLink type not recognized`)
   })}
 </div>
+
+<style>
+  .language-picker {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.25);
+    border-radius: 0.5rem;
+    padding: 0.25rem;
+    width: 100%;
+    min-height: 2.2rem;
+    box-sizing: border-box;
+  }
+
+
+  .language-picker :global(a),
+  .language-picker :global(span) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Ubuntu", sans-serif;
+    font-size: 0.9rem;
+    text-decoration: none;
+    padding: 0.4rem 0.75rem;
+    border-radius: 0.35rem;
+    width: 48%;
+    box-sizing: border-box;
+    transition: all 0.2s ease-in-out;
+    border: none;
+  }
+
+  .language-picker :global(a:focus-visible) {
+    outline: 2px solid var(--colors-sidebar-hover, #B8FFFF);
+    outline-offset: 2px;
+  }
+
+  /* 1. IDIOMA INACTIVO */
+  .language-picker :global(a) {
+    color: rgba(255, 255, 255, 0.75);
+    background-color: transparent;
+    box-shadow: none;
+  }
+
+  .language-picker :global(a:hover) {
+    color: var(--colors-sidebar-hover, #B8FFFF);
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .language-picker :global(span) {
+    font-weight: 700;
+    color: #ffffff;
+    background-color: rgba(0, 0, 0, 0.4);
+    box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.4);
+  }
+</style>

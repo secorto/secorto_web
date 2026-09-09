@@ -2,7 +2,7 @@
 import type { MarkdownLayoutProps } from 'astro'
 import BaseLayout from '@layouts/BaseLayout.astro'
 import SEOHead from '@components/SEOHead.astro'
-import HomeHighlights from '@components/HomeHighlights.astro'
+import RelatedContent from '@components/related/RelatedContent.astro'
 
 import intro from '@assets/img/intro.inline.svg?raw'
 import { availableLink } from '@domain/translationLink'
@@ -14,7 +14,7 @@ type Props = MarkdownLayoutProps<HomeFrontmatter>
 const { frontmatter } = Astro.props
 const parsed = HomeFrontmatterSchema.parse(frontmatter)
 
-const { title, subTitle, locale, highlights, draft } = parsed
+const { title, subTitle, locale, relatedContent, draft } = parsed
 
 const links = languages.all.map(lang =>
   availableLink(`${languages.getPath(lang)}/`, lang)
@@ -36,5 +36,5 @@ import '../styles/home.css'
     </div>
   </section>
 
-  <HomeHighlights highlights={highlights} locale={locale} />
+  <RelatedContent relatedContent={relatedContent} locale={locale} />
 </BaseLayout>

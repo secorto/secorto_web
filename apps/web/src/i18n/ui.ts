@@ -43,6 +43,7 @@ export const ui = {
     'footer.tags': 'Browse tags',
     'tags.filter': 'Filter by tags',
     'sidebar.photo_alt': 'Photo of Sergio Carlos Orozco Torres',
+    'tags.view_all_tooltip': 'View all tags',
   },
   es: {
     'site.description': 'Blog personal de Sergio Orozco - Desarrollador, Conferencista, Entusiasta del Open Source',
@@ -72,7 +73,8 @@ export const ui = {
     'footer.follow': 'Sígueme en: ',
     'footer.tags': 'Explorar etiquetas',
     'tags.filter': 'Filtrar por etiquetas',
-    'sidebar.photo_alt': 'Foto de Sergio Carlos Orozco Torres'
+    'sidebar.photo_alt': 'Foto de Sergio Carlos Orozco Torres',
+    'tags.view_all_tooltip': 'Ver todas las etiquetas',
   },
 } as const
 

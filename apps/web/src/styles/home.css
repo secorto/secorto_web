@@ -1,75 +1,6 @@
-.highlights {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  margin-top: 2rem;
-}
-
-.highlights-cards {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-}
-
-@media (max-width: 829px) {
-  .highlights-cards {
-    grid-template-columns: 1fr;
-  }
-}
-
-.highlight-card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  padding: 1.25rem 1.5rem;
-  border-radius: 10px;
-  text-decoration: none;
-  box-shadow: 0 0 8px var(--colors-primary);
-  background: var(--colors-background);
-  color: var(--colors-text);
-  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
-}
-
-.highlight-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 16px var(--colors-primary);
-}
-
-.highlight-label {
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--colors-primary);
-}
-
-.highlight-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--colors-heading);
-  margin: 0;
-  line-height: 1.3;
-}
-
-.highlight-excerpt {
-  font-size: 0.9rem;
-  color: var(--colors-text);
-  margin: 0;
-  line-height: 1.5;
-  display: -webkit-box;
-  line-clamp: 3;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.highlight-cta {
-  margin-top: auto;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--colors-primary);
-}
-
+/* ==========================================================================
+   BIOGRAFÍA PRINCIPAL (HOME-BIO)
+   ========================================================================== */
 .home-bio {
   display: flex;
   flex-wrap: wrap;
@@ -78,7 +9,7 @@
   padding: 1rem 0 0;
 }
 
-/* Avatar */
+/* Avatar SVG inyectado inline */
 .home-avatar {
   flex: 0 1 16.5rem;
   min-width: 10rem;
@@ -91,27 +22,26 @@
   height: 100%;
 }
 
-/* Texto principal */
+/* Contenedor de Textos */
 .home-bio-text {
   flex: 1 1 20rem;
   min-width: 0;
-  display: flex;              /* ← necesario */
-  flex-direction: column;     /* ← necesario */
+  display: flex;
+  flex-direction: column;
 }
 
-/* Subtítulo */
 .home-bio-subtitle {
   margin: 0 0 0.5rem;
   font-size: 1.3rem;
   color: var(--colors-heading);
 }
 
-/* Contenido del bio */
+/* Contenido del Markdown (<slot />) */
 .home-bio-content {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  min-width: 0;               /* ← evita colapsos */
+  min-width: 0; /* Evita colapsos de caja en layouts complejos */
 }
 
 .home-bio-content p {

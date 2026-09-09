@@ -1,0 +1,84 @@
+---
+import Card from '@components/ui/Card.astro'
+import { sectionRoutes, type SectionType } from '@domain/section'
+import { cta, sections, type UILanguages } from '@i18n/ui'
+import { getEntry } from 'astro:content'
+
+interface Props {
+  slug: string
+  section: SectionType
+  locale: UILanguages
+}
+
+const { slug, section, locale } = Astro.props
+const entry = await getEntry(section, `${locale}/${slug}`)
+
+if (!entry) {
+  throw new Error(`Entry "${slug}" with locale "${locale}" not found from section "${section}"`)
+}
+---
+
+<Card path={sectionRoutes.getEntryPath(section, locale, slug)} testId='related-content-section-card'>
+  <div class="related-content-section">
+    <span class="related-section-name">{sections[section][locale]}</span>
+    <h3 class="related-section-title">{entry.data.title}</h3>
+    <p class="related-section-excerpt">{entry.data.excerpt}</p>
+    <div class="related-section-cta card-cta">
+      {cta[section][locale]}
+    </div>
+  </div>
+</Card>
+
+<style>
+  /* Estilos específicos de composición interna de datos */
+  .related-content-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    height: 100%;
+
+  }
+
+  .related-section-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--colors-heading);
+    line-height: 1.3;
+  }
+
+  .related-section-excerpt {
+    margin: 0;
+    color: var(--colors-text);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .related-section-cta {
+    margin-top: auto;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--colors-primary);
+    transition: color 0.2s ease;
+  }
+
+  @container (max-width: 829px) {
+    .related-content-section {
+      text-align: center;
+    }
+  }
+  .related-section-name {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--colors-primary);
+    margin-bottom: 0.25rem;
+    display: block;
+  }
+</style>
