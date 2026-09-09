@@ -1,5 +1,5 @@
 import { target } from '@tests/support/ui/components/Target'
-import { highlightCards, HighlightCards } from '@tests/support/ui/components/HighlightCard'
+import { relatedContentSection, RelatedContentSection } from '@tests/support/ui/components/RelatedCard'
 import type { Page } from '@playwright/test'
 import type { Target as TargetComponent } from '@tests/support/ui/components/Target'
 import type { UILanguages } from '@i18n/ui'
@@ -13,14 +13,14 @@ export class HomePageMain implements LocalizedPage<void> {
   constructor(
     readonly avatar: TargetComponent,
     readonly bioText: TargetComponent,
-    readonly highlightCards: HighlightCards,
+    readonly relatedCards: RelatedContentSection,
   ) {}
 
   shouldBeLocalized(_locale: UILanguages) {
     return verifyStep('homepage main is localized', async ({ expect }) => {
       await this.avatar.shouldBeVisible(expect)
       await this.bioText.shouldBeVisible(expect)
-      await this.highlightCards.shouldBeValid().with(expect)
+      await this.relatedCards.shouldBeValid().with(expect)
     })
   }
 }
@@ -51,7 +51,7 @@ export function homePage(page: Page) {
   const main = new HomePageMain(
     target('home avatar', page.locator('.home-avatar svg')),
     target('home bio text', page.locator('.home-bio-text')),
-    highlightCards(page.locator('.highlight-card')),
+    relatedContentSection(page.locator('.related-content-section')),
   )
   const { layout, validateUrl, a11y } = createPageContext(page, 'home', main)
   return new HomePage(layout, validateUrl, a11y)

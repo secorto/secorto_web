@@ -16,9 +16,9 @@ en tests separados, causando:
 
 ```typescript
 // ❌ ANTES: 3 tests × 2 locales = 6 navegaciones
-test('renders bio, avatar and highlights', ...)
+test('renders bio, avatar and relatedContent', ...)
 test('PyBAQ callout uses i18n strings', ...)
-test('highlights hrefs match routes', ...)
+test('relatedContent hrefs match routes', ...)
 ```
 
 ## Solución: Soft Assert Semánticamente Guiado
@@ -180,7 +180,7 @@ test('renders bio', async () => {
   await home.shouldHaveBioText()
 })
 
-test('highlights valid', async () => {
+test('related content valid', async () => {
   const home = await userInHome(page, locale)
   const blogRoute = sectionsConfig.blog.routes[locale]
   const talkRoute = sectionsConfig.talk.routes[locale]

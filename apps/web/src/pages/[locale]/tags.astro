@@ -66,7 +66,7 @@ const tagsWithSections = tagRoutes.getTags().map(tag => ({
           data-testid={`global-tag-${tag}`}
         >
           <div class="tag-card-header">
-            <svg xmlns="http://w3.org" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="tag-card-icon"><path d="M12 2H2v10l9.29 9.29c.39.39 1.02.39 1.41 0l8.59-8.59c.39-.39.39-1.02 0-1.41L12 2z"></path><path d="m7 7-.01.01"></path></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="tag-card-icon"><path d="M12 2H2v10l9.29 9.29c.39.39 1.02.39 1.41 0l8.59-8.59c.39-.39.39-1.02 0-1.41L12 2z"></path><path d="m7 7-.01.01"></path></svg>
             <h2>{tagRoutes.getTagSlug(tag, locale)}</h2>
           </div>
 
@@ -91,18 +91,10 @@ const tagsWithSections = tagRoutes.getTags().map(tag => ({
 </BaseLayout>
 
 <style>
-  /* --- Estructura y Caja de Respiración de la Página --- */
   .tags-section-wrapper {
     width: 100%;
-    max-width: 80ch; /* Limita el ancho del texto para una lectura óptima */
+    max-width: 80ch;
     margin: 0 auto;
-  }
-
-  .tags-main-title {
-    color: var(--colors-heading);
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin: 0 0 1rem;
   }
 
   .tags-intro-description {
@@ -113,21 +105,15 @@ const tagsWithSections = tagRoutes.getTags().map(tag => ({
     opacity: 0.9;
   }
 
-  /* --- Rejilla de Tarjetas Estáticas --- */
   .tag-groups {
     list-style: none;
     padding: 0;
     margin: 0;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Rejilla responsive automática */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 1.5rem;
   }
 
-  /*
-    TARJETA ESTÁTICA PREMIUM:
-    Reutiliza milimétricamente la estética tridimensional de tu baseline de cards
-    pero adaptada a un contenedor no-cliqueable.
-  */
   .tag-static-card {
     box-sizing: border-box;
     background: var(--colors-background);
@@ -138,13 +124,11 @@ const tagsWithSections = tagRoutes.getTags().map(tag => ({
     flex-direction: column;
     gap: 1rem;
 
-    /* Sombra suave e idéntica a tu baseline en modo claro */
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04),
                 0 2px 4px -1px rgba(0, 0, 0, 0.01);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
-  /* Cabecera interna de la Tarjeta */
   .tag-card-header {
     display: flex;
     align-items: center;
@@ -162,10 +146,9 @@ const tagsWithSections = tagRoutes.getTags().map(tag => ({
     font-size: 1.35rem;
     font-weight: 600;
     color: var(--colors-heading);
-    text-transform: capitalize; /* Asegura un look pulido en los títulos */
+    text-transform: capitalize;
   }
 
-  /* Cuerpo interno de la Tarjeta */
   .tag-card-body {
     display: flex;
     flex-direction: column;
@@ -177,7 +160,6 @@ const tagsWithSections = tagRoutes.getTags().map(tag => ({
     font-weight: 500;
   }
 
-  /* --- Contenedor de Píldoras de las Secciones (Blog / Charlas) --- */
   .sections-pills-container {
     display: flex;
     flex-wrap: wrap;
@@ -193,26 +175,23 @@ const tagsWithSections = tagRoutes.getTags().map(tag => ({
     font-weight: 500;
     border: 1px solid var(--colors-border-lazy);
     border-radius: 2rem;
-    overflow: hidden; /* Mantiene el look encapsulado */
+    overflow: hidden;
     transition: all 0.2s ease-in-out;
   }
 
-  /* Nombre de la sección (Fondo limpio hereda el entorno) */
   .pill-name {
     padding: 0.3rem 0.6rem;
     color: var(--colors-primary);
     background-color: transparent;
   }
 
-  /* Contador numérico embutido a la derecha */
   .pill-count {
     padding: 0.3rem 0.5rem;
-    color: var(--colors-background); /* Blanco en modo claro, oscuro en modo negro */
-    background-color: var(--colors-primary); /* Relleno con tu color de marca */
+    color: var(--colors-background);
+    background-color: var(--colors-primary);
     font-weight: 600;
   }
 
-  /* --- MICRO-INTERACCIONES EN HOVER --- */
   .section-pill:hover {
     border-color: var(--colors-hover);
   }
@@ -226,9 +205,6 @@ const tagsWithSections = tagRoutes.getTags().map(tag => ({
     background-color: var(--colors-hover);
   }
 
-  /* ========================================================
-     MODO OSCURO INTEGRADO CON TU CLASE .dark GLOBAL
-     ======================================================== */
   :global(.dark) .tag-static-card {
     background: var(--colors-blogBg);
     box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.4);
@@ -240,21 +216,19 @@ const tagsWithSections = tagRoutes.getTags().map(tag => ({
   }
 
 :global(.dark) .section-pill {
-    background-color: rgba(0, 0, 0, 0.2); /* Fondo hundido para la pastilla */
+    background-color: rgba(0, 0, 0, 0.2);
   }
 
-  /* CAMBIO CLAVE: Apagamos el texto de la sección para que no compita con el número */
   :global(.dark) .pill-name {
-    color: var(--colors-text); /* Un blanco roto/gris suave opaco súper elegante */
+    color: var(--colors-text);
   }
 
-  /* --- INTERACCIONES HOVER EN MODO OSCURO --- */
   :global(.dark) .section-pill:hover {
     border-color: var(--colors-hover);
   }
 
   :global(.dark) .section-pill:hover .pill-name {
-    color: var(--colors-hover); /* Ilumina al morado/lila pastel al pasar el mouse */
+    color: var(--colors-hover);
     background-color: rgba(217, 186, 232, 0.05);
   }
 

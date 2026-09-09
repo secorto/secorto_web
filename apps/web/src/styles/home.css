@@ -49,34 +49,3 @@
   font-size: 0.95rem;
   line-height: 1.6;
 }
-
-/* ==========================================================================
-   CUADRÍCULA DE DESTACADOS (LAYOUT DE LAS CARDS)
-   ========================================================================== */
-.highlights {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  margin-top: 2rem;
-}
-
-.highlights-cards {
-  display: grid;
-  /* CAMBIO CLAVE: Rejilla elástica que se adapta al espacio de forma fluida.
-     Elimina la necesidad de la media query rígida de 829px para las columnas. */
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 1.5rem;
-}
-
-/* ==========================================================================
-   DETALLES EXCLUSIVOS DE CONTEXTO (HOME ONLY)
-   ========================================================================== */
-.highlight-label {
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--colors-primary);
-  margin-bottom: 0.25rem;
-  display: block; /* Asegura el correcto flujo vertical sobre el título */
-}

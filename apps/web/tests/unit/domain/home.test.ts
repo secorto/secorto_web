@@ -4,7 +4,7 @@ import { ZodError } from 'zod'
 import {
   SectionTypeSchema,
   UILanguagesSchema,
-  HighlightSchema,
+  RelatedContentSchema,
   HomeFrontmatterSchema,
   type HomeFrontmatter
 } from '@domain/home'
@@ -39,36 +39,36 @@ describe('home domain schemas', () => {
     })
   })
 
-  describe('HighlightSchema', () => {
-    it('accepts valid highlight with section and slug', () => {
-      const highlight = HighlightSchema.parse({
+  describe('RelatedContentSchema', () => {
+    it('accepts valid related content with section and slug', () => {
+      const relatedContent = RelatedContentSchema.parse({
         section: 'work',
         slug: 'perficient'
       })
-      expect(highlight).toEqual({ section: 'work', slug: 'perficient' })
+      expect(relatedContent).toEqual({ section: 'work', slug: 'perficient' })
     })
 
-    it('rejects highlight with empty slug', () => {
+    it('rejects related content section with empty slug', () => {
       expect(() =>
-        HighlightSchema.parse({
+        RelatedContentSchema.parse({
           section: 'work',
           slug: ''
         })
       ).toThrow(ZodError)
     })
 
-    it('rejects highlight with invalid section', () => {
+    it('rejects related content section with invalid section', () => {
       expect(() =>
-        HighlightSchema.parse({
+        RelatedContentSchema.parse({
           section: 'invalid',
           slug: 'perficient'
         })
       ).toThrow(ZodError)
     })
 
-    it('rejects highlight without required fields', () => {
-      expect(() => HighlightSchema.parse({})).toThrow(ZodError)
-      expect(() => HighlightSchema.parse({ section: 'work' })).toThrow(ZodError)
+    it('rejects related content section  without required fields', () => {
+      expect(() => RelatedContentSchema.parse({})).toThrow(ZodError)
+      expect(() => RelatedContentSchema.parse({ section: 'work' })).toThrow(ZodError)
     })
   })
 
@@ -77,7 +77,7 @@ describe('home domain schemas', () => {
       title: 'Página de inicio',
       subTitle: 'Soy Sergio Carlos Orozco Torres',
       locale: 'es',
-      highlights: [
+      relatedContent: [
         { section: 'work', slug: 'perficient' },
         { section: 'community', slug: 'pybaq' }
       ]
@@ -112,16 +112,16 @@ describe('home domain schemas', () => {
       expect(() => HomeFrontmatterSchema.parse(rest)).toThrow(ZodError)
     })
 
-    it('rejects frontmatter without highlights', () => {
-      const { highlights, ...rest } = validFrontmatter
+    it('rejects frontmatter without related content', () => {
+      const { relatedContent, ...rest } = validFrontmatter
       expect(() => HomeFrontmatterSchema.parse(rest)).toThrow(ZodError)
     })
 
-    it('rejects frontmatter with empty highlights array', () => {
+    it('rejects frontmatter with empty relatedContent array', () => {
       expect(() =>
         HomeFrontmatterSchema.parse({
           ...validFrontmatter,
-          highlights: []
+          relatedContent: []
         })
       ).toThrow(ZodError)
     })
@@ -135,11 +135,11 @@ describe('home domain schemas', () => {
       ).toThrow(ZodError)
     })
 
-    it('rejects frontmatter with invalid highlight section', () => {
+    it('rejects frontmatter with invalid relatedContent section', () => {
       expect(() =>
         HomeFrontmatterSchema.parse({
           ...validFrontmatter,
-          highlights: [{ section: 'invalid', slug: 'perficient' }]
+          relatedContent: [{ section: 'invalid', slug: 'perficient' }]
         })
       ).toThrow(ZodError)
     })

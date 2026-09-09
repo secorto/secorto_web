@@ -3,7 +3,7 @@ layout: "@layouts/HomeLayout.astro"
 locale: "es"
 title: "SeCOrTo"
 subTitle: "Calidad por diseño"
-highlights:
+relatedContent:
   - section: work
     slug: perficient
   - section: community

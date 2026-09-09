@@ -6,7 +6,7 @@ export const SectionTypeSchema = z.enum(sectionRoutes.getSections())
 
 export const UILanguagesSchema = z.enum(languages.all)
 
-export const HighlightSchema = z.object({
+export const RelatedContentSchema = z.object({
   section: SectionTypeSchema,
   slug: z.string().min(1)
 })
@@ -15,7 +15,7 @@ export const HomeFrontmatterSchema = z.object({
   title: z.string(),
   subTitle: z.string(),
   locale: UILanguagesSchema,
-  highlights: z.array(HighlightSchema).min(1),
+  relatedContent: z.array(RelatedContentSchema).min(1),
   draft: z.boolean().optional()
 })
 

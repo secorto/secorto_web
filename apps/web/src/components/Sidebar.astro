@@ -197,37 +197,9 @@ const isSectionActive = (targetPath: string, isHome = false) => {
 }
 
 /* ==========================================================================
-   2. COMPORTAMIENTO EXCLUSIVO PARA MÓVILES (Pantallas pequeñas)
-   ========================================================================== */
-@media (max-width: 991px) {
-  .sidebar {
-    /* ANCHO FLUIDO ADAPTATIVO: Ocupa el 80% del teléfono o máximo 17rem */
-    width: 80vw;
-    max-width: 17rem;
-    padding: 4rem 1rem 2rem; /* Espacio extra arriba para respetar el botón X */
-
-    /* Animación de deslizamiento lateral nativa */
-    transform: translateX(-100%);
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  /* Clase reactiva que inyecta tu JS */
-  .sidebar.sidebar-open {
-    transform: translateX(0);
-    box-shadow: 8px 0 32px rgba(0, 0, 0, 0.4);
-  }
-
-  /* Si estás en el Home en móvil, la tarjeta del perfil se realza de forma sutil */
-  .sidebar .sidebar-home-link[aria-current="page"] {
-    background-color: rgba(0, 0, 0, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-  }
-}
-
-/* ==========================================================================
    3. COMPORTAMIENTO EXCLUSIVO PARA ESCRITORIO (PC / Pantallas grandes)
    ========================================================================== */
-@media (min-width: 992px) {
+@media (min-width: 830px) {
   .sidebar {
     width: 16rem; /* Mantiene el estándar de oro en PC */
     padding: 2rem 1.25rem;
@@ -243,7 +215,7 @@ const isSectionActive = (targetPath: string, isHome = false) => {
   }
 }
 
-@media (max-width: 991px) {
+@media (max-width: 829px) {
   .sidebar {
     width: 100vw;
     max-width: 100%;
