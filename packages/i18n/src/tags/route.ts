@@ -1,4 +1,4 @@
-import { ensureNoRouteCollisions } from '../core'
+import { ensureNoSlugCollisions } from '../core'
 import type { LocalePathResolver } from '../core/locale'
 
 /**
@@ -133,7 +133,7 @@ export function createTagRoutes<
   routes: Record<TTag, Record<TLocale, string>>,
   locales: LocalePathResolver<TLocale>,
 ): TagRoutes<TTag, TSection, TLocale> {
-  ensureNoRouteCollisions(routes, 'TagRoutes')
+  ensureNoSlugCollisions(routes, 'TagRoutes')
   const tags = Object.freeze(Object.keys(routes) as TTag[])
 
   for (const tag of tags) {

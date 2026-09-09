@@ -9,7 +9,7 @@
  *
  * @throws {Error} If the same locale and slug combination is found in more than one context.
  */
-export function ensureNoRouteCollisions<
+export function ensureNoSlugCollisions<
   TContext extends string,
   TLocale extends string
 >(
@@ -28,7 +28,7 @@ export function ensureNoRouteCollisions<
       if (seen.has(key)) {
         const other = seen.get(key)!
         throw new Error(
-          `Route collision detected in ${contextName}: The slug "${slug}" for locale "${locale}" is duplicated between "${other}" and "${context}".`
+          `Slug collision detected in ${contextName}: The slug "${slug}" for locale "${locale}" is duplicated between "${other}" and "${context}".`
         )
       }
 

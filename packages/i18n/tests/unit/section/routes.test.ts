@@ -51,7 +51,7 @@ describe('sectionRoutes', () => {
     expect(() => {
       createSectionRoutes(duplicateRoutes, locales)
     }).toThrow(
-      'Route collision detected in SectionRoutes: The slug "blog" for locale "es" is duplicated between "blog" and "talk".'
+      'Slug collision detected in SectionRoutes: The slug "blog" for locale "es" is duplicated between "blog" and "talk".'
     )
   })
 })

@@ -34,7 +34,7 @@ export interface StandalonePageRoutes<
   getPage(key: string): TPage
 
   /**
-   * Returns the localized route slug for the given page and locale.
+   * Returns the localized slug for the given page and locale.
    *
    * @param page Canonical standalone page key.
    * @param locale Locale whose slug should be resolved.

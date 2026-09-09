@@ -123,7 +123,7 @@ describe('tagRoutes', () => {
         locales,
       ),
     ).toThrow(
-      'Route collision detected in TagRoutes: The slug "herramientas" for locale "es" is duplicated between "javascript" and "tools".',
+      'Slug collision detected in TagRoutes: The slug "herramientas" for locale "es" is duplicated between "javascript" and "tools".',
     )
   })
 })

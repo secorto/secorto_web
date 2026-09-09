@@ -1,4 +1,4 @@
-import { ensureNoRouteCollisions } from '../core'
+import { ensureNoSlugCollisions } from '../core'
 import type { EntryIdResolver, LocalePathResolver } from '../core'
 
 export type SectionDictionary<
@@ -97,7 +97,7 @@ export function createSectionRoutes<
   routes: SectionDictionary<TSection, TLocale, string>,
   locales: LocalePathResolver<TLocale> & EntryIdResolver<TLocale>
 ): SectionRoutes<TSection, TLocale> {
-  ensureNoRouteCollisions(routes, 'SectionRoutes')
+  ensureNoSlugCollisions(routes, 'SectionRoutes')
   const sections = Object.freeze(Object.keys(routes) as TSection[])
 
   // Enforce runtime immutability for the value object invariants.
