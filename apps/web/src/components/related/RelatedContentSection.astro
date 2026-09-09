@@ -5,8 +5,8 @@ import { cta, sections, type UILanguages } from '@i18n/ui'
 import { getEntry } from 'astro:content'
 
 interface Props {
-  slug: string,
-  section: SectionType,
+  slug: string
+  section: SectionType
   locale: UILanguages
 }
 
@@ -22,7 +22,7 @@ if (!entry) {
   <div class="related-content-section">
     <span class="related-section-name">{sections[section][locale]}</span>
     <h3 class="related-section-title">{entry.data.title}</h3>
-    {entry.data.excerpt && <p class="related-section-excerpt">{entry.data.excerpt}</p>}
+    <p class="related-section-excerpt">{entry.data.excerpt}</p>
     <div class="related-section-cta">
       {cta[section][locale]}
     </div>
