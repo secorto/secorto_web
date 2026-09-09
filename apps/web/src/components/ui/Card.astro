@@ -62,7 +62,6 @@ const { path, class: className = '' } = Astro.props
   }
 
   :global(.dark) .card {
-    /* Muta el fondo de forma controlada a tu gris de blog oscuro para dar relieve */
     background: var(--colors-blogBg);
     border: 1px solid var(--colors-border-lazy);
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
@@ -71,20 +70,18 @@ const { path, class: className = '' } = Astro.props
   :global(.dark) .card:hover,
   :global(.dark) .card:focus-visible {
     border-color: var(--colors-hover);
-    /* Proyecta una sombra profunda adaptada al fondo negro de la pantalla */
     box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.6),
-                0 4px 12px -2px rgba(217, 186, 232, 0.08); /* Destello morado ultra sutil */
+                0 4px 12px -2px rgba(217, 186, 232, 0.08);
   }
 
-  @media (prefers-color-scheme: dark) {
-    .card {
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-    }
-    .card:hover, .card:focus-visible {
-      border-color: var(--colors-hover);
-      box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.5);
-    }
+  :global(.dark) .card {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  }
+
+  :global(.dark) .card:hover, .card:focus-visible {
+    border-color: var(--colors-hover);
+    box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.5);
   }
 
   /* Efecto cascada moderno: si la card recibe hover/foco, anima su CTA interno si existe */
