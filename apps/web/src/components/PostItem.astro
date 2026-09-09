@@ -1,4 +1,5 @@
 ---
+import Card from '@components/ui/Card.astro'
 import { useTranslations } from '@i18n/utils'
 import { formatString } from '@utils/formatString'
 import { Image } from 'astro:assets'
@@ -12,11 +13,12 @@ interface Props {
   cta: string
   locale: UILanguages
 }
+
 const { title, path, image, excerpt = '', cta, locale } = Astro.props
 const t = useTranslations(locale)
 ---
 
-<a class="card" href={path} data-testid="list-item">
+<Card path={path}>
   {image &&
     <Image src={image} alt={formatString(t('featured_image'), [title])} class="card-image" />
   }
@@ -30,43 +32,13 @@ const t = useTranslations(locale)
       {cta}
     </div>
   </div>
-</a>
+</Card>
+
 <style>
-  .card {
-    box-sizing: border-box;
-    min-width: 0px;
-    box-shadow: 0 0 8px var(--colors-primary);
-    margin: 0px 0px 1.5rem;
-    border-radius: 10px;
-    text-decoration: none;
-    transition: box-shadow 0.3s ease-out 0.1s, transform 0.3s ease-out, opacity 0.2s ease-out;
-    flex: 0 1 100%;
-    padding: 1rem;
-    background: var(--colors-background);
-    display: flex;
-    flex-direction: row;
-    gap: 1.5rem;
-    align-items: flex-start;
-    min-height: 12rem;
-  }
-  @container (max-width: 829px) {
-    .card {
-      flex-direction: column;
-      align-items: center;
-      min-height: auto;
-    }
-    .card-content {
-      text-align: center;
-    }
-  }
-  .card:hover {
-    transform: translate(0px, -4px);
-    box-shadow: 0 2px 14px var(--colors-hover);
-  }
+  /* ÚNICAMENTE estilos de composición interna de datos para listados */
   .card-content {
     box-sizing: border-box;
     margin: 0px;
-    min-width: 0px;
     color: var(--colors-primary);
     flex: 1;
     min-width: 0;
@@ -74,29 +46,51 @@ const t = useTranslations(locale)
     flex-direction: column;
     gap: 0.75rem;
   }
+
   .card-title {
     margin: 0;
+    font-size: 1.4rem;
+    color: var(--colors-heading);
   }
+
   .card-excerpt {
-    margin: 0.5rem 0 0 0;
+    margin: 0;
     color: var(--colors-text);
     font-size: 0.95rem;
-    line-height: 1.4;
+    line-height: 1.5;
   }
+
   .card-details {
     color: var(--colors-text);
   }
+
   .card-image {
     flex-shrink: 0;
     width: 21rem;
     height: 12rem;
     object-fit: contain;
-    border-radius: 6px;
+    border-radius: 8px;
     display: block;
   }
+
   .card-cta {
     margin-top: auto;
     font-weight: 600;
-    color: var(--colors-hover);
+    font-size: 0.95rem;
+    color: var(--colors-primary);
+    transition: color 0.2s ease;
+  }
+
+  /* Ajustes específicos internos si la pantalla se vuelve pequeña */
+  @container (max-width: 829px) {
+    .card-content {
+      text-align: center;
+      width: 100%;
+    }
+    .card-image {
+      width: 100%;
+      height: auto;
+      max-height: 14rem;
+    }
   }
 </style>

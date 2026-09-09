@@ -1,0 +1,89 @@
+---
+interface Props {
+  path: string;
+  class?: string;
+}
+
+const { path, class: className = '' } = Astro.props
+---
+
+<a class={`card ${className}`} href={path} data-testid="list-item">
+  <slot />
+</a>
+
+<style>
+  .card {
+    box-sizing: border-box;
+    min-width: 0px;
+    margin: 0px 0px 1.5rem;
+    border-radius: 12px;
+    text-decoration: none;
+    background: var(--colors-background);
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
+    align-items: flex-start;
+    min-height: 12rem;
+    padding: 1.5rem;
+    width: 100%;
+
+    /* Única fuente de verdad de la estética moderna */
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05),
+                0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    transition: box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.2s ease;
+  }
+
+  @container (max-width: 829px) {
+    .card {
+      flex-direction: column;
+      align-items: center;
+      min-height: auto;
+    }
+  }
+
+  .card:hover,
+  .card:focus-visible {
+    outline: none;
+    transform: translateY(-4px);
+    border-color: var(--colors-hover);
+    box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.15),
+                0 4px 10px -2px rgba(0, 0, 0, 0.05);
+  }
+
+  :global(.dark) .card {
+    /* Muta el fondo de forma controlada a tu gris de blog oscuro para dar relieve */
+    background: var(--colors-blogBg);
+    border: 1px solid var(--colors-border-lazy);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  }
+
+  :global(.dark) .card:hover,
+  :global(.dark) .card:focus-visible {
+    border-color: var(--colors-hover);
+    /* Proyecta una sombra profunda adaptada al fondo negro de la pantalla */
+    box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.6),
+                0 4px 12px -2px rgba(217, 186, 232, 0.08); /* Destello morado ultra sutil */
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .card {
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    }
+    .card:hover, .card:focus-visible {
+      border-color: var(--colors-hover);
+      box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  /* Efecto cascada moderno: si la card recibe hover/foco, anima su CTA interno si existe */
+  .card:hover :global(.card-cta),
+  .card:focus-visible :global(.card-cta) {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    color: var(--colors-hover);
+  }
+</style>

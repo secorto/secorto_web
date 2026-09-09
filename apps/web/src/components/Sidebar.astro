@@ -33,36 +33,36 @@ const isSectionActive = (targetPath: string, isHome = false) => {
   return currentPath.startsWith(targetPath)
 }
 ---
-
 <nav class="sidebar sidebar-toggle">
   <div class="sidebar-content">
     <div>
       <a
         class="sidebar-home-link"
         href={homePath}
-        {...isSectionActive(homePath, true) && { 'aria-current': 'page' }}
+        aria-current={isSectionActive(homePath, true) ? 'page' : undefined}
       >
         <div class="sidebar-image">
           <Image src={Photo} alt={t('sidebar.photo_alt')} width="256" height="256" data-testid="sidebar-photo" />
         </div>
         <p class="sidebar-title" data-testid="sidebar-title">Sergio Carlos Orozco Torres</p>
       </a>
-      <hr class="sidebar-separator">
     </div>
+
     <div class="sidebar-links" data-testid="sidebar-links">
       <a
         href={aboutPath}
-        {...isSectionActive(aboutPath) && { 'aria-current': 'page' }}
+        aria-current={isSectionActive(aboutPath) ? 'page' : undefined}
         data-testid="sidebar-about"
       >
         {t('nav.about')}
       </a>
+
       {navSections.map((section) => {
         const sectionPath = sectionRoutes.getSectionPath(section, currentLocale)
         return (
           <a
             href={sectionPath}
-            {...isSectionActive(sectionPath) && { 'aria-current': 'page' }}
+            aria-current={isSectionActive(sectionPath) ? 'page' : undefined}
             data-testid={`sidebar-${section}`}
           >
             {sections[section][currentLocale]}
@@ -70,7 +70,217 @@ const isSectionActive = (targetPath: string, isHome = false) => {
         )
       })}
     </div>
-    <ThemeIcon />
-    <LanguagePicker links={links} />
+
+    <!-- Contenedor footer para agrupar simétricamente -->
+    <div class="sidebar-footer">
+      <ThemeIcon />
+      <LanguagePicker links={links} />
+    </div>
   </div>
 </nav>
+
+<style>
+/* ==========================================================================
+   1. ESTILOS BASE COMPARTIDOS (Móvil y Escritorio)
+   ========================================================================== */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: var(--colors-sidebar-background);
+  height: 100dvh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.sidebar-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+}
+
+/* Sección del Avatar / Perfil */
+.sidebar-home-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  text-decoration: none;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  box-sizing: border-box;
+  background-color: transparent;
+  border: 1px solid transparent;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.sidebar-home-link:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.sidebar-image img {
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  margin-bottom: 1rem;
+}
+
+.sidebar-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--colors-sidebar-text);
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* Lista de navegación central */
+.sidebar-links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 1rem 0;
+  flex-grow: 1;
+  width: 100%;
+}
+
+/* Enlaces inactivos del menú principal (LIMPIOS, SIN FONDO NEGRO RÍGIDO) */
+.sidebar-links a {
+  font-size: 1.1rem;
+  font-family: "Ubuntu", sans-serif;
+  text-decoration: none;
+  padding: 0.6rem 1rem;
+  margin: 0.15rem 0;
+  width: 100%;
+  color: var(--colors-sidebar-text);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: transparent; /* Forzamos a limpiar el fondo negro roto */
+  border-left: 4px solid transparent;
+  border-radius: 0;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+}
+
+.sidebar-links a:hover {
+  color: var(--colors-sidebar-hover);
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+
+/* Botón Activo Seleccionado: Efecto de noche profunda premium */
+.sidebar .sidebar-links a[aria-current="page"] {
+  color: var(--colors-sidebar-hover, #B8FFFF);
+  background-color: rgba(0, 0, 0, 0.3);
+  border-left: 4px solid var(--colors-sidebar-hover, #B8FFFF);
+  border-radius: 0 0.5rem 0.5rem 0;
+  box-shadow: inset 2px 0 4px rgba(0, 0, 0, 0.15);
+}
+
+/* Footer de Controles */
+.sidebar-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  align-items: center;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  width: 100%;
+  margin-top: auto;
+  box-sizing: border-box;
+}
+
+/* ==========================================================================
+   2. COMPORTAMIENTO EXCLUSIVO PARA MÓVILES (Pantallas pequeñas)
+   ========================================================================== */
+@media (max-width: 991px) {
+  .sidebar {
+    /* ANCHO FLUIDO ADAPTATIVO: Ocupa el 80% del teléfono o máximo 17rem */
+    width: 80vw;
+    max-width: 17rem;
+    padding: 4rem 1rem 2rem; /* Espacio extra arriba para respetar el botón X */
+
+    /* Animación de deslizamiento lateral nativa */
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Clase reactiva que inyecta tu JS */
+  .sidebar.sidebar-open {
+    transform: translateX(0);
+    box-shadow: 8px 0 32px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Si estás en el Home en móvil, la tarjeta del perfil se realza de forma sutil */
+  .sidebar .sidebar-home-link[aria-current="page"] {
+    background-color: rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+}
+
+/* ==========================================================================
+   3. COMPORTAMIENTO EXCLUSIVO PARA ESCRITORIO (PC / Pantallas grandes)
+   ========================================================================== */
+@media (min-width: 992px) {
+  .sidebar {
+    width: 16rem; /* Mantiene el estándar de oro en PC */
+    padding: 2rem 1.25rem;
+    transform: translateX(0) !important; /* Siempre fijo y visible */
+    box-shadow: none;
+  }
+
+  /* Relieve de cristal exclusivo para el perfil en el Home de escritorio */
+  .sidebar .sidebar-home-link[aria-current="page"] {
+    background-color: rgba(255, 255, 255, 0.04);
+    transform: scale(1.02);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  }
+}
+
+@media (max-width: 991px) {
+  .sidebar {
+    width: 100vw;
+    max-width: 100%;
+    padding: 4rem 1.5rem 2rem;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .sidebar.sidebar-open {
+    transform: translateX(0);
+    box-shadow: none;
+  }
+
+  .sidebar-home-link {
+    max-width: 20ch;
+    margin: auto;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+  }
+
+  /* Controlamos el tamaño de la imagen estrictamente en celulares */
+  .sidebar-image img {
+    width: 8rem;
+    height: 8rem;
+    margin-bottom: 0.5rem;   /* Menos margen debajo de la foto */
+  }
+
+  /* Ajustamos el tamaño del nombre para que acompañe el diseño compacto */
+  .sidebar-title {
+    font-size: 1.15rem;
+  }
+
+  /* Espaciado de los enlaces del menú en móvil */
+  .sidebar-links a {
+    font-size: 1.15rem;
+    padding: 0.6rem 1rem;
+  }
+}
+
+</style>

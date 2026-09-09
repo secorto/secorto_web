@@ -16,6 +16,14 @@ const t = useTranslations(locale)
 ---
 
 <nav class="tags-container" aria-label={t('tags.filter')} data-testid="tags">
+  <!-- Enlace principal que actúa como título y lleva a la vista general -->
+  <div class="tags-title-wrapper" data-tooltip={t('tags.view_all_tooltip')}>
+    <a href={tagRoutes.getTagIndexPath(locale)} class="tags-main-link">
+      <span>{t('tags.index_title')}</span>
+      <svg xmlns="http://w3.org" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="tag-icon"><path d="M12 2H2v10l9.29 9.29c.39.39 1.02.39 1.41 0l8.59-8.59c.39-.39.39-1.02 0-1.41L12 2z"></path><path d="m7 7-.01.01"></path></svg>
+    </a>
+  </div>
+
   <ul class="tags-list">
     {tags.map((tag) => {
       const isCurrentTag = current === tag
@@ -24,7 +32,7 @@ const t = useTranslations(locale)
           <a
             href={tagRoutes.getSectionTagPath(section, locale, tag)}
             class:list={['tag', { 'is-active': isCurrentTag }]}
-            {...isCurrentTag && { 'aria-current': 'location' }}
+            {...isCurrentTag && { 'aria-current': 'page' }}
             data-testid={`tag-link-${tag}`}
           >
             {tagRoutes.getTagSlug(tag, locale)}
@@ -36,43 +44,128 @@ const t = useTranslations(locale)
 </nav>
 
 <style>
-  .tags-list {
+  .tags-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+  }
+
+  /* --- Estilos del Enlace "Etiquetas:" Principal --- */
+  .tags-title-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+
+  .tags-main-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--colors-primary);
+    text-decoration: none;
+    padding: 0.35rem 0.5rem;
+    border: 1px solid transparent;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  .tags-main-link:hover {
+    color: var(--colors-hover);
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+
+  .tag-icon {
+    width: 1rem;
+    height: 1rem;
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .tags-title-wrapper::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background-color: #1e293b; /* Fondo oscuro elegante */
+    color: #ffffff;
+    padding: 0.4rem 0.7rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+  }
+
+  .tags-title-wrapper::before {
+    content: '';
+    position: absolute;
+    bottom: 110%;
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    border-width: 5px;
+    border-style: solid;
+    border-color: #1e293b transparent transparent transparent;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    z-index: 10;
+  }
+
+  /* Mostrar Tooltip al hacer Hover */
+  .tags-title-wrapper:hover::after,
+  .tags-title-wrapper:hover::before {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+    .tags-list {
     display: flex;
     flex-wrap: wrap;
+    gap: 0.5rem;
     list-style: none;
     padding: 0;
     margin: 0;
   }
 
   .tag {
-    display: inline-block;
-    margin: 0.5rem;
-    border: dotted 2px var(--colors-primary);
-    border-radius: 0.5em;
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--colors-border-lazy);
+    border-radius: 2rem;
     text-decoration: none;
-    font-size: 1.15em;
-    padding: 0.5rem 1rem;
-    color: var(--colors-primary); /* Asegura color base semántico */
-    transition: border-color 0.2s ease, color 0.2s ease;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.35rem 0.9rem;
+    color: var(--colors-primary);
+    background-color: transparent;
+    transition: all 0.2s ease-in-out;
   }
 
-  .tag:focus, .tag:hover {
-    border-color: var(--colors-hover);
+  .tag:hover, .tag:focus {
     color: var(--colors-hover);
+    border-color: var(--colors-hover);
+    background-color: rgba(var(--colors-hover-rgb), 0.1);
   }
 
   .tag:focus-visible {
-    border-color: var(--colors-hover);
-    color: var(--colors-hover);
     outline: 2px solid var(--colors-hover);
     outline-offset: 2px;
   }
 
+  /* Estado Activo (Filtro seleccionado) */
   .tag.is-active {
-    border-style: dashed;
+    color: var(--colors-background);
+    background-color: var(--colors-hover);
     border-color: var(--colors-hover);
-    color: var(--colors-hover);
-    text-shadow: 0.2px 0 0 currentColor, -0.2px 0 0 currentColor;
-    pointer-events: none; /* Si ya está activo, no tiene sentido volver a hacer clic */
+    font-weight: 600;
+    pointer-events: none;
   }
+
 </style>
