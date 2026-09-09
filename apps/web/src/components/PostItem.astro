@@ -18,7 +18,7 @@ const { title, path, image, excerpt = '', cta, locale } = Astro.props
 const t = useTranslations(locale)
 ---
 
-<Card path={path}>
+<Card path={path} testId='list-items'>
   {image &&
     <Image src={image} alt={formatString(t('featured_image'), [title])} class="card-image" />
   }

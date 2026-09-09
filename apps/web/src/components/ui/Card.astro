@@ -2,12 +2,13 @@
 interface Props {
   path: string
   class?: string
+  testId: string
 }
 
-const { path, class: className = '' } = Astro.props
+const { path, class: className = '', testId} = Astro.props
 ---
 
-<a class={`card ${className}`} href={path} data-testid="list-item">
+<a class={`card ${className}`} href={path} data-testid={testId}>
   <slot />
 </a>
 
@@ -63,8 +64,8 @@ const { path, class: className = '' } = Astro.props
 
   :global(.dark) .card {
     background: var(--colors-blogBg);
-    border: 1px solid var(--colors-border-lazy);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
   }
 
   :global(.dark) .card:hover,
@@ -72,16 +73,6 @@ const { path, class: className = '' } = Astro.props
     border-color: var(--colors-hover);
     box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.6),
                 0 4px 12px -2px rgba(217, 186, 232, 0.08);
-  }
-
-  :global(.dark) .card {
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-  }
-
-  :global(.dark) .card:hover, .card:focus-visible {
-    border-color: var(--colors-hover);
-    box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.5);
   }
 
   /* Efecto cascada moderno: si la card recibe hover/foco, anima su CTA interno si existe */
