@@ -1,4 +1,3 @@
-import { extractCleanId } from '../core'
 import type { Locales } from '../core'
 import type { LocalizedEntry } from '../section/translation-index'
 
@@ -20,7 +19,7 @@ export interface GenericCollectionEntry<
 /**
  * Resolves the translation key used to group related content entries together.
  *
- * Checks if a custom `translationKey` string exists inside the entry data. 
+ * Checks if a custom `translationKey` string exists inside the entry data.
  * If it does not exist, it falls back to the provided clean identifier.
  *
  * @template TData The raw data schema type inside the entry.
@@ -62,8 +61,7 @@ export function adaptToLocalizedEntry<
   entry: TEntry,
   locales: Locales<TLocale>
 ): LocalizedEntry<TSection, TEntry, TLocale> {
-  const { locale, id: cleanId } =
-    extractCleanId(entry.id, locales)
+  const { locale, cleanId } = locales.parseEntryId(entry.id)
 
   const draft = 'draft' in entry.data && entry.data.draft === true
 

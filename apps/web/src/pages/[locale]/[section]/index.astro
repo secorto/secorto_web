@@ -20,7 +20,7 @@ const { locale } = Astro.params
 const { section } = Astro.props
 const pageTitle = sections[section][locale]
 const posts = await getCollection(section, availableAtLocale(locale))
-const links = languages.all.map(lang => availableLink(sectionRoutes.getSectionURL(section, lang), lang))
+const links = languages.all.map(lang => availableLink(sectionRoutes.getSectionPath(section, lang), lang))
 const tags = tagRoutes.getTags()
   .filter(tag =>
     posts.some(post => post.data.tags.includes(tag)),

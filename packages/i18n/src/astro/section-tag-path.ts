@@ -97,15 +97,15 @@ export async function getStaticPathsSectionTags<
           params: {
             locale,
             section:
-              sectionRoutes.getSectionRoute(
+              sectionRoutes.getSectionSlug(
                 section,
                 locale,
               ),
             tagIndex:
-              tagRoutes.getTagIndexRoute(
+              tagRoutes.getTagIndexSlug(
                 locale,
               ),
-            tag: tagRoutes.getTagRoute(
+            tag: tagRoutes.getTagSlug(
               tag,
               locale,
             ),

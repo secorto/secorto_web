@@ -31,7 +31,7 @@ export function createDetailTranslationLinks<
       return missingLink(locale)
     }
 
-    const href = sectionRoutes.getEntryURL(
+    const href = sectionRoutes.getEntryPath(
       sibling.section,
       locale,
       sibling.cleanId,

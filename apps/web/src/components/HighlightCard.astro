@@ -1,7 +1,6 @@
 ---
 import { sectionRoutes, type SectionType } from '@domain/section'
-import { cta, languages, sections, type UILanguages } from '@i18n/ui'
-import { extractCleanId } from '@secorto/i18n'
+import { cta, sections, type UILanguages } from '@i18n/ui'
 import { getEntry } from 'astro:content'
 
 interface Props {
@@ -16,10 +15,9 @@ const entry = await getEntry(section, `${locale}/${slug}`)
 if(!entry) {
   throw new Error(`Cannot render highlight for entry ${slug} with section ${section} and locale ${locale}`)
 }
-const cleanId =  extractCleanId(entry.id, languages).id
 ---
 
-<a class="highlight-card" href={sectionRoutes.getEntryURL(section, locale, cleanId)}>
+<a class="highlight-card" href={sectionRoutes.getEntryPath(section, locale, slug)}>
   <span class="highlight-label">{sections[section][locale]}</span>
   <h2 class="highlight-title">{entry.data.title}</h2>
   {entry.data.excerpt && <p class="highlight-excerpt">{entry.data.excerpt}</p>}

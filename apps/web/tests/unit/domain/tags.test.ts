@@ -3,22 +3,22 @@ import { tagRoutes } from '@domain/tags'
 
 describe('tagRoutes value object', () => {
   it('resolves the localized slug for each allowed tag', () => {
-    expect(tagRoutes.getTagRoute('dev', 'en')).toBe('dev')
-    expect(tagRoutes.getTagRoute('dev', 'es')).toBe('desarrollo')
+    expect(tagRoutes.getTagSlug('dev', 'en')).toBe('dev')
+    expect(tagRoutes.getTagSlug('dev', 'es')).toBe('desarrollo')
 
-    expect(tagRoutes.getTagRoute('opensource', 'en')).toBe('opensource')
-    expect(tagRoutes.getTagRoute('opensource', 'es')).toBe('codigo-abierto')
+    expect(tagRoutes.getTagSlug('opensource', 'en')).toBe('opensource')
+    expect(tagRoutes.getTagSlug('opensource', 'es')).toBe('codigo-abierto')
 
-    expect(tagRoutes.getTagRoute('python', 'en')).toBe('python')
-    expect(tagRoutes.getTagRoute('python', 'es')).toBe('python')
+    expect(tagRoutes.getTagSlug('python', 'en')).toBe('python')
+    expect(tagRoutes.getTagSlug('python', 'es')).toBe('python')
   })
 
-  it('builds section-aware URLs with the configured tag index route', () => {
-    expect(tagRoutes.getSectionTagURL('blog', 'es', 'python')).toBe(
+  it('builds localized section tag paths', () => {
+    expect(tagRoutes.getSectionTagPath('blog', 'es', 'python')).toBe(
       '/es/blog/tags/python',
     )
 
-    expect(tagRoutes.getSectionTagURL('projects', 'en', 'testing')).toBe(
+    expect(tagRoutes.getSectionTagPath('projects', 'en', 'testing')).toBe(
       '/en/project/tags/testing',
     )
   })

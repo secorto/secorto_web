@@ -23,9 +23,9 @@ const { locale } = Astro.params
 const { section, tag, siblings } = Astro.props
 const t = useTranslations(locale)
 
-const tagRoute = tagRoutes.getTagRoute(tag, locale)
-const pageTitle = `${sections[section][locale]} - ${tagRoute}`
-const metaDescription = `${tagged[section][locale]} ${tagRoute}`
+const tagSlug = tagRoutes.getTagSlug(tag, locale)
+const pageTitle = `${sections[section][locale]} - ${tagSlug}`
+const metaDescription = `${tagged[section][locale]} ${tagSlug}`
 const links = createSectionTagTranslationLinks(
   languages.all,
   siblings,

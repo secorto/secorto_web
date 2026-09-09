@@ -23,23 +23,24 @@ const t = useTranslations(currentLocale)
 // 1. Capturamos la ruta limpia actual para las comparaciones dinámicas
 const currentPath = Astro.url.pathname
 
-// 2. Precalculamos las URLs de control para limpiar el marcado inferior
-const homeUrl = getRelativeLocaleUrl(currentLocale, '/')
-const aboutUrl = standalonePageRoutes.getPageURL('about', currentLocale)
+// 2. Precalculamos los paths de control para limpiar el marcado inferior
+const homePath = getRelativeLocaleUrl(currentLocale, '/')
+const aboutPath = standalonePageRoutes.getPagePath('about', currentLocale)
 
 // 3. Función validadora sin puntos y comas
-const isSectionActive = (targetUrl: string, isHome = false) => {
-  if (isHome) return currentPath === targetUrl || currentPath === `${targetUrl}/`
-  return currentPath.startsWith(targetUrl)
+const isSectionActive = (targetPath: string, isHome = false) => {
+  if (isHome) return currentPath === targetPath || currentPath === `${targetPath}/`
+  return currentPath.startsWith(targetPath)
 }
 ---
+
 <nav class="sidebar sidebar-toggle">
   <div class="sidebar-content">
     <div>
       <a
         class="sidebar-home-link"
-        href={homeUrl}
-        {...isSectionActive(homeUrl, true) && { 'aria-current': 'page' }}
+        href={homePath}
+        {...isSectionActive(homePath, true) && { 'aria-current': 'page' }}
       >
         <div class="sidebar-image">
           <Image src={Photo} alt={t('sidebar.photo_alt')} width="256" height="256" data-testid="sidebar-photo" />
@@ -50,18 +51,18 @@ const isSectionActive = (targetUrl: string, isHome = false) => {
     </div>
     <div class="sidebar-links" data-testid="sidebar-links">
       <a
-        href={aboutUrl}
-        {...isSectionActive(aboutUrl) && { 'aria-current': 'page' }}
+        href={aboutPath}
+        {...isSectionActive(aboutPath) && { 'aria-current': 'page' }}
         data-testid="sidebar-about"
       >
         {t('nav.about')}
       </a>
       {navSections.map((section) => {
-        const url = sectionRoutes.getSectionURL(section, currentLocale)
+        const sectionPath = sectionRoutes.getSectionPath(section, currentLocale)
         return (
           <a
-            href={url}
-            {...isSectionActive(url) && { 'aria-current': 'page' }}
+            href={sectionPath}
+            {...isSectionActive(sectionPath) && { 'aria-current': 'page' }}
             data-testid={`sidebar-${section}`}
           >
             {sections[section][currentLocale]}

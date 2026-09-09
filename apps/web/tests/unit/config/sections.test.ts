@@ -8,15 +8,15 @@ describe('sectionRoutes value object', () => {
   })
 
   it('resolves localized route data through the value object API', () => {
-    expect(sectionRoutes.getSectionRoute('blog', 'es')).toBe('blog')
-    expect(sectionRoutes.getSectionRoute('talk', 'en')).toBe('talk')
-    expect(sectionRoutes.getSectionRoute('work', 'es')).toBe('trabajo')
+    expect(sectionRoutes.getSectionSlug('blog', 'es')).toBe('blog')
+    expect(sectionRoutes.getSectionSlug('talk', 'en')).toBe('talk')
+    expect(sectionRoutes.getSectionSlug('work', 'es')).toBe('trabajo')
 
-    expect(sectionRoutes.getSectionURL('projects', 'en')).toBe('/en/project')
-    expect(sectionRoutes.getSectionURL('community', 'es')).toBe('/es/comunidad')
+    expect(sectionRoutes.getSectionPath('projects', 'en')).toBe('/en/project')
+    expect(sectionRoutes.getSectionPath('community', 'es')).toBe('/es/comunidad')
 
-    expect(sectionRoutes.getEntryURL('blog', 'es', 'mi-post')).toBe('/es/blog/mi-post')
-    expect(sectionRoutes.getEntryURL('work', 'en', 'design-sprint')).toBe('/en/work/design-sprint')
+    expect(sectionRoutes.getEntryPath('blog', 'es', 'mi-post')).toBe('/es/blog/mi-post')
+    expect(sectionRoutes.getEntryPath('work', 'en', 'design-sprint')).toBe('/en/work/design-sprint')
   })
 
   it('keeps the route dictionary immutable as part of the value object contract', () => {

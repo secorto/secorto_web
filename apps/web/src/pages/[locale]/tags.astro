@@ -27,7 +27,7 @@ const t = useTranslations(locale)
 const pageTitle = t('tags.index_title')
 
 const links = languages.all.map(lang =>
-  availableLink(tagRoutes.getTagIndexURL(lang), lang)
+  availableLink(tagRoutes.getTagIndexPath(lang), lang)
 )
 
 const sectionEntries = await getEntriesBySection(
@@ -65,7 +65,7 @@ const tagsWithSections = tagRoutes.getTags().map(tag => ({
           class="tag-group"
           data-testid={`global-tag-${tag}`}
         >
-          <h2>{tagRoutes.getTagRoute(tag, locale)}</h2>
+          <h2>{tagRoutes.getTagSlug(tag, locale)}</h2>
 
           <p>
             {t('tags.available_in')}:{' '}
@@ -73,7 +73,7 @@ const tagsWithSections = tagRoutes.getTags().map(tag => ({
               ({ section, count }, index) => (
                 <Fragment>
                   {index > 0 && ' / '}
-                  <a href={tagRoutes.getSectionTagURL(section, locale, tag)}>
+                  <a href={tagRoutes.getSectionTagPath(section, locale, tag)}>
                     {sections[section][locale]} ({count})
                   </a>
                 </Fragment>

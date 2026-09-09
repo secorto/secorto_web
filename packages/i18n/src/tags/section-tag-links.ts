@@ -46,7 +46,7 @@ export function createSectionTagTranslationLinks<
   return locales.map(locale =>
     siblings.includes(locale)
       ? availableLink(
-        tagRoutes.getSectionTagURL(
+        tagRoutes.getSectionTagPath(
           section,
           locale,
           tag,

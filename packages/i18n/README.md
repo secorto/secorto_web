@@ -6,11 +6,11 @@ Framework-agnostic primitives for highly asymmetric multilingual content systems
 
 Most i18n issues are not really translation issues; they are **identity and consistency issues**.
 
-When a site grows, route slugs, locale prefixes, content IDs, and localized strings start mixing together.
+When a site grows, slugs, locale prefixes, content IDs, and localized strings start mixing together.
 This creates brittle navigation, ambiguous content relationships, and silent SEO bugs (like broken `hreflang` targets).
 
 `@secorto/i18n` separates those concerns. The package models localized content around a stable,
-unique `translationKey` instead of a mutable route or resource ID.
+unique `translationKey` instead of a mutable slug or resource ID.
 
 ```ts
 export interface LocalizedEntry<TSection, TEntry, TLocale> {
@@ -32,7 +32,7 @@ unified translation unit.
 ## High-Level Translation Flow
 
 The concept is declarative: each content item is first identified by its meaning (`translationKey`),
-then the system indexes and groups them by locale, generates asymmetric routes,
+then the system indexes and groups them by locale, generates asymmetric paths,
 and finally compiles safe metadata links for SEO and navigation.
 
 ```mermaid
@@ -98,10 +98,10 @@ flowchart TD
 
 * **Translation Families:** Source content is stored per locale but evaluated as a single logical unit.
 * **Deterministic Links:** Every page can instantly ask
-  *"what are the exact sibling URLs of this item?"* to feed language selectors
+  *"what are the exact sibling paths of this item?"* to feed language selectors
   or `hreflang` headers without recalculating path rules.
 * **Graceful Degradation (`missing` states):** If a language variant doesn't exist yet,
-the system still computes its potential URL but flags it as unavailable.
+the system still computes its potential path but flags it as unavailable.
 * **Native Draft Lifecycle (`draft` states):** Translations marked as drafts
 remain part of the logical group to maintain navigation boundaries but are automatically
 hidden from canonical SEO indexing (`noindex`).
@@ -111,9 +111,9 @@ hidden from canonical SEO indexing (`noindex`).
 ## 1. Domain Configuration (The Invariant Contracts)
 
 The library exposes immutable Value Objects for locales, sections, standalone pages, and tag routes.
-These enforce strict constraints at construction time, ensuring **zero route collisions**
-and failing fast (throwing explicit errors) during development or build time
-if empty or duplicated `(locale, route)` pairs occur.
+These enforce strict constraints at construction time, ensuring **zero duplicated `(locale, slug)` pairs**
+and failing fast (throwing explicit errors) during development or build time when a route contract
+collides across contexts or is otherwise malformed.
 
 Configure your single source of truth (e.g., `src/domain/i18n.ts`):
 
@@ -123,7 +123,7 @@ import { createLocales, createSectionRoutes, createStandalonePageRoutes, createT
 // 1. Define supported locales
 export const languages = createLocales(['en', 'es'])
 
-// 2. Map structural content sections (Asymmetric Slugs mapping Collections)
+// 2. Map localized section slugs to content collections
 export const sectionRoutes = createSectionRoutes(
   {
     blog: { en: 'blog', es: 'bitacora' },
@@ -131,18 +131,18 @@ export const sectionRoutes = createSectionRoutes(
   languages,
 )
 
-// 3. Map fixed static layouts (Strict Routing Contract)
+// 3. Map fixed static page slugs
 export const standalonePageRoutes = createStandalonePageRoutes(
   {
     about: {
-      en: { route: 'about' },
-      es: { route: 'acerca-de' },
+      en: { slug: 'about' },
+      es: { slug: 'acerca-de' },
     },
   },
   languages,
 )
 
-// 4. Map multidimensional taxonomies (Locale x Section x Tag)
+// 4. Map localized taxonomy slugs (Locale x Section x Tag)
 export const tagRoutes = createTagRoutes(
   sectionRoutes,
   { en: 'tags', es: 'tags' },
@@ -181,7 +181,7 @@ const { section } = Astro.props
 
 const posts = await getCollection(section, availableAtLocale(locale))
 const links = languages.all.map(lang =>
-  availableLink(sectionRoutes.getSectionURL(section, lang), lang)
+  availableLink(sectionRoutes.getSectionPath(section, lang), lang)
 )
 const activeTags = tagRoutes.getTags().filter(tag =>
   posts.some(post => post.data.tags.includes(tag)),
@@ -189,11 +189,11 @@ const activeTags = tagRoutes.getTags().filter(tag =>
 ---
 <html>
   <head>
-    {links.map(({ url, locale }) => <link rel="alternate" hreflang={locale} href={url} />)}
+    {links.map(({ href, locale }) => <link rel="alternate" hreflang={locale} href={href} />)}
   </head>
   <body>
     <nav>
-      {activeTags.map(tag => <a href={tagRoutes.getTagURL(section, tag, locale)}>{tag}</a>)}
+      {activeTags.map(tag => <a href={tagRoutes.getSectionTagPath(section, locale, tag)}>{tag}</a>)}
     </nav>
     <main>
       {posts.map(post => <h2>{post.data.title}</h2>)}
@@ -226,7 +226,7 @@ const { Content } = await render(entry.original)
 <html>
   <head>
     {entry.draft && <meta name="robots" content="noindex" />}
-    {links.map(({ url, locale }) => <link rel="alternate" hreflang={locale} href={url} />)}
+    {links.map(({ href, locale }) => <link rel="alternate" hreflang={locale} href={href} />)}
   </head>
   <body>
     {entry.draft && <div role="status">Draft Notice: This translation variant is a preliminary work.</div>}
@@ -258,17 +258,17 @@ export async function getStaticPaths() {
 const { locale } = Astro.params
 const { section, tag, siblings } = Astro.props
 
-const tagRoute = tagRoutes.getTagRoute(tag, locale) // Resolves "codigo-abierto" or "opensource" dynamically
+const tagSlug = tagRoutes.getTagSlug(tag, locale) // Resolves "codigo-abierto" or "opensource" dynamically
 const links = createSectionTagTranslationLinks(languages.all, siblings, section, tag, tagRoutes)
 const posts = await getCollection(section, availableAtLocale(locale))
 const postWithTag = posts.filter(withTag(tag))
 ---
 <html>
   <head>
-    {links.map(({ url, locale }) => <link rel="alternate" hreflang={locale} href={url} />)}
+    {links.map(({ href, locale }) => <link rel="alternate" hreflang={locale} href={href} />)}
   </head>
   <body>
-    <h1>Tag: {tagRoute}</h1>
+    <h1>Tag: {tagSlug}</h1>
     {postWithTag.map(post => <h3>{post.data.title}</h3>)}
   </body>
 </html>
@@ -309,7 +309,7 @@ const draft = standalonePageRoutes.routes[page][locale]?.draft ?? false
   <head>
     <title>{title}</title>
     {draft && <meta name="robots" content="noindex" />}
-    {links.map(({ url, locale }) => <link rel="alternate" hreflang={locale} href={url} />)}
+    {links.map(({ href, locale }) => <link rel="alternate" hreflang={locale} href={href} />)}
   </head>
   <body>
     <main>

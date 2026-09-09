@@ -15,7 +15,7 @@ export interface SectionPath<
 }
 
 /**
- * Generates the static path definitions required to build localized top-level 
+ * Generates the static path definitions required to build localized top-level
  * landing or list pages for all configured sections.
  *
  * For each section defined in `routes`, this function:
@@ -48,7 +48,7 @@ export async function getStaticPathsSections<
       allPaths.push({
         params: {
           locale,
-          section: routes.getSectionRoute(sectionKey, locale),
+          section: routes.getSectionSlug(sectionKey, locale),
         },
         props: {
           section: sectionKey,

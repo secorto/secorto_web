@@ -6,17 +6,17 @@ import { type UILanguages } from '@i18n/ui'
 
 interface Props {
   title: string
-  url: string
+  path: string
   image?: ImageMetadata
   excerpt?: string
   cta: string
   locale: UILanguages
 }
-const { title, url, image, excerpt = '', cta, locale } = Astro.props
+const { title, path, image, excerpt = '', cta, locale } = Astro.props
 const t = useTranslations(locale)
 ---
 
-<a class="card" href={url} data-testid="list-item">
+<a class="card" href={path} data-testid="list-item">
   {image &&
     <Image src={image} alt={formatString(t('featured_image'), [title])} class="card-image" />
   }

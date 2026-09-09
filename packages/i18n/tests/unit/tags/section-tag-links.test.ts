@@ -2,16 +2,14 @@ import { describe, expect, it } from 'vitest'
 
 import {
   availableLink,
+  createLocales,
   createSectionRoutes,
   createSectionTagTranslationLinks,
   createTagRoutes,
   missingLink,
 } from '@secorto/i18n'
 
-const locales = {
-  getPath: (locale: 'es' | 'en') => `/${locale}`,
-}
-
+const locales = createLocales(['es', 'en'] as const)
 const sectionRoutes = createSectionRoutes({
   blog: {
     es: 'blog',
@@ -95,7 +93,7 @@ describe('createSectionTagTranslationLinks', () => {
       missingLink('es'),
     ])
   })
-  it('uses localized URLs from tag routes', () => {
+  it('uses localized paths from tag routes', () => {
     const links =
       createSectionTagTranslationLinks(
         ['en', 'es'],

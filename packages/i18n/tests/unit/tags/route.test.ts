@@ -1,29 +1,17 @@
 import { describe, it, expect } from 'vitest'
-import { createTagRoutes } from '@secorto/i18n'
+import { createLocales, createSectionRoutes, createTagRoutes } from '@secorto/i18n'
 
-const sectionRoutes = {
-  getSectionURL: (
-    section: 'blog' | 'talk',
-    locale: 'es' | 'en',
-  ) => {
-    const routes = {
-      blog: {
-        es: '/es/blog',
-        en: '/en/blog',
-      },
-      talk: {
-        es: '/es/charla',
-        en: '/en/talk',
-      },
-    }
-
-    return routes[section][locale]
+const locales = createLocales(['es', 'en'] as const)
+const sectionRoutes = createSectionRoutes({
+  blog: {
+    es: 'blog',
+    en: 'blog',
   },
-}
-
-const locales = {
-  getPath: (locale: 'es' | 'en') => `/${locale}`,
-}
+  talk: {
+    es: 'charla',
+    en: 'talk',
+  },
+}, locales)
 
 const routes = createTagRoutes(
   sectionRoutes,
@@ -53,46 +41,46 @@ describe('getTags', () => {
   })
 })
 
-describe('getTagRoute', () => {
+describe('getTagSlug', () => {
   it('returns the localized tag slug', () => {
     expect(
-      routes.getTagRoute('tools', 'es'),
+      routes.getTagSlug('tools', 'es'),
     ).toBe('herramientas')
 
     expect(
-      routes.getTagRoute('tools', 'en'),
+      routes.getTagSlug('tools', 'en'),
     ).toBe('tools')
   })
 })
 
-describe('getTagIndexRoute', () => {
+describe('getTagIndexSlug', () => {
   it('returns the localized tag index segment', () => {
     expect(
-      routes.getTagIndexRoute('es'),
+      routes.getTagIndexSlug('es'),
     ).toBe('etiquetas')
 
     expect(
-      routes.getTagIndexRoute('en'),
+      routes.getTagIndexSlug('en'),
     ).toBe('tags')
   })
 })
 
-describe('getTagIndexURL', () => {
+describe('getTagIndexPath', () => {
   it('returns the locale-prefixed tag index URL', () => {
     expect(
-      routes.getTagIndexURL('es'),
+      routes.getTagIndexPath('es'),
     ).toBe('/es/etiquetas')
 
     expect(
-      routes.getTagIndexURL('en'),
+      routes.getTagIndexPath('en'),
     ).toBe('/en/tags')
   })
 })
 
-describe('getSectionTagURL', () => {
+describe('getSectionTagPath', () => {
   it('builds localized section tag urls', () => {
     expect(
-      routes.getSectionTagURL(
+      routes.getSectionTagPath(
         'blog',
         'es',
         'tools',
@@ -102,7 +90,7 @@ describe('getSectionTagURL', () => {
     )
 
     expect(
-      routes.getSectionTagURL(
+      routes.getSectionTagPath(
         'talk',
         'en',
         'tools',
@@ -135,7 +123,7 @@ describe('tagRoutes', () => {
         locales,
       ),
     ).toThrow(
-      'Route collision detected in TagRoutes: The slug "herramientas" for locale "es" is duplicated between "javascript" and "tools".',
+      'Slug collision detected in TagRoutes: The slug "herramientas" for locale "es" is duplicated between "javascript" and "tools".',
     )
   })
 })

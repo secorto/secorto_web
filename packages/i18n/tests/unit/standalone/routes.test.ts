@@ -8,12 +8,12 @@ describe('createStandalonePageRoutes', () => {
 
   const routes = createStandalonePageRoutes({
     about: {
-      en: { route: 'about' },
-      es: { route: 'acerca-de' },
+      en: { slug: 'about' },
+      es: { slug: 'acerca-de' },
     },
     home: {
-      en: { route: 'home' },
-      es: { route: 'inicio' },
+      en: { slug: 'home' },
+      es: { slug: 'inicio' },
     },
   }, locales)
 
@@ -32,26 +32,26 @@ describe('createStandalonePageRoutes', () => {
     }).toThrow("Standalone page 'missing' is not indexed.")
   })
 
-  it('returns the localized route for the given page and locale', () => {
-    expect(routes.getPageRoute('about', 'es')).toBe('acerca-de')
-    expect(routes.getPageRoute('home', 'en')).toBe('home')
+  it('returns the localized slug for the given page and locale', () => {
+    expect(routes.getPageSlug('about', 'es')).toBe('acerca-de')
+    expect(routes.getPageSlug('home', 'en')).toBe('home')
   })
 
   it('throws when the requested page or locale entry does not exist', () => {
     expect(() => {
       // @ts-expect-error locale 'fr' does not exist
-      routes.getPageRoute('about', 'fr')
+      routes.getPageSlug('about', 'fr')
     }).toThrow("Standalone page 'about' has no entry for locale 'fr'.")
 
     expect(() => {
       // @ts-expect-error page 'missing' does not exist
-      routes.getPageRoute('missing', 'en')
+      routes.getPageSlug('missing', 'en')
     }).toThrow("Standalone page 'missing' has no entry for locale 'en'.")
   })
 
-  it('builds the localized URL from the locale root and page route', () => {
-    expect(routes.getPageURL('about', 'es')).toBe('/es/acerca-de')
-    expect(routes.getPageURL('home', 'en')).toBe('/en/home')
+  it('builds the localized path from the locale root and page slug', () => {
+    expect(routes.getPagePath('about', 'es')).toBe('/es/acerca-de')
+    expect(routes.getPagePath('home', 'en')).toBe('/en/home')
   })
 
   it('throws when a page has no localized entries defined', () => {
@@ -67,7 +67,7 @@ describe('createStandalonePageRoutes', () => {
   it('throws when a locale entry is explicitly nullish', () => {
     const invalidRoutes = {
       home: {
-        en: undefined as unknown as { route: string },
+        en: undefined as unknown as { slug: string },
       },
     }
 
@@ -92,18 +92,18 @@ describe('createStandalonePageRoutes', () => {
       createStandalonePageRoutes(
         {
           home: {
-            en: { route: 'home' },
-            es: { route: 'inicio' },
+            en: { slug: 'home' },
+            es: { slug: 'inicio' },
           },
           about: {
-            en: { route: 'home' },
-            es: { route: 'acerca-de' },
+            en: { slug: 'home' },
+            es: { slug: 'acerca-de' },
           },
         },
         locales,
       )
     }).toThrow(
-      'Route collision detected in StandalonePageRoutes: The slug "home" for locale "en" is duplicated between "home" and "about".',
+      'Slug collision detected in StandalonePageRoutes: The slug "home" for locale "en" is duplicated between "home" and "about".',
     )
   })
 })
