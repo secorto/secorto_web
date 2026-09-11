@@ -217,25 +217,31 @@ export type { Step } from '@secorto/step'
 ### 1. UI Interaction Domain (`step` & `verifyStep`)
 
 ```ts
-import { step, verifyStep } from '@tests/step'
-import type { Page } from '@playwright/test'
-
-export const openHomepage = (page: Page, locale: string) =>
-  step(`user opens homepage in ${locale}`, async () => {
-    await page.goto(`/${locale}/`)
-  })
-
 export class HomePageMain {
-  readonly avatar = this.page.locator('.avatar')
-  readonly bioText = this.page.locator('.bio-text')
+  readonly themeToggle: Locator
+  readonly avatar: Locator
+  readonly bioText: Locator
 
-  constructor(private page: Page) {}
+  constructor(private readonly page: Page) {
+    this.themeToggle = page.getByTestId('theme-toggle')
+    this.avatar = page.locator('.avatar')
+    this.bioText = page.locator('.bio-text')
+  }
 
-  shouldBeLocalized() {
-    return verifyStep('homepage main components are localized', async ({ expect }) => {
-      await expect(this.avatar).toBeVisible()
-      await expect(this.bioText).toHaveText(/Welcome/)
+  toggleTheme() {
+    return step('toggle theme', async () => {
+      await this.themeToggle.click()
     })
+  }
+
+  shouldBeLoaded() {
+    return verifyStep(
+      'homepage main components are loaded',
+      async ({ expect }) => {
+        await expect(this.avatar).toBeVisible()
+        await expect(this.bioText).toBeVisible()
+      }
+    )
   }
 }
 ```
@@ -299,15 +305,23 @@ import { test } from '@playwright/test'
 import { visit, fetchRss } from '@tests/flows'
 import { HomePageMain } from '@tests/pages'
 
-test('evaluating application states via strategy control', async ({ page, request }) => {
+test('evaluating application states via strategy control', async ({ page }) => {
   // 1. Strict Execution (Default Behavior)
   const home = await visit(page, '/en', (p) => new HomePageMain(p))
 
   // 2. Chained Soft Assertions (.soft)
   await home.shouldBeLocalized().soft()
+})
 
-  // 3. Bypassing Processors (.raw)
-  const rawRss = await fetchRss(request, 'en').raw()
+test('validate robots file', ({ request }) => {
+  // 3. Validate the happy path
+  const raw = await robots(request).shouldBeLoaded()
+})
+
+test('validate robots response using raw', ({ request }) => {
+  // 4. Bypassing Processors (.raw)
+  const raw = await robots(request).raw()
+  expect(raw.ok()).toBeTruthy()
 })
 ```
 
