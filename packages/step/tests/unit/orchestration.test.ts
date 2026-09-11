@@ -102,7 +102,7 @@ describe('createOrchestrateStep', () => {
 
   describe('runtime strategy control (.soft & .with)', () => {
     it('supports .soft() shorthand by inverting the expect provider into softExpect', async () => {
-      let capturedExpect: any
+      let capturedExpect: MockExpect | undefined
       const orchestrateStep = createOrchestrateStep(mockRunner, defaultExpect, softExpect)
 
       const step = orchestrateStep(
