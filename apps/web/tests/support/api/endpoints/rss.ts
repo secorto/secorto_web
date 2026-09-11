@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { xml } from '@tests/support/api/parsers/xml'
-import { contractStep, verifyStep } from '@tests/step'
+import { resourceStep, verifyStep } from '@tests/step'
 import type { APIRequestContext, APIResponse } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
 
@@ -37,7 +37,7 @@ export const rssParser = async (response: APIResponse) => {
 }
 
 export const rss = (request: APIRequestContext, locale: UILanguages) =>
-  contractStep(
+  resourceStep(
     `fetch rss.xml (${locale})`,
     async () => request.get(`/${locale}/rss.xml`),
     rssParser,

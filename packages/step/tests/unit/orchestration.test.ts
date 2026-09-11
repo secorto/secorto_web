@@ -1,107 +1,228 @@
 import { describe, it, expect, vi } from 'vitest'
-import { createTestingStep } from '@secorto/step'
+import { createOrchestrateStep } from '@secorto/step'
 import type { StepRunner } from '@secorto/step'
 
 type MockAssertion = { toBe: (expected: unknown) => void }
 type MockExpect = (actual: unknown) => MockAssertion
 
-const createMockExpect = (): MockExpect => (actual: unknown) => ({
-  toBe: (expected: unknown) => {
-    if (actual !== expected) throw new Error('Mismatch')
-  },
-})
-
-describe('createTestingStep (Integration Bundle)', () => {
-  let capturedTitle: string | undefined
-
-  const mockRunner: StepRunner = async (title, action) => {
-    capturedTitle = title
-    return action()
-  }
-
-  const expectMock = createMockExpect()
-
-  describe('factory bootstrapping', () => {
-    it('initializes all four core factories lazily without immediate side-effects', () => {
-      // Arrange & Act
-      const bundle = createTestingStep(mockRunner, expectMock, expectMock)
-
-      // Assert
-      expect(typeof bundle.step).toBe('function')
-      expect(typeof bundle.verifyStep).toBe('function')
-      expect(typeof bundle.contractStep).toBe('function')
-      expect(typeof bundle.contractVerifyStep).toBe('function')
-      expect(capturedTitle).toBeUndefined()
-    })
+const createMockExpect = (onMismatch: (actual: unknown, expected: unknown) => void): MockExpect =>
+  (actual: unknown) => ({
+    toBe: (expected: unknown) => {
+      if (actual !== expected) onMismatch(actual, expected)
+    },
   })
 
-  describe('step factory boundary', () => {
-    it('produces functional pure action steps integrated with the configured runner', async () => {
-      // Arrange
-      const { step } = createTestingStep(mockRunner, expectMock, expectMock)
+const mockRunner: StepRunner = async (_title, action) => action()
 
-      // Act
-      const pureStepDef = step('open homepage', async () => 'navigated')
-      const result = await pureStepDef
+describe('createOrchestrateStep', () => {
+  const defaultExpect = createMockExpect(() => { throw new Error('Strict failure') })
+  const softExpect = createMockExpect(() => {})
 
-      // Assert
-      expect(pureStepDef.title).toBe('open homepage')
-      expect(result).toBe('navigated')
-      expect(capturedTitle).toBe('open homepage')
-    })
-  })
-
-  describe('verifyStep factory boundary', () => {
-    it('produces functional verification steps that receive the default expect provider', async () => {
-      // Arrange
-      const { verifyStep } = createTestingStep(mockRunner, expectMock, expectMock)
-
-      // Act
-      const verifyStepDef = verifyStep('validate total', ({ expect }) => {
-        expect(10).toBe(10)
+  describe('metadata & lazy evaluation', () => {
+    it('stores metadata and exposes properties without immediate execution', () => {
+      const originFn = vi.fn(() => ({ id: '123', status: 'active' }))
+      const verifyFn = vi.fn((raw, { expect }) => {
+        expect(raw.status).toBe('active')
         return 'verified'
       })
-      const result = await verifyStepDef
 
-      // Assert
-      expect(verifyStepDef.title).toBe('validate total')
-      expect(result).toBe('verified')
-      expect(capturedTitle).toBe('validate total')
+      const orchestrateStep = createOrchestrateStep(mockRunner, defaultExpect, softExpect)
+      const step = orchestrateStep('sync and verify', originFn, verifyFn)
+
+      expect(step.title).toBe('sync and verify')
+      expect(step.originFn).toBe(originFn)
+      expect(step.verifyFn).toBe(verifyFn)
+
+      expect(originFn).not.toHaveBeenCalled()
+      expect(verifyFn).not.toHaveBeenCalled()
     })
   })
 
-  describe('contractStep factory boundary', () => {
-    it('produces functional contract steps chaining origin and transform blocks', async () => {
-      // Arrange
-      const { contractStep } = createTestingStep(mockRunner, expectMock, expectMock)
+  describe('default behavior (chained execution)', () => {
+    it('executes originFn first and forwards the result into verifyFn', async () => {
+      const orchestrateStep = createOrchestrateStep(mockRunner, defaultExpect, softExpect)
 
-      // Act
-      const contractStepDef = contractStep('fetch user', () => ({ id: 1 }), (raw) => raw.id)
-      const result = await contractStepDef
+      const step = orchestrateStep(
+        'process stream',
+        async () => ({ code: 200, payload: 'data' }),
+        (raw, { expect }) => {
+          expect(raw.code).toBe(200)
+          return raw.payload.toUpperCase()
+        }
+      )
 
-      // Assert
-      expect(contractStepDef.title).toBe('fetch user')
-      expect(result).toBe(1)
-      expect(capturedTitle).toBe('fetch user')
+      const result = await step
+      expect(result).toBe('DATA')
+    })
+
+    it('forwards the pristine title to the runner during standard execution', async () => {
+      let seenTitle: string | undefined
+      const customRunner: StepRunner = async (title, action) => {
+        seenTitle = title
+        return action()
+      }
+
+      const orchestrateStep = createOrchestrateStep(customRunner, defaultExpect, softExpect)
+      await orchestrateStep('check account', () => 'active', (raw) => raw)
+      expect(seenTitle).toBe('check account')
     })
   })
 
-  describe('contractVerifyStep factory boundary', () => {
-    it('produces functional integrated streams checking data and assertions simultaneously', async () => {
-      // Arrange
-      const { contractVerifyStep } = createTestingStep(mockRunner, expectMock, expectMock)
+  describe('.raw() method', () => {
+    it('executes only originFn and resolves directly with its pure payload', async () => {
+      const orchestrateStep = createOrchestrateStep(mockRunner, defaultExpect, softExpect)
 
-      // Act
-      const contractVerifyStepDef = contractVerifyStep('sync balance', () => 500, (raw, { expect }) => {
-        expect(raw).toBe(500)
-        return 'synced'
+      const rawPayload = await orchestrateStep(
+        'fetch configuration',
+        () => ({ env: 'production', debug: false }),
+        (_raw) => { throw new Error('verifyFn should not be called in .raw()') }
+      ).raw()
+
+      expect(rawPayload).toEqual({ env: 'production', debug: false })
+    })
+
+    it('bypasses verifyFn and assertions completely', async () => {
+      const verifyFn = vi.fn((raw, _ctx) => raw)
+      const orchestrateStep = createOrchestrateStep(mockRunner, defaultExpect, softExpect)
+      await orchestrateStep('fetch profile', () => ({ name: 'John' }), verifyFn).raw()
+      expect(verifyFn).not.toHaveBeenCalled()
+    })
+
+    it('appends "(raw)" to the step title for the runner boundary', async () => {
+      let seenTitle: string | undefined
+      const customRunner: StepRunner = async (title, action) => {
+        seenTitle = title
+        return action()
+      }
+      const orchestrateStep = createOrchestrateStep(customRunner, defaultExpect, softExpect)
+      await orchestrateStep('get status', () => 'ok', (raw) => raw).raw()
+      expect(seenTitle).toBe('get status (raw)')
+    })
+  })
+
+  describe('runtime strategy control (.soft & .with)', () => {
+    it('supports .soft() shorthand by inverting the expect provider into softExpect', async () => {
+      let capturedExpect: MockExpect | undefined
+      const orchestrateStep = createOrchestrateStep(mockRunner, defaultExpect, softExpect)
+
+      const step = orchestrateStep(
+        'validate layout',
+        () => 'broken-state',
+        (raw, { expect }) => {
+          capturedExpect = expect
+          expect(raw).toBe('correct-state')
+          return 'soft-processed'
+        }
+      ).soft()
+
+      expect(step.title).toBe('validate layout (soft)')
+      const result = await step
+      expect(result).toBe('soft-processed')
+      expect(capturedExpect).toBe(softExpect)
+    })
+
+    it('overrides the active assertion engine via .with() dynamically', async () => {
+      const customExpect = createMockExpect((actual, expected) => {
+        throw new Error(`Custom mismatch: ${actual} vs ${expected}`)
       })
-      const result = await contractVerifyStepDef
 
-      // Assert
-      expect(contractVerifyStepDef.title).toBe('sync balance')
-      expect(result).toBe('synced')
-      expect(capturedTitle).toBe('sync balance')
+      const orchestrateStep = createOrchestrateStep(mockRunner, defaultExpect, softExpect)
+      const step = orchestrateStep(
+        'custom check',
+        () => 'value',
+        (raw, { expect }) => {
+          expect(raw).toBe('mismatch')
+          return 'failed'
+        }
+      ).with(customExpect)
+
+      await expect(step).rejects.toThrow('Custom mismatch: value vs mismatch')
     })
+
+    it('guarantees immutability when strategy modifiers are called', async () => {
+      const orchestrateStep = createOrchestrateStep(mockRunner, defaultExpect, softExpect)
+
+      const originalStep = orchestrateStep('immutable test', () => 'data', (raw) => raw)
+      const softStep = originalStep.soft()
+
+      expect(originalStep).not.toBe(softStep)
+      expect(originalStep.title).toBe('immutable test')
+      expect(softStep.title).toBe('immutable test (soft)')
+    })
+  })
+
+  describe('error handling', () => {
+    it('rejects the promise chain when originFn throws internally', async () => {
+      const orchestrateStep = createOrchestrateStep(mockRunner, defaultExpect, softExpect)
+
+      const promise = orchestrateStep(
+        'flaky fetch',
+        async () => { throw new Error('Network error') },
+        (raw) => raw
+      )
+
+      await expect(promise).rejects.toThrow('Network error')
+    })
+
+    it('rejects the promise chain when verifyFn assertions fail in strict mode', async () => {
+      const orchestrateStep = createOrchestrateStep(mockRunner, defaultExpect, softExpect)
+
+      const promise = orchestrateStep(
+        'strict validation',
+        () => 'invalid-data',
+        (raw, { expect }) => {
+          expect(raw).toBe('valid-data')
+          return 'ok'
+        }
+      )
+
+      await expect(promise).rejects.toThrow('Strict failure')
+    })
+  })
+
+  describe('promise chain (.then compatibility)', () => {
+    it('supports native awaiting and standard resolution chaining', async () => {
+      const orchestrateStep = createOrchestrateStep(mockRunner, defaultExpect, softExpect)
+
+      const result = await orchestrateStep(
+        'chain test',
+        () => 10,
+        (raw) => raw * 5
+      ).then((val) => val + 2)
+
+      expect(result).toBe(52)
+    })
+  })
+
+  describe('transformFn is the bound verifyFn', () => {
+    it('exposes transformFn as the closed-form of verifyFn with default expect', async () => {
+      const orchestrateStep = createOrchestrateStep(mockRunner, defaultExpect, softExpect)
+      const step = orchestrateStep('bound check', () => 42, (raw) => raw * 2)
+
+      expect(typeof step.transformFn).toBe('function')
+      const result = await step.transformFn(42)
+      expect(result).toBe(84)
+    })
+  })
+
+  it('transformFn uses the provided raw value instead of re-executing originFn', async () => {
+    const orchestrateStep = createOrchestrateStep(
+      mockRunner,
+      defaultExpect,
+      softExpect
+    )
+
+    const originFn = vi.fn(() => 10)
+
+    const step = orchestrateStep(
+      'bound check',
+      originFn,
+      (raw) => raw * 2
+    )
+
+    const result = await step.transformFn(42)
+
+    expect(originFn).not.toHaveBeenCalled()
+    expect(result).toBe(84)
   })
 })

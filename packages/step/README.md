@@ -1,197 +1,338 @@
-# @secorto/step | Test Automation with Real Cohesion
+# @secorto/step
 
-## Purpose: Why this library exists
+**A framework-agnostic reporting Anti-Corruption Layer where the execution strategy is decided at the call site, not
+the implementation site.**
 
-**The missing bridge between user stories and code execution.**
+Most test automation suites suffer from a critical architectural flaw: **the execution strategy is hardcoded inside
+component implementations instead of being selected by the test case.** Whether you use traditional *Page Objects* or
+complex abstraction layers, this tight coupling forces you to repeat logic, leaks infrastructure noise, and creates a
+massive disconnection between business intent, reporting boundaries, and runtime behavior.
 
-Most test automation suites suffer from a critical architectural flaw:
-**the disconnection between business intent and technical implementation**.
+`@secorto/step` fixes this by introducing a reporting Anti-Corruption Layer (ACL). It transforms your semantic steps
+into lazy, immutable data structures, **separating step definition from step execution** to give you total fluid
+control over how your tests run and report.
 
-Whether you use traditional *Page Objects* or complex abstraction layers, the human-readable description of a step
-and the technical code that runs it usually live in completely different places.
-This separation forces developers to constantly jump between contexts, breeds massive maintenance overhead,
-and turns test suites into brittle nightmares that are a pain to refactor.
+---
 
-`@secorto/step` fixes this by bringing back **cohesion**. It is intentionally tiny, framework-agnostic,
-and designed to make your automation suites stop squeaking.
+## ⚡ Quick Example
 
-## How it works: The 4 Core Primitives
-
-`@secorto/step` provides four self-contained building blocks to ensure your code structure matches
-your reporting structure perfectly.
-
-### 1. `step()` (Cohesive Actions)
-
-Binds a business action name directly to its functional code block. Perfect for packaging browser interactions
-and returning clean domain objects.
+The exact same domain flow can execute under entirely different assertion strategies without modifying a single line of
+your Page Object implementation:
 
 ```ts
-export const userInHome = (page: Page, locale: UILanguages) =>
-  step(`user opens homepage in ${locale}`, async () => {
-    await page.goto(`/${locale}/`)
-    return homePage(page)
-  })
+const home = await visit(page, '/en', (p) => new HomePageMain(p))
+
+await home.shouldBeLoaded()        // 1. Strict Execution: Halts the test instantly if any locator fails.
+await home.shouldBeLoaded().soft() // 2. Intercepted Strategy: Propagates 'expect.soft' dynamically!
 ```
 
-### 2. `verifyStep()` (Cohesive Verifications)
+> **Same flow. Different execution strategy. The Page Object stays completely unchanged.**
 
-Encapsulates a visual or UI assertion alongside its human-readable description.
+---
+
+## 🧠 Design Principles
+
+People remember principles, not APIs. `@secorto/step` is built on five core architectural constraints:
+
+* **Delegate implementation, never intention.** Flows can deeply delegate how they interact with subcomponents, but
+    they must materialize their intent at their own level.
+* **Flows are business language.** Your domain functions speak the language of user stories and are entirely
+    invisible to the test runner.
+* **Steps are reporting boundaries.** A step represents a single observable unit of work responsible for producing
+    reporting metadata.
+* **Execution is lazy by default.** Primitives do not execute anything in a cold state; they return deferred
+    execution structures evaluated only at the call site.
+* **Infrastructure is injected, never imported.** Your domain architecture remains 100% stable, even when underlying
+    execution or reporting technologies change.
+
+---
+
+## 🚫 Why Not Native `test.step`?
+
+If you are using Playwright, you might wonder why you shouldn't just wrap your interactions inside the native
+`test.step` utility.
+
+While native steps fix the visual narrative of the report, they introduce severe architectural limitations as your
+test suite scales through three levels of maturity:
+
+### Level 1: Raw Assertions (The Anti-Pattern)
+
+The developer embeds raw assertions (`expect`) directly into the page method. If it fails, the report only says
+*“Expected x to be”*. There is zero business narrative and zero traceability.
+
+### Level 2: Infrastructure-Coupled Reporting (Native `test.step`)
+
+The developer tries to fix the report by wrapping interactions inside the runner's native step utilities directly
+inside the Page Object.
+
+* **The Issue:** Infrastructure decisions leak into your domain layer. The code becomes noisy with nested async
+    closures. More importantly, **you lose runtime strategy control**. You cannot trigger a soft assertion from the
+    test case because native runner steps execute immediately and greedily.
+
+### Level 3: Declarative Reporting Boundaries (`@secorto/step`)
+
+Your page methods become clean declarative flows. Primitives do not execute anything in a cold state—they return a
+**lazy, deferred execution structure**. Because execution is delayed until the test case actually awaits the step, you
+can chain **Call-Site Modifiers** (like `.soft()`) to change the execution strategy dynamically.
+
+### Report Noise vs. Semantic Cleanliness
+
+Native assertions often leak implementation details into your reports. `@secorto/step` enforces strict reporting
+boundaries, keeping your execution narrative pristine.
+
+| Traditional Native Report (Noisy/Leaky) | `@secorto/step` Report (Clean/Semantic) |
+| :--- | :--- |
+| `✓ open homepage (0.5s)` `✗ expect(locator).toHaveText() (2.1s)` Expected: "Welcome" Received: "Bienvenido" | `✓ User opens homepage` `✗ Homepage components are localized (soft)` `✓ RSS language is loaded` |
+
+---
+
+## 🔌 Dependency Injection & Framework Independence
+
+The library acts as a pure **Anti-Corruption Layer (ACL) for test reporting**, separating your domain architecture
+from the reporting infrastructure. It does not depend on, nor import Playwright, Cypress, Vitest, Jest, or any
+specific assertion engine.
+
+Instead, you provide your runner's concrete reporting and assertion adapters via **Dependency Injection** at
+initialization time. This guarantees that your core architectural model remains 100% stable, even when your underlying
+execution or reporting technologies change.
+
+---
+
+## 📐 Core Philosophy & Architecture
+
+```mermaid
+graph LR
+    A[User Story] --> B[Flow]
+    B --> C[Step / Reporting Boundary]
+    C --> D[Report]
+
+    style C fill:#f9f,stroke:#333,stroke-width:2px,color:#000
+```
+
+* **Flow = The Business Intention.** A domain-level function or method representing a single, cohesive user action
+    (e.g., `userInHome()`, `visit()`, or `shouldBeLocalized()`). Flows live in your Page Objects. They speak the
+    language of your user stories, are pure TypeScript logic, and are entirely invisible to the test runner.
+* **Step = The Reporting Boundary.** A Step represents an observable unit of work. It is responsible for producing
+    reporting metadata and runtime behavior while remaining decoupled from the underlying test runner.
+
+---
+
+## 🧩 The 4 Core Primitives & Their Domains
+
+`@secorto/step` separates responsibilities into four distinct building blocks, split across two high-level boundaries:
+**The UI Domain** (your daily drivers) and **The Advanced Structural Domain** (for data streams and complex lifecycles).
+
+```mermaid
+graph TD
+    A[What are you building?] --> B(Pure UI Interaction / Action)
+    A --> C(UI Assertion / State Check)
+    A --> D(Complex Structural / Data Flow)
+
+    B -->|Ex: Click, Fill inputs| E[step]
+    C -->|Ex: Verify element visibility| F[verifyStep]
+
+    D --> G{Does the stream require immediate structural validation?}
+    G -->|Yes: Ex. Navigation + Page Hydration| H[orchestrateStep]
+    G -->|No: Ex. Fetching a parsed API/RSS payload| I[resourceStep]
+
+    style E fill:#2563eb,color:#fff
+    style F fill:#1d4ed8,color:#fff
+    style H fill:#1e3a8a,color:#fff
+    style I fill:#60a5fa,color:#111
+```
+
+### 1. The Core UI Domain (Daily Drivers)
+
+Governs instantaneous interactions directly connected to the interface, user actions, and layout evaluations.
+
+* **`step()` ── Responsibility: UI Actions (Imperative/Mutation)**
+    Binds a business interaction directly to its functional block. It performs the physical work on the application
+    state (e.g., clicking, typing) but does not evaluate states or execute assertions.
+* **`verifyStep()` ── Responsibility: UI Assertions (Declarative/Validation)**
+    Encapsulates an assertion alongside its execution context. It isolates and exposes the active assertion module to
+    execute precise state verifications over your component trees.
+
+### 2. The Data & Structural Domain (Advanced Lifecycles)
+
+Governs architectural boundaries such as network pipelines, lazy schema transformations, and secure component
+hydration.
+
+* **`resourceStep()` ── Responsibility: Data Contracts & Inference (Data Flow)**
+    Handles resource extraction, parsing, and deferred evaluations. Maps raw payloads (like an API or RSS feed) into
+    typed domain objects, allowing your transformation blocks to return living structures or custom assertion behaviors.
+* **`orchestrateStep()` ── Responsibility: Lifecycles & Checkpoints (Structural Setup)**
+    Combines initialization logic with mandatory verification checkpoints. It executes an initialization sequence
+    (like browser navigation or structural hydration) and enforces a mandatory, immediate verification checkpoint on
+    the resulting object before delivering it to the test script.
+
+---
+
+## ⚙️ Runtime Modifiers: Strategy & Flow Control
+
+Every step executes in a strict standard mode by default. However, because primitives are completely lazy, you can
+chain explicit modifiers at the **call site** of the test case based on their structural capabilities:
+
+| Primitive | Capabilities | Description |
+| :--- | :--- | :--- |
+| `step` | *None* | Pure interaction block without modifiers. |
+| `verifyStep` | `.soft()` / `.with(expect)` | Assertion behavior control. |
+| `resourceStep` | `.raw()` | Data transformation bypass. |
+| `orchestrateStep` | `.soft()` / `.with(expect)` / `.raw()` | Full lifecycle control (Handles data and assertions). |
+
+### Modifiers Reference
+
+* **`.soft()`** *(Available in: `verifyStep`, `orchestrateStep`)*
+    Swaps the underlying assertion engine to its soft variant and automatically appends `(soft)` to the report.
+* **`.with(customExpect)`** *(Available in: `verifyStep`, `orchestrateStep`)*
+    Enables manual Dependency Injection by overriding the active assertion engine dynamically at the call site.
+* **`.raw()`** *(Available in: `resourceStep`, `orchestrateStep`)*
+    Bypasses all verification blocks, schemas, and transformation layers entirely. It forces the step to resolve
+    immediately with its pristine origin source payload.
+
+---
+
+## 🛡️ The Project Adapter: Enforcing Pure Dependency Injection
+
+To initialize the reporting ACL, you provide your framework's raw concrete execution blocks (`test.step`, `expect`,
+`expect.soft`) at a single initialization file (e.g., `tests/step.ts`):
 
 ```ts
-shouldBeInLocale(locale: UILanguages) {
-  return verifyStep('url matches locale pattern', async ({ expect }) => {
-    await expect(page).toHaveURL(new RegExp(`/${locale}(/|$)`))
-  })
+import { expect, test } from '@playwright/test'
+import { createTestingStep } from '@secorto/step'
+
+export const {
+  step,
+  verifyStep,
+  resourceStep,
+  orchestrateStep
+} = createTestingStep(test.step, expect, expect.soft)
+
+export type { Step } from '@secorto/step'
+```
+
+---
+
+## 🚀 Production Examples (Using Playwright as an Adapter Example)
+
+### 1. UI Interaction Domain (`step` & `verifyStep`)
+
+```ts
+export class HomePageMain {
+  readonly themeToggle: Locator
+  readonly avatar: Locator
+  readonly bioText: Locator
+
+  constructor(private readonly page: Page) {
+    this.themeToggle = page.getByTestId('theme-toggle')
+    this.avatar = page.locator('.avatar')
+    this.bioText = page.locator('.bio-text')
+  }
+
+  toggleTheme() {
+    return step('toggle theme', async () => {
+      await this.themeToggle.click()
+    })
+  }
+
+  shouldBeLoaded() {
+    return verifyStep(
+      'homepage main components are loaded',
+      async ({ expect }) => {
+        await expect(this.avatar).toBeVisible()
+        await expect(this.bioText).toBeVisible()
+      }
+    )
+  }
 }
 ```
 
-### 3. `contractStep()` (Cohesive Data Transformers)
-
-Pure asynchronous data fetching and parsing. It transforms raw network payloads into clean domain objects
-using your preferred schema utility (Zod, ArkType) before they reach the UI.
+### 2. Data Stream Domain (`resourceStep`)
 
 ```ts
-export const fetchUser = (id: string) =>
-  contractStep(
-    'fetch and parse user data',
-    async () => await api.getUser(id),
-    (json) => userSchema.parse(json)
+export const robotsParser = async (response: APIResponse) => {
+  const body = await response.text()
+
+  return {
+    response,
+    body,
+
+    shouldBeLoaded: () =>
+      verifyStep('robots.txt is loaded', async ({ expect }) => {
+        expect(body).toContain('User-agent: *')
+        expect(body).toContain('Allow: /')
+      })
+  }
+}
+
+export const robots = (request: APIRequestContext) =>
+  resourceStep(
+    'fetch robots.txt',
+    async () => request.get('/robots.txt'),
+    robotsParser,
   )
 ```
 
-### 4. `contractVerifyStep()` (Cohesive Verification & Transformation Streams) 🌟
-
-The ultimate tool for end-to-end integration. It bridges a data contract with a verification block.
-It handles asynchronous data fetching,
-passes the raw payload directly into an assertion block that has full access to the active execution context (`expect`),
-and simultaneously returns the transformed data.
+### 3. Lifecycle Domain (`orchestrateStep`)
 
 ```ts
-export const syncAndVerifyUser = (id: string) =>
-  contractVerifyStep(
-    'fetch user and verify profile layout',
-    async () => await api.getUser(id),
-    async (raw, { expect }) => {
-      await expect(page.locator('#email')).toHaveText(raw.email)
-      return { id: raw.id, email: raw.email }
+import { orchestrateStep } from '@tests/step'
+import type { Page } from '@playwright/test'
+
+export const visit = <T extends { shouldBeLoaded: () => any }>(
+  page: Page,
+  url: string,
+  factory: (page: Page) => T
+) =>
+  orchestrateStep(
+    `Navigate and initialize page: ${url}`,
+    async () => {
+      await page.goto(url)
+      return factory(page)
+    },
+    async (pageObject, { expect }) => {
+      await pageObject.shouldBeLoaded().with(expect)
+      return pageObject
     }
   )
 ```
 
-## The Paradigm Shift: Real Cohesion Across All Layers
+---
 
-At this point, traditional testing purists might blink. For years, the industry dogmatized
-that business intent and technical implementation must be strictly separated
-into isolated helper files or heavy global adapters.
-
-But that artificial separation comes with a hidden tax: it destroys focus and creates brittle structures.
-
-`@secorto/step` brings back **Real Cohesion**. It is designed under a radical premise:
-**semantic steps shouldn't live trapped inside a single adapter file;**
-**they should naturally permeate every single layer of your test architecture.**
-
-Whether it is an atomic UI component validating its own state, a data client enforcing an API schema,
-or a high-level page object orchestrating a complex user flow—description and execution live together where they belong,
-as a single, unbreakable unit across your entire repository.
-
-## Fractal Composition & Strategy Control: The Power of `.with()`
-
-Because `@secorto/step` primitives are completely *lazy* and driven by Dependency Injection (DI),
-your verification blocks enable a **fractal design pattern**.
-
-Instead of building massive, unmaintainable *God Classes*, you can break your UI down into infinitely nested components.
-High-level structures seamlessly forward the active execution engine down to individual subcomponents using `.with(expect)`.
-
-### Unlocking Fractal Page Objects
-
-A parent page component doesn't know (and shouldn't care) if a test case is evaluating assertions strictly
-or via a soft strategy. By utilizing `.with(expect)`, the execution engine cascades down to the atomic level naturally:
+## 🎬 Execution at the Call Site (The Test Case)
 
 ```ts
-export class HomePageMain {
-  constructor(readonly avatar: TargetComponent, readonly bioText: TargetComponent) {}
+import { test } from '@playwright/test'
+import { visit, robots } from '@tests/flows'
+import { HomePageMain } from '@tests/pages'
 
-  shouldBeLocalized(locale: UILanguages) {
-    return verifyStep('homepage main is localized', async ({ expect }) => {
-      // Deeply nesting and forwarding the runtime engine polimorphically
-      await this.avatar.shouldBeVisible().with(expect)
-      await this.bioText.shouldBeVisible().with(expect)
-    })
-  }
-}
+test('evaluating application states via strategy control', async ({ page }) => {
+  // 1. Strict Execution (Default Behavior)
+  const home = await visit(page, '/en', (p) => new HomePageMain(p))
 
-export class HomePage {
-  constructor(readonly main: HomePageMain, readonly mainLayout: MainLayoutComponent) {}
+  // 2. Chained Soft Assertions (.soft)
+  await home.shouldBeLoaded().soft()
+})
 
-  shouldBeLocalized(locale: UILanguages) {
-    return verifyStep(`homepage is localized in ${locale}`, async ({ expect }) => {
-      // Triggering nested components while maintaining the same strategy
-      await this.shouldBeInLocale(locale).with(expect)
-      await this.main.shouldBeLocalized(locale).with(expect)
-      await this.mainLayout.shouldBeLocalized(locale).with(expect)
-    })
-  }
-}
+test('validate robots file', async ({ request }) => {
+  // 3. Validate the happy path
+  const robotsFile = await robots(request)
+  await robotsFile.shouldBeLoaded()
+})
 ```
 
-### Deferred Runtime Strategy Control
-
-The execution strategy is decided **at the call site** of the test case,
-while your complex fractal page definitions remain entirely agnostic:
+## Raw test
 
 ```ts
-const home = await userInHome(page, 'en')
+import { test, expect } from '@playwright/test'
+import { robots } from '@tests/flows'
 
-// Standard / Hard Assertion: Halts the entire suite immediately if any nested element fails.
-await home.shouldBeLocalized('en')
-
-// Soft Assertion: Captures any deep nested failure softly inside the report, letting the test continue.
-await home.shouldBeLocalized('en').soft()
+test('validate robots response using raw', async ({ request }) => {
+  // 4. Bypassing Processors (.raw)
+  const raw = await robots(request).raw()
+  expect(raw.ok()).toBeTruthy()
+})
 ```
 
-## Advanced Execution Control
+## License
 
-### `.raw()` — Bypassing Verification & Transformations
-
-For specialized scenarios (like negative testing, testing error payload structures,
-or using contracts in utility scripts), `.raw()` allows you to skip transformation and verification blocks entirely,
-returning the raw payload directly from `contractStep` or `contractVerifyStep`:
-
-```ts
-// Bypasses assertions and transforms completely to inspect raw endpoint responses
-const rawJson = await syncAndVerifyUser('123').raw()
-const rawUserPayload = await fetchUser('123').raw()
-```
-
-## The Setup: Project Adapter
-
-To unlock strong TypeScript auto-completion and bind @secorto/step to your specific test runner,
-you need to create an adapter file within your project's test support or configuration folder
-(for instance, under tests/step or your local setup directory).
-This thin layer bridges the library's generic interfaces with your framework's concrete types (e.g., Playwright).
-
-Create your custom step adapter file where it best fits your folder structure:
-
-```ts
-import { expect, test } from '@playwright/test'
-import {
-  createTestingStep,
-  type GenericVerification,
-  type GenericContractVerification,
-} from '@secorto/step'
-
-// Bind your framework's concrete types for flawless IDE auto-completion
-export type Verification<T> = GenericVerification<T, typeof expect | typeof expect.soft>
-export type ContractVerification<TRaw, TTransform> =
-  GenericContractVerification<TRaw, TTransform, typeof expect | typeof expect.soft>
-
-// Export your project-scoped atomic factories
-export const { step, verifyStep, contractStep, contractVerifyStep } = createTestingStep(
-  test.step,
-  expect,
-  expect.soft
-)
-
-// Re-export core contracts
-export type { Step, ContractStep } from '@secorto/step'
-```
+MIT
