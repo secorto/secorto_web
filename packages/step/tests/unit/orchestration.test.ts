@@ -204,6 +204,7 @@ describe('createOrchestrateStep', () => {
       expect(result).toBe(84)
     })
   })
+
   it('transformFn uses the provided raw value instead of re-executing originFn', async () => {
     const orchestrateStep = createOrchestrateStep(
       mockRunner,
@@ -211,14 +212,17 @@ describe('createOrchestrateStep', () => {
       softExpect
     )
 
+    const originFn = vi.fn(() => 10)
+
     const step = orchestrateStep(
       'bound check',
-      () => 10,
+      originFn,
       (raw) => raw * 2
     )
 
     const result = await step.transformFn(42)
 
+    expect(originFn).not.toHaveBeenCalled()
     expect(result).toBe(84)
   })
 })
