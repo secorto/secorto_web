@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test'
-import { contractVerifyStep, type Step } from '@tests/step'
+import { orchestrateStep, type Step } from '@tests/step'
 import { mockThirdParty } from '@tests/support/mocks/mockThirdParty'
 import type { Loadable, LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
 import type { MainLayoutComponent } from '@tests/support/ui/shared/components/MainLayout'
@@ -38,7 +38,7 @@ export const visit = <T extends Loadable>(
   factory: (page: Page) => T | Promise<T> | Step<T>,
   preAct?: (page: Page) => Step<void> | void,
   gotoOptions?: Parameters<Page['goto']>[1],
-) => contractVerifyStep(
+) => orchestrateStep(
     title,
     async () => {
       if (preAct) await preAct(page)

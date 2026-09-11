@@ -10,13 +10,13 @@ export type { StepBuilder } from './context'
 export { createVerifyStep } from './verification'
 export type { GenericVerification, VerifyContextOf } from './verification'
 
-// Contract Steps
-export { createContractStep } from './contract'
-export type { ContractStep } from './contract'
+// Resource Steps
+export { createResourceStep } from './resource'
+export type { ResourceStep, WithOrigin } from './resource'
 
-// Contract Verification Steps
-export { createContractVerifyStep } from './contract-verification'
-export type { GenericContractVerification } from './contract-verification'
+// Orchestration Steps
+export { createOrchestrateStep } from './orchestration'
+export type { GenericOrchestrateStep } from './orchestration'
 
-// Orchestration & Test Runner Integration
-export { createTestingStep } from './orchestration'
+// Factory & Test Runner Integration
+export { createTestingStep } from './factory'

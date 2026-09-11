@@ -1,4 +1,4 @@
-import { contractStep, verifyStep } from '@tests/step'
+import { resourceStep, verifyStep } from '@tests/step'
 import type { APIRequestContext, APIResponse } from '@playwright/test'
 import { text } from '@tests/support/api/parsers/content'
 
@@ -17,7 +17,7 @@ export const robotsParser = async (response: APIResponse) => {
 }
 
 export const robots = (request: APIRequestContext) =>
-  contractStep(
+  resourceStep(
     'fetch robots.txt',
     async () => request.get('/robots.txt'),
     robotsParser,
