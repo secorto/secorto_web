@@ -310,15 +310,15 @@ test('evaluating application states via strategy control', async ({ page }) => {
   const home = await visit(page, '/en', (p) => new HomePageMain(p))
 
   // 2. Chained Soft Assertions (.soft)
-  await home.shouldBeLocalized().soft()
+  await home.shouldBeLoaded().soft()
 })
 
-test('validate robots file', ({ request }) => {
+test('validate robots file', async ({ request }) => {
   // 3. Validate the happy path
   const raw = await robots(request).shouldBeLoaded()
 })
 
-test('validate robots response using raw', ({ request }) => {
+test('validate robots response using raw', async ({ request }) => {
   // 4. Bypassing Processors (.raw)
   const raw = await robots(request).raw()
   expect(raw.ok()).toBeTruthy()
