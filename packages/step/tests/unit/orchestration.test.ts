@@ -204,4 +204,21 @@ describe('createOrchestrateStep', () => {
       expect(result).toBe(84)
     })
   })
+  it('transformFn uses the provided raw value instead of re-executing originFn', async () => {
+    const orchestrateStep = createOrchestrateStep(
+      mockRunner,
+      defaultExpect,
+      softExpect
+    )
+
+    const step = orchestrateStep(
+      'bound check',
+      () => 10,
+      (raw) => raw * 2
+    )
+
+    const result = await step.transformFn(42)
+
+    expect(result).toBe(84)
+  })
 })

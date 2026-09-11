@@ -49,46 +49,65 @@ export const createOrchestrateStep = <TExpect>(
   softExpect: TExpect,
   symbol = 'OrchestrateStep'
 ) => {
-  const buildContextStep = createContextStep<VerifyContextOf<TExpect>>(runner, symbol)
+  const buildContextStep = createContextStep<VerifyContextOf<TExpect>>(
+    runner,
+    symbol
+  )
 
   return <TRaw, TResult>(
     title: string,
     originFn: () => TRaw | Promise<TRaw>,
-    verifyFn: (raw: TRaw, ctx: VerifyContextOf<TExpect>) => TResult | Promise<TResult>
+    verifyFn: (
+      raw: TRaw,
+      ctx: VerifyContextOf<TExpect>
+    ) => TResult | Promise<TResult>
   ): GenericOrchestrateStep<TRaw, TResult, TExpect> => {
 
-    /**
-     * Binds a specific expect instance into verifyFn, producing the closed-form
-     * transformFn that ResourceStep's action slot executes.
-     *
-     * Relation: transformFn(expect) = (raw) => verifyFn(raw, { expect })
-     */
-    const bindTransform = (expectInstance: TExpect) =>
-      async () => {
+    const createStep = (
+      stepTitle: string,
+      expectImpl: TExpect
+    ): GenericOrchestrateStep<TRaw, TResult, TExpect> => {
+
+      /**
+       * ResourceStep-compatible transform
+       */
+      const transformFn = (raw: TRaw) =>
+        verifyFn(raw, { expect: expectImpl })
+
+      /**
+       * Executable ContextStep action
+       */
+      const action = async (
+        { expect }: VerifyContextOf<TExpect>
+      ) => {
         const raw = await originFn()
-        return verifyFn(raw, { expect: expectInstance })
+        return verifyFn(raw, { expect })
       }
 
-    const baseStep = buildContextStep<TResult>(
-      title,
-      bindTransform(defaultExpect),
-      { expect: defaultExpect }
-    )
+      const baseStep = buildContextStep<TResult>(
+        stepTitle,
+        action,
+        { expect: expectImpl }
+      )
 
-    const runRaw = () => runner(`${title} (raw)`, originFn)
+      const runRaw = () =>
+        runner(`${stepTitle} (raw)`, originFn)
 
-    return Object.assign(baseStep, {
-      title,
-      originFn,
-      transformFn: bindTransform(defaultExpect),
-      verifyFn,
-      raw: runRaw,
+      return Object.assign(baseStep, {
+        title: stepTitle,
+        originFn,
+        transformFn,
+        verifyFn,
+        raw: runRaw,
 
-      with: (expectImpl: TExpect) =>
-        buildContextStep<TResult>(title, bindTransform(expectImpl), { expect: expectImpl }),
+        with: (nextExpect: TExpect) =>
+          createStep(title, nextExpect),
 
-      soft: () =>
-        buildContextStep<TResult>(`${title} (soft)`, bindTransform(softExpect), { expect: softExpect }),
-    })
+        soft: () =>
+          createStep(`${title} (soft)`, softExpect),
+      })
+    }
+
+    return createStep(title, defaultExpect)
   }
 }

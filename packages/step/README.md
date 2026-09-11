@@ -58,7 +58,7 @@ test suite scales through three levels of maturity:
 ### Level 1: Raw Assertions (The Anti-Pattern)
 
 The developer embeds raw assertions (`expect`) directly into the page method. If it fails, the report only says
-*“Expect x to toBe”*. There is zero business narrative and zero traceability.
+*“Expected x to be”*. There is zero business narrative and zero traceability.
 
 ### Level 2: Infrastructure-Coupled Reporting (Native `test.step`)
 
@@ -243,28 +243,27 @@ export class HomePageMain {
 ### 2. Data Stream Domain (`resourceStep`)
 
 ```ts
-import { z } from 'zod'
-import { resourceStep, verifyStep } from '@tests/step'
-import type { APIRequestContext } from '@playwright/test'
+export const robotsParser = async (response: APIResponse) => {
+  const body = await response.text()
 
-const rssSchema = z.object({
-  rss: z.object({ channel: z.object({ language: z.string() }) })
-})
+  return {
+    response,
+    body,
 
-export const fetchRss = (request: APIRequestContext, locale: string) =>
-  resourceStep(`fetch rss.xml (${locale})`, async () => {
-    const response = await request.get(`/${locale}/rss.xml`)
-    const body = await response.json()
+    shouldBeLoaded: () =>
+      verifyStep('robots.txt is loaded', async ({ expect }) => {
+        expect(body).toContain('User-agent: *')
+        expect(body).toContain('Allow: /')
+      })
+  }
+}
 
-    return {
-      response,
-      body: rssSchema.parse(body),
-      shouldBeLoaded: (country: string) =>
-        verifyStep(`rss language is ${country}`, async ({ expect }) => {
-          expect(body.rss.channel.language).toBe(country)
-        })
-    }
-  })
+export const robots = (request: APIRequestContext) =>
+  resourceStep(
+    'fetch robots.txt',
+    async () => request.get('/robots.txt'),
+    robotsParser,
+  )
 ```
 
 ### 3. Lifecycle Domain (`orchestrateStep`)
