@@ -22,8 +22,8 @@ your Page Object implementation:
 ```ts
 const home = await visit(page, '/en', (p) => new HomePageMain(p))
 
-await home.shouldBeLocalized()        // 1. Strict Execution: Halts the test instantly if any locator fails.
-await home.shouldBeLocalized().soft() // 2. Intercepted Strategy: Propagates 'expect.soft' dynamically!
+await home.shouldBeLoaded()        // 1. Strict Execution: Halts the test instantly if any locator fails.
+await home.shouldBeLoaded().soft() // 2. Intercepted Strategy: Propagates 'expect.soft' dynamically!
 ```
 
 > **Same flow. Different execution strategy. The Page Object stays completely unchanged.**
@@ -302,7 +302,7 @@ export const visit = <T extends { shouldBeLoaded: () => any }>(
 
 ```ts
 import { test } from '@playwright/test'
-import { visit, fetchRss } from '@tests/flows'
+import { visit, robots } from '@tests/flows'
 import { HomePageMain } from '@tests/pages'
 
 test('evaluating application states via strategy control', async ({ page }) => {
@@ -315,8 +315,16 @@ test('evaluating application states via strategy control', async ({ page }) => {
 
 test('validate robots file', async ({ request }) => {
   // 3. Validate the happy path
-  const raw = await robots(request).shouldBeLoaded()
+  const robotsFile = await robots(request)
+  await robotsFile.shouldBeLoaded()
 })
+```
+
+## Raw test
+
+```ts
+import { test, expect } from '@playwright/test'
+import { robots } from '@tests/flows'
 
 test('validate robots response using raw', async ({ request }) => {
   // 4. Bypassing Processors (.raw)
