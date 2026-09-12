@@ -6,6 +6,7 @@ export const tagRoutes = createTagRoutes(
   sectionRoutes,
   { en: 'tags', es: 'tags' },
   {
+    ai: { en: 'ai', es: 'ia' },
     containers: {en: 'containers', es: 'containers'},
     dev: { en: 'dev', es: 'desarrollo' },
     frontend: { en: 'frontend', es: 'frontend' },
@@ -16,6 +17,7 @@ export const tagRoutes = createTagRoutes(
     linux: { en: 'linux', es: 'linux' },
     opensource: { en: 'opensource', es: 'codigo-abierto' },
     python: { en: 'python', es: 'python' },
+    secorto: { en: 'secorto', es: 'secorto' },
     testing: { en: 'testing', es: 'pruebas' },
   },
   languages,
