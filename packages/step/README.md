@@ -1,32 +1,117 @@
 # @secorto/step
 
-**A framework-agnostic reporting Anti-Corruption Layer where the execution strategy is decided at the call site, not
-the implementation site.**
+**Define a flow once. Choose its execution semantics at the call site.**
 
-Most test automation suites suffer from a critical architectural flaw: **the execution strategy is hardcoded inside
-component implementations instead of being selected by the test case.** Whether you use traditional *Page Objects* or
-complex abstraction layers, this tight coupling forces you to repeat logic, leaks infrastructure noise, and creates a
-massive disconnection between business intent, reporting boundaries, and runtime behavior.
+`@secorto/step` is a framework-agnostic execution semantics model for test automation.
 
-`@secorto/step` fixes this by introducing a reporting Anti-Corruption Layer (ACL). It transforms your semantic steps
-into lazy, immutable data structures, **separating step definition from step execution** to give you total fluid
-control over how your tests run and report.
+Most automation frameworks couple business intent with execution behavior. A flow not only describes what should happen,
+but also how assertions execute, how failures propagate, and how reporting is produced.
+As a result, small differences in execution strategy often lead to duplicated implementations
+ and infrastructure concerns leaking into domain code.
+
+`@secorto/step` separates intent from execution semantics by transforming automation behaviors into lazy,
+immutable execution artifacts.
+
+Flows define intent.
+
+Steps materialize intent.
+
+Consumers choose execution semantics.
+
+This allows the same flow to be executed under different runtime strategies
+(`strict`, `soft`, `raw`, or custom assertion contexts) without modifying its implementation.
+
+The result is reusable automation flows, explicit reporting boundaries, lower infrastructure coupling,
+and execution behavior that can evolve independently from business intent.
 
 ---
 
 ## ⚡ Quick Example
 
-The exact same domain flow can execute under entirely different assertion strategies without modifying a single line of
-your Page Object implementation:
-
 ```ts
 const home = await visit(page, '/en', (p) => new HomePageMain(p))
 
-await home.shouldBeLoaded()        // 1. Strict Execution: Halts the test instantly if any locator fails.
-await home.shouldBeLoaded().soft() // 2. Intercepted Strategy: Propagates 'expect.soft' dynamically!
+await home.shouldBeLoaded()
+await home.shouldBeLoaded().soft()
 ```
 
-> **Same flow. Different execution strategy. The Page Object stays completely unchanged.**
+---
+
+## 📐 Architectural Overview
+
+```mermaid
+graph LR
+    A[User Story]
+    --> B[Flow]
+    --> C[Step]
+    --> D[Execution Semantics]
+    --> E[Runner]
+
+    style B fill:#1e3a8a,color:#fff
+    style C fill:#7c3aed,color:#fff
+    style D fill:#1e3a8a,color:#fff
+
+```
+
+Automation begins with business intent.
+
+Flows capture intent.
+
+Steps materialize intent.
+
+Execution semantics are selected by consumers.
+
+Runners execute the resulting behavior through framework adapters.
+
+---
+
+## Core Concepts
+
+### Flow
+
+A Flow is a named unit of intent.
+
+Flows are units of composition and meaning.
+
+They describe what we want to achieve, not how the work is executed.
+
+A Flow may:
+
+- compose other Flows
+- delegate implementation
+- hide infrastructure details
+
+Flows define intent.
+
+### Step
+
+A Step is an observable execution artifact.
+
+Steps are units of execution and observability.
+
+They materialize a Flow's intent into executable work while remaining decoupled from the underlying test runner.
+
+Only Steps execute.
+Only Steps are observable.
+
+### Primitives
+
+The library provides four specialized Step types:
+
+- `step()` → actions
+- `verifyStep()` → verification strategies
+- `resourceStep()` → resource transformations
+- `orchestrateStep()` → resource and verification orchestration
+
+### Modifiers
+
+Execution semantics are selected at the call site:
+
+- `.soft()`
+- `.with(expect)`
+- `.raw()`
+
+The same Flow can be consumed under different execution semantics without changing its implementation.
 
 ---
 
@@ -34,167 +119,186 @@ await home.shouldBeLoaded().soft() // 2. Intercepted Strategy: Propagates 'expec
 
 People remember principles, not APIs. `@secorto/step` is built on five core architectural constraints:
 
-* **Delegate implementation, never intention.** Flows can deeply delegate how they interact with subcomponents, but
+- **Delegate implementation, never intention.** Flows can deeply delegate how they interact with subcomponents, but
     they must materialize their intent at their own level.
-* **Flows are business language.** Your domain functions speak the language of user stories and are entirely
+- **Flows are business language.** Your domain functions speak the language of user stories and are entirely
     invisible to the test runner.
-* **Steps are reporting boundaries.** A step represents a single observable unit of work responsible for producing
-    reporting metadata.
-* **Execution is lazy by default.** Primitives do not execute anything in a cold state; they return deferred
+- **Steps are execution and reporting boundaries.** A Step represents a single observable unit of work
+    responsible for materializing intent, producing runtime behavior, and defining reporting boundaries.
+- **Execution is lazy by default.** Primitives do not execute anything in a cold state; they return deferred
     execution structures evaluated only at the call site.
-* **Infrastructure is injected, never imported.** Your domain architecture remains 100% stable, even when underlying
+- **Infrastructure is injected, never imported.** Your domain architecture remains 100% stable, even when underlying
     execution or reporting technologies change.
 
 ---
 
 ## 🚫 Why Not Native `test.step`?
 
-If you are using Playwright, you might wonder why you shouldn't just wrap your interactions inside the native
-`test.step` utility.
+`test.step()` improves reporting, but it does not separate intent from execution semantics.
 
-While native steps fix the visual narrative of the report, they introduce severe architectural limitations as your
-test suite scales through three levels of maturity:
+Because native steps execute eagerly, execution behavior becomes part of the implementation itself.
 
-### Level 1: Raw Assertions (The Anti-Pattern)
+As a result:
 
-The developer embeds raw assertions (`expect`) directly into the page method. If it fails, the report only says
-*“Expected x to be”*. There is zero business narrative and zero traceability.
+- execution strategies become embedded in Flows
+- infrastructure concerns leak into domain code
+- different execution behaviors often require multiple implementations of the same intent
 
-### Level 2: Infrastructure-Coupled Reporting (Native `test.step`)
+`@secorto/step` takes a different approach.
 
-The developer tries to fix the report by wrapping interactions inside the runner's native step utilities directly
-inside the Page Object.
+Flows define intent.
 
-* **The Issue:** Infrastructure decisions leak into your domain layer. The code becomes noisy with nested async
-    closures. More importantly, **you lose runtime strategy control**. You cannot trigger a soft assertion from the
-    test case because native runner steps execute immediately and greedily.
+Steps materialize intent.
 
-### Level 3: Declarative Reporting Boundaries (`@secorto/step`)
+Consumers choose execution semantics.
 
-Your page methods become clean declarative flows. Primitives do not execute anything in a cold state—they return a
-**lazy, deferred execution structure**. Because execution is delayed until the test case actually awaits the step, you
-can chain **Call-Site Modifiers** (like `.soft()`) to change the execution strategy dynamically.
-
-### Report Noise vs. Semantic Cleanliness
-
-Native assertions often leak implementation details into your reports. `@secorto/step` enforces strict reporting
-boundaries, keeping your execution narrative pristine.
-
-| Traditional Native Report (Noisy/Leaky) | `@secorto/step` Report (Clean/Semantic) |
-| :--- | :--- |
-| `✓ open homepage (0.5s)` `✗ expect(locator).toHaveText() (2.1s)` Expected: "Welcome" Received: "Bienvenido" | `✓ User opens homepage` `✗ Homepage components are localized (soft)` `✓ RSS language is loaded` |
+Because execution artifacts are lazy, modifiers such as `.soft()`, `.with()`, and `.raw()`
+can be selected dynamically at the call site without modifying the Flow implementation.
 
 ---
 
 ## 🔌 Dependency Injection & Framework Independence
 
-The library acts as a pure **Anti-Corruption Layer (ACL) for test reporting**, separating your domain architecture
-from the reporting infrastructure. It does not depend on, nor import Playwright, Cypress, Vitest, Jest, or any
-specific assertion engine.
+The library remains completely independent from test runners, reporting tools, and assertion engines.
 
-Instead, you provide your runner's concrete reporting and assertion adapters via **Dependency Injection** at
-initialization time. This guarantees that your core architectural model remains 100% stable, even when your underlying
-execution or reporting technologies change.
+Architecturally, @secorto/step acts as an Anti-Corruption Layer (ACL) between automation Flows and execution infrastructure.
 
----
-
-## 📐 Core Philosophy & Architecture
-
-```mermaid
-graph LR
-    A[User Story] --> B[Flow]
-    B --> C[Step / Reporting Boundary]
-    C --> D[Report]
-
-    style C fill:#f9f,stroke:#333,stroke-width:2px,color:#000
-```
-
-* **Flow = The Business Intention.** A domain-level function or method representing a single, cohesive user action
-    (e.g., `userInHome()`, `visit()`, or `shouldBeLocalized()`). Flows live in your Page Objects. They speak the
-    language of your user stories, are pure TypeScript logic, and are entirely invisible to the test runner.
-* **Step = The Reporting Boundary.** A Step represents an observable unit of work. It is responsible for producing
-    reporting metadata and runtime behavior while remaining decoupled from the underlying test runner.
+Instead of importing framework-specific dependencies directly into your domain code,
+execution and assertion behavior are injected through adapters during initialization.
 
 ---
 
-## 🧩 The 4 Core Primitives & Their Domains
+## 🧩 The 4 Core Primitives
 
-`@secorto/step` separates responsibilities into four distinct building blocks, split across two high-level boundaries:
-**The UI Domain** (your daily drivers) and **The Advanced Structural Domain** (for data streams and complex lifecycles).
+Each primitive exists to model a distinct execution responsibility while preserving the same execution model.
 
 ```mermaid
 graph TD
-    A[What are you building?] --> B(Pure UI Interaction / Action)
-    A --> C(UI Assertion / State Check)
-    A --> D(Complex Structural / Data Flow)
+    A["What responsibility does the Step have?"]
 
-    B -->|Ex: Click, Fill inputs| E[step]
-    C -->|Ex: Verify element visibility| F[verifyStep]
+    A --> B[Mutate State]
+    A --> C[Verify State]
+    A --> D[Transform Resources]
+    A --> E[Resource + Verification Lifecycle]
 
-    D --> G{Does the stream require immediate structural validation?}
-    G -->|Yes: Ex. Navigation + Page Hydration| H[orchestrateStep]
-    G -->|No: Ex. Fetching a parsed API/RSS payload| I[resourceStep]
+    B --> F["step()"]
+    C --> G["verifyStep()"]
+    D --> H["resourceStep()"]
+    E --> I["orchestrateStep()"]
 
-    style E fill:#2563eb,color:#fff
-    style F fill:#1d4ed8,color:#fff
-    style H fill:#1e3a8a,color:#fff
-    style I fill:#60a5fa,color:#111
+    style F fill:#2563eb,color:#fff
+    style G fill:#2563eb,color:#fff
+    style H fill:#2563eb,color:#fff
+    style I fill:#2563eb,color:#fff
 ```
 
-### 1. The Core UI Domain (Daily Drivers)
+### `step()`
 
-Governs instantaneous interactions directly connected to the interface, user actions, and layout evaluations.
+**Responsibility:** Actions
 
-* **`step()` ── Responsibility: UI Actions (Imperative/Mutation)**
-    Binds a business interaction directly to its functional block. It performs the physical work on the application
-    state (e.g., clicking, typing) but does not evaluate states or execute assertions.
-* **`verifyStep()` ── Responsibility: UI Assertions (Declarative/Validation)**
-    Encapsulates an assertion alongside its execution context. It isolates and exposes the active assertion module to
-    execute precise state verifications over your component trees.
+Use when work directly changes system state.
 
-### 2. The Data & Structural Domain (Advanced Lifecycles)
+Typical examples:
 
-Governs architectural boundaries such as network pipelines, lazy schema transformations, and secure component
-hydration.
+- clicking
+- typing
+- submitting forms
+- triggering navigation
+- mutating application state
 
-* **`resourceStep()` ── Responsibility: Data Contracts & Inference (Data Flow)**
-    Handles resource extraction, parsing, and deferred evaluations. Maps raw payloads (like an API or RSS feed) into
-    typed domain objects, allowing your transformation blocks to return living structures or custom assertion behaviors.
-* **`orchestrateStep()` ── Responsibility: Lifecycles & Checkpoints (Structural Setup)**
-    Combines initialization logic with mandatory verification checkpoints. It executes an initialization sequence
-    (like browser navigation or structural hydration) and enforces a mandatory, immediate verification checkpoint on
-    the resulting object before delivering it to the test script.
+`step()` performs observable work but does not evaluate state or execute assertions.
 
 ---
 
-## ⚙️ Runtime Modifiers: Strategy & Flow Control
+### `verifyStep()`
 
-Every step executes in a strict standard mode by default. However, because primitives are completely lazy, you can
-chain explicit modifiers at the **call site** of the test case based on their structural capabilities:
+**Responsibility:** Verification
 
-| Primitive | Capabilities | Description |
-| :--- | :--- | :--- |
-| `step` | *None* | Pure interaction block without modifiers. |
-| `verifyStep` | `.soft()` / `.with(expect)` | Assertion behavior control. |
-| `resourceStep` | `.raw()` | Data transformation bypass. |
-| `orchestrateStep` | `.soft()` / `.with(expect)` / `.raw()` | Full lifecycle control (Handles data and assertions). |
+Use when work validates state, behavior, or expectations.
 
-### Modifiers Reference
+Capabilities:
 
-* **`.soft()`** *(Available in: `verifyStep`, `orchestrateStep`)*
-    Swaps the underlying assertion engine to its soft variant and automatically appends `(soft)` to the report.
-* **`.with(customExpect)`** *(Available in: `verifyStep`, `orchestrateStep`)*
-    Enables manual Dependency Injection by overriding the active assertion engine dynamically at the call site.
-* **`.raw()`** *(Available in: `resourceStep`, `orchestrateStep`)*
-    Bypasses all verification blocks, schemas, and transformation layers entirely. It forces the step to resolve
-    immediately with its pristine origin source payload.
+- `.soft()`
+- `.with(expect)`
+
+`verifyStep()` encapsulates assertions while allowing consumers to choose the verification strategy at the call site.
 
 ---
 
-## 🛡️ The Project Adapter: Enforcing Pure Dependency Injection
+### `resourceStep()`
 
-To initialize the reporting ACL, you provide your framework's raw concrete execution blocks (`test.step`, `expect`,
-`expect.soft`) at a single initialization file (e.g., `tests/step.ts`):
+**Responsibility:** Resource Acquisition & Transformation
+
+Use when work retrieves a resource and transforms it into a domain-specific representation.
+
+Capabilities:
+
+- `.raw()`
+
+`resourceStep()` models a two-stage pipeline:
+
+```text
+origin → transformation
+```
+
+Consumers may execute the full pipeline or bypass transformation entirely by using `.raw()`.
+
+---
+
+### `orchestrateStep()`
+
+**Responsibility:** Resource Lifecycle Orchestration
+
+Use when resource acquisition and verification belong to the same lifecycle and must execute as a single observable artifact.
+
+Capabilities:
+
+- `.soft()`
+- `.with(expect)`
+- `.raw()`
+
+`orchestrateStep()` combines resource and verification semantics while preserving execution strategy control
+at the call site.
+
+Typical examples:
+
+- page initialization (`visit()`)
+- accessibility audits (`a11yFlow()`)
+
+---
+
+## ⚙️ Runtime Modifiers
+
+Modifiers allow consumers to select execution semantics at the call site.
+
+### `.soft()`
+
+*(Available in: `verifyStep()`, `orchestrateStep()`)*
+
+Swaps the underlying assertion engine to its soft variant and automatically appends `(soft)` to the report.
+
+### `.with(customExpect)`
+
+*(Available in: `verifyStep()`, `orchestrateStep()`)*
+
+Overrides the active assertion implementation at the call site.
+
+### `.raw()`
+
+*(Available in: `resourceStep()`, `orchestrateStep()`)*
+
+Bypasses verification and transformation layers, resolving directly with the original resource produced by the origin source.
+
+---
+
+## 🛡️ Adapter Setup
+
+Architecturally, this is where the Anti-Corruption Layer (ACL) is established.
+
+Instead of allowing Flow and Step definitions to depend directly on framework-specific primitives
+such as `test.step`, `expect`, or `expect.soft`, `@secorto/step` isolates those concerns behind a small adapter.
+
+During initialization, you provide the concrete execution and assertion implementations used by your test framework:
 
 ```ts
 import { expect, test } from '@playwright/test'
@@ -205,16 +309,22 @@ export const {
   verifyStep,
   resourceStep,
   orchestrateStep
-} = createTestingStep(test.step, expect, expect.soft)
+} = createTestingStep(
+  test.step,
+  expect,
+  expect.soft
+)
 
 export type { Step } from '@secorto/step'
 ```
+
+This keeps Flow definitions stable while allowing execution infrastructure to evolve independently.
 
 ---
 
 ## 🚀 Production Examples (Using Playwright as an Adapter Example)
 
-### 1. UI Interaction Domain (`step` & `verifyStep`)
+### 1. Action & Verification Example (`step()` + `verifyStep()`)
 
 ```ts
 export class HomePageMain {
@@ -246,7 +356,7 @@ export class HomePageMain {
 }
 ```
 
-### 2. Data Stream Domain (`resourceStep`)
+### 2. Resource Transformation Example (`resourceStep()`)
 
 ```ts
 export const robotsParser = async (response: APIResponse) => {
@@ -272,7 +382,7 @@ export const robots = (request: APIRequestContext) =>
   )
 ```
 
-### 3. Lifecycle Domain (`orchestrateStep`)
+### 3. Lifecycle Orchestration Example (`orchestrateStep()`)
 
 ```ts
 import { orchestrateStep } from '@tests/step'
@@ -320,7 +430,7 @@ test('validate robots file', async ({ request }) => {
 })
 ```
 
-## Raw test
+### Raw test
 
 ```ts
 import { test, expect } from '@playwright/test'
