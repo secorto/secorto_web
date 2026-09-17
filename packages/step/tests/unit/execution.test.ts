@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { createStep } from '@secorto/step'
 import type { StepRunner } from '@secorto/step'
 
@@ -55,5 +55,20 @@ describe('createStep', () => {
     const step = createStep(mockRunner, 'MyStep')
     const result = await step('my step', () => 99).then((v) => v * 2)
     expect(result).toBe(198)
+  })
+
+  it('re-executes the action on every await', async () => {
+    const step = createStep(mockRunner, 'MyStep')
+    const action = vi.fn(() => 'payload')
+
+    const lazyStep = step(
+      'reusable operation',
+      action
+    )
+
+    await lazyStep
+    await lazyStep
+
+    expect(action).toHaveBeenCalledTimes(2)
   })
 })

@@ -1,84 +1,187 @@
-import { describe, it, expect, vi } from 'vitest'
-import { createVerifyStep, createContextStep } from '@secorto/step'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import {
+  createVerifyStep,
+  createContextStep,
+  type VerifyContextOf,
+} from '@secorto/step'
+
 import type { StepRunner } from '@secorto/step'
 
-// Helpers de mock compartidos para aserciones
-type MockAssertion = { toBe: (expected: unknown) => void }
-type MockExpect = (actual: unknown) => MockAssertion
+type MockAssertion = {
+  toBe: (expected: unknown) => void
+}
 
-const createMockExpect = (onMismatch: (actual: unknown, expected: unknown) => void): MockExpect =>
+type MockExpect = (
+  actual: unknown
+) => MockAssertion
+
+type VerifyContext = VerifyContextOf<MockExpect>
+
+const createMockExpect = (
+  onMismatch: (
+    actual: unknown,
+    expected: unknown
+  ) => void
+): MockExpect =>
   (actual: unknown) => ({
     toBe: (expected: unknown) => {
-      if (actual !== expected) onMismatch(actual, expected)
+      if (actual !== expected) {
+        onMismatch(actual, expected)
+      }
     },
   })
 
 describe('createVerifyStep', () => {
-  const runner: StepRunner = vi.fn(async (_title, action) => action())
+  const runner: StepRunner = vi.fn(
+    async (_title, action) => action()
+  )
 
-  it('creates an explicit verification factory with the same runner contract', async () => {
-    const defaultExpect = createMockExpect(() => { throw new Error('should not fail') })
-    const softExpect = createMockExpect(() => {})
-    const verifyStep = createVerifyStep(defaultExpect, softExpect, createContextStep(runner, 'VerifyStep'))
-
-    await verifyStep('verification from factory', ({ expect }) => {
-      expect('value').toBe('value')
-    })
-
-    expect(runner).toHaveBeenCalledWith('verification from factory', expect.any(Function))
+  beforeEach(() => {
+    vi.clearAllMocks() // O vi.mocked(runner).mockClear()
   })
 
-  it('accepts the default expect callback for createVerifyStep', async () => {
-    const defaultExpect = createMockExpect(() => { throw new Error('should not fail') })
-    const softExpect = createMockExpect(() => {})
-    const verifyStep = createVerifyStep(defaultExpect, softExpect, createContextStep(runner, 'VerifyStep'))
-    let called = false
+  const createFactory = (
+    defaultExpect = createMockExpect(() => {
+      throw new Error('Strict failure')
+    }),
+    softExpect = createMockExpect(() => {})
+  ) =>
+    createVerifyStep(
+      defaultExpect,
+      softExpect,
+      createContextStep(runner, 'VerifyStep')
+    )
 
-    await verifyStep('verification with expect', ({ expect }) => {
-      called = true
-      expect('value').toBe('value')
-    })
+  it('executes through the runner and resolves the callback result', async () => {
+    const verifyStep = createFactory()
 
-    expect(called).toBe(true)
-  })
-
-  it('resolves with the action result for createVerifyStep', async () => {
-    const defaultExpect = createMockExpect(() => { throw new Error('should not fail') })
-    const softExpect = createMockExpect(() => {})
-    const verifyStep = createVerifyStep(defaultExpect, softExpect, createContextStep(runner, 'VerifyStep'))
-
-    const result = verifyStep('verification with override', ({ expect }) => {
-      expect('value').toBe('value')
-      return 'done'
-    })
+    const result = verifyStep(
+      'verification',
+      ({ expect }: VerifyContext) => {
+        expect('value').toBe('value')
+        return 'done'
+      }
+    )
 
     await expect(result).resolves.toBe('done')
+
+    expect(runner).toHaveBeenCalledWith(
+      'verification',
+      expect.any(Function)
+    )
   })
 
-  it('overrides the expect implementation via .with() for createVerifyStep', async () => {
-    const defaultExpect = createMockExpect(() => { throw new Error('should not fail') })
-    const softExpect = createMockExpect(() => {})
-    const verifyStep = createVerifyStep(defaultExpect, softExpect, createContextStep(runner, 'VerifyStep'))
+  it('preserves async return values from the verification callback', async () => {
+    const verifyStep = createFactory()
 
-    const result = verifyStep('verification with override', ({ expect }) => {
-      expect('value').toBe('value')
-      return 'done'
-    }).with(defaultExpect)
+    const result = verifyStep(
+      'async verification',
+      async ({ expect }) => {
+        expect(true).toBe(true)
+        return 'async-result'
+      }
+    )
 
-    await expect(result).resolves.toBe('done')
+    await expect(result).resolves.toBe(
+      'async-result'
+    )
   })
 
-  it('supports the .soft() shorthand for createVerifyStep', async () => {
-    const defaultExpect = createMockExpect(() => { throw new Error('should not fail') })
-    const softExpect = createMockExpect(() => {})
-    const verifyStep = createVerifyStep(defaultExpect, softExpect, createContextStep(runner, 'VerifyStep'))
+  it('overrides the expect implementation via .with()', async () => {
+    const verifyStep = createFactory()
 
-    const result = verifyStep('verification with soft', ({ expect }) => {
-      expect(true).toBe(true)
-      return 'ok'
-    }).soft()
+    const customExpect = createMockExpect(
+      (actual, expected) => {
+        throw new Error(
+          `Custom mismatch: ${actual} vs ${expected}`
+        )
+      }
+    )
 
-    expect(result.title).toBe('verification with soft (soft)')
+    const result = verifyStep(
+      'custom verification',
+      ({ expect }) => {
+        expect('a').toBe('b')
+      }
+    ).with(customExpect)
+
+    await expect(result).rejects.toThrow(
+      'Custom mismatch: a vs b'
+    )
+  })
+
+  it('supports the .soft() shorthand and appends the title modifier', async () => {
+    const verifyStep = createFactory()
+
+    const result = verifyStep(
+      'verification with soft',
+      ({ expect }) => {
+        expect('bad').toBe('good')
+        return 'ok'
+      }
+    ).soft()
+
+    expect(result.title).toBe(
+      'verification with soft (soft)'
+    )
+
     await expect(result).resolves.toBe('ok')
+  })
+
+  it('rejects when default expect fails', async () => {
+    const verifyStep = createFactory()
+
+    const result = verifyStep(
+      'strict check',
+      ({ expect }) => {
+        expect('bad').toBe('good')
+      }
+    )
+
+    await expect(result).rejects.toThrow(
+      'Strict failure'
+    )
+  })
+
+  it('supports promise chaining with then', async () => {
+    const verifyStep = createFactory()
+
+    const result = await verifyStep(
+      'chain',
+      () => 21
+    ).then(value => value * 2)
+
+    expect(result).toBe(42)
+  })
+
+  it('returns a new instance when soft() is called', () => {
+    const verifyStep = createFactory()
+
+    const original = verifyStep(
+      'verification',
+      () => 'ok'
+    )
+
+    const soft = original.soft()
+
+    expect(original).not.toBe(soft)
+    expect(original.title).toBe('verification')
+    expect(soft.title).toBe('verification (soft)')
+  })
+
+  it('exposes a callable action independent of the runner', async () => {
+    const verifyStep = createFactory()
+
+    const step = verifyStep(
+      'manual execution',
+      ({ expect }) => {
+        expect(true).toBe(true)
+        return 42
+      }
+    )
+
+    const result = await step.action()
+
+    expect(result).toBe(42)
   })
 })
