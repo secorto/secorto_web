@@ -134,26 +134,27 @@ People remember principles, not APIs. `@secorto/step` is built on five core arch
 
 ## 🚫 Why Not Native `test.step`?
 
-`test.step()` improves reporting, but it does not separate intent from execution semantics.
+Framework-native features like Playwright's `test.step()` are excellent tools for improving report visibility
+but they do not decouple business intent from execution semantics.
 
-Because native steps execute eagerly, execution behavior becomes part of the implementation itself.
+Because native steps execute eagerly, execution behavior becomes embedded directly within flow implementations.
+This introduces architectural challenges as automation suites grow:
 
-As a result:
+- **Tight Strategy Coupling:** The same business Flow often needs different execution behaviors.
+  Native approaches commonly lead to duplicated flows or execution-specific logic embedded in domain code.
+- **Infrastructure Leaks:** Reporting and assertion concerns become part of Flow implementations,
+  introducing framework-specific dependencies into business logic.
+- **Bloated Domain Code:** Flows end up managing execution details such as reporting boundaries,
+  assertion behavior, and failure propagation rather than focusing exclusively on user intent.
 
-- execution strategies become embedded in Flows
-- infrastructure concerns leak into domain code
-- different execution behaviors often require multiple implementations of the same intent
+### The `@secorto/step` Alternative
 
-`@secorto/step` takes a different approach.
+Instead of executing eagerly, `@secorto/step` materializes automation work as lazy, immutable execution artifacts.
 
-Flows define intent.
+By deferring execution to the call site, modifiers such as `.soft`, `.with`, and `.raw`
+can be selected dynamically by consumers without modifying Flow implementations.
 
-Steps materialize intent.
-
-Consumers choose execution semantics.
-
-Because execution artifacts are lazy, modifiers such as `.soft()`, `.with()`, and `.raw()`
-can be selected dynamically at the call site without modifying the Flow implementation.
+This keeps business intent stable while allowing execution behavior to evolve independently.
 
 ---
 
@@ -161,8 +162,7 @@ can be selected dynamically at the call site without modifying the Flow implemen
 
 The library remains completely independent from test runners, reporting tools, and assertion engines.
 
-Architecturally, @secorto/step acts as an Anti-Corruption Layer (ACL) between automation Flows and execution infrastructure.
-
+Architecturally, `@secorto/step` acts as an Anti-Corruption Layer (ACL) between automation Flows and execution infrastructure.
 Instead of importing framework-specific dependencies directly into your domain code,
 execution and assertion behavior are injected through adapters during initialization.
 
