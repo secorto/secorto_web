@@ -1,71 +1,86 @@
 ---
 title: "@secorto/step"
-excerpt: "Capa de anti-corruptión para reportar pasos y decidir la estrategia de ejecución de pruebas."
+excerpt: Modelo semántico y de ejecución perezosa diseñado para separar la intención de negocio de la infraestructura.
 image: "@assets/img/project/secorto_step.jpeg"
-role: "Mantenedor"
-responsibilities: "Diseñé un modelo de pasos perezosos y semánticos para desacoplar intención, ejecución y reporting."
-website: "https://github.com/secorto/secorto_web/tree/master/packages/step"
+role: Maintainer
+responsibilities: Diseñé un modelo de ejecución de semántica perezosa conectado mediante una capa anticorrupción.
+website: https://github.com/secorto/secorto_web/tree/master/packages/step
 tags:
   - secorto
   - testing
   - ai
 ---
 
-`@secorto/step` no nació como una idea elegante de arquitectura.
-Nació del dolor — del tipo de dolor que solo aparece cuando una suite E2E crece lo suficiente para mostrar todas sus grietas.
+@secorto/step no nació como un elegante ejercicio teórico de arquitectura. Se diseñó a partir de una frustración
+sistémica: el tipo exacto de fricción que solo aflora cuando una suite de pruebas E2E crece lo suficiente como para
+exponer todas sus grietas.
 
-Durante años vi cómo los Page Objects terminaban mezclando negocio,
-aserciones y detalles del runner. Los tests se llenaban de `expect()` crudos que no contaban ninguna historia.
-Los reportes eran ruido: pasos sin intención, fallos sin contexto. La CI sufría por navegaciones duplicadas,
-*flakiness* y combinatoria explosiva. Y cada *refactor* rompía algo porque la infraestructura estaba metida donde no debía.
+Durante años, presencié un antipatrón recurrente: los Page Objects inevitablemente mezclaban la intención del dominio
+de negocio, los estilos de aserción y las reglas de reporte específicas del framework en funciones monolíticas. Los
+tests se llenaron de validaciones ansiosas y acopladas que oscurecían la historia del usuario. Los reportes se volvieron
+ruido sin contexto. Las pipelines de CI sufrían por la inestabilidad (flakiness) y la duplicación, mientras que cada
+actualización menor del runner amenazaba con romper la suite entera porque la lógica de infraestructura había colonizado
+los archivos del dominio.
 
-El verdadero problema era siempre el mismo:
-**la intención del usuario estaba atrapada dentro de la implementación.**
+El diagnóstico siempre era idéntico: **la intención del negocio estaba atada a una mecánica de ejecución inmediata.**
 
-Un Page Object decidía si algo era *hard* o *soft*. Decidía cómo se reportaba. Decidía cuándo se ejecutaba.
-El test no tenía control. La arquitectura estaba al revés.
+Un script de automatización o un componente de página no debería dictar la propagación de fallos, los límites de los
+reportes o el contexto de ejecución de las aserciones de forma independiente. Cuando lo hace, el control se invierte y
+la arquitectura de ingeniería colapsa bajo su propio peso.
 
-## La trampa de la abstracción semántica
+## La ilusión de las abstracciones de texto semántico
 
-Muchos equipos intentan rescatar la narrativa de sus pruebas recurriendo a herramientas de lenguaje natural
-o abstracciones globales. Sin embargo, a gran escala, la fricción de crear, mantener y mapear estas definiciones
-introduce un problema peor: el dolor del mantenimiento técnico supera al beneficio.
+Para salvar la legibilidad, la ingeniería de calidad moderna a menudo recurre a pesadas capas de lenguaje natural, setups
+de BDD o motores globales de coincidencia de expresiones. Sin embargo, a escala empresarial, el costo de mantenimiento
+de traducir y mapear estas capas de texto intermedias crea un cuello de botella peor que el problema que intenta resolver.
 
-Para evitar esa fricción, los automatizadores terminan reutilizando pasos genéricos de bajo nivel
-(*"hacer clic en el botón X"*, *"escribir en el input Y"*).
-El lenguaje natural se degrada en un pseudo-lenguaje de programación incómodo.
-El test deja de hablar el lenguaje del negocio y empieza a hablar el lenguaje del *framework*.
+Para evitar esta fricción, los equipos terminan cediendo: reutilizan mecánicas genéricas de bajo nivel (*"hacer click en
+el selector X"*, *"escribir en el input Y"*). El lenguaje natural se degrada rápidamente en una traducción incómoda del
+código. La suite de automatización deja de hablar el dialecto del negocio y se convierte en esclava del test runner.
 
-Un día, tras ver cómo la complejidad y la duplicación mecánica destruían la mantenibilidad de suites enteras,
-me hice una pregunta que cambió todo:
+Buscando un cambio de paradigma con cero fricción, que preservara el código limpio y el tipado estricto, reevalué el
+ciclo de vida de un paso de prueba y me pregunté:
 
-> **¿Y si los pasos no se ejecutaran todavía?**
->
-> * ¿Y si un paso fuera un dato encapsulado, no una acción inmediata?
-> * ¿Y si describiera intención pura, pero dejara la estrategia para el caso de prueba?
-> * ¿Y si la ejecución fuera perezosa, inmutable y configurable en el *call site*?
-> * ¿Y si el runner fuera solo un adaptador inyectado, no una dependencia acoplada?
+**¿Qué pasaría si la ejecución fuera perezosa (lazy) por defecto?**
 
-## Una solución sin fricción corporativa
+- ¿Y si un paso de automatización fuera modelado como una estructura de datos inmutable en lugar de un efecto inmediato?
+- ¿And si definiera el significado puro del dominio, aislando por completo el *qué* debe pasar del *cómo* debe fallar?
+- ¿Y si la estrategia de ejecución pudiera ser diferida, interceptada y gobernada en el sitio de llamada (call site)?
 
-De esa premisa nació `@secorto/step`: una capa de *Anti‑Corruption* para *reporting*
-que separa por completo la **intención**, la **ejecución** y la **infraestructura**.
+## Devolviendo la inversión de control al caso de prueba
 
-A diferencia de las soluciones tradicionales, aquí no existen expresiones regulares,
-archivos de definición huérfanos ni DSLs rígidos. Los pasos se vuelven estructuras diferidas (*lazy*),
-semánticas y agnósticas al entorno de ejecución, escritas directamente donde vive el dominio del componente.
+A partir de esa premisa, desarrollé `@secorto/step`: un modelo de semántica de ejecución agnóstico para automatización.
+Arquitectónicamente, el modelo se conecta a la infraestructura de ejecución mediante una estricta Capa de Anti-Corrupción.
 
-La estrategia se decide dinámicamente en el propio test mediante modificadores fluidos:
-`.soft()`, `.with(expect)`, o `.raw()`. El Page Object se libera de la responsabilidad de controlar el flujo
-y vuelve a hacer lo que mejor sabe hacer: representar el negocio.
+En lugar de forzar a los desarrolladores a gestionar complejos DSLs externos o strings mapeados con expresiones
+regulares, los pasos se definen de forma nativa en el dominio del componente como artefactos de ejecución diferidos e
+inmutables. Al dividir las responsabilidades en cuatro primitivas estructurales —`step()` para acciones, `verifyStep()`
+para expectativas, `resourceStep()` para pipelines de datos y `orchestrateStep()` para la sincronización del ciclo de
+vida— la base de código se organiza por diseño.
 
-El resultado es una arquitectura de automatización **más limpia, estable y expresiva**:
+La estrategia de ejecución queda completamente emancipada de la implementación del flujo. Quien consume el test a nivel
+de archivo asume el control dinámicamente mediante modificadores fluidos como `.soft()`, `.with(expect)` o `.raw()`,
+ajustando los umbrales de fallo a las necesidades del entorno de pruebas actual sin alterar una sola línea de código del
+componente.
 
-* **Los tests cuentan historias reales** sin la sobrecarga de mantener pesadas capas de traducción textual.
-* **Los reportes son semánticos por diseño**, abstrayendo el ruido técnico innecesario de la infraestructura.
-* **La CI respira** al flexibilizar los reintentos y las estrategias de aserción sin alterar el código base.
-* **La automatización escala sin romperse**, devolviéndole el control arquitectónico al desarrollador.
+## El rol de la Inteligencia Artificial en el diseño
 
-`@secorto/step` no es una librería de utilidades más.
-Es la respuesta de ingeniería a un dolor metodológico que toda la industria padece,
-pero pocos resuelven desde la raíz.
+Este modelo no solo se construyó para el ecosistema moderno; se diseñó, desarrolló y validó en simbiosis con IA.
+Utilicé modelos de lenguaje avanzados no como simples generadores de código, sino como contrapartes arquitectónicas:
+copilotos dedicados a desafiar la robustez del modelo de evaluación perezosa y auditar la pureza de las primitivas.
+
+La IA actuó como un validador incansable, simulando escenarios límite (edge cases), ayudando a refinar la API de cuatro
+funciones hasta su estado más puro y garantizando que la inmutabilidad de los artefactos fuera matemáticamente sólida
+antes de escribir la primera línea de TypeScript. Es un producto diseñado por ingeniería humana, potenciado y refinado
+quirúrgicamente a través de Inteligencia Artificial.
+
+La arquitectura de QA resultante entrega una estabilidad medible:
+
+- **Los tests articulan historias de producto humanas** sin el impuesto de mantenimiento de las librerías de traducción.
+- **Las estructuras de reporte se vuelven altamente semánticas**, ordenando el ruido técnico en hitos de negocio claros.
+- **Los entornos de CI ganan una flexibilidad táctica incomparable**, permitiendo cambiar entre ejecuciones estrictas o
+  tolerancias suaves sin esfuerzo.
+
+`@secorto/step` eleva la automatización de pruebas de una colección suelta de scripts ansiosos a un ecosistema de
+software disciplinado y robusto. Es una respuesta de ingeniería elegante a un fallo de diseño que la industria tolera
+históricamente, pero rara vez soluciona desde la raíz.
