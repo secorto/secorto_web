@@ -102,43 +102,82 @@ personal website and a content project.
 
 It was not an impeccable journey or a linear evolution without mistakes. There
 were decisions that only made sense later. There were moments when complexity
-seemed like progress, but in retrospect it was not always the best tool for the
+seemed like progress, but in retrospect it was not always the best solution for the
 real problem.
 
 And that is exactly the most valuable lesson: it is not about choosing the
 “best stack” as a universal truth, but about choosing the tool that best matches
 the content, context, and life of the project.
+As the site evolved, more recent decisions were formalized through Architecture
+Decision Records (ADRs)—a practice that makes the rationale behind choices
+explicit and trackable. The timeline below shows how this evolved.
 
 ```mermaid
 timeline
     title Evolution of Personal Website (2016–2026)
 
-    2016-03 : Lektor (Python)
-             : 2 weeks, discarded
+    2016 : Jekyll — R01
+           : Static site + Bootstrap + Bower
 
-    2016-04 : Jekyll — R01
-             : Gulp + Bootstrap + Bower
-             : NPM scripts + html-proofer
-             : secorto.com domain
-             : Minimal Mistakes + Netlify CMS (v2.0.0)
-             : Maintained until 2020
+    2021 : Gatsby — R02
+           : React 18 + Theme UI + MDX
 
-    2021-03 : Gatsby — R02
-             : React 18 + Theme UI + MDX
-             : Jest snapshots + Cypress a11y
-             : GitHub Actions CI
-             : Partial TypeScript
-             : Last commit: 2023-07
+    2024 : Astro — R03
+           : Content Collections + TypeScript strict
 
-    2024-05 : Astro — R03 (current)
-             : Content Collections + TypeScript strict
-             : Cypress (pre-i18n)
-             : i18n Spanish/English (ADR 001)
-             : Playwright + Vitest (ADR 002)
-             : Third-party mocks (ADR 003)
-             : Linting + zero any (ADR 004)
-             : 502+ commits, 165+ tests, 100% coverage
+    2025 : Translation workflow formalized
+           : i18n engine (v1) + routing implementation
+           : IA integration begins
+
+    2026 H1 : ADRs formalized
+            : E2E architecture with Playwright
+            : Domain-Driven Design
+
+    2026 H2 : Monorepo
+            : @secorto/step library
+            : @secorto/i18n library
 ```
+
+## Formalizing decisions: Architecture Decision Records
+
+As the site matured, documenting architectural decisions became crucial. This
+is why we started maintaining **ADRs** (Architecture Decision Records)—a
+practice that captures not just *what* was chosen, but *why* and *when*, and
+what trade-offs were accepted.
+
+The initial decisions (ADR 001–004) covered the fundamentals: i18n routing,
+testing strategy, mocking third-party dependencies, and code quality standards.
+But the conversation did not stop there. Over time, more complex decisions
+emerged around content structure, testing architecture for client scripts,
+markdown validation, asymmetric i18n routes, page object hierarchies, and even
+the monorepo structure itself (ADR 016).
+
+One particularly significant decision was formalizing the use of AI assistants
+in the development process (ADR 005, January 2026). What began as informal
+experimentation in 2025—using AI to accelerate specific tasks like test
+generation, type refactoring, and boilerplate—eventually required explicit
+guardrails and policies. The decision was simple but important: AI accelerates
+the work, but does not define the architecture. Every suggestion needed human
+validation, testing, and review. This formal integration meant that the
+acceleration could scale sustainably without compromising code quality or
+architectural coherence.
+
+This is not just documentation for the sake of it. ADRs serve a specific
+purpose: they make it possible to onboard new contributors, understand why
+certain choices were made years later, and evaluate whether old decisions still
+serve the current context or need to be revisited.
+
+It is a practice that originated in more mature engineering teams, but it has
+proven invaluable even for a one-person site. The discipline of writing "why"
+forces clearer thinking about trade-offs.
+
+Yet, looking back at ADR 001, 007, and 011 together—routing, content identity,
+and translation semantics—the thread becomes clear: all of them applied the same
+principle. Domain-Driven Design. Clear boundaries, explicit identity, contracts
+that were verifiable. The same pattern appeared in testing (page objects, user
+journeys, distinct layers) and in content management (asymmetric routes, unified
+identity, translationKey as semantic contract). It was not coincidence. It was
+architecture beginning to speak a common language.
 
 ## Playwright, Cypress, and the maturity of quality
 
@@ -161,7 +200,13 @@ understand something that is often forgotten:
 In that sense, the community experience taught me to value real maintenance; the
 personal site taught me to formalize quality.
 
-## Selenium, automation, and the context of each project
+And that formalization took the shape of Domain-Driven Design applied to testing.
+Page objects became domain entities with clear responsibilities. User journeys
+became explicit narratives of business value. Test steps became contracts with
+verifiable outcomes. The testing pyramid was no longer just a technical structure;
+it was an expression of the domain itself—boundaries, identity, consistency.
+
+## Automation and testing maturity across different contexts
 
 When talking about automation on community websites, it is also important to be
 honest about context.
@@ -177,7 +222,20 @@ contingency layer at the end.
 
 This is not a comparison of “better or worse.” It is simply two different levels
 of maturity within the same evolution.
+## When patterns become packages: from monolith to reusable libraries
 
+By mid-2026, something became inevitable: the patterns had matured enough to be
+extracted. The monorepo structure (introduced in August 2026) was not just a
+technical reorganization. It was a recognition that Domain-Driven Design had
+crystallized into distinct, reusable domains.
+
+`@secorto/step` emerged as the testing library—Page Objects, User Journeys, and
+test orchestration as first-class abstractions. `@secorto/i18n` emerged as the
+content identity library—asymmetric routes, translation keys, and domain invariants
+made explicit and portable. Both were expressions of the same principle: extract
+the model, make it portable, let it guide future decisions.
+
+The monorepo did not create these patterns. It formalized and protected them.
 ## The mutualism of ideas
 
 If something has become clear over these ten years, it is that ideas do not
@@ -232,3 +290,18 @@ presence over time,” without losing clarity, without losing meaning, and witho
 stopping to learn.
 
 That is what matters most from this decade.
+
+---
+
+## Appendix: Where these decisions are documented
+
+The architectural decisions mentioned in this post are part of a formal
+Architecture Decision Records (ADR) repository. If you are interested in the
+technical details of specific choices—i18n routing strategies, testing
+architecture, monorepo setup, or page object patterns—these are documented in
+the project's
+[/docs/adr/](https://github.com/secorto/secorto_web/tree/master/docs/adr) (in spanish) directory.
+
+The ADRs capture not just *what* was chosen, but *why* and *when*, including
+the context and trade-offs. This approach helps maintain clarity as a project
+grows and makes it easier to revisit decisions when circumstances change.
