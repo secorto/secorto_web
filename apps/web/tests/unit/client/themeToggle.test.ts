@@ -12,6 +12,7 @@ import { getDocumentTheme, applyTheme } from '@client/themeToggle'
 
 beforeEach(() => {
   document.documentElement.className = 'light'
+  document.body.dataset.theme = 'light'
   localStorage.clear()
   vi.clearAllMocks()
 })
@@ -33,42 +34,47 @@ describe('getDocumentTheme', () => {
 })
 
 describe('applyTheme', () => {
-  it("adds 'dark' and removes 'light', persists to localStorage", () => {
+  it("sets 'dark' class and data-theme, persists to localStorage", () => {
     applyTheme('dark')
     expect(document.documentElement.classList.contains('dark')).toBe(true)
     expect(document.documentElement.classList.contains('light')).toBe(false)
+    expect(document.body.dataset.theme).toBe('dark')
     expect(localStorage.getItem('theme')).toBe('dark')
   })
 
-  it("adds 'light' and removes 'dark', persists to localStorage", () => {
+  it("sets 'light' class and data-theme, persists to localStorage", () => {
     document.documentElement.className = 'dark'
+    document.body.dataset.theme = 'dark'
     applyTheme('light')
     expect(document.documentElement.classList.contains('light')).toBe(true)
     expect(document.documentElement.classList.contains('dark')).toBe(false)
+    expect(document.body.dataset.theme).toBe('light')
     expect(localStorage.getItem('theme')).toBe('light')
   })
 })
 
 describe('handleToggleClick', () => {
-  it("switches to 'dark' from 'light', calls setGiscusTheme and closes sidebar elements", () => {
-    // preparar un elemento que represente un toggle abierto
+  it("switches to 'dark' from 'light', updates both class and data-theme", () => {
     const sidebarBtn = document.createElement('button')
     sidebarBtn.className = 'sidebar-toggle sidebar-open'
     document.body.appendChild(sidebarBtn)
     themeToggle.handleToggleClick()
 
     expect(document.documentElement.classList.contains('dark')).toBe(true)
+    expect(document.body.dataset.theme).toBe('dark')
     expect(localStorage.getItem('theme')).toBe('dark')
     expect(sendMessage).toHaveBeenCalledWith({ setConfig: { theme: 'dark' } })
     expect(sidebarBtn.classList.contains('sidebar-open')).toBe(false)
     sidebarBtn.remove()
   })
 
-  it("switches to 'light' from 'dark'", () => {
+  it("switches to 'light' from 'dark', updates both class and data-theme", () => {
     document.documentElement.className = 'dark'
+    document.body.dataset.theme = 'dark'
     themeToggle.handleToggleClick()
 
     expect(document.documentElement.classList.contains('light')).toBe(true)
+    expect(document.body.dataset.theme).toBe('light')
     expect(localStorage.getItem('theme')).toBe('light')
     expect(sendMessage).toHaveBeenCalledWith({ setConfig: { theme: 'light' } })
   })
@@ -77,6 +83,7 @@ describe('handleToggleClick', () => {
     document.documentElement.className = ''
     themeToggle.handleToggleClick()
     expect(document.documentElement.classList.contains('dark')).toBe(true)
+    expect(document.body.dataset.theme).toBe('dark')
   })
 })
 
@@ -96,12 +103,13 @@ describe('initThemeToggle', () => {
     expect(removeSpy).not.toHaveBeenCalled()
   })
 
-  it('click on button triggers the toggle handler and applies theme', () => {
+  it('click on button triggers the toggle handler and applies both class and data-theme', () => {
     const btn = document.createElement('button')
     document.body.appendChild(btn)
     themeToggle.initThemeToggle(btn)
     btn.click()
     expect(document.documentElement.classList.contains('dark')).toBe(true)
+    expect(document.body.dataset.theme).toBe('dark')
     expect(localStorage.getItem('theme')).toBe('dark')
     expect(sendMessage).toHaveBeenCalledWith({ setConfig: { theme: 'dark' } })
     btn.remove()

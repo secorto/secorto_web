@@ -26,7 +26,7 @@ export function setGiscusTheme(theme: Theme): void {
 }
 
 /**
- * Lee el tema aplicado en el elemento `documentElement`.
+ * Lee el tema aplicado en el elemento `documentElement` (clase HTML).
  * @param doc Documento en el que buscar el tema
  * @returns Tema actual si está presente, o `null` si no hay ninguno
  */
@@ -36,15 +36,19 @@ export function getDocumentTheme(doc: Document = document): Theme | null {
 }
 
 /**
- * Aplica el tema en el `documentElement`, actualiza `localStorage` y
- * asegura que solo exista la clase del tema activo.
+ * Aplica el tema en el `documentElement` (clase HTML) y en `data-theme` del body.
+ * Actualiza `localStorage`. Mantiene ambas estrategias por compatibilidad.
  * @param theme Tema a aplicar
  * @param doc Documento donde aplicar el tema
  */
 export function applyTheme(theme: Theme, doc: Document = document): void {
+  // Aplicar clase en html (compatibilidad con expressiveCode)
   const el = doc.documentElement
   el.classList.remove(...THEME_CLASSES)
   el.classList.add(theme)
+
+  // Aplicar data-theme en body (para Mermaid y futuros usos)
+  doc.body.dataset.theme = theme
   localStorage.setItem('theme', theme)
 }
 
@@ -62,12 +66,20 @@ export function handleToggleClick(doc: Document = document): void {
 }
 
 /**
- * Inicializa el listener de clic en el botón toggle de tema.
+ * Inicializa el listener de clic en el botón toggle de tema y sincroniza
+ * el `data-theme` del body con la clase HTML actual.
  * No retorna nada — el caller no obtiene un teardown.
  * @param button Elemento botón (o `null` si no existe)
  */
 export function initThemeToggle(button: HTMLElement | null): void {
   if (!button) return
+
+  // Sincronizar data-theme basado en la clase HTML actual
+  const currentTheme = getDocumentTheme()
+  if (currentTheme) {
+    document.body.dataset.theme = currentTheme
+  }
+
   const listener: EventListener = () => handleToggleClick()
   button.addEventListener('click', listener)
 }
