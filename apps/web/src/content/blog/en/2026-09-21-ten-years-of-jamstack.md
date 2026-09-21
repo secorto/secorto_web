@@ -127,7 +127,7 @@ timeline
 
     2025 : Translation workflow formalized
            : i18n engine (v1) + routing implementation
-           : IA integration begins
+           : AI integration begins
 
     2026 H1 : ADRs formalized
             : E2E architecture with Playwright

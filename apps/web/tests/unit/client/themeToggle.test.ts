@@ -44,7 +44,7 @@ describe('applyTheme', () => {
 
   it("sets 'light' class and data-theme, persists to localStorage", () => {
     document.documentElement.className = 'dark'
-    document.body.dataset.theme = 'dark'
+    document.documentElement.dataset.theme = 'dark'
     applyTheme('light')
     expect(document.documentElement.classList.contains('light')).toBe(true)
     expect(document.documentElement.classList.contains('dark')).toBe(false)
@@ -70,7 +70,7 @@ describe('handleToggleClick', () => {
 
   it("switches to 'light' from 'dark', updates both class and data-theme", () => {
     document.documentElement.className = 'dark'
-    document.body.dataset.theme = 'dark'
+    document.documentElement.dataset.theme = 'dark'
     themeToggle.handleToggleClick()
 
     expect(document.documentElement.classList.contains('light')).toBe(true)
