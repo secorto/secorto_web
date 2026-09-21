@@ -12,7 +12,7 @@ import { getDocumentTheme, applyTheme } from '@client/themeToggle'
 
 beforeEach(() => {
   document.documentElement.className = 'light'
-  document.body.dataset.theme = 'light'
+  document.documentElement.dataset.theme = 'light'
   localStorage.clear()
   vi.clearAllMocks()
 })
