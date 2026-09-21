@@ -7,7 +7,7 @@ export const tagRoutes = createTagRoutes(
   { en: 'tags', es: 'tags' },
   {
     ai: { en: 'ai', es: 'ia' },
-    containers: {en: 'containers', es: 'containers'},
+    containers: { en: 'containers', es: 'containers' },
     dev: { en: 'dev', es: 'desarrollo' },
     frontend: { en: 'frontend', es: 'frontend' },
     gis: { en: 'gis', es: 'gis' },
