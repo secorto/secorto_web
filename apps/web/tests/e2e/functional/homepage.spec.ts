@@ -15,7 +15,7 @@ const fixtures: LocaleSwitchFixture[] = [
 test.describe('Homepage language switch', { tag: ['@functional', '@i18n', '@home'] }, () => {
   for (const f of fixtures) {
     test(`switch from ${f.from} to ${f.to} via UI`, { tag: [`@${f.from}`, `@${f.to}`] }, async ({ page }) => {
-      const homePage = await userInHome(page, f.from).soft()
+      const homePage = await userInHome(page, f.from)
       await homePage.shouldBeLocalized(f.from).soft()
       await homePage.mainLayout.switchTo(f.to)
       await homePage.shouldBeLocalized(f.to).soft()

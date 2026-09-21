@@ -53,7 +53,7 @@ ciclo de vida de un paso de prueba y me pregunté:
 **¿Qué pasaría si la ejecución fuera perezosa (lazy) por defecto?**
 
 - ¿Y si un paso de automatización fuera modelado como una estructura de datos inmutable en lugar de un efecto inmediato?
-- ¿And si definiera el significado puro del dominio, aislando por completo el *qué* debe pasar del *cómo* debe fallar?
+- ¿Y si definiera el significado puro del dominio, aislando por completo el *qué* debe pasar del *cómo* debe fallar?
 - ¿Y si la estrategia de ejecución pudiera ser diferida, interceptada y gobernada en el sitio de llamada (call site)?
 
 ## Devolviendo la inversión de control al caso de prueba
