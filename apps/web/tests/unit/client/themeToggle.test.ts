@@ -51,6 +51,16 @@ describe('applyTheme', () => {
     expect(document.documentElement.dataset.theme).toBe('light')
     expect(localStorage.getItem('theme')).toBe('light')
   })
+
+  it('still applies theme to DOM when localStorage is unavailable (throws)', () => {
+    const setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('QuotaExceededError')
+    })
+    applyTheme('dark')
+    expect(document.documentElement.classList.contains('dark')).toBe(true)
+    expect(document.documentElement.dataset.theme).toBe('dark')
+    setItemSpy.mockRestore()
+  })
 })
 
 describe('handleToggleClick', () => {
@@ -101,6 +111,14 @@ describe('initThemeToggle', () => {
     const res = themeToggle.initThemeToggle(btn)
     expect(res).toBeUndefined()
     expect(removeSpy).not.toHaveBeenCalled()
+  })
+
+  it('skips data-theme sync when no theme class is set', () => {
+    document.documentElement.className = ''
+    delete document.documentElement.dataset.theme
+    const btn = document.createElement('button')
+    themeToggle.initThemeToggle(btn)
+    expect(document.documentElement.dataset.theme).toBeUndefined()
   })
 
   it('click on button triggers the toggle handler and applies both class and data-theme', () => {

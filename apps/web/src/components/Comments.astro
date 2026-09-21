@@ -1,5 +1,5 @@
 ---
-import { languages } from "@i18n/ui"
+import { languages } from '@i18n/ui'
 
 const locale = languages.fromString(Astro.currentLocale)
 ---
@@ -23,16 +23,17 @@ const locale = languages.fromString(Astro.currentLocale)
     script.setAttribute("data-lang", commentsDiv.getAttribute('data-lang') || 'es');
     script.setAttribute("crossorigin", "anonymous");
     const theme: string = (() => {
-      if (
-        typeof localStorage !== "undefined" &&
-        localStorage.getItem("theme")
-      ) {
-        return localStorage.getItem("theme") as string;
+      try {
+        if (typeof localStorage !== "undefined") {
+          const stored = localStorage.getItem("theme");
+          if (stored === "dark" || stored === "light") return stored;
+        }
+      } catch (e) {
+        console.debug('[Giscus] localStorage.getItem failed, falling back to prefers-color-scheme:', e)
       }
-      if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-        return "dark";
-      }
-      return "light";
+      return window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light";
     })();
     script.setAttribute("data-theme", theme);
     commentsDiv.appendChild(script);

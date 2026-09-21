@@ -37,8 +37,9 @@ export function getDocumentTheme(doc: Document = document): Theme | null {
 
 /**
  * Aplica el tema en el `documentElement` (clase HTML) y su atributo `data-theme`.
- * Actualiza `localStorage`. El FOUC ya establece estos valores, esto los sincroniza
- * cuando el usuario alterna el tema.
+ * Intenta actualizar `localStorage`. El FOUC ya establece estos valores, esto los sincroniza
+ * cuando el usuario alterna el tema. Si localStorage no está disponible, continúa con la
+ * aplicación del tema en el DOM.
  * @param theme Tema a aplicar
  * @param doc Documento donde aplicar el tema
  */
@@ -51,7 +52,11 @@ export function applyTheme(theme: Theme, doc: Document = document): void {
   el.classList.add(theme)
   el.dataset.theme = theme
 
-  localStorage.setItem('theme', theme)
+  try {
+    localStorage.setItem('theme', theme)
+  } catch (e) {
+    console.debug('[Theme] localStorage.setItem failed in applyTheme, theme applied to DOM only:', e)
+  }
 }
 
 /**

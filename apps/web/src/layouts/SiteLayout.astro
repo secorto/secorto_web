@@ -40,15 +40,23 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site)
     {/* Inline script previene flash en tema oscuro */}
     <script is:inline>
       function getInitialTheme() {
-        const stored = localStorage?.getItem('theme')
-        if (stored === 'dark' || stored === 'light') return stored
+        try {
+          const stored = localStorage?.getItem('theme')
+          if (stored === 'dark' || stored === 'light') return stored
+        } catch (e) {
+          console.debug('[Theme] localStorage.getItem failed, falling back to prefers-color-scheme:', e)
+        }
         return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
       }
       const theme = getInitialTheme()
       const root = document.documentElement
       root.classList.add(theme)
       root.dataset.theme = theme
-      window.localStorage.setItem('theme', theme)
+      try {
+        window.localStorage.setItem('theme', theme)
+      } catch (e) {
+        console.debug('[Theme] localStorage.setItem failed, theme applied to DOM only:', e)
+      }
     </script>
     <style>
       @media (min-width: 1440px) {
