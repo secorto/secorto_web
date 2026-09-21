@@ -48,7 +48,7 @@ export function getInitialTheme(): Theme {
     console.debug('[Theme] localStorage.getItem failed, falling back to prefers-color-scheme:', e)
   }
 
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  return window.matchMedia?.('(prefers-color-scheme: dark)')?.matches ? 'dark' : 'light'
 }
 
 /**
