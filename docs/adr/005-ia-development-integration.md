@@ -47,7 +47,7 @@ Integrar asistentes IA como herramientas de apoyo en el desarrollo, bajo los sig
 - Requiere mantenimiento de la política.
 - Revisión más estricta en PRs.
 
-### Contras (Trade-offs)
+### Limitaciones
 
 - El coste principal es la disciplina de revisión y la necesidad de mantener la política vigente.
 

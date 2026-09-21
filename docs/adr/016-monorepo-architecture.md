@@ -86,7 +86,7 @@ Las notas detalladas de la implementación pueden evolucionar en la documentaci�
 - La futura extracción de paquetes se vuelve más fácil y menos disruptiva.
 - El historial actual del proyecto se preserva mientras la arquitectura evoluciona.
 
-### Contras (Trade-offs)
+### Limitaciones
 
 - La migración introduce un desajuste temporal en la configuración.
 - Algunos scripts a nivel de raíz y rutas de configuración necesitarán adaptación.
