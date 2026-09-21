@@ -230,8 +230,8 @@ extracted. The monorepo structure (introduced in August 2026) was not just a
 technical reorganization. It was a recognition that Domain-Driven Design had
 crystallized into distinct, reusable domains.
 
-[@secorto/step](/en/projects/step) emerged as the testing library—Page Objects, User Journeys, and
-test orchestration as first-class abstractions. [@secorto/i18n](/en/projects/i18n) emerged as the
+[@secorto/step](/en/project/step) emerged as the testing library—Page Objects, User Journeys, and
+test orchestration as first-class abstractions. [@secorto/i18n](/en/project/i18n) emerged as the
 content identity library—asymmetric routes, translation keys, and domain invariants
 made explicit and portable. Both were expressions of the same principle: extract
 the model, make it portable, let it guide future decisions.
