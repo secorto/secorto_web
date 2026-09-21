@@ -36,6 +36,22 @@ export function getDocumentTheme(doc: Document = document): Theme | null {
 }
 
 /**
+ * Lee el tema del documento o fallback a localStorage/matchMedia.
+ * Útil para inicialización sin tener garantía de que el DOM esté listo.
+ * Fallback: localStorage → matchMedia → 'light'
+ */
+export function getInitialTheme(): Theme {
+  try {
+    const stored = localStorage?.getItem('theme')
+    if (stored === 'dark' || stored === 'light') return stored
+  } catch (e) {
+    console.debug('[Theme] localStorage.getItem failed, falling back to prefers-color-scheme:', e)
+  }
+
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+}
+
+/**
  * Aplica el tema en el `documentElement` (clase HTML) y su atributo `data-theme`.
  * Intenta actualizar `localStorage`. El FOUC ya establece estos valores, esto los sincroniza
  * cuando el usuario alterna el tema. Si localStorage no está disponible, continúa con la
@@ -50,7 +66,7 @@ export function applyTheme(theme: Theme, doc: Document = document): void {
   const el = doc.documentElement
   el.classList.remove(...THEME_CLASSES)
   el.classList.add(theme)
-  el.dataset.theme = theme
+  el.setAttribute('data-theme', theme)
 
   try {
     localStorage.setItem('theme', theme)

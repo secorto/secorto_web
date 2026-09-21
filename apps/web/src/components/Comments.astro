@@ -5,6 +5,8 @@ const locale = languages.fromString(Astro.currentLocale)
 ---
 <div class="comments" data-testid="comments-section" data-lang={locale}></div>
 <script>
+  import { getInitialTheme } from '@client/themeToggle'
+
   function initGiscus() {
     // Get the div that will contain the comments.
     const commentsDiv = document.querySelector(".comments");
@@ -22,20 +24,7 @@ const locale = languages.fromString(Astro.currentLocale)
     script.setAttribute("data-emit-metadata", "0");
     script.setAttribute("data-lang", commentsDiv.getAttribute('data-lang') || 'es');
     script.setAttribute("crossorigin", "anonymous");
-    const theme: string = (() => {
-      try {
-        if (typeof localStorage !== "undefined") {
-          const stored = localStorage.getItem("theme");
-          if (stored === "dark" || stored === "light") return stored;
-        }
-      } catch (e) {
-        console.debug('[Giscus] localStorage.getItem failed, falling back to prefers-color-scheme:', e)
-      }
-      return window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light";
-    })();
-    script.setAttribute("data-theme", theme);
+    script.setAttribute("data-theme", getInitialTheme());
     commentsDiv.appendChild(script);
   }
   initGiscus();

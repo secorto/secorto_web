@@ -1,12 +1,12 @@
 /**
  * @vitest-environment jsdom
  */
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 
 vi.mock('@client/giscus', () => ({ sendMessage: vi.fn() }))
 import { sendMessage } from '@client/giscus'
 import * as themeToggle from '@client/themeToggle'
-import { getDocumentTheme, applyTheme } from '@client/themeToggle'
+import { getDocumentTheme, applyTheme, getInitialTheme } from '@client/themeToggle'
 
 
 
@@ -16,6 +16,23 @@ beforeEach(() => {
   localStorage.clear()
   vi.clearAllMocks()
 })
+
+afterEach(() => {
+  vi.restoreAllMocks()
+})
+
+function createMockMediaQueryList(matches: boolean, media = '(prefers-color-scheme: dark)'): Partial<MediaQueryList> {
+  return {
+    matches,
+    media,
+    onchange: null,
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  }
+}
 
 describe('getDocumentTheme', () => {
   it("returns 'light' when documentElement has class 'light'", () => {
@@ -33,32 +50,60 @@ describe('getDocumentTheme', () => {
   })
 })
 
+describe('getInitialTheme', () => {
+  it("returns 'dark' from localStorage when set", () => {
+    localStorage.setItem('theme', 'dark')
+    expect(getInitialTheme()).toBe('dark')
+  })
+
+  it("returns 'light' from localStorage when set", () => {
+    localStorage.setItem('theme', 'light')
+    expect(getInitialTheme()).toBe('light')
+  })
+
+  it("returns 'dark' when localStorage is empty and system prefers dark", () => {
+    vi.stubGlobal('matchMedia', vi.fn().mockReturnValue(createMockMediaQueryList(true)))
+    expect(getInitialTheme()).toBe('dark')
+  })
+
+  it("returns 'light' as default when localStorage is empty and system prefers light", () => {
+    vi.stubGlobal('matchMedia', vi.fn().mockReturnValue(createMockMediaQueryList(false)))
+    expect(getInitialTheme()).toBe('light')
+  })
+
+  it('ignores invalid localStorage values and falls back to matchMedia', () => {
+    localStorage.setItem('theme', 'invalid-theme')
+    vi.stubGlobal('matchMedia', vi.fn().mockReturnValue(createMockMediaQueryList(true)))
+    expect(getInitialTheme()).toBe('dark')
+  })
+})
+
 describe('applyTheme', () => {
-  it("sets 'dark' class and data-theme, persists to localStorage", () => {
+  it("adds 'dark' and removes 'light', persists to localStorage, sets data-theme", () => {
     applyTheme('dark')
     expect(document.documentElement.classList.contains('dark')).toBe(true)
     expect(document.documentElement.classList.contains('light')).toBe(false)
-    expect(document.documentElement.dataset.theme).toBe('dark')
+    expect(document.documentElement.getAttribute('data-theme')).toBe('dark')
     expect(localStorage.getItem('theme')).toBe('dark')
   })
 
-  it("sets 'light' class and data-theme, persists to localStorage", () => {
+  it("adds 'light' and removes 'dark', persists to localStorage, sets data-theme", () => {
     document.documentElement.className = 'dark'
-    document.documentElement.dataset.theme = 'dark'
+    document.documentElement.setAttribute('data-theme', 'dark')
     applyTheme('light')
     expect(document.documentElement.classList.contains('light')).toBe(true)
     expect(document.documentElement.classList.contains('dark')).toBe(false)
-    expect(document.documentElement.dataset.theme).toBe('light')
+    expect(document.documentElement.getAttribute('data-theme')).toBe('light')
     expect(localStorage.getItem('theme')).toBe('light')
   })
 
-  it('still applies theme to DOM when localStorage is unavailable (throws)', () => {
+  it('applies theme to DOM even when localStorage throws QuotaExceededError', () => {
     const setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
       throw new Error('QuotaExceededError')
     })
     applyTheme('dark')
     expect(document.documentElement.classList.contains('dark')).toBe(true)
-    expect(document.documentElement.dataset.theme).toBe('dark')
+    expect(document.documentElement.getAttribute('data-theme')).toBe('dark')
     setItemSpy.mockRestore()
   })
 })
