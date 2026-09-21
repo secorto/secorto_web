@@ -38,7 +38,7 @@ describe('applyTheme', () => {
     applyTheme('dark')
     expect(document.documentElement.classList.contains('dark')).toBe(true)
     expect(document.documentElement.classList.contains('light')).toBe(false)
-    expect(document.body.dataset.theme).toBe('dark')
+    expect(document.documentElement.dataset.theme).toBe('dark')
     expect(localStorage.getItem('theme')).toBe('dark')
   })
 
@@ -48,7 +48,7 @@ describe('applyTheme', () => {
     applyTheme('light')
     expect(document.documentElement.classList.contains('light')).toBe(true)
     expect(document.documentElement.classList.contains('dark')).toBe(false)
-    expect(document.body.dataset.theme).toBe('light')
+    expect(document.documentElement.dataset.theme).toBe('light')
     expect(localStorage.getItem('theme')).toBe('light')
   })
 })
@@ -61,7 +61,7 @@ describe('handleToggleClick', () => {
     themeToggle.handleToggleClick()
 
     expect(document.documentElement.classList.contains('dark')).toBe(true)
-    expect(document.body.dataset.theme).toBe('dark')
+    expect(document.documentElement.dataset.theme).toBe('dark')
     expect(localStorage.getItem('theme')).toBe('dark')
     expect(sendMessage).toHaveBeenCalledWith({ setConfig: { theme: 'dark' } })
     expect(sidebarBtn.classList.contains('sidebar-open')).toBe(false)
@@ -74,7 +74,7 @@ describe('handleToggleClick', () => {
     themeToggle.handleToggleClick()
 
     expect(document.documentElement.classList.contains('light')).toBe(true)
-    expect(document.body.dataset.theme).toBe('light')
+    expect(document.documentElement.dataset.theme).toBe('light')
     expect(localStorage.getItem('theme')).toBe('light')
     expect(sendMessage).toHaveBeenCalledWith({ setConfig: { theme: 'light' } })
   })
@@ -83,7 +83,7 @@ describe('handleToggleClick', () => {
     document.documentElement.className = ''
     themeToggle.handleToggleClick()
     expect(document.documentElement.classList.contains('dark')).toBe(true)
-    expect(document.body.dataset.theme).toBe('dark')
+    expect(document.documentElement.dataset.theme).toBe('dark')
   })
 })
 
@@ -109,7 +109,7 @@ describe('initThemeToggle', () => {
     themeToggle.initThemeToggle(btn)
     btn.click()
     expect(document.documentElement.classList.contains('dark')).toBe(true)
-    expect(document.body.dataset.theme).toBe('dark')
+    expect(document.documentElement.dataset.theme).toBe('dark')
     expect(localStorage.getItem('theme')).toBe('dark')
     expect(sendMessage).toHaveBeenCalledWith({ setConfig: { theme: 'dark' } })
     btn.remove()
