@@ -3,7 +3,7 @@ title: "Ten years of Jamstack: between the community and the personal web"
 date: 2026-09-21
 tags:
   - jamstack
-  - frontend
+  - secorto
   - testing
   - python
   - opensource
@@ -222,6 +222,7 @@ contingency layer at the end.
 
 This is not a comparison of “better or worse.” It is simply two different levels
 of maturity within the same evolution.
+
 ## When patterns become packages: from monolith to reusable libraries
 
 By mid-2026, something became inevitable: the patterns had matured enough to be
@@ -229,13 +230,14 @@ extracted. The monorepo structure (introduced in August 2026) was not just a
 technical reorganization. It was a recognition that Domain-Driven Design had
 crystallized into distinct, reusable domains.
 
-`@secorto/step` emerged as the testing library—Page Objects, User Journeys, and
-test orchestration as first-class abstractions. `@secorto/i18n` emerged as the
+[@secorto/step](/en/projects/step) emerged as the testing library—Page Objects, User Journeys, and
+test orchestration as first-class abstractions. [@secorto/i18n](/en/projects/i18n) emerged as the
 content identity library—asymmetric routes, translation keys, and domain invariants
 made explicit and portable. Both were expressions of the same principle: extract
 the model, make it portable, let it guide future decisions.
 
 The monorepo did not create these patterns. It formalized and protected them.
+
 ## The mutualism of ideas
 
 If something has become clear over these ten years, it is that ideas do not

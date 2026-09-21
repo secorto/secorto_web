@@ -3,7 +3,7 @@ title: "Diez años de Jamstack: entre la web comunitaria y la web personal"
 date: 2026-09-21
 tags:
   - jamstack
-  - frontend
+  - secorto
   - testing
   - python
   - opensource
@@ -238,8 +238,8 @@ lo suficiente para ser extraídos. La estructura de monorepo (introducida en
 agosto 2026) no era solo una reorganización técnica. Era un reconocimiento de que
 Domain-Driven Design se había cristalizado en dominios distintos y reutilizables.
 
-`@secorto/step` emergió como la librería de testing—Page Objects, User Journeys
-y orquestación de tests como abstracciones de primera clase. `@secorto/i18n`
+[@secorto/step](/es/proyecto/step) emergió como la librería de testing—Page Objects, User Journeys
+y orquestación de tests como abstracciones de primera clase. [@secorto/i18n](/es/proyecto/i18n)
 emergió como la librería de identidad de contenido—rutas asimétricas, translation
 keys e invariantes de dominio hechos explícitos y portables. Ambas eran
 expresiones del mismo principio: extraer el modelo, hacerlo portable, dejar que
