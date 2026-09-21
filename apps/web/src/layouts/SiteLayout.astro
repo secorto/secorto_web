@@ -38,7 +38,18 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site)
     <meta property="twitter:title" content={pageTitle} />
     <meta property="twitter:description" content={siteDescription} />
     {/* Inline script previene flash en tema oscuro */}
-    <script is:inline>function getInitialTheme(){const e=localStorage?.getItem("theme");return"string"==typeof e?e:window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}const theme=getInitialTheme();document.documentElement.classList.add(theme),document.body.dataset.theme=theme,window.localStorage.setItem("theme",theme);</script>
+    <script is:inline>
+      function getInitialTheme() {
+        const stored = localStorage?.getItem('theme')
+        if (typeof stored === 'string') return stored
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+      }
+      const theme = getInitialTheme()
+      const root = document.documentElement
+      root.classList.add(theme)
+      root.dataset.theme = theme
+      window.localStorage.setItem('theme', theme)
+    </script>
     <style>
       @media (min-width: 1440px) {
         html {
