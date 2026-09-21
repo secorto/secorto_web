@@ -9,6 +9,7 @@ tags:
   - secorto
   - testing
   - ai
+priority: 75
 ---
 
 @secorto/step did not start as an elegant theoretical exercise. It was engineered out of systemic frustration — the

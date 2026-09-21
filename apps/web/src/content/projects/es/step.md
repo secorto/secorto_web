@@ -9,6 +9,7 @@ tags:
   - secorto
   - testing
   - ai
+priority: 75
 ---
 
 @secorto/step no nació como un elegante ejercicio teórico de arquitectura. Se diseñó a partir de una frustración
