@@ -7,6 +7,7 @@ tags:
   - testing
   - python
   - opensource
+  - ai
 excerpt: A personal journey through a decade of building websites,
   balancing community work and experimentation on the personal web.
 translationKey: '10-years-of-jamstack'
