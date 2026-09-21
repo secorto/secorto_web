@@ -109,6 +109,37 @@ And that is exactly the most valuable lesson: it is not about choosing the
 “best stack” as a universal truth, but about choosing the tool that best matches
 the content, context, and life of the project.
 
+```mermaid
+timeline
+    title Evolution of Personal Website (2016–2026)
+
+    2016-03 : Lektor (Python)
+             : 2 weeks, discarded
+
+    2016-04 : Jekyll — R01
+             : Gulp + Bootstrap + Bower
+             : NPM scripts + html-proofer
+             : secorto.com domain
+             : Minimal Mistakes + Netlify CMS (v2.0.0)
+             : Maintained until 2020
+
+    2021-03 : Gatsby — R02
+             : React 18 + Theme UI + MDX
+             : Jest snapshots + Cypress a11y
+             : GitHub Actions CI
+             : Partial TypeScript
+             : Last commit: 2023-07
+
+    2024-05 : Astro — R03 (current)
+             : Content Collections + TypeScript strict
+             : Cypress (pre-i18n)
+             : i18n Spanish/English (ADR 001)
+             : Playwright + Vitest (ADR 002)
+             : Third-party mocks (ADR 003)
+             : Linting + zero any (ADR 004)
+             : 502+ commits, 165+ tests, 100% coverage
+```
+
 ## Playwright, Cypress, and the maturity of quality
 
 Another major difference between the community web and the personal web was the
