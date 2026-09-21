@@ -26,7 +26,7 @@ export function setGiscusTheme(theme: Theme): void {
 }
 
 /**
- * Lee el tema aplicado en el elemento `documentElement`.
+ * Lee el tema aplicado en el elemento `documentElement` (clase HTML).
  * @param doc Documento en el que buscar el tema
  * @returns Tema actual si está presente, o `null` si no hay ninguno
  */
@@ -36,16 +36,43 @@ export function getDocumentTheme(doc: Document = document): Theme | null {
 }
 
 /**
- * Aplica el tema en el `documentElement`, actualiza `localStorage` y
- * asegura que solo exista la clase del tema activo.
+ * Lee el tema del documento o fallback a localStorage/matchMedia.
+ * Útil para inicialización sin tener garantía de que el DOM esté listo.
+ * Fallback: localStorage → matchMedia → 'light'
+ */
+export function getInitialTheme(): Theme {
+  try {
+    const stored = localStorage?.getItem('theme')
+    if (stored === 'dark' || stored === 'light') return stored
+  } catch (e) {
+    console.debug('[Theme] localStorage.getItem failed, falling back to prefers-color-scheme:', e)
+  }
+
+  return window.matchMedia?.('(prefers-color-scheme: dark)')?.matches ? 'dark' : 'light'
+}
+
+/**
+ * Aplica el tema en el `documentElement` (clase HTML) y su atributo `data-theme`.
+ * Intenta actualizar `localStorage`. El FOUC ya establece estos valores, esto los sincroniza
+ * cuando el usuario alterna el tema. Si localStorage no está disponible, continúa con la
+ * aplicación del tema en el DOM.
  * @param theme Tema a aplicar
  * @param doc Documento donde aplicar el tema
  */
 export function applyTheme(theme: Theme, doc: Document = document): void {
+  // Aplicar clase y data-theme en html
+  // - Clase: para compatibilidad con expressiveCode
+  // - data-theme: para Mermaid y otros componentes
   const el = doc.documentElement
   el.classList.remove(...THEME_CLASSES)
   el.classList.add(theme)
-  localStorage.setItem('theme', theme)
+  el.setAttribute('data-theme', theme)
+
+  try {
+    localStorage.setItem('theme', theme)
+  } catch (e) {
+    console.debug('[Theme] localStorage.setItem failed in applyTheme, theme applied to DOM only:', e)
+  }
 }
 
 /**
@@ -62,12 +89,23 @@ export function handleToggleClick(doc: Document = document): void {
 }
 
 /**
- * Inicializa el listener de clic en el botón toggle de tema.
+ * Inicializa el listener de clic en el botón toggle de tema y sincroniza
+ * el `data-theme` del documentElement con la clase actual.
  * No retorna nada — el caller no obtiene un teardown.
  * @param button Elemento botón (o `null` si no existe)
  */
 export function initThemeToggle(button: HTMLElement | null): void {
   if (!button) return
-  const listener: EventListener = () => handleToggleClick()
+
+  // Usar ownerDocument del botón para mantener consistencia con otros contextos de documento
+  const doc = button.ownerDocument
+
+  // Sincronizar data-theme en documentElement basado en la clase HTML actual
+  const currentTheme = getDocumentTheme(doc)
+  if (currentTheme) {
+    doc.documentElement.dataset.theme = currentTheme
+  }
+
+  const listener: EventListener = () => handleToggleClick(doc)
   button.addEventListener('click', listener)
 }

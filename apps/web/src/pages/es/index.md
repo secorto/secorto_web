@@ -9,7 +9,7 @@ relatedContent:
   - section: community
     slug: pybaq
   - section: blog
-    slug: 2026-04-25-mis-primeros-pasos-en-linux
+    slug: 2026-09-21-decimo-aniversario-jamstack
   - section: talk
     slug: 2023-09-27-devcontainers
 ---
