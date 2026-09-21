@@ -1,5 +1,5 @@
 ---
-title: Ten years of Jamstack: between the community and the personal web
+title: "Ten years of Jamstack: between the community and the personal web"
 date: 2026-09-21
 tags:
   - jamstack
@@ -9,8 +9,7 @@ tags:
   - opensource
 excerpt: A personal journey through a decade of building websites,
   balancing community work and experimentation on the personal web.
-translationKey: 'diez-anos-jamstack'
-draft: false
+translationKey: '10-years-of-jamstack'
 ---
 
 For ten years I have maintained websites, published content, and learned to live
