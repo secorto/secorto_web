@@ -76,6 +76,24 @@ describe('getInitialTheme', () => {
     vi.stubGlobal('matchMedia', vi.fn().mockReturnValue(createMockMediaQueryList(true)))
     expect(getInitialTheme()).toBe('dark')
   })
+
+  it('calls console.debug when localStorage.getItem throws', () => {
+    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {})
+    const getItemSpy = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+      throw new Error('localStorage access denied')
+    })
+    vi.stubGlobal('matchMedia', vi.fn().mockReturnValue(createMockMediaQueryList(false)))
+
+    const result = getInitialTheme()
+
+    expect(debugSpy).toHaveBeenCalledWith(
+      '[Theme] localStorage.getItem failed, falling back to prefers-color-scheme:',
+      expect.any(Error)
+    )
+    expect(result).toBe('light')
+    getItemSpy.mockRestore()
+    debugSpy.mockRestore()
+  })
 })
 
 describe('applyTheme', () => {
@@ -105,6 +123,24 @@ describe('applyTheme', () => {
     expect(document.documentElement.classList.contains('dark')).toBe(true)
     expect(document.documentElement.getAttribute('data-theme')).toBe('dark')
     setItemSpy.mockRestore()
+  })
+
+  it('calls console.debug when localStorage.setItem throws', () => {
+    const debugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {})
+    const setItemSpy = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('localStorage access denied')
+    })
+
+    applyTheme('dark')
+
+    expect(debugSpy).toHaveBeenCalledWith(
+      '[Theme] localStorage.setItem failed in applyTheme, theme applied to DOM only:',
+      expect.any(Error)
+    )
+    expect(document.documentElement.classList.contains('dark')).toBe(true)
+    expect(document.documentElement.getAttribute('data-theme')).toBe('dark')
+    setItemSpy.mockRestore()
+    debugSpy.mockRestore()
   })
 })
 
