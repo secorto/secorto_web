@@ -1,7 +1,7 @@
 ---
 title: "@secorto/step"
 excerpt: Modelo semántico y de ejecución perezosa diseñado para separar la intención de negocio de la infraestructura.
-image: "@assets/img/project/secorto_step.jpeg"
+image: "@assets/img/project/secorto_step.png"
 role: Maintainer
 responsibilities: Diseñé un modelo de ejecución de semántica perezosa conectado mediante una capa anticorrupción.
 website: https://github.com/secorto/secorto_web/tree/master/packages/step
@@ -27,6 +27,14 @@ El diagnóstico siempre era idéntico: **la intención del negocio estaba atada 
 Un script de automatización o un componente de página no debería dictar la propagación de fallos, los límites de los
 reportes o el contexto de ejecución de las aserciones de forma independiente. Cuando lo hace, el control se invierte y
 la arquitectura de ingeniería colapsa bajo su propio peso.
+
+```mermaid
+graph LR
+    A[Historia de Usuario] --> B[Flujo] --> C[Paso] --> D[Semántica de Ejecución] --> E[Runner]
+    style B fill:#1e3a8a,color:#fff
+    style C fill:#7c3aed,color:#fff
+    style D fill:#1e3a8a,color:#fff
+```
 
 ## La ilusión de las abstracciones de texto semántico
 
@@ -57,6 +65,19 @@ regulares, los pasos se definen de forma nativa en el dominio del componente com
 inmutables. Al dividir las responsabilidades en cuatro primitivas estructurales —`step()` para acciones, `verifyStep()`
 para expectativas, `resourceStep()` para pipelines de datos y `orchestrateStep()` para la sincronización del ciclo de
 vida— la base de código se organiza por diseño.
+
+```mermaid
+graph TD
+    A["¿Qué responsabilidad tiene el Paso?"]
+    A --> B[Mutar Estado / Acciones] --> F["step()"]
+    A --> C[Verificar Estado / Validaciones] --> G["verifyStep()"]
+    A --> D[Transformar Recursos y Datos] --> H["resourceStep()"]
+    A --> E[Ciclo de Vida de Recurso + Validación] --> I["orchestrateStep()"]
+    style F fill:#2563eb,color:#fff
+    style G fill:#2563eb,color:#fff
+    style H fill:#2563eb,color:#fff
+    style I fill:#2563eb,color:#fff
+```
 
 La estrategia de ejecución queda completamente emancipada de la implementación del flujo. Quien consume el test a nivel
 de archivo asume el control dinámicamente mediante modificadores fluidos como `.soft()`, `.with(expect)` o `.raw()`,

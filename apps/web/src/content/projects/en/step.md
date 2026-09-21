@@ -1,7 +1,7 @@
 ---
 title: "@secorto/step"
 excerpt: A framework-agnostic execution semantics model designed to decouple business intent from infrastructure.
-image: "@assets/img/project/secorto_step.jpeg"
+image: "@assets/img/project/secorto_step.png"
 role: Maintainer
 responsibilities: I designed an immutable, deferred execution model that abstracts runner infrastructure.
 website: https://github.com/secorto/secorto_web/tree/master/packages/step
@@ -26,6 +26,14 @@ The diagnostic was always identical: **business intent was tightly bound to imme
 An automation script or page component shouldn't independently dictate failure propagation, reporting boundaries, or
 assertion runtime contexts. When it does, control is inverted, and the engineering architecture fractures under its
 own weight.
+
+```mermaid
+graph LR
+    A[User Story] --> B[Flow] --> C[Step] --> D[Execution Semantics] --> E[Runner]
+    style B fill:#1e3a8a,color:#fff
+    style C fill:#7c3aed,color:#fff
+    style D fill:#1e3a8a,color:#fff
+```
 
 ## The Illusion of Semantic Text Abstractions
 
@@ -55,6 +63,19 @@ Instead of forcing developers to manage complex external DSLs or regex-mapped st
 the component domain lives as deferred, immutable execution artifacts. By dividing automation responsibilities into
 four distinct structural primitives—`step()` for mutations, `verifyStep()` for expectations, `resourceStep()` for data
 pipelines, and `orchestrateStep()` for lifecycle synchronization—the codebase organizes itself by design.
+
+```mermaid
+graph TD
+    A["What responsibility does the Step have?"]
+    A --> B[Mutate State] --> F["step()"]
+    A --> C[Verify State] --> G["verifyStep()"]
+    A --> D[Transform Resources] --> H["resourceStep()"]
+    A --> E[Resource + Verification Lifecycle] --> I["orchestrateStep()"]
+    style F fill:#2563eb,color:#fff
+    style G fill:#2563eb,color:#fff
+    style H fill:#2563eb,color:#fff
+    style I fill:#2563eb,color:#fff
+```
 
 The concrete execution strategy is completely emancipated from the flow implementation. Consumers at the test level
 dynamically assert control through intuitive, fluent modifiers like `.soft()`, `.with(expect)`, or `.raw()`, tailoring
