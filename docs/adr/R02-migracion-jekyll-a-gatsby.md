@@ -24,7 +24,7 @@ el sitio enfrentaba fricciones sistémicas que hacían el mantenimiento insosten
 
 El problema central era que **html-proofer**, la herramienta de validación,
 dependía de **Nokogiri** (parser XML/HTML con bindings nativos en C). Compilar
-Nokogiri era frágil: fallaba frecuentemente en CI, generaba errores crípticos
+Nokogiri era frágil: fallaba frecuentemente en Integración Continua, generaba errores crípticos
 con diferentes versiones de libxml2/libxslt, y multiplicaba los puntos de fallo
 del stack dual Ruby + Node.js.
 
@@ -38,7 +38,7 @@ sin componentes reutilizables, sin testing unitario real.
 Migrar a **Gatsby** (v5) con React 18, Theme UI, MDX y Jest + Cypress.
 
 La estrategia de calidad evolucionaría de linters puros a tests unitarios
-(Jest snapshots) + E2E (Cypress axe-core), eliminando la dependencia de
+(Jest con capturas de estado) + E2E (Cypress axe-core), eliminando la dependencia de
 Nokogiri y ganando componentización tipada.
 
 ---
@@ -48,7 +48,7 @@ Nokogiri y ganando componentización tipada.
 ### Positivas
 
 - **Componentes React** permitieron estructura modular y reutilizable.
-- **Jest con snapshots** introdujo tests unitarios por primera vez en el proyecto.
+- **Jest con capturas de estado** introdujo tests unitarios por primera vez en el proyecto.
 - **Cypress + axe-core** automatizó auditorías de accesibilidad.
 - **TypeScript parcial** mejoró la confiabilidad del código.
 - **Theme UI** proporcionó dark mode y sistema de diseño tipado.
@@ -58,11 +58,11 @@ Nokogiri y ganando componentización tipada.
 
 - **Dependencias inestables:** las actualizaciones de Gatsby y sus ~34 plugins
   generaban conflictos frecuentes. Snyk reportó múltiples vulnerabilidades.
-- **Builds de ~3 minutos:** el cross-referencing de posts via GraphQL y la
-  generación de imágenes con sharp alargaban el pipeline significativamente.
-- **GraphQL overhead:** consultas complejas para datos que podrían ser simples.
+- **Compilaciones de ~3 minutos:** las referencias cruzadas de posts mediante GraphQL y la
+  generación de imágenes con sharp alargaban el flujo de trabajo significativamente.
+- **Sobrecarga de GraphQL:** consultas complejas para datos que podrían ser simples.
 - **gatsby-node.js monolítico:** toda la lógica en un archivo sin tipado fuerte.
-- **Snapshot testing frágil:** los snapshots se rompían con cambios cosméticos.
+- **Testing de capturas frágil:** las capturas se rompían con cambios cosméticos.
 
 ### A considerar
 
@@ -74,7 +74,7 @@ Nokogiri y ganando componentización tipada.
 
 - Ecosistema de Gatsby altamente acoplado a sus ~34 plugins.
 - Overhead de GraphQL innecesario para datos simples.
-- Builds lentos limitaban iteración rápida en desarrollo.
+- Compilaciones lentas limitaban iteración rápida en desarrollo.
 
 ### Alternativas Rechazadas
 
