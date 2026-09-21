@@ -6,12 +6,16 @@ subTitle: "Quality by design"
 relatedContent:
   - section: work
     slug: perficient
+  - section: projects
+    slug: scot3004
   - section: community
     slug: pybaq
   - section: blog
     slug: 2026-09-21-ten-years-of-jamstack
   - section: talk
     slug: 2023-09-27-devcontainers
+  - section: projects
+    slug: step
 ---
 
 I'm Sergio Carlos Orozco Torres, a Systems Engineer specialized in software quality.
