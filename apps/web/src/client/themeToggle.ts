@@ -76,12 +76,15 @@ export function handleToggleClick(doc: Document = document): void {
 export function initThemeToggle(button: HTMLElement | null): void {
   if (!button) return
 
+  // Usar ownerDocument del botón para mantener consistencia con otros contextos de documento
+  const doc = button.ownerDocument
+
   // Sincronizar data-theme en documentElement basado en la clase HTML actual
-  const currentTheme = getDocumentTheme()
+  const currentTheme = getDocumentTheme(doc)
   if (currentTheme) {
-    document.documentElement.dataset.theme = currentTheme
+    doc.documentElement.dataset.theme = currentTheme
   }
 
-  const listener: EventListener = () => handleToggleClick()
+  const listener: EventListener = () => handleToggleClick(doc)
   button.addEventListener('click', listener)
 }
