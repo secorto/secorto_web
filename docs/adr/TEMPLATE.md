@@ -71,10 +71,10 @@ Puedes enlazar a la documentación de arquitectura o a anexos donde se detallen:
 - Trabajos pendientes o mantenimiento requerido
 - Dependencias de adopción o coordinación
 
-### Contras (Trade-offs)
+### Limitaciones
 
 - Desventajas reales o compromisos inherentes a la decisión
-- Limitaciones que conviene documentar explícitamente
+- Limitaciones del enfoque elegido que conviene documentar explícitamente
 
 ### Alternativas Rechazadas
 

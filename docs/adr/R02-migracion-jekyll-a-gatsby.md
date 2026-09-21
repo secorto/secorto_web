@@ -43,17 +43,6 @@ Nokogiri y ganando componentización tipada.
 
 ---
 
-## Alternativas consideradas
-
-| Alternativa | Razón de descarte |
-| --- | --- |
-| **Next.js** | Orientado a apps dinámicas con SSR; el sitio es 100% estático |
-| **Hugo** | Go templates menos expresivos que JSX; sin ecosistema npm nativo |
-| **Eleventy** | Más simple pero sin el ecosistema de componentes React |
-| **Mantener Jekyll** | Nokogiri y la falta de componentización eran bloqueos |
-
----
-
 ## Consecuencias
 
 ### Positivas
@@ -74,6 +63,36 @@ Nokogiri y ganando componentización tipada.
 - **GraphQL overhead:** consultas complejas para datos que podrían ser simples.
 - **gatsby-node.js monolítico:** toda la lógica en un archivo sin tipado fuerte.
 - **Snapshot testing frágil:** los snapshots se rompían con cambios cosméticos.
+
+### A considerar
+
+- Necesidad de mantener actualizado el ecosistema de plugins.
+- Requerimiento de competencia en React y GraphQL.
+- Impacto de cambios de versión de dependencias.
+
+### Limitaciones
+
+- Ecosistema de Gatsby altamente acoplado a sus ~34 plugins.
+- Overhead de GraphQL innecesario para datos simples.
+- Builds lentos limitaban iteración rápida en desarrollo.
+
+### Alternativas Rechazadas
+
+#### Next.js
+
+Orientado a apps dinámicas con SSR; el sitio es 100% estático.
+
+#### Hugo
+
+Go templates menos expresivos que JSX; sin ecosistema npm nativo.
+
+#### Eleventy
+
+Más simple pero sin el ecosistema de componentes React.
+
+#### Mantener Jekyll
+
+Nokogiri y la falta de componentización eran bloqueos.
 
 ---
 

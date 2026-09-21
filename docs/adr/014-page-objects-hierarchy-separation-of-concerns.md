@@ -65,7 +65,7 @@ Los tests deben expresar intención mediante el tipo de retorno del Page Object.
 - Mayor número de clases.
 - Necesidad de actualizar factories y helpers.
 
-### Contras (Trade-offs)
+### Limitaciones
 
 - La jerarquía adicional implica más clases y una curva de aprendizaje inicial para nuevos colaboradores.
 

@@ -36,26 +36,14 @@ el sitio enfrentaba problemas sistémicos que hacían insostenible el mantenimie
 
 Migrar a **Astro** como generador de sitios estáticos, aprovechando:
 
-- **Zero JavaScript por defecto** — menos código cliente, mejor performance.
+- **Zero JavaScript por defecto** — menos código cliente, mejor rendimiento.
 - **Content Collections tipadas** — schema Zod con validación en build-time.
 - **Enrutamiento basado en archivos** — simplificación radical vs. GraphQL.
 - **Soporte built-in para i18n** — base para multilenguaje.
-- **Ecosystem ligero** — ~3 integraciones Astro vs. ~34 plugins Gatsby.
+- **Ecosistema ligero** — ~3 integraciones Astro vs. ~34 plugins Gatsby.
 
 La estrategia de calidad evolucionaría de tests frágiles a arquitectura de
 testing dinámica (Playwright E2E + Vitest unitarios, documentados en ADR 002).
-
----
-
-## Alternativas consideradas
-
-| Alternativa | Razón de descarte |
-| --- | --- |
-| **Next.js** | SSR/ISR innecesario para sitio 100% estático; mayor complejidad |
-| **Eleventy** | Sin tipado nativo, sin Content Collections |
-| **SvelteKit** | Curva de aprendizaje de Svelte; ecosistema menos maduro para blogs |
-| **Mantener Gatsby** | Dependencias insostenibles, builds lentos, ecosistema en declive |
-| **Volver a Jekyll** | Los problemas originales (Nokogiri, falta de tipos) persistían |
 
 ---
 
@@ -78,6 +66,28 @@ testing dinámica (Playwright E2E + Vitest unitarios, documentados en ADR 002).
 - **Sin React:** componentes React reescritos como componentes Astro.
 - **Curva de aprendizaje:** Astro tiene convenciones propias (frontmatter script, slots).
 - **Ecosistema más joven:** menos plugins de terceros que Gatsby/Next.js.
+
+### A considerar
+
+- Evolución continua del ecosistema de Astro e integraciones.
+- Necesidad de mantener expertise en Astro y sus patrones.
+- Cambios en Content Collections API durante la vida del proyecto.
+
+### Limitaciones
+
+- Astro es más reciente que Gatsby y Next.js, con comunidad más pequeña.
+- Menos opciones de plugins de terceros comparado con frameworks establecidos.
+- Sin React significa reescribir componentes y perder reutilización de librerías React.
+
+## Alternativas consideradas
+
+| Alternativa | Razón de descarte |
+| --- | --- |
+| **Next.js** | SSR/ISR innecesario para sitio 100% estático; mayor complejidad |
+| **Eleventy** | Sin tipado nativo, sin Content Collections |
+| **SvelteKit** | Curva de aprendizaje de Svelte; ecosistema menos maduro para blogs |
+| **Mantener Gatsby** | Dependencias insostenibles, builds lentos, ecosistema en declive |
+| **Volver a Jekyll** | Los problemas originales (Nokogiri, falta de tipos) persistían |
 
 ---
 

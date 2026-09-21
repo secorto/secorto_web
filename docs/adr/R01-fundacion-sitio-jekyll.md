@@ -41,16 +41,6 @@ en linters y validación estática (`html-proofer`, `ESLint`, `scss-lint`,
 
 ---
 
-## Alternativas consideradas
-
-| Alternativa | Razón de descarte |
-| --- | --- |
-| **Lektor** (Python) | Ecosistema limitado, poca documentación, comunidad pequeña |
-| **WordPress** | Requiere hosting dinámico, no alineado con práctica de front-end |
-| **HTML estático** | No escala para blog con múltiples posts |
-
----
-
 ## Consecuencias
 
 ### Positivas
@@ -69,6 +59,32 @@ en linters y validación estática (`html-proofer`, `ESLint`, `scss-lint`,
 - Jekyll carecía de componentización moderna (Liquid tiene limitaciones).
 - La falta de tipado hacía difícil refactorizar con confianza.
 - Minimal Mistakes ocultaba la estructura interna y dificultaba personalizaciones.
+
+### A considerar
+
+- Cambios frecuentes en las dependencias de Ruby.
+- Curva de aprendizaje de Jekyll para nuevos contribuidores.
+- Integración limitada con herramientas modernas de desarrollo.
+
+### Limitaciones
+
+- Ecosistema de Jekyll era más maduro en 2016, pero limitado en componentización.
+- Ruby + Node.js duplicaban la complejidad del entorno.
+- Sin tipos nativos, refactorización riesgosa.
+
+### Alternativas Rechazadas
+
+#### Lektor (Python)
+
+Ecosistema limitado, poca documentación, comunidad pequeña.
+
+#### WordPress
+
+Requiere hosting dinámico, no alineado con práctica de front-end.
+
+#### HTML estático
+
+No escala para blog con múltiples posts.
 
 ---
 
