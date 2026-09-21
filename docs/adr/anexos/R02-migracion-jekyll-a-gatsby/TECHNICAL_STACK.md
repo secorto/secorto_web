@@ -79,11 +79,6 @@ module.exports = {
 
 ### Cypress — Tests E2E de accesibilidad
 
-```javascript
-// cypress/e2e/accessibility.cy.js
-// Tests de a11y con axe-core en modo oscuro y claro
-```
-
 - `cypress-axe` + `axe-core` para auditoría de accesibilidad
 - `@testing-library/cypress` para queries semánticas
 - Solo un spec file: accesibilidad en ambos color modes
