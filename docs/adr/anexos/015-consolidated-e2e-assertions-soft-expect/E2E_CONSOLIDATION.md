@@ -279,4 +279,4 @@ private async verifyContent() { ... }
 
 - [ADR 015](../adr/015-consolidated-e2e-assertions-soft-expect.md) — Decisión arquitectónica
 - [Playwright Soft Expect](https://playwright.dev/docs/api/class-teststep#test-step-expect-soft)
-- [PAGE_OBJECTS.md](PAGE_OBJECTS.md) — Arquitectura completa de POM
+- [FLOWS.md](FLOWS.md) — Arquitectura completa de flujos E2E

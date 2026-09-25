@@ -6,8 +6,8 @@ Incluye elección de frameworks, patrones recomendados y cómo ejecutar cada tip
 
 ## ¿Por dónde empiezo?
 
-- **Escribir test E2E (Playwright)** → Sigue leyendo, luego ve a [PAGE_OBJECTS.md](PAGE_OBJECTS.md)
-  para patrón de Page Object Model
+- **Escribir test E2E (Playwright)** → Sigue leyendo, luego ve a [FLOWS.md](FLOWS.md)
+  para flujos E2E, Page Objects y endpoints de API
 - **Escribir test unitario (Vitest)** → Sigue leyendo sección "Pruebas Unitarias"
 - **Entender por qué estos frameworks** → [ADR 002 — Testing Framework Migration](../adr/002-dynamic-testing-architecture.md)
 - **Usar soft assertions en E2E** → [ADR 015 — Consolidated E2E Assertions](../adr/015-consolidated-e2e-assertions-soft-expect.md)
@@ -121,7 +121,7 @@ Aplican a **Unit** y **E2E**:
 
 - **Ubicación**: `tests/e2e/**` + soporte en capas
 - **Estructura**: Usa el modelo de 3 capas composables (Components, Pages, Flows)
-- **Detalles**: Ver [PAGE_OBJECTS.md](PAGE_OBJECTS.md) para la arquitectura completa, patrones e ilustraciones
+- **Detalles**: Ver [FLOWS.md](FLOWS.md) para la arquitectura completa, patrones e ilustraciones
 
 ### Convenciones de Ejecución (E2E)
 
