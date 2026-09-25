@@ -41,7 +41,7 @@ graph LR
 ## ⚙️ Execution Semantics
 
 | Modifier | What it does |
-|---|---|
+| --- | --- |
 | *(None)* | Strict (default) — stops on first failure |
 | `.soft()` | Continues running after a failure; appends `(soft)` to the report label |
 | `.with(expect)` | Replaces the assertion engine at the call site |
@@ -49,7 +49,7 @@ graph LR
 
 The flow never changes. The caller chooses the strategy.
 
-```
+```text
 ✓ homepage main components are loaded (soft) (98ms)
   ✓ avatar is visible
   ✗ bio text is visible
@@ -113,7 +113,7 @@ Supports: `.soft()`, `.with(expect)`
 
 Use when the work fetches a resource and transforms it into a domain object.
 
-```
+```text
 origin → transformation
 ```
 
