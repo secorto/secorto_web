@@ -14,7 +14,7 @@ Cada documento se auto-referencia a sus documentos relacionados.
 
 ### Arquitectura y diseño
 
-- [PAGE_OBJECTS.md](architecture/PAGE_OBJECTS.md) — Jerarquía y separación de concerns en page objects (E2E)
+- [FLOWS.md](architecture/FLOWS.md) — Flujos E2E: Page Objects (UI) y endpoints (API)
 - [GISCUS.md](GISCUS.md) — Integración de comentarios con Giscus
 
 ### Procesos y flujos

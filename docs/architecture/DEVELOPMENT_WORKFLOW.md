@@ -161,7 +161,7 @@ El flujo anterior es tu workflow:
 
 - [ARCHITECTURE.md](../ARCHITECTURE.md) — Principios transversales
 - [TESTING_STRATEGY.md](./TESTING_STRATEGY.md) — Detalles de cada tipo de test
-- [PAGE_OBJECTS.md](./PAGE_OBJECTS.md) — Patrón E2E (Page Object Model)
+- [FLOWS.md](./FLOWS.md) — Flujos E2E: Page Objects (UI) y endpoints (API)
 - [CODING_GUIDELINES.md](../CODING_GUIDELINES.md) — Reglas de código
 - [adr/](../adr/) — Decisiones que sustentan este workflow
 - [.github/copilot-instructions.md](../../.github/copilot-instructions.md) — Instrucciones para AI

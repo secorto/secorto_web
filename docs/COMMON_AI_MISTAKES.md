@@ -255,7 +255,7 @@ class DetailPage extends BasePage {
 **Referencias:**
 
 - [ADR 014: Jerarquía Page Objects + SRP](./adr/014-page-objects-hierarchy-separation-of-concerns.md)
-- [docs/architecture/PAGE_OBJECTS.md](./architecture/PAGE_OBJECTS.md)
+- [docs/architecture/FLOWS.md](./architecture/FLOWS.md)
 
 ---
 
@@ -323,7 +323,7 @@ Page Objects son clases que representan vistas para tests E2E.
 Cada Page Object debe representar una vista específica (lista, detalle, etc).
 La estructura es: base compartida + especializaciones.
 
-Pero esto ya está en ADR 014 + PAGE_OBJECTS.md
+Pero esto ya está en ADR 014 + FLOWS.md
 ```
 
 **Por qué ocurre:** El LLM no tiene contexto de ubicación; genera basado en
@@ -345,7 +345,7 @@ verdad, reviews con "ya está documentado aquí".
 
 Para jerarquía y especialización de Page Objects, ver:
 - [ADR 014](./adr/014-page-objects-hierarchy-separation-of-concerns.md)
-- [PAGE_OBJECTS.md](./architecture/PAGE_OBJECTS.md)
+- [FLOWS.md](./architecture/FLOWS.md)
 
 Resumen: cada clase = responsabilidad única (lista/detalle separado).
 ```

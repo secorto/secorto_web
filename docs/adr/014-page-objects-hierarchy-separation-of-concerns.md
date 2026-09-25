@@ -71,5 +71,5 @@ Los tests deben expresar intención mediante el tipo de retorno del Page Object.
 
 ## Referencias
 
-- [PAGE_OBJECTS.md](../architecture/PAGE_OBJECTS.md) — Arquitectura completa de POM
+- [FLOWS.md](../architecture/FLOWS.md) — Arquitectura completa de flujos E2E
 - [TESTING_STRATEGY.md](../architecture/TESTING_STRATEGY.md) — Estrategia de pruebas

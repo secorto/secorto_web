@@ -9,7 +9,7 @@ cómo Quality by Design se valida en cada paso.
 **¿Necesitas hacer algo específico?**
 Los documentos se auto-referencian. Ej: en
 [TESTING_STRATEGY.md](../docs/architecture/TESTING_STRATEGY.md) encontrarás links a
-PAGE_OBJECTS.md y ADRs relevantes. En [CODING_GUIDELINES.md](../docs/CODING_GUIDELINES.md)
+FLOWS.md y ADRs relevantes. En [CODING_GUIDELINES.md](../docs/CODING_GUIDELINES.md)
 referencias a testing y contenido.
 
 ## Stack & Convenciones
