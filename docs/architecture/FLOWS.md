@@ -69,18 +69,12 @@ shouldBeLoaded() {
 ## Organización
 
 ```text
-tests/support/ui/
-├── components/     ← Elementos reutilizables de UI (Target, Link…)
-├── shared/
-│   ├── components/ ← Componentes compartidos (MainLayout, ThemeToggle…)
-│   ├── contracts/  ← Interfaces (Loadable, LocalizedPage…)
-│   ├── flows/      ← Flujos transversales (a11y, urlValidator…)
-│   └── pages.ts    ← NavigablePage + visit() + createPageContext()
-├── home/pages/     ← Page Objects de home
-└── content/        ← Page Objects y componentes de contenido
-tests/support/api/
-├── endpoints/      ← Flujos de API (robots, rss…)
-└── parsers/        ← Transformaciones de respuesta
+apps/web/tests/
+├── e2e/            ← Pruebas E2E
+├── unit/           ← Pruebas unitarias
+└── support/
+    ├── ui/         ← Page Objects, componentes y flujos de UI
+    └── api/        ← Flujos de API y parsers
 ```
 
 ---

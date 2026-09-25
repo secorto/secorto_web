@@ -45,7 +45,7 @@ graph LR
 | *(None)* | Strict (default) — stops on first failure |
 | `.soft()` | Continues running after a failure; appends `(soft)` to the report label |
 | `.with(expect)` | Replaces the assertion engine at the call site |
-| `.raw()` | Skips transformation, returns the original resource |
+| `.raw()` | Returns the origin value, bypassing transformation or verification |
 
 The flow never changes. The caller chooses the strategy.
 
