@@ -130,6 +130,38 @@ Common use cases: page initialization (`visit()`), accessibility audits.
 Supports: `.soft()`, `.with(expect)`, `.raw()`
 
 ---
+
+## 🔌 Adapter Setup
+
+The library works with any test framework that exposes a `step` function and an assertion engine.
+You inject those during initialization — the library itself imports nothing from your framework.
+
+```ts
+import { expect, test } from '@playwright/test'
+import { createTestingStep, type GenericVerification, type GenericOrchestrateStep } from '@secorto/step'
+
+export const {
+  step,
+  verifyStep,
+  resourceStep,
+  orchestrateStep
+} = createTestingStep(
+  test.step,
+  expect,
+  expect.soft
+)
+
+export type { Step, ResourceStep } from '@secorto/step'
+
+// Optional: concrete type aliases for annotating Page Object methods and contracts.
+// Collapses the generic TExpect parameter once the adapter has fixed the expect implementations.
+export type ExpectLike = typeof expect | typeof expect.soft
+export type Verification<T> = GenericVerification<T, ExpectLike>
+export type OrchestrateStep<TOrigin, TResult = void> = GenericOrchestrateStep<TOrigin, TResult, ExpectLike>
+```
+
+---
+
 ## 🚀 Examples
 
 ### 1. Actions and Assertions (`step()` + `verifyStep()`)
@@ -197,7 +229,6 @@ export const robots = (request: APIRequestContext) =>
 ### 3. Page Initialization (`orchestrateStep()`)
 
 ```ts
-import { orchestrateStep } from '@tests/step'
 import type { Page } from '@playwright/test'
 
 export const visit = <T extends { shouldBeLoaded: () => any }>(
@@ -285,31 +316,6 @@ its core vocabulary without the class hierarchy.
 Framework-agnostic by design. Actor is already solved by the test runner.
 Ability is already solved by fixtures and dependency injection.
 If you need the full Screenplay model, use Serenity/JS.
-
----
-
-## 🔌 Adapter Setup
-
-The library works with any test framework that exposes a `step` function and an assertion engine.
-You inject those during initialization — the library itself imports nothing from your framework.
-
-```ts
-import { expect, test } from '@playwright/test'
-import { createTestingStep } from '@secorto/step'
-
-export const {
-  step,
-  verifyStep,
-  resourceStep,
-  orchestrateStep
-} = createTestingStep(
-  test.step,
-  expect,
-  expect.soft
-)
-
-export type { Step } from '@secorto/step'
-```
 
 ---
 
