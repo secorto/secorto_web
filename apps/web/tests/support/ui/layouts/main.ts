@@ -1,20 +1,20 @@
 import type { UILanguages } from '@i18n/ui'
 import type { Loadable, LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
 import { step, verifyStep } from '@tests/step'
-import { footerPage, type FooterComponent } from '@tests/support/ui/home/component/FooterComponent'
-import { sidebarPage, type SidebarComponent } from '@tests/support/ui/sidebar/SidebarComponent'
-import { target, type Target } from '@tests/support/ui/components/Target'
-import { specializedTargetSelector, type TargetSelector } from '@tests/support/ui/components/TargetSelector'
-import { themeToggle, type ThemeToggle } from './ThemeToggle'
+import { footerPage, type FooterComponent } from './footer'
+import { sidebarPage, type SidebarComponent } from './sidebar'
+import { target, type TargetComponent } from '../target/target'
+import { targetSelector, type TargetSelector } from '../target/targetSelector'
+import { themeToggle, type ThemeToggle } from '../target/themeToggle'
 import type { Page } from '@playwright/test'
-import { link, type Link } from '@tests/support/ui/components/Link'
+import { link, type Link } from '../target/link'
 
 
 export class MainLayoutComponent<T = void> implements Loadable {
   constructor(
     readonly name: string,
-    readonly root: Target,
-    readonly headerTitle: Target,
+    readonly root: TargetComponent,
+    readonly headerTitle: TargetComponent,
     readonly sidebar: SidebarComponent,
     readonly footer: FooterComponent,
     readonly main: LocalizedPage<T>,
@@ -24,18 +24,18 @@ export class MainLayoutComponent<T = void> implements Loadable {
 
   shouldBeLoaded() {
     return verifyStep(`${this.name} layout is loaded`, async ({ expect }) => {
-      await this.root.shouldBeVisible(expect)
-      await this.headerTitle.shouldBeVisible(expect)
-      await this.headerTitle.shouldHaveText(expect, /\S+/)
+      await this.root.should.beVisible(expect)
+      await this.headerTitle.should.beVisible(expect)
+      await this.headerTitle.should.haveText(expect, /\S+/)
       await this.footer.shouldBeLoaded().with(expect)
       await this.sidebar.shouldBeLoaded().with(expect)
-      await this.themeToggle.shouldBeVisible(expect)
+      await this.themeToggle.should.beVisible(expect)
     })
   }
 
   shouldBeLocalized(locale: UILanguages) {
     return verifyStep(`${this.name} layout is localized in ${locale}`, async ({ expect }) => {
-      await this.root.shouldHaveAttribute(expect, 'lang', locale)
+      await this.root.should.haveAttribute(expect, 'lang', locale)
       await this.footer.shouldBeLocalized(locale).with(expect)
       await this.sidebar.shouldBeLocalized(locale).with(expect)
       return this.main.shouldBeLocalized(locale).with(expect)
@@ -45,7 +45,7 @@ export class MainLayoutComponent<T = void> implements Loadable {
   shouldHaveTheme(theme: string) {
     return verifyStep(`${this.name} layout should have theme ${theme}`, async ({ expect }) => {
       const re = new RegExp(`\\b${String(theme)}\\b`)
-      await this.root.shouldHaveClass(expect, re)
+      await this.root.should.haveClass(expect, re)
     })
   }
 
@@ -82,8 +82,8 @@ export function mainLayout<T>({
   themeToggle,
 }: {
   name: string,
-  root: Target,
-  headerTitle: Target,
+  root: TargetComponent,
+  headerTitle: TargetComponent,
   sidebar: SidebarComponent,
   main: LocalizedPage<T>,
   footer: FooterComponent,
@@ -98,7 +98,7 @@ export function defaultMainLayout(page: Page) {
     root: target('html root', page.locator('html')),
     sidebar: sidebarPage(page),
     footer: footerPage(page),
-    langLinks: specializedTargetSelector(link, 'language link', (lang: UILanguages) =>
+    langLinks: targetSelector(link, 'language link', (lang: UILanguages) =>
       page.getByTestId(`lang-${lang}`)
     ),
     themeToggle: themeToggle('theme toggle', page.getByTestId('theme-toggle')),

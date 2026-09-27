@@ -1,5 +1,5 @@
 import { test } from '@tests/fixtures'
-import { shouldHaveLocalStorage, withThemeInStorage } from '@tests/support/ui/page/local-storage'
+import { shouldHaveLocalStorage, withThemeInStorage } from '@tests/support/ui/shared/helpers/localStorage'
 import { userInHome } from '@tests/support/ui/home/pages/HomePage'
 
 test.describe('Theme local storage',

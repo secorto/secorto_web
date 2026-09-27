@@ -1,6 +1,6 @@
 import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
-import type { MainLayoutComponent } from '@tests/support/ui/shared/components/MainLayout'
+import type { MainLayoutComponent } from '@tests/support/ui/layouts/main'
 import type { TagsComponent } from './components/Tags'
 import type { ContentListComponent } from './components/ContentList'
 import type { SectionType } from '@domain/section'
@@ -90,7 +90,7 @@ export class ContentListPage extends NavigablePage implements LocalizedPage<void
       const expectedTagPath = tagRoutes.getSectionTagPath(this.section, locale, tag)
       const escapedTagPath = expectedTagPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
       await this.validateUrl(new RegExp(`${escapedTagPath}(/|$)`)).with(expect)
-      return this.list.shouldHaveResults().with(expect)
+      return this.list.shouldHaveResults(expect)
     })
   }
 

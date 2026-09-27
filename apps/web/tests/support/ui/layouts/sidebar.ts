@@ -1,9 +1,9 @@
 import { step, verifyStep } from '@tests/step'
-import { target } from '@tests/support/ui/components/Target'
-import type { Target as TargetComponent } from '@tests/support/ui/components/Target'
+import { target, type TargetComponent } from '../target/target'
 import type { Page } from '@playwright/test'
 import type { Loadable, LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
 import { ui, type UILanguages } from '@i18n/ui'
+import { logo, type Logo } from '../target/logo'
 
 export class SidebarComponent implements Loadable, LocalizedPage<void> {
   constructor(
@@ -11,7 +11,7 @@ export class SidebarComponent implements Loadable, LocalizedPage<void> {
     readonly sidebarToggle: TargetComponent,
     readonly sidebarTitle: TargetComponent,
     readonly aboutLink: TargetComponent,
-    readonly logo: TargetComponent,
+    readonly logo: Logo,
   ) {}
 
   toggleSidebar() {
@@ -22,40 +22,40 @@ export class SidebarComponent implements Loadable, LocalizedPage<void> {
 
   shouldBeLoaded() {
     return verifyStep('sidebar is loaded', async ({ expect }) => {
-      await this.sidebarTitle.shouldBeVisible(expect)
-      await this.logo.shouldHaveCount(expect, 1)
-      await this.aboutLink.shouldBeVisible(expect)
+      await this.sidebarTitle.should.beVisible(expect)
+      await this.logo.should.haveCount(expect, 1)
+      await this.aboutLink.should.beVisible(expect)
     })
   }
 
   shouldBeLocalized(locale: UILanguages) {
     return verifyStep('sidebar is localized correctly', async ({ expect }) => {
-      await this.aboutLink.shouldHaveText(expect, ui[locale]['nav.about'])
+      await this.aboutLink.should.haveText(expect, ui[locale]['nav.about'])
     })
   }
 
 
   shouldBeOpen() {
     return verifyStep('sidebar should be open', async ({ expect }) => {
-      await this.hamburger.shouldBeVisible(expect)
-      await this.sidebarToggle.shouldHaveClass(expect, /sidebar-open/)
-      await this.hamburger.shouldHaveClass(expect, /sidebar-open/)
+      await this.hamburger.should.beVisible(expect)
+      await this.sidebarToggle.should.haveClass(expect, /sidebar-open/)
+      await this.hamburger.should.haveClass(expect, /sidebar-open/)
     })
   }
 
   shouldBeClosed() {
     return verifyStep('sidebar should be closed', async ({ expect }) => {
-      await this.hamburger.shouldBeVisible(expect)
-      await this.sidebarToggle.shouldNotHaveClass(expect, /sidebar-open/)
-      await this.hamburger.shouldNotHaveClass(expect, /sidebar-open/)
+      await this.hamburger.should.beVisible(expect)
+      await this.sidebarToggle.should.not.haveClass(expect, /sidebar-open/)
+      await this.hamburger.should.not.haveClass(expect, /sidebar-open/)
     })
   }
 
   shouldBePermanentlyOpen() {
     return verifyStep('sidebar should be permanently open', async ({ expect }) => {
-      await this.sidebarToggle.shouldBeVisible(expect)
-      await this.hamburger.shouldNotBeVisible(expect)
-      await this.hamburger.shouldNotHaveClass(expect, /sidebar-open/)
+      await this.sidebarToggle.should.beVisible(expect)
+      await this.hamburger.should.not.beVisible(expect)
+      await this.hamburger.should.not.haveClass(expect, /sidebar-open/)
     })
   }
 }
@@ -66,6 +66,6 @@ export function sidebarPage(page: Page) {
     target('sidebar toggle', page.locator('.sidebar-toggle')),
     target('sidebar title', page.getByTestId('sidebar-title')),
     target('sidebar about link', page.getByTestId('sidebar-about')),
-    target('sidebar photo', page.getByTestId('sidebar-photo')),
+    logo('sidebar photo', page.getByTestId('sidebar-photo')),
   )
 }
