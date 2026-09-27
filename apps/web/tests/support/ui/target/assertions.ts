@@ -9,6 +9,7 @@ interface ExpectChain {
   toHaveText(textOrRegex: string | RegExp): Promise<void>
   toHaveClass(re: RegExp): Promise<void>
   toHaveAttribute(name: string, value: string): Promise<void>
+  toHaveCount(count: number): Promise<void>
 }
 
 /**
@@ -20,6 +21,7 @@ export interface ShouldAssertions {
   haveText(expect: ExpectLike, textOrRegex: string | RegExp): Step<void>
   haveClass(expect: ExpectLike, re: RegExp): Step<void>
   haveAttribute(expect: ExpectLike, name: string, value: string): Step<void>
+  haveCount(expect: ExpectLike, count: number): Step<void>
 }
 
 /**
@@ -64,5 +66,9 @@ export function createAssertions(
       step(`${name} ${prefix} have attribute ${attrName} with value ${value}`, async () => {
         await getExpectChain(expect).toHaveAttribute(attrName, value)
       }),
-  }
+    haveCount: (expect: ExpectLike, count: number) =>
+      step(`${name} ${prefix} have ${String(count)} nodes`, async () => {
+        await getExpectChain(expect).toHaveCount(count)
+      }),
+    }
 }

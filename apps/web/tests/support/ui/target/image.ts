@@ -1,9 +1,10 @@
 import type { Locator } from '@playwright/test'
 import { target, type TargetComponent } from './target'
-import { verifyStep, type Verification } from '@tests/step'
+import { step, type Step } from '@tests/step'
+import type { ExpectLike } from '@tests/step'
 
 export type Image = TargetComponent & {
-  shouldBeLoaded: () => Verification<void>
+  beLoaded(expect: ExpectLike): Step<void>
 }
 
 export function image(name: string, locator: Locator): Image {
@@ -12,8 +13,8 @@ export function image(name: string, locator: Locator): Image {
   return {
     ...base,
 
-    shouldBeLoaded: () =>
-      verifyStep(`${name} is present and loaded`, async ({ expect }) => {
+    beLoaded: (expect: ExpectLike) =>
+      step(`${name} is loaded`, async () => {
         await locator.scrollIntoViewIfNeeded()
         await expect(locator).toBeVisible()
         await expect(locator).toHaveCount(1)
