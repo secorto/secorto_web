@@ -70,5 +70,5 @@ export function createAssertions(
       step(`${name} ${prefix} have ${String(count)} nodes`, async () => {
         await getExpectChain(expect).toHaveCount(count)
       }),
-    }
+  }
 }
