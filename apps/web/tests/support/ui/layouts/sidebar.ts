@@ -23,7 +23,7 @@ export class SidebarComponent implements Loadable, LocalizedPage<void> {
   shouldBeLoaded() {
     return verifyStep('sidebar is loaded', async ({ expect }) => {
       await this.sidebarTitle.should.beVisible(expect)
-      await this.logo.shouldHaveCount(expect, 1)
+      await this.logo.should.haveCount(expect, 1)
       await this.aboutLink.should.beVisible(expect)
     })
   }

@@ -1,5 +1,5 @@
 import type { Locator } from '@playwright/test'
-import { step } from '@tests/step'
+import { step, type ExpectLike } from '@tests/step'
 import { target, type TargetComponent } from '@tests/support/ui/target/target'
 import { collection, type Collection } from '@tests/support/ui/target/collection'
 import { TargetSelector, targetSelector } from '@tests/support/ui/target/targetSelector'
@@ -22,9 +22,8 @@ export class ContentListComponent {
     })
   }
 
-  shouldHaveResults() {
-    // Delega validación de "al menos un item" a Target.shouldHaveAtLeastOne()
-    return this.allItems.shouldHaveAtLeastOne()
+  shouldHaveResults(expect: ExpectLike) {
+    return this.allItems.should.haveAtLeastOne(expect)
   }
 }
 

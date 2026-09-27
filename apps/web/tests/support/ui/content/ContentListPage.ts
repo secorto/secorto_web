@@ -90,7 +90,7 @@ export class ContentListPage extends NavigablePage implements LocalizedPage<void
       const expectedTagPath = tagRoutes.getSectionTagPath(this.section, locale, tag)
       const escapedTagPath = expectedTagPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
       await this.validateUrl(new RegExp(`${escapedTagPath}(/|$)`)).with(expect)
-      return this.list.shouldHaveResults().with(expect)
+      return this.list.shouldHaveResults(expect)
     })
   }
 

@@ -14,7 +14,7 @@ export class RelatedContentSection {
 
   shouldBeValid() {
     return verifyStep('related cards are valid', async ({ expect }) => {
-      await this.parent.shouldHaveAtLeastOne().with(expect)
+      await this.parent.should.haveAtLeastOne(expect)
       const cardCount = await this.parent.locator.count()
       for (let i = 0; i < cardCount; i++) {
         const card = this.parent.locator.nth(i)
