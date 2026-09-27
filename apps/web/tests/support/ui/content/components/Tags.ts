@@ -5,16 +5,13 @@ import { target } from '@tests/support/ui/target/target'
 import { targetSelector, TargetSelector } from '@tests/support/ui/target/targetSelector'
 import { link, type Link } from '@tests/support/ui/target/link'
 
-/**
- * Componente reutilizable para tags.
- */
 export class TagsComponent {
   constructor(
     readonly container: TargetComponent,
     readonly tagLink: TargetSelector<string, Link>,
   ) {}
 
-  async filterByTag(tag: string) {
+  filterByTag(tag: string) {
     return step(`Filter by tag "${tag}"`, async () => {
       await this.tagLink.get(tag).click()
     })

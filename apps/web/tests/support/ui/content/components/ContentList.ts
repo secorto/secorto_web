@@ -12,11 +12,11 @@ import { TargetSelector, targetSelector } from '@tests/support/ui/target/targetS
 export class ContentListComponent {
   constructor(
     readonly container: TargetComponent,
-    readonly itemLink: TargetSelector<string, TargetComponent>, // factory: dado href, retorna Locator
-    readonly allItems: Collection, // Collection: todos los items
+    readonly itemLink: TargetSelector<string, TargetComponent>,
+    readonly allItems: Collection,
   ) {}
 
-  async clickItem(href: string, title: string) {
+  clickItem(href: string, title: string) {
     return step(`Click item: ${title}`, async () => {
       await this.itemLink.get(href).click()
     })
