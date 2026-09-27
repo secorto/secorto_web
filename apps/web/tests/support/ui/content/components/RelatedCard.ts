@@ -25,9 +25,9 @@ export class RelatedContentSection {
 
   shouldHaveValidCard(parent: Locator) {
     return verifyStep('related card is valid', async ({ expect }) => {
-      await this.title.get(parent).shouldBeVisible(expect)
-      await this.excerpt.get(parent).shouldBeVisible(expect)
-      await this.cta.get(parent).shouldBeVisible(expect)
+      await this.title.get(parent).should.beVisible(expect)
+      await this.excerpt.get(parent).should.beVisible(expect)
+      await this.cta.get(parent).should.beVisible(expect)
     })
   }
 }

@@ -22,40 +22,40 @@ export class SidebarComponent implements Loadable, LocalizedPage<void> {
 
   shouldBeLoaded() {
     return verifyStep('sidebar is loaded', async ({ expect }) => {
-      await this.sidebarTitle.shouldBeVisible(expect)
+      await this.sidebarTitle.should.beVisible(expect)
       await this.logo.shouldHaveCount(expect, 1)
-      await this.aboutLink.shouldBeVisible(expect)
+      await this.aboutLink.should.beVisible(expect)
     })
   }
 
   shouldBeLocalized(locale: UILanguages) {
     return verifyStep('sidebar is localized correctly', async ({ expect }) => {
-      await this.aboutLink.shouldHaveText(expect, ui[locale]['nav.about'])
+      await this.aboutLink.should.haveText(expect, ui[locale]['nav.about'])
     })
   }
 
 
   shouldBeOpen() {
     return verifyStep('sidebar should be open', async ({ expect }) => {
-      await this.hamburger.shouldBeVisible(expect)
-      await this.sidebarToggle.shouldHaveClass(expect, /sidebar-open/)
-      await this.hamburger.shouldHaveClass(expect, /sidebar-open/)
+      await this.hamburger.should.beVisible(expect)
+      await this.sidebarToggle.should.haveClass(expect, /sidebar-open/)
+      await this.hamburger.should.haveClass(expect, /sidebar-open/)
     })
   }
 
   shouldBeClosed() {
     return verifyStep('sidebar should be closed', async ({ expect }) => {
-      await this.hamburger.shouldBeVisible(expect)
-      await this.sidebarToggle.shouldNotHaveClass(expect, /sidebar-open/)
-      await this.hamburger.shouldNotHaveClass(expect, /sidebar-open/)
+      await this.hamburger.should.beVisible(expect)
+      await this.sidebarToggle.should.not.haveClass(expect, /sidebar-open/)
+      await this.hamburger.should.not.haveClass(expect, /sidebar-open/)
     })
   }
 
   shouldBePermanentlyOpen() {
     return verifyStep('sidebar should be permanently open', async ({ expect }) => {
-      await this.sidebarToggle.shouldBeVisible(expect)
-      await this.hamburger.shouldNotBeVisible(expect)
-      await this.hamburger.shouldNotHaveClass(expect, /sidebar-open/)
+      await this.sidebarToggle.should.beVisible(expect)
+      await this.hamburger.should.not.beVisible(expect)
+      await this.hamburger.should.not.haveClass(expect, /sidebar-open/)
     })
   }
 }

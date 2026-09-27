@@ -18,8 +18,8 @@ export class HomePageMain implements LocalizedPage<void> {
 
   shouldBeLocalized(_locale: UILanguages) {
     return verifyStep('homepage main is localized', async ({ expect }) => {
-      await this.avatar.shouldBeVisible(expect)
-      await this.bioText.shouldBeVisible(expect)
+      await this.avatar.should.beVisible(expect)
+      await this.bioText.should.beVisible(expect)
       await this.relatedCards.shouldBeValid().with(expect)
     })
   }

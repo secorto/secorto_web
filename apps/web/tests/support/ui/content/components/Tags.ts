@@ -22,7 +22,7 @@ export class TagsComponent {
 
   shouldRenderTags() {
     return verifyStep(`Tags are rendered`, async ({ expect }) => {
-      await this.container.shouldBeVisible(expect)
+      await this.container.should.beVisible(expect)
       const tagCount = await this.container.locator.locator('[data-testid^="tag-link-"]').count()
       expect(tagCount).toBeGreaterThan(0)
     })

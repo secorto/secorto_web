@@ -12,15 +12,15 @@ export class FooterComponent implements Loadable, LocalizedPage<void> {
 
   shouldBeLoaded() {
     return verifyStep('footer is loaded', async ({ expect }) => {
-      await this.follow.shouldBeVisible(expect)
+      await this.follow.should.beVisible(expect)
     })
   }
 
   shouldBeLocalized(locale: UILanguages) {
     return verifyStep('footer is localized correctly', async ({ expect }) => {
       const i18n = ui[locale]
-      await this.follow.shouldHaveText(expect, i18n['footer.follow'])
-      await this.logo.shouldHaveText(expect, i18n['footer.logo_alt'])
+      await this.follow.should.haveText(expect, i18n['footer.follow'])
+      await this.logo.should.haveText(expect, i18n['footer.logo_alt'])
     })
   }
 }

@@ -24,18 +24,18 @@ export class MainLayoutComponent<T = void> implements Loadable {
 
   shouldBeLoaded() {
     return verifyStep(`${this.name} layout is loaded`, async ({ expect }) => {
-      await this.root.shouldBeVisible(expect)
-      await this.headerTitle.shouldBeVisible(expect)
-      await this.headerTitle.shouldHaveText(expect, /\S+/)
+      await this.root.should.beVisible(expect)
+      await this.headerTitle.should.beVisible(expect)
+      await this.headerTitle.should.haveText(expect, /\S+/)
       await this.footer.shouldBeLoaded().with(expect)
       await this.sidebar.shouldBeLoaded().with(expect)
-      await this.themeToggle.shouldBeVisible(expect)
+      await this.themeToggle.should.beVisible(expect)
     })
   }
 
   shouldBeLocalized(locale: UILanguages) {
     return verifyStep(`${this.name} layout is localized in ${locale}`, async ({ expect }) => {
-      await this.root.shouldHaveAttribute(expect, 'lang', locale)
+      await this.root.should.haveAttribute(expect, 'lang', locale)
       await this.footer.shouldBeLocalized(locale).with(expect)
       await this.sidebar.shouldBeLocalized(locale).with(expect)
       return this.main.shouldBeLocalized(locale).with(expect)
@@ -45,7 +45,7 @@ export class MainLayoutComponent<T = void> implements Loadable {
   shouldHaveTheme(theme: string) {
     return verifyStep(`${this.name} layout should have theme ${theme}`, async ({ expect }) => {
       const re = new RegExp(`\\b${String(theme)}\\b`)
-      await this.root.shouldHaveClass(expect, re)
+      await this.root.should.haveClass(expect, re)
     })
   }
 
