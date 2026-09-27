@@ -27,7 +27,7 @@ export function target(name: string, locator: Locator): TargetComponent {
     should: {
       ...createAssertions(name, 'should', (expect) => expect(locator)),
       not: createAssertions(name, 'should not', (expect) => expect(locator).not),
-    } as const satisfies Should,
+    } satisfies Should,
 
     async click() {
       await locator.click()
@@ -36,5 +36,5 @@ export function target(name: string, locator: Locator): TargetComponent {
     async getAttribute(attr: string): Promise<string | null> {
       return locator.getAttribute(attr)
     },
-  } as const satisfies TargetComponent
+  } satisfies TargetComponent
 }
