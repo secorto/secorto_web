@@ -18,8 +18,8 @@ export function link(name: string, locator: Locator): Link {
       step(`${name} href matches route ${route}`, async () => {
         await expect(locator).toBeVisible()
         const href = await locator.getAttribute('href')
-        expect(href).toBeTruthy()
-        expect(href).toMatch(new RegExp(`^.*\\/${locale}\\/${route}\\/`))
+        expect(href, 'href attribute must exist').toBeTruthy()
+        expect(href!).toMatch(new RegExp(`^.*\/${locale}\/${route}\/`))
       }),
 
     linksMatchPattern: (expect: ExpectLike, pattern: RegExp) =>

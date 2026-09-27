@@ -11,7 +11,7 @@ export interface Target {
 
 /**
  * TargetComponent: Target enriched with interaction & assertion methods
- * .should returns Step<void> — simple delegation with simetría
+ * .should is an assertion object that provides access to various assertions
  */
 export interface TargetComponent extends Target {
   click(): Promise<void>
