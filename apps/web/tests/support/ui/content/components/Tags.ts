@@ -1,15 +1,16 @@
 import type { Locator } from '@playwright/test'
 import { step, verifyStep } from '@tests/step'
-import { Target, target } from '@tests/support/ui/components/Target'
-import { specializedTargetSelector, TargetSelector } from '@tests/support/ui/components/TargetSelector'
-import { link, type Link } from '@tests/support/ui/components/Link'
+import type { TargetComponent } from '@tests/support/ui/target/target'
+import { target } from '@tests/support/ui/target/target'
+import { targetSelector, TargetSelector } from '@tests/support/ui/target/targetSelector'
+import { link, type Link } from '@tests/support/ui/target/link'
 
 /**
  * Componente reutilizable para tags.
  */
 export class TagsComponent {
   constructor(
-    readonly container: Target,
+    readonly container: TargetComponent,
     readonly tagLink: TargetSelector<string, Link>,
   ) {}
 
@@ -31,7 +32,7 @@ export class TagsComponent {
 export function tagsComponent(containerLocator: Locator) {
   return new TagsComponent(
     target('tags container', containerLocator),
-    specializedTargetSelector(
+    targetSelector(
       link,
       'tag link',
       (tag: string) => containerLocator.getByTestId(`tag-link-${tag}`),

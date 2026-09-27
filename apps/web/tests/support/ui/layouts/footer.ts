@@ -1,7 +1,7 @@
 import { ui, type UILanguages } from '@i18n/ui'
 import type { Page } from '@playwright/test'
 import { verifyStep } from '@tests/step'
-import { target, Target as TargetComponent } from '@tests/support/ui/components/Target'
+import { target, type TargetComponent } from '../target/target'
 import type { Loadable, LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
 
 export class FooterComponent implements Loadable, LocalizedPage<void> {

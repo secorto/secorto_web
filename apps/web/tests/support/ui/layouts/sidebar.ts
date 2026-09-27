@@ -1,9 +1,9 @@
 import { step, verifyStep } from '@tests/step'
-import { target } from '@tests/support/ui/components/Target'
-import type { Target as TargetComponent } from '@tests/support/ui/components/Target'
+import { target, type TargetComponent } from '../target/target'
 import type { Page } from '@playwright/test'
 import type { Loadable, LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
 import { ui, type UILanguages } from '@i18n/ui'
+import { logo, type Logo } from '../target/logo'
 
 export class SidebarComponent implements Loadable, LocalizedPage<void> {
   constructor(
@@ -11,7 +11,7 @@ export class SidebarComponent implements Loadable, LocalizedPage<void> {
     readonly sidebarToggle: TargetComponent,
     readonly sidebarTitle: TargetComponent,
     readonly aboutLink: TargetComponent,
-    readonly logo: TargetComponent,
+    readonly logo: Logo,
   ) {}
 
   toggleSidebar() {
@@ -66,6 +66,6 @@ export function sidebarPage(page: Page) {
     target('sidebar toggle', page.locator('.sidebar-toggle')),
     target('sidebar title', page.getByTestId('sidebar-title')),
     target('sidebar about link', page.getByTestId('sidebar-about')),
-    target('sidebar photo', page.getByTestId('sidebar-photo')),
+    logo('sidebar photo', page.getByTestId('sidebar-photo')),
   )
 }

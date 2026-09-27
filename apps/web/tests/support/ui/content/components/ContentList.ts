@@ -1,7 +1,8 @@
 import type { Locator } from '@playwright/test'
 import { step } from '@tests/step'
-import { Target, target } from '@tests/support/ui/components/Target'
-import { TargetSelector, targetSelector } from '@tests/support/ui/components/TargetSelector'
+import { target, type TargetComponent } from '@tests/support/ui/target/target'
+import { collection, type Collection } from '@tests/support/ui/target/collection'
+import { TargetSelector, targetSelector } from '@tests/support/ui/target/targetSelector'
 
 /**
  * Componente reutilizable para lista de items.
@@ -10,9 +11,9 @@ import { TargetSelector, targetSelector } from '@tests/support/ui/components/Tar
  */
 export class ContentListComponent {
   constructor(
-    readonly container: Target,
-    readonly itemLink: TargetSelector<string>, // factory: dado href, retorna Locator
-    readonly allItems: Target, // Target: todos los items (semántica explícita)
+    readonly container: TargetComponent,
+    readonly itemLink: TargetSelector<string, TargetComponent>, // factory: dado href, retorna Locator
+    readonly allItems: Collection, // Collection: todos los items
   ) {}
 
   async clickItem(href: string, title: string) {
@@ -34,10 +35,11 @@ export function contentListComponent(containerLocator: Locator) {
   return new ContentListComponent(
     target('content list', containerLocator),
     targetSelector(
+      target,
       'list item link',
       (href: string) => containerLocator.locator(`[href="${href}"]`),
       (href: string) => href,
     ),
-    target('all list items', containerLocator.getByTestId('list-item')),
+    collection('all list items', containerLocator.getByTestId('list-item')),
   )
 }
