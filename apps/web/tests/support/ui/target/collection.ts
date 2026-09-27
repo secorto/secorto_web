@@ -36,7 +36,6 @@ export type Collection = TargetComponent & {
 export function collection(name: string, locator: Locator): Collection {
   const base = target(name, locator)
   const collectionAssert = createCollectionAssertions(name, 'should', locator)
-  const collectionAssertNot = createCollectionAssertions(name, 'should not', locator)
 
   return {
     ...base,
@@ -45,7 +44,6 @@ export function collection(name: string, locator: Locator): Collection {
       ...collectionAssert,
       not: {
         ...base.should.not,
-        ...collectionAssertNot,
       },
     } satisfies Should & CollectionAssertions,
   } satisfies Collection
