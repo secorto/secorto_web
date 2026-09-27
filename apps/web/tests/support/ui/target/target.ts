@@ -11,6 +11,7 @@ export interface Target {
 
 /**
  * TargetComponent: Target enriched with interaction & assertion methods
+ * .should returns Step<void> — simple delegation with simetría
  */
 export interface TargetComponent extends Target {
   click(): Promise<void>
@@ -18,20 +19,14 @@ export interface TargetComponent extends Target {
   getAttribute(name: string): Promise<string | null>
 }
 
-export function target(name: string, locator: Locator) {
+export function target(name: string, locator: Locator): TargetComponent {
   return {
     name,
     locator,
 
     should: {
-      ...createAssertions(name, (expect) => ({
-        prefix: expect.name === 'expectFn' ? 'should softly' : 'should',
-        chain: (msg: string) => expect(locator, msg),
-      })),
-      not: createAssertions(name, (expect) => ({
-        prefix: expect.name === 'expectFn' ? 'should not softly' : 'should not',
-        chain: (msg: string) => expect(locator, msg).not,
-      })),
+      ...createAssertions(name, 'should', (expect) => expect(locator)),
+      not: createAssertions(name, 'should not', (expect) => expect(locator).not),
     } as const satisfies Should,
 
     async click() {

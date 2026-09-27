@@ -1,9 +1,10 @@
 import type { Locator } from '@playwright/test'
 import { target, type TargetComponent } from './target'
+import { step, type Step } from '@tests/step'
 import type { ExpectLike } from '@tests/step'
 
 export type Logo = TargetComponent & {
-  shouldHaveCount: (expect: ExpectLike, count: number) => Promise<void>
+  shouldHaveCount: (expect: ExpectLike, count: number) => Step<void>
 }
 
 export function logo(name: string, locator: Locator): Logo {
@@ -12,8 +13,9 @@ export function logo(name: string, locator: Locator): Logo {
   return {
     ...base,
 
-    async shouldHaveCount(expect: ExpectLike, count: number) {
-      await expect(locator, `${name} should have ${String(count)} nodes`).toHaveCount(count)
-    },
+    shouldHaveCount: (expect: ExpectLike, count: number) =>
+      step(`${name} should have ${String(count)} nodes`, async () => {
+        await expect(locator).toHaveCount(count)
+      }),
   } satisfies Logo
 }
