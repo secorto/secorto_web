@@ -4,6 +4,7 @@ import type { TagsComponent } from './components/Tags'
 import type { ContentListComponent } from './components/ContentList'
 import type { SectionType } from '@domain/section'
 import { sectionRoutes } from '@domain/section'
+import { buildUrlPattern } from '@tests/support/ui/shared/flows/urlValidation'
 import { step, verifyStep } from '@tests/step'
 import { LocalizedNavigablePage, visit, createPageContext, type PageContext } from '@tests/support/ui/shared/pages'
 import type { LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
@@ -61,7 +62,7 @@ export class ContentListPage extends LocalizedNavigablePage {
 
   protected expectedUrl(locale: UILanguages): string | RegExp {
     const sectionPath = sectionRoutes.getSectionPath(this.section, locale)
-    return new RegExp(`${sectionPath}(/|$)`)
+    return buildUrlPattern(sectionPath)
   }
 
   shouldBeLocalized(locale: UILanguages) {
@@ -78,8 +79,7 @@ export class ContentListPage extends LocalizedNavigablePage {
   shouldBeFiltered(locale: UILanguages, tag: Tag) {
     return verifyStep(`content is filtered by tag ${tag}`, async ({ expect }) => {
       const expectedTagPath = tagRoutes.getSectionTagPath(this.section, locale, tag)
-      const escapedTagPath = expectedTagPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-      await this.validateUrl(new RegExp(`${escapedTagPath}(/|$)`)).with(expect)
+      await this.validateUrl(buildUrlPattern(expectedTagPath)).with(expect)
       return this.list.shouldHaveResults(expect)
     })
   }

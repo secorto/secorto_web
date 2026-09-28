@@ -2,6 +2,7 @@ import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
 import type { SectionType } from '@domain/section'
 import { sectionRoutes } from '@domain/section'
+import { buildUrlPattern } from '@tests/support/ui/shared/flows/urlValidation'
 import { LocalizedNavigablePage, visit, createPageContext, type PageContext } from '@tests/support/ui/shared/pages'
 import { target, type Target } from '@tests/support/ui/target/target'
 import { verifyStep, type Step } from '@tests/step'
@@ -104,9 +105,8 @@ export class ContentDetailPage extends LocalizedNavigablePage {
   }
 
   protected expectedUrl(locale: UILanguages): string | RegExp {
-    // Validates that URL matches the expected entry path
     const entryPath = sectionRoutes.getEntryPath(this.section, locale, this.slug)
-    return new RegExp(`${entryPath}/?$`)
+    return buildUrlPattern(entryPath)
   }
 
   shouldBeLocalized(locale: UILanguages) {

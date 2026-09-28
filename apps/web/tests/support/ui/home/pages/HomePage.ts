@@ -3,6 +3,7 @@ import { relatedContentSection, RelatedContentSection } from '@tests/support/ui/
 import type { Page } from '@playwright/test'
 import type { TargetComponent } from '@tests/support/ui/target/target'
 import type { UILanguages } from '@i18n/ui'
+import { buildUrlPattern } from '@tests/support/ui/shared/flows/urlValidation'
 import { LocalizedNavigablePage, visit, createPageContext, type PageContext } from '@tests/support/ui/shared/pages'
 import { verifyStep, type Step } from '@tests/step'
 import type { LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
@@ -29,7 +30,7 @@ export class HomePage extends LocalizedNavigablePage {
   }
 
   protected expectedUrl(locale: UILanguages): string | RegExp {
-    return new RegExp(`/${locale}(/|$)`)
+    return buildUrlPattern(`/${locale}`)
   }
 }
 

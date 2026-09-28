@@ -8,6 +8,7 @@ import type { MainLayoutComponent } from '@tests/support/ui/layouts/main'
 import { mainLayout, defaultMainLayout } from '@tests/support/ui/layouts/main'
 import { target } from '@tests/support/ui/target/target'
 import { a11yFlow, type A11y } from '@tests/support/ui/shared/flows/a11y'
+import { urlValidator } from '@tests/support/ui/shared/flows/urlValidation'
 
 /**
  * Unified page context: layout, URL validation, and accessibility audit.
@@ -96,17 +97,6 @@ export const visit = <T extends Loadable>(
   )
 
 /**
- * Factory: creates URL validator for page context.
- */
-function createUrlValidator(page: Page) {
-  return function validateUrl(expected: string | RegExp): Verification<void> {
-    return verifyStep(`url should match ${expected}`, async ({ expect }) => {
-      await expect(page).toHaveURL(expected)
-    })
-  }
-}
-
-/**
  * Creates PageContext: layout, URL validation, and a11y auditing.
  */
 export function createPageContext(
@@ -121,7 +111,7 @@ export function createPageContext(
       headerTitle: target(`${pageName} header title`, page.getByRole('heading', { level: 1 })),
       main,
     }),
-    validateUrl: createUrlValidator(page),
+    validateUrl: urlValidator(page),
     a11y: a11yFlow(page),
   }
 }
