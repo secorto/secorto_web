@@ -11,7 +11,7 @@ import { urlValidator } from '@tests/support/ui/shared/flows/urlValidator'
 import { a11yFlow, type A11y } from '@tests/support/ui/shared/flows/a11y'
 
 /**
- * Contexto unificado para una página: layout, validación de URL y auditoría a11y.
+ * Unified page context: layout, URL validation, and accessibility audit.
  */
 export type PageContext = {
   readonly layout: MainLayoutComponent
@@ -20,7 +20,7 @@ export type PageContext = {
 }
 
 /**
- * Base para todas las páginas navegables.
+ * Base for all navigable pages.
  */
 export abstract class NavigablePage implements Loadable {
   constructor(
@@ -38,7 +38,7 @@ export abstract class NavigablePage implements Loadable {
 }
 
 /**
- * Base para páginas localizadas. Subclases implementan expectedUrl(locale).
+ * Base for localized pages. Subclasses implement expectedUrl(locale).
  */
 export abstract class LocalizedNavigablePage
   extends NavigablePage

@@ -9,9 +9,8 @@ import type { LocalizedPage } from '@tests/support/ui/shared/contracts/localizat
 import { Comments, giscusComments } from './components/Comments'
 
 /**
- * Main component para posts (blog, talk) en página de detalle.
- * Valida presencia de date + comments.
- * Implementa LocalizedPage: es el componente principal de la página.
+ * Main component for detail pages with posts (blog, talk).
+ * Validates presence of date and comments.
  */
 export class PostDetailMain implements LocalizedPage<void> {
   constructor(
@@ -28,9 +27,8 @@ export class PostDetailMain implements LocalizedPage<void> {
 }
 
 /**
- * Main component para experiences (work, projects, community) en página de detalle.
- * Valida presencia de campos obligatorios (role, responsibilities, website).
- * Implementa LocalizedPage: es el componente principal de la página.
+ * Main component for detail pages with experiences (work, projects, community).
+ * Validates presence of required fields (role, responsibilities, website).
  */
 export class ExperienceDetailMain implements LocalizedPage<void> {
   constructor(
@@ -46,7 +44,7 @@ export class ExperienceDetailMain implements LocalizedPage<void> {
       await expect(this.roleField.locator).toBeVisible()
       await expect(this.responsibilitiesField.locator).toBeVisible()
 
-      // website es opcional
+      // website is optional
       const websiteCount = await this.websiteLink.locator.count()
       if (websiteCount > 0) await expect(this.websiteLink.locator).toBeVisible()
     })
@@ -54,7 +52,7 @@ export class ExperienceDetailMain implements LocalizedPage<void> {
 }
 
 /**
- * Builder base para secciones tipo post.
+ * Builder for post-type detail sections.
  */
 function buildPostDetailMain(page: Page): PostDetailMain {
   const dateContainer = page.getByTestId('post-date')
@@ -63,7 +61,7 @@ function buildPostDetailMain(page: Page): PostDetailMain {
 }
 
 /**
- * Builder base para secciones tipo experience.
+ * Builder for experience-type detail sections.
  */
 function buildExperienceDetailMain(page: Page): ExperienceDetailMain {
   const mainContainer = page.locator('main')
@@ -76,7 +74,7 @@ function buildExperienceDetailMain(page: Page): ExperienceDetailMain {
 }
 
 /**
- * Factory selector: cada sección se resuelve explícitamente a su builder base.
+ * Factory selector: each section is explicitly mapped to its builder.
  */
 const detailMainFactories = {
   blog: buildPostDetailMain,

@@ -12,8 +12,8 @@ import { contentListComponent } from './components/ContentList'
 import { tagRoutes, type Tag } from '@domain/tags'
 
 /**
- * Main para listas de posts (blog, talk).
- * Valida que los items renderizados contienen PostDate en el slot.
+ * Main component for list pages with posts (blog, talk).
+ * Validates that rendered items contain PostDate in the slot.
  */
 export class PostListPageMain implements LocalizedPage<void> {
   constructor(private page: Page) {}
@@ -28,8 +28,8 @@ export class PostListPageMain implements LocalizedPage<void> {
 }
 
 /**
- * Main para listas de experience (work, projects, community).
- * Valida que los items renderizados contienen role/responsibilities en el slot.
+ * Main component for list pages with experiences (work, projects, community).
+ * Validates that rendered items contain role/responsibilities in the slot.
  */
 export class ExperienceListPageMain implements LocalizedPage<void> {
   constructor(private page: Page) {}
@@ -60,7 +60,7 @@ export class ContentListPage extends LocalizedNavigablePage {
   }
 
   protected expectedUrl(locale: UILanguages): string | RegExp {
-    // Valida que sea una sección válida (blog|talk|work|...), no cualquier cadena
+    // Validates a valid section (blog|talk|work|...), not any arbitrary string
     const validSections = sectionRoutes.getSections().join('|')
     return new RegExp(`/${locale}/(${validSections})(/|$)`)
   }
@@ -96,28 +96,28 @@ export class ContentListPage extends LocalizedNavigablePage {
     })
   }
 
-  // Delegadores de conveniencia para tests
+  // Convenience delegators for tests
   async filterByTag(tag: string) {
     return this.tags.filterByTag(tag)
   }
 }
 
 /**
- * Builder base para secciones tipo post.
+ * Builder for post-type list sections.
  */
 function buildPostListMain(page: Page): PostListPageMain {
   return new PostListPageMain(page)
 }
 
 /**
- * Builder base para secciones tipo experience.
+ * Builder for experience-type list sections.
  */
 function buildExperienceListMain(page: Page): ExperienceListPageMain {
   return new ExperienceListPageMain(page)
 }
 
 /**
- * Factory unificado: cada sección se resuelve explícitamente a su builder base.
+ * Factory selector: each section is explicitly mapped to its builder.
  */
 const listMainFactories = {
   blog: buildPostListMain,
@@ -159,7 +159,7 @@ export async function userIsOnContentList(
 }
 
 /**
- * Navega a la página de lista por tag de una sección y retorna el page object.
+ * Navigates to content list page filtered by tag.
  */
 export async function userInContentTag(
   page: Page,
