@@ -39,7 +39,7 @@ for (const content of testContents) {
         await list.openItem(entryPath)
 
         // 5. Validar que el detail page se cargó correctamente
-        const detail = contentDetailPage(page, content.name)
+        const detail = contentDetailPage(page, content.name, content.testSlug)
         await detail.shouldBeLoaded().soft()
         await detail.shouldBeLocalized(content.locale).soft()
       },
