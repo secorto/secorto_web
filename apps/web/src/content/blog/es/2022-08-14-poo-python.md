@@ -1,5 +1,6 @@
 ---
 title: Programación orientada a objetos en python
+image: "@assets/img/blog/python-oop.svg"
 tags:
   - dev
   - python

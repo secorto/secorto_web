@@ -1,5 +1,6 @@
 ---
 title: How I use Linux today
+image: "@assets/img/blog/linux-usage.svg"
 date: 2026-04-23
 tags:
   - linux

@@ -1,5 +1,6 @@
 ---
 title: Why I use npm (updated)
+image: "@assets/img/blog/npm.svg"
 tags:
   - dev
   - javascript

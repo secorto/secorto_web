@@ -1,5 +1,6 @@
 ---
 title: Mis primeros pasos en Linux
+image: "@assets/img/blog/linux-journey.svg"
 date: 2026-04-25
 tags:
   - linux
