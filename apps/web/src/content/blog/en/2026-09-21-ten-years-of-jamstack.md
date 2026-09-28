@@ -1,5 +1,6 @@
 ---
 title: "Ten years of Jamstack: between the community and the personal web"
+image: "@assets/img/blog/jamstack.svg"
 date: 2026-09-21
 tags:
   - jamstack

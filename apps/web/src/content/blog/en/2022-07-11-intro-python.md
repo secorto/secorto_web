@@ -1,5 +1,6 @@
 ---
 title: Introduction to Python
+image: "@assets/img/blog/python-introduction.svg"
 tags:
   - dev
   - python

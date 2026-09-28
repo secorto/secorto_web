@@ -1,5 +1,6 @@
 ---
 title: Should I consider open source?
+image: "@assets/img/blog/software-libre-vs-propietario.svg"
 tags:
   - opensource
 blogger_orig_url: http://scot3004.blogspot.com/2011/02/software-libre-o-cerrado-libertad-o.html

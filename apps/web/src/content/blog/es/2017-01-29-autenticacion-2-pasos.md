@@ -1,5 +1,6 @@
 ---
 title: Autenticación de 2 pasos
+image: "@assets/img/blog/two-factor-auth.svg"
 tags:
   - dev
 excerpt: A veces nos hacen sufrir las contraseñas por eso recurrimos a algo que tenemos
