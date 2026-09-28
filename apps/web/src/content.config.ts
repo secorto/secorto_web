@@ -33,14 +33,17 @@ const createBasePostSchema = (imageHelper: ImageFunction) => z.object({
   priority: z.number().int().optional()
 })
 
+const createBlogPostSchema = (imageHelper: ImageFunction) => createBasePostSchema(imageHelper).extend({
+  date: z.date(),
+})
+
 /**
  * Blog: Posts con tags y fecha
+ * Solo este contenido usa el esquema especializado para imágenes destacadas.
  */
 const blogCollection = defineCollection({
   loader: glob({ pattern: '**\/[^_]*.md', base: "./src/content/blog" }),
-  schema: ({ image }) => createBasePostSchema(image).extend({
-    date: z.date(),
-  }),
+  schema: ({ image }) => createBlogPostSchema(image),
 })
 
 /**
