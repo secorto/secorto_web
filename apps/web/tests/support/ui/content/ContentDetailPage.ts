@@ -2,13 +2,11 @@ import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
 import type { SectionType } from '@domain/section'
 import { sectionRoutes } from '@domain/section'
-import { NavigablePage, visit, createPageContext } from '@tests/support/ui/shared/pages'
-import type { MainLayoutComponent } from '@tests/support/ui/layouts/main'
+import { NavigablePage, visit, createPageContext, type PageContext } from '@tests/support/ui/shared/pages'
 import { target, type Target } from '@tests/support/ui/target/target'
 import { verifyStep, type Step } from '@tests/step'
 import type { LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
 import { Comments, giscusComments } from './components/Comments'
-import { type A11y } from '@tests/support/ui/shared/flows/a11y'
 
 /**
  * Main component para posts (blog, talk) en página de detalle.
@@ -98,13 +96,12 @@ function buildDetailMain(
 /**
  * Orquestador de página de detalle.
  * Compone MainLayout + el componente main (PostDetailMain o ExperienceDetailMain).
+ * Extiende NavigablePage (no LocalizedNavigablePage) porque no tiene patrón de URL fijo.
+ * La URL se valida en visit().
  */
-export class ContentDetailPage extends NavigablePage implements LocalizedPage<void> {
-  constructor(
-    mainLayout: MainLayoutComponent,
-    a11y: A11y,
-  ) {
-    super(mainLayout, a11y)
+export class ContentDetailPage extends NavigablePage {
+  constructor(context: PageContext) {
+    super(context.layout, context.a11y)
   }
 
   shouldBeLocalized(locale: UILanguages) {
@@ -114,13 +111,14 @@ export class ContentDetailPage extends NavigablePage implements LocalizedPage<vo
 
 /**
  * Factory principal: crea ContentDetailPage completo.
+ * Usa createPageContext para obtener PageContext unificado.
  */
 export function contentDetailPage(
   page: Page,
   sectionName: SectionType,
 ): ContentDetailPage {
-  const { layout, a11y } = createPageContext(page, `${sectionName} detail`, buildDetailMain(page, sectionName))
-  return new ContentDetailPage(layout, a11y)
+  const context = createPageContext(page, `${sectionName} detail`, buildDetailMain(page, sectionName))
+  return new ContentDetailPage(context)
 }
 
 /**

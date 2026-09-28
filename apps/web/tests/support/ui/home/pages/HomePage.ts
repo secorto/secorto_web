@@ -3,11 +3,9 @@ import { relatedContentSection, RelatedContentSection } from '@tests/support/ui/
 import type { Page } from '@playwright/test'
 import type { TargetComponent } from '@tests/support/ui/target/target'
 import type { UILanguages } from '@i18n/ui'
-import { NavigablePage, visit, createPageContext } from '@tests/support/ui/shared/pages'
-import { verifyStep, type Step, type Verification } from '@tests/step'
-import { type MainLayoutComponent } from '@tests/support/ui/layouts/main'
-import type { LocalizedPage, LocalizedUrl } from '@tests/support/ui/shared/contracts/localization'
-import { type A11y } from '@tests/support/ui/shared/flows/a11y'
+import { LocalizedNavigablePage, visit, createPageContext, type PageContext } from '@tests/support/ui/shared/pages'
+import { verifyStep, type Step } from '@tests/step'
+import type { LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
 
 export class HomePageMain implements LocalizedPage<void> {
   constructor(
@@ -25,25 +23,13 @@ export class HomePageMain implements LocalizedPage<void> {
   }
 }
 
-export class HomePage extends NavigablePage implements LocalizedPage<void>, LocalizedUrl {
-  constructor(
-    mainLayout: MainLayoutComponent,
-    readonly validateUrl: (expected: string | RegExp) => Verification<void>,
-    a11y: A11y,
-  ) {
-    super(mainLayout, a11y)
+export class HomePage extends LocalizedNavigablePage {
+  constructor(context: PageContext) {
+    super(context)
   }
 
-  shouldBeLocalized(locale: UILanguages) {
-    return verifyStep(`homepage is localized in ${locale}`, async ({ expect }) => {
-      await this.shouldBeInLocale(locale).with(expect)
-      await this.mainLayout.shouldBeLocalized(locale).with(expect)
-    })
-  }
-
-  shouldBeInLocale(locale: UILanguages) {
-    const expected = new RegExp(`/${locale}(/|$)`)
-    return this.validateUrl(expected)
+  protected expectedUrl(locale: UILanguages): string | RegExp {
+    return new RegExp(`/${locale}(/|$)`)
   }
 }
 
@@ -53,8 +39,8 @@ export function homePage(page: Page) {
     target('home bio text', page.locator('.home-bio-text')),
     relatedContentSection(page.locator('.related-content-section')),
   )
-  const { layout, validateUrl, a11y } = createPageContext(page, 'home', main)
-  return new HomePage(layout, validateUrl, a11y)
+  const context = createPageContext(page, 'home', main)
+  return new HomePage(context)
 }
 
 export const userInHome = (

@@ -1,17 +1,14 @@
 import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
-import type { MainLayoutComponent } from '@tests/support/ui/layouts/main'
 import type { TagsComponent } from './components/Tags'
 import type { ContentListComponent } from './components/ContentList'
 import type { SectionType } from '@domain/section'
 import { sectionRoutes } from '@domain/section'
-import { urlValidator } from '@tests/support/ui/shared/flows/urlValidator'
 import { step, verifyStep } from '@tests/step'
-import { NavigablePage, visit, createPageContext } from '@tests/support/ui/shared/pages'
-import type { LocalizedPage, LocalizedUrl } from '@tests/support/ui/shared/contracts/localization'
+import { LocalizedNavigablePage, visit, createPageContext, type PageContext } from '@tests/support/ui/shared/pages'
+import type { LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
 import { tagsComponent } from './components/Tags'
 import { contentListComponent } from './components/ContentList'
-import { type A11y } from '@tests/support/ui/shared/flows/a11y'
 import { tagRoutes, type Tag } from '@domain/tags'
 
 /**
@@ -52,17 +49,26 @@ export class ExperienceListPageMain implements LocalizedPage<void> {
 /**
  * Orquestador de página de lista.
  * Compone MainLayout + Tags + ContentList.
+ * Extiende LocalizedNavigablePage — implementa solo expectedUrl().
+ *
+ * Redefine shouldBeLocalized() porque tiene componentes adicionales (tags, list)
+ * que necesitan validación y que otros Page Objects no tienen.
+ * Esta es una excepción legítima, no una violación de LSP.
  */
-export class ContentListPage extends NavigablePage implements LocalizedPage<void>, LocalizedUrl {
+export class ContentListPage extends LocalizedNavigablePage {
   constructor(
+    context: PageContext,
     readonly section: SectionType,
-    mainLayout: MainLayoutComponent,
     readonly tags: TagsComponent,
     readonly list: ContentListComponent,
-    readonly validateUrl: ReturnType<typeof urlValidator>,
-    a11y: A11y,
   ) {
-    super(mainLayout, a11y)
+    super(context)
+  }
+
+  protected expectedUrl(locale: UILanguages): string | RegExp {
+    // Valida que sea una sección válida (blog|talk|work|...), no cualquier cadena
+    const validSections = sectionRoutes.getSections().join('|')
+    return new RegExp(`/${locale}/(${validSections})(/|$)`)
   }
 
   shouldBeLocalized(locale: UILanguages) {
@@ -71,15 +77,6 @@ export class ContentListPage extends NavigablePage implements LocalizedPage<void
       await this.mainLayout.shouldBeLocalized(locale).with(expect)
       return this.tags.shouldRenderTags().with(expect)
     })
-  }
-
-  /**
-   * Valida que la URL sea correcta para esta sección (sin redirects).
-   * Ej: /es/blog, /en/project/, etc.
-   */
-  shouldBeInLocale(locale: UILanguages) {
-    const expected = new RegExp(`/${locale}/[a-z0-9-]+(/|$)`)
-    return this.validateUrl(expected)
   }
 
   /**
@@ -141,11 +138,10 @@ export function contentListPage(
   sectionName: SectionType,
 ): ContentListPage {
   const mainPageInstance = listMainFactories[sectionName](page)
-
-  const { layout, validateUrl, a11y } = createPageContext(page, `${sectionName} list`, mainPageInstance)
+  const context = createPageContext(page, `${sectionName} list`, mainPageInstance)
   const tagsComp = tagsComponent(page.locator('main'))
   const listComp = contentListComponent(page.locator('main'))
-  return new ContentListPage(sectionName, layout, tagsComp, listComp, validateUrl, a11y)
+  return new ContentListPage(context, sectionName, tagsComp, listComp)
 }
 
 /**
