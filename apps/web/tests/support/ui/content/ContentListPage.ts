@@ -1,22 +1,20 @@
 import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
-import type { MainLayoutComponent } from '@tests/support/ui/layouts/main'
 import type { TagsComponent } from './components/Tags'
 import type { ContentListComponent } from './components/ContentList'
 import type { SectionType } from '@domain/section'
 import { sectionRoutes } from '@domain/section'
-import { urlValidator } from '@tests/support/ui/shared/flows/urlValidator'
+import { buildUrlPattern } from '@tests/support/ui/shared/flows/urlValidation'
 import { step, verifyStep } from '@tests/step'
-import { NavigablePage, visit, createPageContext } from '@tests/support/ui/shared/pages'
-import type { LocalizedPage, LocalizedUrl } from '@tests/support/ui/shared/contracts/localization'
+import { LocalizedNavigablePage, visit, createPageContext, type PageContext } from '@tests/support/ui/shared/pages'
+import type { LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
 import { tagsComponent } from './components/Tags'
 import { contentListComponent } from './components/ContentList'
-import { type A11y } from '@tests/support/ui/shared/flows/a11y'
 import { tagRoutes, type Tag } from '@domain/tags'
 
 /**
- * Main para listas de posts (blog, talk).
- * Valida que los items renderizados contienen PostDate en el slot.
+ * Main component for list pages with posts (blog, talk).
+ * Validates that rendered items contain PostDate in the slot.
  */
 export class PostListPageMain implements LocalizedPage<void> {
   constructor(private page: Page) {}
@@ -31,8 +29,8 @@ export class PostListPageMain implements LocalizedPage<void> {
 }
 
 /**
- * Main para listas de experience (work, projects, community).
- * Valida que los items renderizados contienen role/responsibilities en el slot.
+ * Main component for list pages with experiences (work, projects, community).
+ * Validates that rendered items contain role/responsibilities in the slot.
  */
 export class ExperienceListPageMain implements LocalizedPage<void> {
   constructor(private page: Page) {}
@@ -50,19 +48,21 @@ export class ExperienceListPageMain implements LocalizedPage<void> {
 }
 
 /**
- * Orquestador de página de lista.
- * Compone MainLayout + Tags + ContentList.
+ * Orchestrator for content list pages. Validates list, tags, and URL patterns.
  */
-export class ContentListPage extends NavigablePage implements LocalizedPage<void>, LocalizedUrl {
+export class ContentListPage extends LocalizedNavigablePage {
   constructor(
+    context: PageContext,
     readonly section: SectionType,
-    mainLayout: MainLayoutComponent,
     readonly tags: TagsComponent,
     readonly list: ContentListComponent,
-    readonly validateUrl: ReturnType<typeof urlValidator>,
-    a11y: A11y,
   ) {
-    super(mainLayout, a11y)
+    super(context)
+  }
+
+  protected expectedUrl(locale: UILanguages): string | RegExp {
+    const sectionPath = sectionRoutes.getSectionPath(this.section, locale)
+    return buildUrlPattern(sectionPath)
   }
 
   shouldBeLocalized(locale: UILanguages) {
@@ -74,28 +74,18 @@ export class ContentListPage extends NavigablePage implements LocalizedPage<void
   }
 
   /**
-   * Valida que la URL sea correcta para esta sección (sin redirects).
-   * Ej: /es/blog, /en/project/, etc.
-   */
-  shouldBeInLocale(locale: UILanguages) {
-    const expected = new RegExp(`/${locale}/[a-z0-9-]+(/|$)`)
-    return this.validateUrl(expected)
-  }
-
-  /**
-   * Valida que el filtrado por tag fue exitoso.
+   * Validates that content is filtered by tag.
    */
   shouldBeFiltered(locale: UILanguages, tag: Tag) {
     return verifyStep(`content is filtered by tag ${tag}`, async ({ expect }) => {
       const expectedTagPath = tagRoutes.getSectionTagPath(this.section, locale, tag)
-      const escapedTagPath = expectedTagPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-      await this.validateUrl(new RegExp(`${escapedTagPath}(/|$)`)).with(expect)
+      await this.validateUrl(buildUrlPattern(expectedTagPath)).with(expect)
       return this.list.shouldHaveResults(expect)
     })
   }
 
   /**
-   * Abre un item específico por su href.
+   * Opens a list item by href.
    */
   async openItem(href: string) {
     return step(`open item ${href}`, async () => {
@@ -105,28 +95,28 @@ export class ContentListPage extends NavigablePage implements LocalizedPage<void
     })
   }
 
-  // Delegadores de conveniencia para tests
+  // Convenience delegators for tests
   async filterByTag(tag: string) {
     return this.tags.filterByTag(tag)
   }
 }
 
 /**
- * Builder base para secciones tipo post.
+ * Builder for post-type list sections.
  */
 function buildPostListMain(page: Page): PostListPageMain {
   return new PostListPageMain(page)
 }
 
 /**
- * Builder base para secciones tipo experience.
+ * Builder for experience-type list sections.
  */
 function buildExperienceListMain(page: Page): ExperienceListPageMain {
   return new ExperienceListPageMain(page)
 }
 
 /**
- * Factory unificado: cada sección se resuelve explícitamente a su builder base.
+ * Factory selector: each section is explicitly mapped to its builder.
  */
 const listMainFactories = {
   blog: buildPostListMain,
@@ -136,20 +126,22 @@ const listMainFactories = {
   community: buildExperienceListMain,
 } satisfies Record<SectionType, (page: Page) => LocalizedPage<void>>
 
+/**
+ * Creates ContentListPage instance.
+ */
 export function contentListPage(
   page: Page,
   sectionName: SectionType,
 ): ContentListPage {
   const mainPageInstance = listMainFactories[sectionName](page)
-
-  const { layout, validateUrl, a11y } = createPageContext(page, `${sectionName} list`, mainPageInstance)
+  const context = createPageContext(page, `${sectionName} list`, mainPageInstance)
   const tagsComp = tagsComponent(page.locator('main'))
   const listComp = contentListComponent(page.locator('main'))
-  return new ContentListPage(sectionName, layout, tagsComp, listComp, validateUrl, a11y)
+  return new ContentListPage(context, sectionName, tagsComp, listComp)
 }
 
 /**
- * Navega a la página de lista de una sección y retorna el page object.
+ * Navigates to content list page.
  */
 export async function userIsOnContentList(
   page: Page,
@@ -166,7 +158,7 @@ export async function userIsOnContentList(
 }
 
 /**
- * Navega a la página de lista por tag de una sección y retorna el page object.
+ * Navigates to content list page filtered by tag.
  */
 export async function userInContentTag(
   page: Page,

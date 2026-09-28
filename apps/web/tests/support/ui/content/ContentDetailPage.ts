@@ -2,18 +2,16 @@ import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
 import type { SectionType } from '@domain/section'
 import { sectionRoutes } from '@domain/section'
-import { NavigablePage, visit, createPageContext } from '@tests/support/ui/shared/pages'
-import type { MainLayoutComponent } from '@tests/support/ui/layouts/main'
+import { buildUrlPattern } from '@tests/support/ui/shared/flows/urlValidation'
+import { LocalizedNavigablePage, visit, createPageContext, type PageContext } from '@tests/support/ui/shared/pages'
 import { target, type Target } from '@tests/support/ui/target/target'
 import { verifyStep, type Step } from '@tests/step'
 import type { LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
 import { Comments, giscusComments } from './components/Comments'
-import { type A11y } from '@tests/support/ui/shared/flows/a11y'
 
 /**
- * Main component para posts (blog, talk) en página de detalle.
- * Valida presencia de date + comments.
- * Implementa LocalizedPage: es el componente principal de la página.
+ * Main component for detail pages with posts (blog, talk).
+ * Validates presence of date and comments.
  */
 export class PostDetailMain implements LocalizedPage<void> {
   constructor(
@@ -30,9 +28,8 @@ export class PostDetailMain implements LocalizedPage<void> {
 }
 
 /**
- * Main component para experiences (work, projects, community) en página de detalle.
- * Valida presencia de campos obligatorios (role, responsibilities, website).
- * Implementa LocalizedPage: es el componente principal de la página.
+ * Main component for detail pages with experiences (work, projects, community).
+ * Validates presence of required fields (role, responsibilities, website).
  */
 export class ExperienceDetailMain implements LocalizedPage<void> {
   constructor(
@@ -48,7 +45,7 @@ export class ExperienceDetailMain implements LocalizedPage<void> {
       await expect(this.roleField.locator).toBeVisible()
       await expect(this.responsibilitiesField.locator).toBeVisible()
 
-      // website es opcional
+      // website is optional
       const websiteCount = await this.websiteLink.locator.count()
       if (websiteCount > 0) await expect(this.websiteLink.locator).toBeVisible()
     })
@@ -56,7 +53,7 @@ export class ExperienceDetailMain implements LocalizedPage<void> {
 }
 
 /**
- * Builder base para secciones tipo post.
+ * Builder for post-type detail sections.
  */
 function buildPostDetailMain(page: Page): PostDetailMain {
   const dateContainer = page.getByTestId('post-date')
@@ -65,7 +62,7 @@ function buildPostDetailMain(page: Page): PostDetailMain {
 }
 
 /**
- * Builder base para secciones tipo experience.
+ * Builder for experience-type detail sections.
  */
 function buildExperienceDetailMain(page: Page): ExperienceDetailMain {
   const mainContainer = page.locator('main')
@@ -78,7 +75,7 @@ function buildExperienceDetailMain(page: Page): ExperienceDetailMain {
 }
 
 /**
- * Factory selector: cada sección se resuelve explícitamente a su builder base.
+ * Factory selector: each section is explicitly mapped to its builder.
  */
 const detailMainFactories = {
   blog: buildPostDetailMain,
@@ -96,36 +93,37 @@ function buildDetailMain(
 }
 
 /**
- * Orquestador de página de detalle.
- * Compone MainLayout + el componente main (PostDetailMain o ExperienceDetailMain).
+ * Orchestrator for detail page. Validates section and slug in URL.
  */
-export class ContentDetailPage extends NavigablePage implements LocalizedPage<void> {
+export class ContentDetailPage extends LocalizedNavigablePage {
   constructor(
-    mainLayout: MainLayoutComponent,
-    a11y: A11y,
+    context: PageContext,
+    readonly section: SectionType,
+    readonly slug: string,
   ) {
-    super(mainLayout, a11y)
+    super(context)
   }
 
-  shouldBeLocalized(locale: UILanguages) {
-    return this.mainLayout.shouldBeLocalized(locale)
+  protected expectedUrl(locale: UILanguages): string | RegExp {
+    const entryPath = sectionRoutes.getEntryPath(this.section, locale, this.slug)
+    return buildUrlPattern(entryPath)
   }
 }
 
 /**
- * Factory principal: crea ContentDetailPage completo.
+ * Creates ContentDetailPage instance.
  */
 export function contentDetailPage(
   page: Page,
   sectionName: SectionType,
+  slug: string,
 ): ContentDetailPage {
-  const { layout, a11y } = createPageContext(page, `${sectionName} detail`, buildDetailMain(page, sectionName))
-  return new ContentDetailPage(layout, a11y)
+  const context = createPageContext(page, `${sectionName} detail`, buildDetailMain(page, sectionName))
+  return new ContentDetailPage(context, sectionName, slug)
 }
 
 /**
- * Navega a la página de detalle de un entry y retorna el page object.
- * Encapsula: construcción de URL + instanciación de ContentDetailPage.
+ * Navigates to detail page.
  */
 export function userIsOnContentDetail(
   page: Page,
@@ -138,6 +136,6 @@ export function userIsOnContentDetail(
     `a user in ${sectionName} detail ${locale} ${slug}`,
     page,
     url,
-    (page) => contentDetailPage(page, sectionName),
+    (page) => contentDetailPage(page, sectionName, slug),
   )
 }
