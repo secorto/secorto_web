@@ -1,13 +1,12 @@
 import type { Page } from '@playwright/test'
 import type { Verification } from '@tests/step'
-import { orchestrateStep, type Step } from '@tests/step'
+import { orchestrateStep, verifyStep, type Step } from '@tests/step'
 import { mockThirdParty } from '@tests/support/mocks/mockThirdParty'
 import type { Loadable, LocalizedPage, LocalizedUrl } from '@tests/support/ui/shared/contracts/localization'
 import type { UILanguages } from '@i18n/ui'
 import type { MainLayoutComponent } from '@tests/support/ui/layouts/main'
 import { mainLayout, defaultMainLayout } from '@tests/support/ui/layouts/main'
 import { target } from '@tests/support/ui/target/target'
-import { urlValidator } from '@tests/support/ui/shared/flows/urlValidator'
 import { a11yFlow, type A11y } from '@tests/support/ui/shared/flows/a11y'
 
 /**
@@ -94,6 +93,17 @@ export const visit = <T extends Loadable>(
   )
 
 /**
+ * Factory: creates URL validator for page context.
+ */
+function createUrlValidator(page: Page) {
+  return function validateUrl(expected: string | RegExp): Verification<void> {
+    return verifyStep(`url should match ${expected}`, async ({ expect }) => {
+      await expect(page).toHaveURL(expected)
+    })
+  }
+}
+
+/**
  * Creates PageContext: layout, URL validation, and a11y auditing.
  */
 export function createPageContext(
@@ -108,7 +118,7 @@ export function createPageContext(
       headerTitle: target(`${pageName} header title`, page.getByRole('heading', { level: 1 })),
       main,
     }),
-    validateUrl: urlValidator(page),
+    validateUrl: createUrlValidator(page),
     a11y: a11yFlow(page),
   }
 }
