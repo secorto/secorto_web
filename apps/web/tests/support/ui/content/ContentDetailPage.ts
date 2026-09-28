@@ -2,7 +2,7 @@ import type { Page } from '@playwright/test'
 import type { UILanguages } from '@i18n/ui'
 import type { SectionType } from '@domain/section'
 import { sectionRoutes } from '@domain/section'
-import { NavigablePage, visit, createPageContext, type PageContext } from '@tests/support/ui/shared/pages'
+import { LocalizedNavigablePage, visit, createPageContext, type PageContext } from '@tests/support/ui/shared/pages'
 import { target, type Target } from '@tests/support/ui/target/target'
 import { verifyStep, type Step } from '@tests/step'
 import type { LocalizedPage } from '@tests/support/ui/shared/contracts/localization'
@@ -92,11 +92,21 @@ function buildDetailMain(
 }
 
 /**
- * Orchestrator for detail page.
+ * Orchestrator for detail page. Validates section and slug in URL.
  */
-export class ContentDetailPage extends NavigablePage {
-  constructor(context: PageContext) {
-    super(context.layout, context.a11y)
+export class ContentDetailPage extends LocalizedNavigablePage {
+  constructor(
+    context: PageContext,
+    readonly section: SectionType,
+    readonly slug: string,
+  ) {
+    super(context)
+  }
+
+  protected expectedUrl(locale: UILanguages): string | RegExp {
+    // Validates that URL matches the expected entry path
+    const entryPath = sectionRoutes.getEntryPath(this.section, locale, this.slug)
+    return new RegExp(`${entryPath}/?$`)
   }
 
   shouldBeLocalized(locale: UILanguages) {
@@ -110,9 +120,10 @@ export class ContentDetailPage extends NavigablePage {
 export function contentDetailPage(
   page: Page,
   sectionName: SectionType,
+  slug: string,
 ): ContentDetailPage {
   const context = createPageContext(page, `${sectionName} detail`, buildDetailMain(page, sectionName))
-  return new ContentDetailPage(context)
+  return new ContentDetailPage(context, sectionName, slug)
 }
 
 /**
@@ -129,6 +140,6 @@ export function userIsOnContentDetail(
     `a user in ${sectionName} detail ${locale} ${slug}`,
     page,
     url,
-    (page) => contentDetailPage(page, sectionName),
+    (page) => contentDetailPage(page, sectionName, slug),
   )
 }

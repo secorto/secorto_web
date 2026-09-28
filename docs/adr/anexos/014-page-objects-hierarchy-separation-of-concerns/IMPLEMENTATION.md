@@ -1,7 +1,7 @@
 # Implementación: Refactorización de POM Content a Composición
 
-**Estado:** ✅ Completado
-**Última actualización:** 2026-08-05
+**Estado:** ✅ Completado (Phase 1 + 2)
+**Última actualización:** 2026-09-27
 
 ---
 
@@ -9,26 +9,35 @@
 
 ### 1. Componentes Reutilizables (Composición, NO Herencia)
 
-Archivo | Responsabilidad | Patrón
--------- | ----------------- | --------
-[tests/support/ui/content/components/Tags.ts](../../../support/ui/content/components/Tags.ts) | Filtrado por tags | Recibe `Target` + `TargetSelector<string>`
-[tests/support/ui/content/components/ContentList.ts](../../../support/ui/content/components/ContentList.ts) | Navegación en listados | Recibe `Target` + `TargetSelector<string>`
-[tests/support/ui/content/components/Comments.ts](../../../support/ui/content/components/Comments.ts) | Comentarios (blog, talk) | Ya existía, reutilizado
+Archivo | Responsabilidad
+-------- | -----------------
+[Tags.ts][1] | Filtrado por tags
+[ContentList.ts][2] | Navegación en listados
+[Comments.ts][3] | Comentarios (blog, talk)
 
-**Patrón DI:** Componentes NO reciben `page`.
+[1]: ../../../../apps/web/tests/support/ui/content/components/Tags.ts
+[2]: ../../../../apps/web/tests/support/ui/content/components/ContentList.ts
+[3]: ../../../../apps/web/tests/support/ui/content/components/Comments.ts
 
-- **Tags, ContentList**: Reciben `Target` + `TargetSelector<T>` (selectores dinámicos por parámetro)
-- **Comments**: Recibe `Target` (localizador fijo)
-- **Detail mains** (PostDetailMain/ExperienceDetailMain): Reciben `Target` objects (localizadores ya calculados)
+**Patrón DI:**
+
+- Reciben `Target` + `TargetSelector<T>` (selectores dinámicos)
+- NO reciben `page` directamente
 
 ### 2. Orquestadores (Composición)
 
-Archivo | Compone | Patrón
--------- | --------- | --------
-[tests/support/ui/content/ContentListPage.ts](../../../support/ui/content/ContentListPage.ts) | MainLayout + Tags + ContentList | Orquestador + helper `userIsOnContentList()`
-[tests/support/ui/content/ContentDetailPage.ts](../../../support/ui/content/ContentDetailPage.ts) | MainLayout + PostDetailMain/ExperienceDetailMain | Orquestador simple + factory `buildDetailMain()`
+Archivo | Compone
+-------- | ---------
+[ContentListPage.ts][4] | MainLayout + Tags + ContentList
+[ContentDetailPage.ts][5] | MainLayout + Main components
 
-**Cambios clave:**
+[4]: ../../../../apps/web/tests/support/ui/content/ContentListPage.ts
+[5]: ../../../../apps/web/tests/support/ui/content/ContentDetailPage.ts
+
+**Patrón:**
+
+- Orquestadores de composición, NO herencia pura
+- Helpers encapsulan navegación + instanciación
 
 - **ContentListPage eliminó** `ContentExperienceDetailPage.ts` (fue merged)
 - **ContentDetailPage simplificado:** Solo contiene `mainLayout`, delega validaciones a componentes main
@@ -40,22 +49,7 @@ Archivo | Compone | Patrón
 
 **CAMBIO:** Plan original usaba `ContentTypeFlow<ListPage>` descriptores. La implementación usa **array simple** `testContents`.
 
-**Archivo:** [tests/e2e/functional/content-navigation-flow.spec.ts](../../../../e2e/functional/content-navigation-flow.spec.ts)
-
-```typescript
-const testContents = [
-  { name: 'blog', locale: 'es', testTag: 'python', testSlug: '2022-07-11-intro-python' },
-  { name: 'blog', locale: 'en', testTag: 'python', testSlug: '2022-07-11-intro-python' },
-  { name: 'talk', locale: 'es', testTag: 'python', testSlug: '2017-01-30-test-unitarios' },
-  { name: 'talk', locale: 'en', testTag: 'python', testSlug: '2017-01-30-test-unitarios' },
-  { name: 'work', locale: 'es', testTag: 'dev', testSlug: 'perficient' },
-  { name: 'work', locale: 'en', testTag: 'dev', testSlug: 'perficient' },
-  { name: 'projects', locale: 'es', testTag: 'python', testSlug: 'colombia-python' },
-  { name: 'projects', locale: 'en', testTag: 'python', testSlug: 'colombia-python' },
-  { name: 'community', locale: 'es', testTag: 'python', testSlug: 'pybaq' },
-  { name: 'community', locale: 'en', testTag: 'python', testSlug: 'pybaq' },
-]
-```
+**Ver:** [content-navigation-flow.spec.ts — testContents array](../../../../e2e/functional/content-navigation-flow.spec.ts)
 
 **Ventaja:** Más simple, más legible, sin factories adicionales por tipo de contenido.
 
@@ -88,81 +82,31 @@ List main classes | `PostListPageMain` / `ExperienceListPageMain` | Implementada
 
 ### 🎯 Clases Main Implementadas con Validaciones Específicas
 
-**PostListPageMain** valida contenido del slot principal para posts/talks:
+**Ver:** [ContentListPage.ts][14]
 
-```typescript
-export class PostListPageMain implements LocalizedPage<void> {
-  constructor(private page: Page) {}
-  shouldBeLoaded(_locale: UILanguages) {
-    return verifyStep('post list items have post-date', async ({ expect }) => {
-      const firstItem = this.page.getByTestId('list-item').first()
-      const postDate = firstItem.getByTestId('post-date')
-      await expect(postDate).toBeVisible()
-    })
-  }
-}
-```
+**Rol:** Validaciones específicas del slot principal:
 
-**ExperienceListPageMain** valida contenido del slot para work/projects/community:
+- PostListPageMain: `post-date` (blog, talk)
+- ExperienceListPageMain: `post-role` + `post-responsibilities`
 
-```typescript
-export class ExperienceListPageMain implements LocalizedPage<void> {
-  constructor(private page: Page) {}
-  shouldBeLoaded(_locale: UILanguages) {
-    return verifyStep('experience list items have role/responsibilities', async ({ expect }) => {
-      const firstItem = this.page.getByTestId('list-item').first()
-      const roleField = firstItem.getByTestId('post-role')
-      const respField = firstItem.getByTestId('post-responsibilities')
-      await expect(roleField).toBeVisible()
-      await expect(respField).toBeVisible()
-    })
-  }
-}
-```
-
-**Rol:** Complementan `ContentListPage.shouldBeLoaded()` validando contenido específico del slot principal
-según tipo de contenido. Son parte esencial del objeto de página, no solo decorativas.
+[14]: ../../../../apps/web/tests/support/ui/content/ContentListPage.ts#L18-L45
 
 ---
 
 ## Validación de Slots Específicos por Categoría
 
-**PostListPageMain vs ExperienceListPageMain:** Cada uno valida selectores data-testid distintos en el slot principal:
+**Validaciones según tipo de contenido:**
 
-- **Posts (blog, talk):** Valida `post-date` (usando PostDate component)
-- **Experience (work, projects, community):** Valida `post-role` + `post-responsibilities`
-  (usando role/responsibilities fields)
+- **Posts (blog, talk):** `post-date` (PostDate component)
+- **Experience (work, projects, community):** `post-role` + `post-responsibilities`
 
-Esto asegura que el layout dinámico (MainLayout → slot → categoría específica) renderiza el contenido correcto
-sin generar snippets HTML duplicados.
+Asegura que el layout dinámico renderiza contenido correcto sin duplicación.
 
 ## Archivo: Patrón Real vs Plan
 
-**El test implementado:**
+**Ver:** [content-navigation-flow.spec.ts][15]
 
-```typescript
-for (const content of testContents) {
-  const config = sectionsConfig[content.name]
-
-  test.describe(`[${config.category}] ${content.name}`, () => {
-    test(`navigation for ${content.name}...`, async ({ page }) => {
-      // Paso 1: Navega usando helper que encapsula URL
-      const list = await userIsOnContentList(page, content.name, content.locale)
-      await list.shouldBeLoaded(content.locale).with(expect)
-
-      // Paso 2-3: Filtra y valida
-      await list.filterByTag(content.testTag)
-      await list.shouldBeFiltered(content.testTag).with(expect)
-
-      // Paso 4-5: Detalle
-      const entryPath = getEntryPath(content.name, content.locale, content.testSlug)
-      await list.openItem(entryPath)
-      const detail = contentDetailPage(page, content.name)
-      await detail.shouldBeLoaded(content.locale).with(expect)
-    })
-  })
-}
-```
+[15]: ../../../../e2e/functional/content-navigation-flow.spec.ts
 
 **Resultado:**
 
@@ -170,7 +114,7 @@ for (const content of testContents) {
 - ✅ 1 navegación por test
 - ✅ Factories seleccionan automáticamente según `sectionsConfig`
 - ✅ Test grouping en reporting por categoría `[POST]`/`[EXPERIENCE]`
-- ✅ Slugs validados contra filesystem (2022-07-11-intro-python, colombia-python, etc.)
+- ✅ Slugs validados contra filesystem
 
 ---
 
@@ -233,48 +177,74 @@ ExperienceListPageMain | ✅ Implementado | Valida presencia de role/responsibil
 
 ### Cambios realizados
 
-**1. ContentListPage.ts:**
+1. [ContentListPage.ts][14] — Main classes
+2. [ListWork.astro][16] — Agregado data-testid
+3. [contentListPage() factory][17] — Selección automática
 
-```typescript
-export class PostListPageMain implements LocalizedPage<void> {
-  constructor(private page: Page) {}
-
-  shouldBeLoaded() {
-    return verifyStep('post list items have post-date', async ({ expect }) => {
-      const firstItem = this.page.getByTestId('list-item').first()
-      const postDate = firstItem.getByTestId('post-date')
-      await expect(postDate).toBeVisible()
-    })
-  }
-}
-
-export class ExperienceListPageMain implements LocalizedPage<void> {
-  constructor(private page: Page) {}
-
-  shouldBeLoaded() {
-    return verifyStep('experience list items have role/responsibilities', async ({ expect }) => {
-      const firstItem = this.page.getByTestId('list-item').first()
-      const roleField = firstItem.getByTestId('post-role')
-      const respField = firstItem.getByTestId('post-responsibilities')
-  }
-}
-```
-
-**2. ListWork.astro (agregado data-testid):**
-
-```astro
-{post.data.role && <p data-testid="post-role">{post.data.role}</p>}
-{post.data.responsibilities && <p data-testid="post-responsibilities">{post.data.responsibilities}</p>}
-```
-
-**3. Factory contentListPage() actualizado:**
-
-- Ahora pasa `page` en lugar de `sectionType` a las clases main
-- Selecciona automáticamente PostListPageMain o ExperienceListPageMain según `sectionsConfig[sectionName].category`
+[16]: ../../../../src/components/ListWork.astro
+[17]: ../../../../apps/web/tests/support/ui/content/ContentListPage.ts#L138-L150
 
 ### Cobertura lograda
 
 - ✅ PostListPageMain valida el contenido específico de posts en listados
 - ✅ ExperienceListPageMain valida el contenido específico de experiences en listados
-- ✅ Selectores consistentes con detail pages (data-testid="post-date", "post-role", "post-responsibilities")
-- ✅ Sin duplicación: mismo patrón que ContentDetailPage (reciben page, implementan `LocalizedPage<void>`)
+- ✅ Selectores consistentes con detail pages
+- ✅ Sin duplicación: mismo patrón que ContentDetailPage
+
+---
+
+## Phase 2: Page Context Consolidation (September 2026)
+
+**Estado:** ✅ Completado
+**Última actualización:** 2026-09-27
+
+**Cambio:** Centralización de `validateUrl` y `a11y` en base `LocalizedNavigablePage` para eliminar boilerplate.
+
+### Problema
+
+- Duplicación: `shouldBeInLocale()` repetido en 4 páginas (TagsPage, HomePage, ContentListPage, etc.)
+- Constructor sobrecargado: 3 parámetros solo para inyectar flujos
+- Violación de SRP: cada página recibía responsabilidades de validación URL + auditoría a11y
+
+### Solución
+
+- **PageContext:** Fuente única de verdad — [pages.ts][6]
+- **LocalizedNavigablePage:** Base centralizada — [pages.ts][7]
+- **expectedUrl() abstracto:** Especialización por página
+
+[6]: ../../../../apps/web/tests/support/ui/shared/pages.ts#L15-L21
+[7]: ../../../../apps/web/tests/support/ui/shared/pages.ts#L47-L68
+
+### Archivos Modificados
+
+Archivo | Cambios | Líneas
+--- | --- | ---
+[pages.ts][8] | PageContext, LocalizedNavigablePage | +34
+[TagsPage.ts][9] | Constructor(context), expectedUrl() | -13
+[HomePage.ts][10] | Constructor(context), expectedUrl() | -14
+[ContentDetailPage.ts][11] | Constructor(context) | -2
+[ContentListPage.ts][12] | Constructor(context), override | -4
+**Total** | **Reducción neta** | **-4**
+
+[8]: ../../../../apps/web/tests/support/ui/shared/pages.ts
+[9]: ../../../../apps/web/tests/support/ui/tags/TagsPage.ts
+[10]: ../../../../apps/web/tests/support/ui/home/pages/HomePage.ts
+[11]: ../../../../apps/web/tests/support/ui/content/ContentDetailPage.ts
+[12]: ../../../../apps/web/tests/support/ui/content/ContentListPage.ts
+
+### Impacto
+
+- ✅ Boilerplate por página: -50%
+- ✅ Lugares donde cambiar validación URL: 5 páginas → 1 base
+- ✅ Constructor: 3+ parámetros → 1 (PageContext)
+- ✅ JSDoc: todos los comentarios en inglés, solo QUÉ no POR QUÉ
+
+### Patrón para Agregar Nuevas Páginas Localizadas
+
+1. Extender `LocalizedNavigablePage`
+2. Implementar `protected expectedUrl(locale): string | RegExp`
+3. Factory retorna página con `new Page(context)`
+
+Ver: [Patrón][13]
+
+[13]: ../../../../apps/web/tests/support/ui/shared/pages.ts#L60-L68

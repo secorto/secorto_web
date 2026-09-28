@@ -60,9 +60,8 @@ export class ContentListPage extends LocalizedNavigablePage {
   }
 
   protected expectedUrl(locale: UILanguages): string | RegExp {
-    // Validates a valid section (blog|talk|work|...), not any arbitrary string
-    const validSections = sectionRoutes.getSections().join('|')
-    return new RegExp(`/${locale}/(${validSections})(/|$)`)
+    const sectionPath = sectionRoutes.getSectionPath(this.section, locale)
+    return new RegExp(`${sectionPath}(/|$)`)
   }
 
   shouldBeLocalized(locale: UILanguages) {
