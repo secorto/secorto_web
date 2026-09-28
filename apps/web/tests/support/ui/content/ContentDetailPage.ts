@@ -108,10 +108,6 @@ export class ContentDetailPage extends LocalizedNavigablePage {
     const entryPath = sectionRoutes.getEntryPath(this.section, locale, this.slug)
     return buildUrlPattern(entryPath)
   }
-
-  shouldBeLocalized(locale: UILanguages) {
-    return this.mainLayout.shouldBeLocalized(locale)
-  }
 }
 
 /**
