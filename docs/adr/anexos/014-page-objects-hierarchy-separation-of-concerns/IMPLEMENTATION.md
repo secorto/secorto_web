@@ -49,7 +49,7 @@ Archivo | Compone
 
 **CAMBIO:** Plan original usaba `ContentTypeFlow<ListPage>` descriptores. La implementación usa **array simple** `testContents`.
 
-**Ver:** [content-navigation-flow.spec.ts — testContents array](../../../../e2e/functional/content-navigation-flow.spec.ts)
+**Ver:** [content-navigation-flow.spec.ts — testContents array](../../../../apps/web/tests/e2e/functional/content-navigation-flow.spec.ts)
 
 **Ventaja:** Más simple, más legible, sin factories adicionales por tipo de contenido.
 
@@ -106,7 +106,7 @@ Asegura que el layout dinámico renderiza contenido correcto sin duplicación.
 
 **Ver:** [content-navigation-flow.spec.ts][15]
 
-[15]: ../../../../e2e/functional/content-navigation-flow.spec.ts
+[15]: ../../../../apps/web/tests/e2e/functional/content-navigation-flow.spec.ts
 
 **Resultado:**
 
@@ -167,13 +167,14 @@ ExperienceListPageMain | ✅ Implementado | Valida presencia de role/responsibil
 
 - ✅ Valida que los items de lista contienen `<PostDate data-testid="post-date">` en el slot
 - Implementación: Busca el primer item y verifica que PostDate es visible
-- Referencia: [ListPost.astro](../../../../src/components/ListPost.astro#L21) renderiza `<PostDate>` en el slot
+- Referencia: [ListPost.astro](../../../../apps/web/src/components/list/ListPost.astro#L21)
+  renderiza `<PostDate>` en el slot
 
 **ExperienceListPageMain** (para work, projects, community en listados):
 
 - ✅ Valida que los items contienen `role` y `responsibilities` en el slot
 - Implementación: Busca el primer item y verifica que ambos campos son visibles (si existen)
-- Referencia: [ListWork.astro](../../../../src/components/ListWork.astro#L36-L37) renderiza ambos con data-testid
+- Referencia: [ListWork.astro](../../../../apps/web/src/components/list/ListWork.astro#L36-L37) renderiza ambos con data-testid
 
 ### Cambios realizados
 
@@ -181,7 +182,7 @@ ExperienceListPageMain | ✅ Implementado | Valida presencia de role/responsibil
 2. [ListWork.astro][16] — Agregado data-testid
 3. [contentListPage() factory][17] — Selección automática
 
-[16]: ../../../../src/components/ListWork.astro
+[16]: ../../../../apps/web/src/components/list/ListWork.astro
 [17]: ../../../../apps/web/tests/support/ui/content/ContentListPage.ts#L138-L150
 
 ### Cobertura lograda

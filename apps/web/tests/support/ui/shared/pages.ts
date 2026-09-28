@@ -65,7 +65,10 @@ export abstract class LocalizedNavigablePage
    * Validates content is localized for the given locale.
    */
   shouldBeLocalized(locale: UILanguages) {
-    return this.mainLayout.shouldBeLocalized(locale)
+    return verifyStep(`page is localized in ${locale}`, async ({ expect }) => {
+      await this.shouldBeInLocale(locale).with(expect)
+      await this.mainLayout.shouldBeLocalized(locale).with(expect)
+    })
   }
 }
 
