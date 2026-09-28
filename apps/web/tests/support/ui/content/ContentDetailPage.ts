@@ -94,10 +94,7 @@ function buildDetailMain(
 }
 
 /**
- * Orquestador de página de detalle.
- * Compone MainLayout + el componente main (PostDetailMain o ExperienceDetailMain).
- * Extiende NavigablePage (no LocalizedNavigablePage) porque no tiene patrón de URL fijo.
- * La URL se valida en visit().
+ * Orchestrator for detail page.
  */
 export class ContentDetailPage extends NavigablePage {
   constructor(context: PageContext) {
@@ -110,8 +107,7 @@ export class ContentDetailPage extends NavigablePage {
 }
 
 /**
- * Factory principal: crea ContentDetailPage completo.
- * Usa createPageContext para obtener PageContext unificado.
+ * Creates ContentDetailPage instance.
  */
 export function contentDetailPage(
   page: Page,
@@ -122,8 +118,7 @@ export function contentDetailPage(
 }
 
 /**
- * Navega a la página de detalle de un entry y retorna el page object.
- * Encapsula: construcción de URL + instanciación de ContentDetailPage.
+ * Navigates to detail page.
  */
 export function userIsOnContentDetail(
   page: Page,

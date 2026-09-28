@@ -21,8 +21,6 @@ export class TagsPageMain implements LocalizedPage<void> {
 
 /**
  * Orchestrator for the global tags page.
- * Extends LocalizedNavigablePage — implements only expectedUrl().
- * Inherits shouldBeInLocale() and shouldBeLocalized() from base.
  */
 export class TagsPage extends LocalizedNavigablePage {
   constructor(context: PageContext) {
@@ -35,8 +33,7 @@ export class TagsPage extends LocalizedNavigablePage {
 }
 
 /**
- * Factory: creates a TagsPage instance for the given page.
- * Simplified: receives PageContext directly.
+ * Creates TagsPage instance.
  */
 export function tagsPage(page: Page): TagsPage {
   const context = createPageContext(page, 'tags', new TagsPageMain(page))
@@ -44,8 +41,7 @@ export function tagsPage(page: Page): TagsPage {
 }
 
 /**
- * Navigates to the global tags page and returns the page object.
- * Follows the same pattern as userInHome and userIsOnContentDetail.
+ * Navigates to the tags page.
  */
 export function userInTags(page: Page, locale: UILanguages) {
   return visit(`a user in tags ${locale}`, page, `/${locale}/tags`, tagsPage)

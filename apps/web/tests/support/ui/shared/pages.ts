@@ -11,10 +11,7 @@ import { urlValidator } from '@tests/support/ui/shared/flows/urlValidator'
 import { a11yFlow, type A11y } from '@tests/support/ui/shared/flows/a11y'
 
 /**
- * Contexto unificado para una página.
- * Fuente ÚNICA de verdad para inyecciones.
- * No incluye main (es solo temporal en factory).
- * No incluye page (está encapsulado en los flujos).
+ * Contexto unificado para una página: layout, validación de URL y auditoría a11y.
  */
 export type PageContext = {
   readonly layout: MainLayoutComponent
@@ -23,8 +20,7 @@ export type PageContext = {
 }
 
 /**
- * Clase abstracta base para todas las páginas navegables.
- * Delega carga y auditoría a11y al layout.
+ * Base para todas las páginas navegables.
  */
 export abstract class NavigablePage implements Loadable {
   constructor(
@@ -42,17 +38,7 @@ export abstract class NavigablePage implements Loadable {
 }
 
 /**
- * Clase base para páginas localizadas.
- * Extiende NavigablePage — hereda shouldBeLoaded() y auditA11y() sin duplicar.
- * Implementa LocalizedUrl + LocalizedPage.
- *
- * Responsabilidades:
- * - shouldBeLoaded() (heredado de NavigablePage)
- * - auditA11y() (heredado de NavigablePage)
- * - shouldBeInLocale() genérico (LocalizedUrl) — NO se repite en subclases
- * - shouldBeLocalized() genérico (LocalizedPage) — delegado a mainLayout
- *
- * Cada subclase SOLO debe implementar: expectedUrl(locale)
+ * Base para páginas localizadas. Subclases implementan expectedUrl(locale).
  */
 export abstract class LocalizedNavigablePage
   extends NavigablePage
@@ -65,23 +51,19 @@ export abstract class LocalizedNavigablePage
   }
 
   /**
-   * Retorna el patrón de URL esperado para esta página en un locale dado.
-   * Cada subclase implementa su propio patrón.
-   * No debe ser Paso — es solo data.
+   * URL pattern for this page (must be implemented by subclass).
    */
   protected abstract expectedUrl(locale: UILanguages): string | RegExp
 
   /**
-   * Validación genérica de URL por locale.
-   * Implementación única de LocalizedUrl — no se repite en subclases.
+   * Validates URL matches expectedUrl() pattern.
    */
   shouldBeInLocale(locale: UILanguages): Verification<void> {
     return this.validateUrl(this.expectedUrl(locale))
   }
 
   /**
-   * Delegación a mainLayout para validación de localización de contenido.
-   * Implementación de LocalizedPage.
+   * Validates content is localized for the given locale.
    */
   shouldBeLocalized(locale: UILanguages) {
     return this.mainLayout.shouldBeLocalized(locale)
@@ -89,8 +71,7 @@ export abstract class LocalizedNavigablePage
 }
 
 /**
- * Navega a una URL y ejecuta el factory para crear el page object.
- * Orquesta: setup -> goto -> factory -> validación de carga.
+ * Navigates to URL, creates page object, and validates it loaded.
  */
 export const visit = <T extends Loadable>(
   title: string,
@@ -113,9 +94,7 @@ export const visit = <T extends Loadable>(
   )
 
 /**
- * Helper para construir el contexto base de una página: layout + flujos.
- * Retorna PageContext unificado — fuente única de verdad para inyecciones.
- * Evita repetición en los factories de pages.
+ * Creates PageContext: layout, URL validation, and a11y auditing.
  */
 export function createPageContext(
   page: Page,

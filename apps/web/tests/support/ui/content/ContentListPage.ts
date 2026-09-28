@@ -47,13 +47,7 @@ export class ExperienceListPageMain implements LocalizedPage<void> {
 }
 
 /**
- * Orquestador de página de lista.
- * Compone MainLayout + Tags + ContentList.
- * Extiende LocalizedNavigablePage — implementa solo expectedUrl().
- *
- * Redefine shouldBeLocalized() porque tiene componentes adicionales (tags, list)
- * que necesitan validación y que otros Page Objects no tienen.
- * Esta es una excepción legítima, no una violación de LSP.
+ * Orchestrator for content list pages. Validates list, tags, and URL patterns.
  */
 export class ContentListPage extends LocalizedNavigablePage {
   constructor(
@@ -80,7 +74,7 @@ export class ContentListPage extends LocalizedNavigablePage {
   }
 
   /**
-   * Valida que el filtrado por tag fue exitoso.
+   * Validates that content is filtered by tag.
    */
   shouldBeFiltered(locale: UILanguages, tag: Tag) {
     return verifyStep(`content is filtered by tag ${tag}`, async ({ expect }) => {
@@ -92,7 +86,7 @@ export class ContentListPage extends LocalizedNavigablePage {
   }
 
   /**
-   * Abre un item específico por su href.
+   * Opens a list item by href.
    */
   async openItem(href: string) {
     return step(`open item ${href}`, async () => {
@@ -133,6 +127,9 @@ const listMainFactories = {
   community: buildExperienceListMain,
 } satisfies Record<SectionType, (page: Page) => LocalizedPage<void>>
 
+/**
+ * Creates ContentListPage instance.
+ */
 export function contentListPage(
   page: Page,
   sectionName: SectionType,
@@ -145,7 +142,7 @@ export function contentListPage(
 }
 
 /**
- * Navega a la página de lista de una sección y retorna el page object.
+ * Navigates to content list page.
  */
 export async function userIsOnContentList(
   page: Page,
