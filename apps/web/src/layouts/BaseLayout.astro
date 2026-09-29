@@ -11,7 +11,7 @@ interface Props {
 
 const { pageTitle, links } = Astro.props
 ---
-<SiteLayout pageTitle={pageTitle} links={links}>
+<SiteLayout links={links}>
   <slot name="seo-head" slot="seo-head" />
   <Header title={pageTitle} />
   <main class="main-content">

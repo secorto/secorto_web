@@ -30,7 +30,7 @@ const { Content } = await render(entry.original)
 const pageDescription = getSeoDescription(entry.original.data)
 ---
 
-<BaseLayout pageTitle={entry.original.data.title} description={pageDescription} links={links}>
+<BaseLayout pageTitle={entry.original.data.title} links={links}>
   <EntrySEO
     slot="seo-head"
     title={entry.original.data.title}

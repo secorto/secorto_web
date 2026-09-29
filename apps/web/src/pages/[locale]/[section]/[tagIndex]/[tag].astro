@@ -42,7 +42,7 @@ const tags = tagRoutes.getTags()
 const postWithTag = posts.filter(withTag(tag))
 ---
 
-<BaseLayout pageTitle={pageTitle} description={metaDescription} links={links}>
+<BaseLayout pageTitle={pageTitle} links={links}>
   <PageSEO
     slot="seo-head"
     title={pageTitle}
