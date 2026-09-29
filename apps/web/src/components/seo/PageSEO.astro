@@ -24,7 +24,10 @@ const site = import.meta.env.SITE
 const absoluteImageUrl = image ? `${site}${image.src}` : undefined
 ---
 
-<Alternates links={links} noindex={noindex} />
+<Alternates links={links} />
+
+{/* Noindex si aplica */}
+{noindex && <meta name="robots" content="noindex" />}
 
 {/* Open Graph - Básicos */}
 <meta property="og:type" content={ogType} />
