@@ -2,6 +2,7 @@
 title: Sobre mi
 layout: '@layouts/StandalonePageLayout.astro'
 translationKey: about
+description: 'Ingeniero especializado en automatización, arquitectura y diseño de sistemas de calidad'
 ---
 
 **Ingeniero especializado en automatización y diseño de sistemas de calidad.** Diseño suites reproducibles

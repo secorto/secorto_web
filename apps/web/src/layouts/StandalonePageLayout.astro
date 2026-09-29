@@ -10,11 +10,12 @@ import PreliminaryIcon from '@assets/img/preliminary.svg'
 
 type Props = MarkdownLayoutProps<{
   title: string
+  description: string
   translationKey: string
 }>
 
 const { frontmatter } = Astro.props
-const { title, translationKey } = frontmatter
+const { title, description, translationKey } = frontmatter
 const path = Astro.url.pathname.slice(1).replace(/\/$/, '')
 
 const links = createStandalonePageLinks(
@@ -34,7 +35,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site)
   <PageSEO
     slot="seo-head"
     title={title}
-    description={title}
+    description={description}
     url={canonicalURL.toString()}
     links={links}
     noindex={Boolean(draft)}
