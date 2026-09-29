@@ -1,8 +1,8 @@
 ---
 /**
- * SEO para páginas estáticas (home, about, listados)
+ * SEO component
  * Renderiza metadatos OpenGraph + Twitter Card + Alternates
- * Soporta: home, about, tags, section listings, tag filters
+ * Soporta páginas estáticas (home, about, listados) y entries (blog, talks, etc.)
  */
 import Alternates from './Alternates.astro'
 import type { TranslationLink } from '@domain/translationLink'
@@ -12,11 +12,12 @@ interface Props {
   description: string
   url: string
   links: TranslationLink[]
+  ogType?: 'website' | 'article'
   image?: ImageMetadata
   noindex?: boolean
 }
 
-const { title, description, url, links, image, noindex = false } = Astro.props
+const { title, description, url, links, ogType = 'website', image, noindex = false } = Astro.props
 const site = import.meta.env.SITE
 
 // Construir URL absoluta de imagen si existe
@@ -26,7 +27,7 @@ const absoluteImageUrl = image ? `${site}${image.src}` : undefined
 <Alternates links={links} noindex={noindex} />
 
 {/* Open Graph - Básicos */}
-<meta property="og:type" content="website" />
+<meta property="og:type" content={ogType} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={url} />
