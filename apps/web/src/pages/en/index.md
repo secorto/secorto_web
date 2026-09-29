@@ -3,6 +3,7 @@ layout: "@layouts/HomeLayout.astro"
 locale: "en"
 title: "SeCOrTo"
 subTitle: "Quality by design"
+description: "Software design and architecture with structured quality"
 relatedContent:
   - section: work
     slug: perficient

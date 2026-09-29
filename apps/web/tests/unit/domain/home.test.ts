@@ -76,6 +76,7 @@ describe('home domain schemas', () => {
     const validFrontmatter: HomeFrontmatter = {
       title: 'Página de inicio',
       subTitle: 'Soy Sergio Carlos Orozco Torres',
+      description: 'Dise\u00f1o y arquitectura de software con calidad estructurada',
       locale: 'es',
       relatedContent: [
         { section: 'work', slug: 'perficient' },

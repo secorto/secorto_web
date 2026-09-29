@@ -14,14 +14,13 @@ type Props = MarkdownLayoutProps<HomeFrontmatter>
 const { frontmatter } = Astro.props
 const parsed = HomeFrontmatterSchema.parse(frontmatter)
 
-const { title, subTitle, locale, relatedContent, draft } = parsed
+const { title, subTitle, description, locale, relatedContent, draft } = parsed
 
 const links = languages.all.map(lang =>
   availableLink(`${languages.getPath(lang)}/`, lang)
 )
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site)
-const siteDescription = title // Usar el título como descripción OG
 
 import '../styles/home.css'
 ---
@@ -30,7 +29,7 @@ import '../styles/home.css'
   <PageSEO
     slot="seo-head"
     title={title}
-    description={siteDescription}
+    description={description}
     url={canonicalURL.toString()}
     links={links}
     noindex={Boolean(draft)}
