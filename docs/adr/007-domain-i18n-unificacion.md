@@ -85,3 +85,4 @@ La implementación concreta se documenta en el anexo técnico correspondiente.
 ## Anexos
 
 - [Implementación](./anexos/007-domain-i18n-unificacion/IMPLEMENTATION.md)
+- [SEO Structure](./anexos/007-domain-i18n-unificacion/SEO_STRUCTURE.md)

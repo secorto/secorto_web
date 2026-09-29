@@ -29,14 +29,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site)
     <meta name="description" content={siteDescription} />
     <link rel="canonical" href={canonicalURL} />
     <slot name="seo-head" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content={canonicalURL} />
-    <meta property="og:title" content={pageTitle} />
-    <meta property="og:description" content={siteDescription} />
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content={canonicalURL} />
-    <meta property="twitter:title" content={pageTitle} />
-    <meta property="twitter:description" content={siteDescription} />
     {/* Inline script previene flash en tema oscuro */}
     <script is:inline>
       function getInitialTheme() {

@@ -2,7 +2,7 @@
 import type { MarkdownLayoutProps } from 'astro'
 import BaseLayout from '@layouts/BaseLayout.astro'
 import { createStandalonePageLinks } from '@secorto/i18n'
-import SEOHead from '@components/SEOHead.astro'
+import PageSEO from '@components/seo/PageSEO.astro'
 import { languages } from '@i18n/ui'
 import { standalonePageRoutes } from '@domain/standalonePage'
 import { useTranslations } from '@i18n/utils'
@@ -27,11 +27,15 @@ const locale = languages.fromString(Astro.currentLocale)
 const page = standalonePageRoutes.getPage(translationKey)
 const draft = standalonePageRoutes.routes[page][locale]?.draft ?? false
 const t = useTranslations(locale)
+const canonicalURL = new URL(Astro.url.pathname, Astro.site)
 ---
 
 <BaseLayout pageTitle={title} links={links}>
-  <SEOHead
+  <PageSEO
     slot="seo-head"
+    title={title}
+    description={title}
+    url={canonicalURL.toString()}
     links={links}
     noindex={Boolean(draft)}
   />

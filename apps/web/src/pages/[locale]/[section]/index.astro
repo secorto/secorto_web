@@ -1,12 +1,12 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro'
-import { sectionRoutes } from '@domain/section'
-import SEOHead from '@components/SEOHead.astro'
+import PageSEO from '@components/seo/PageSEO.astro'
 import Tags from '@components/Tags.astro'
 import ListContent from '@components/list/ListContent.astro'
 import { getCollection } from 'astro:content'
 import { availableLink, getStaticPathsSections, availableAtLocale } from '@secorto/i18n'
 import { languages, sections } from '@i18n/ui'
+import { sectionRoutes } from '@domain/section'
 import { tagRoutes } from '@domain/tags'
 
 export async function getStaticPaths() {
@@ -19,6 +19,8 @@ export type Params = Awaited<ReturnType<typeof getStaticPaths>>[number]['params'
 const { locale } = Astro.params
 const { section } = Astro.props
 const pageTitle = sections[section][locale]
+const canonicalURL = new URL(Astro.url.pathname, Astro.site)
+const pageDescription = `Explora ${pageTitle.toLowerCase()}`
 const posts = await getCollection(section, availableAtLocale(locale))
 const links = languages.all.map(lang => availableLink(sectionRoutes.getSectionPath(section, lang), lang))
 const tags = tagRoutes.getTags()
@@ -28,7 +30,13 @@ const tags = tagRoutes.getTags()
 ---
 
 <BaseLayout pageTitle={pageTitle} links={links}>
-  <SEOHead slot="seo-head" links={links} />
+  <PageSEO
+    slot="seo-head"
+    title={pageTitle}
+    description={pageDescription}
+    url={canonicalURL.toString()}
+    links={links}
+  />
   <Tags locale={locale} section={section} tags={tags} />
   <ListContent section={section} posts={posts} locale={locale} />
 </BaseLayout>

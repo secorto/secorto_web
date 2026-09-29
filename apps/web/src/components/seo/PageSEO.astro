@@ -1,0 +1,46 @@
+---
+/**
+ * SEO para páginas estáticas (home, about, listados)
+ * Renderiza metadatos OpenGraph + Twitter Card + Alternates
+ * Soporta: home, about, tags, section listings, tag filters
+ */
+import Alternates from './Alternates.astro'
+import type { TranslationLink } from '@domain/translationLink'
+
+interface Props {
+  title: string
+  description: string
+  url: string
+  links: TranslationLink[]
+  image?: ImageMetadata
+  noindex?: boolean
+}
+
+const { title, description, url, links, image, noindex = false } = Astro.props
+const site = import.meta.env.SITE
+
+// Construir URL absoluta de imagen si existe
+const absoluteImageUrl = image ? `${site}${image.src}` : undefined
+---
+
+<Alternates links={links} noindex={noindex} />
+
+{/* Open Graph - Básicos */}
+<meta property="og:type" content="website" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={url} />
+
+{/* Open Graph - Imagen */}
+{absoluteImageUrl && (
+  <>
+    <meta property="og:image" content={absoluteImageUrl} />
+    <meta property="og:image:alt" content={`${title} preview`} />
+  </>
+)}
+
+{/* Twitter Card */}
+<meta name="twitter:card" content={absoluteImageUrl ? 'summary_large_image' : 'summary'} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+{absoluteImageUrl && <meta name="twitter:image" content={absoluteImageUrl} />}

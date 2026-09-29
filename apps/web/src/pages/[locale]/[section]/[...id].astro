@@ -4,7 +4,7 @@ import { createDetailTranslationLinks, getStaticPathsEntries } from '@secorto/i1
 import BaseLayout from '@layouts/BaseLayout.astro'
 import Comments from '@components/Comments.astro'
 import DetailContent from '@components/detail/DetailContent.astro'
-import SEOHead from '@components/SEOHead.astro'
+import EntrySEO from '@components/seo/EntrySEO.astro'
 import { useTranslations } from '@i18n/utils'
 import { getSeoDescription } from '@domain/post'
 import { languages } from '@i18n/ui'
@@ -22,6 +22,7 @@ const { locale } = Astro.params
 const { entry, siblings, section } = Astro.props
 
 const links = createDetailTranslationLinks(siblings, sectionRoutes, languages)
+const canonicalURL = new URL(Astro.url.pathname, Astro.site)
 
 const t = useTranslations(locale)
 
@@ -30,9 +31,14 @@ const pageDescription = getSeoDescription(entry.original.data)
 ---
 
 <BaseLayout pageTitle={entry.original.data.title} description={pageDescription} links={links}>
-  <SEOHead
+  <EntrySEO
     slot="seo-head"
+    title={entry.original.data.title}
+    description={pageDescription}
+    url={canonicalURL.toString()}
     links={links}
+    image={entry.original.data.image}
+    section={section}
     noindex={entry.draft}
   />
   {entry.draft && (
