@@ -6,13 +6,12 @@ import type { TranslationLink } from '@domain/translationLink'
 
 interface Props {
   pageTitle: string
-  description?: string
   links: TranslationLink[]
 }
 
-const { pageTitle, description, links } = Astro.props
+const { pageTitle, links } = Astro.props
 ---
-<SiteLayout pageTitle={pageTitle} description={description} links={links}>
+<SiteLayout pageTitle={pageTitle} links={links}>
   <slot name="seo-head" slot="seo-head" />
   <Header title={pageTitle} />
   <main class="main-content">

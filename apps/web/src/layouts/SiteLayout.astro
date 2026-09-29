@@ -8,14 +8,12 @@ import type { TranslationLink } from '@domain/translationLink'
 
 interface Props {
   pageTitle: string
-  description?: string
   links: TranslationLink[]
 }
 
-const { pageTitle, description, links } = Astro.props
+const { pageTitle, links } = Astro.props
 const locale = languages.fromString(Astro.currentLocale)
 const t = useTranslations(locale)
-const siteDescription = description || t('site.description')
 const canonicalURL = new URL(Astro.url.pathname, Astro.site)
 ---
 
@@ -26,7 +24,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site)
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <title>{pageTitle} | SeCOrTo</title>
-    <meta name="description" content={siteDescription} />
     <link rel="canonical" href={canonicalURL} />
     <slot name="seo-head" />
     {/* Inline script previene flash en tema oscuro */}
