@@ -31,7 +31,7 @@ const t = useTranslations(locale)
 const canonicalURL = new URL(Astro.url.pathname, Astro.site)
 ---
 
-<BaseLayout pageTitle={title} links={links}>
+<BaseLayout title={title} links={links}>
   <PageSEO
     slot="seo-head"
     title={title}

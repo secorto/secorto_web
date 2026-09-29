@@ -25,7 +25,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site)
 import '../styles/home.css'
 ---
 
-<BaseLayout pageTitle={title} links={links}>
+<BaseLayout title={title} links={links}>
   <PageSEO
     slot="seo-head"
     title={title}

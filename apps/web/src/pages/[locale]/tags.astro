@@ -24,7 +24,7 @@ const { locale } = Astro.params
 
 const t = useTranslations(locale)
 
-const pageTitle = t('tags.index_title')
+const title = t('tags.index_title')
 const pageDescription = t('tags.index_description')
 const canonicalURL = new URL(Astro.url.pathname, Astro.site)
 
@@ -50,12 +50,12 @@ const tagsWithSections = tagRoutes.getTags().map(tag => ({
 ---
 
 <BaseLayout
-  pageTitle={pageTitle}
+  title={title}
   links={links}
 >
   <PageSEO
     slot="seo-head"
-    title={pageTitle}
+    title={title}
     description={pageDescription}
     url={canonicalURL.toString()}
     links={links}

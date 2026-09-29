@@ -1,21 +1,80 @@
 ---
-import Header from '../components/Header.astro'
-import Footer from '../components/Footer.astro'
-import SiteLayout from './SiteLayout.astro'
+import '../styles/global.css'
+import Hamburger from '../components/Hamburger.astro'
+import Sidebar from '../components/Sidebar.astro'
+import { languages } from '@i18n/ui'
 import type { TranslationLink } from '@domain/translationLink'
 
+import Header from '../components/Header.astro'
+import Footer from '../components/Footer.astro'
+
 interface Props {
-  pageTitle: string
+  title: string
   links: TranslationLink[]
 }
 
-const { pageTitle, links } = Astro.props
+const { title, links } = Astro.props
+const locale = languages.fromString(Astro.currentLocale)
 ---
-<SiteLayout links={links}>
-  <slot name="seo-head" slot="seo-head" />
-  <Header title={pageTitle} />
-  <main class="main-content">
-    <slot />
-  </main>
-  <Footer />
-</SiteLayout>
+
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <slot name="seo-head" />
+    {/* Inline script previene flash en tema oscuro */}
+    <script is:inline>
+      function getInitialTheme() {
+        try {
+          const stored = localStorage?.getItem('theme')
+          if (stored === 'dark' || stored === 'light') return stored
+        } catch (e) {
+          console.debug('[Theme] localStorage.getItem failed, falling back to prefers-color-scheme:', e)
+        }
+        return window.matchMedia?.('(prefers-color-scheme: dark)')?.matches ? 'dark' : 'light'
+      }
+      const theme = getInitialTheme()
+      const root = document.documentElement
+      root.classList.add(theme)
+      root.setAttribute('data-theme', theme)
+      try {
+        window.localStorage.setItem('theme', theme)
+      } catch (e) {
+        console.debug('[Theme] localStorage.setItem failed, theme applied to DOM only:', e)
+      }
+    </script>
+    <style>
+      @media (min-width: 1440px) {
+        html {
+          font-size: 112.5%;
+        }
+      }
+      @media (min-width: 2160px) {
+        html {
+          font-size: 150%;
+        }
+      }
+      @media (min-width: 3200px) {
+        html {
+          font-size: 200%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <Hamburger />
+    <Sidebar links={links} />
+    <div class="content">
+      <Header title={title} />
+      <main class="main-content">
+        <slot />
+      </main>
+      <Footer />
+    </div>
+    <script>
+      import { initSidebar } from "@client/sidebar";
+      initSidebar(document.querySelector('.hamburger'));
+    </script>
+  </body>
+</html>

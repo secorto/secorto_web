@@ -18,9 +18,9 @@ export type Params = Awaited<ReturnType<typeof getStaticPaths>>[number]['params'
 
 const { locale } = Astro.params
 const { section } = Astro.props
-const pageTitle = sections[section][locale]
+const title = sections[section][locale]
 const canonicalURL = new URL(Astro.url.pathname, Astro.site)
-const pageDescription = `Explora ${pageTitle.toLowerCase()}`
+const pageDescription = `Explora ${title.toLowerCase()}`
 const posts = await getCollection(section, availableAtLocale(locale))
 const links = languages.all.map(lang => availableLink(sectionRoutes.getSectionPath(section, lang), lang))
 const tags = tagRoutes.getTags()
@@ -29,10 +29,10 @@ const tags = tagRoutes.getTags()
   )
 ---
 
-<BaseLayout pageTitle={pageTitle} links={links}>
+<BaseLayout title={title} links={links}>
   <PageSEO
     slot="seo-head"
-    title={pageTitle}
+    title={title}
     description={pageDescription}
     url={canonicalURL.toString()}
     links={links}
