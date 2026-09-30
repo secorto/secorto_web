@@ -76,7 +76,7 @@ describe('home domain schemas', () => {
     const validFrontmatter: HomeFrontmatter = {
       title: 'Página de inicio',
       subTitle: 'Soy Sergio Carlos Orozco Torres',
-      description: 'Dise\u00f1o y arquitectura de software con calidad estructurada',
+      description: 'Diseño y arquitectura de software con calidad estructurada',
       locale: 'es',
       relatedContent: [
         { section: 'work', slug: 'perficient' },
@@ -115,6 +115,11 @@ describe('home domain schemas', () => {
 
     it('rejects frontmatter without related content', () => {
       const { relatedContent, ...rest } = validFrontmatter
+      expect(() => HomeFrontmatterSchema.parse(rest)).toThrow(ZodError)
+    })
+
+    it('rejects frontmatter without description', () => {
+      const { description, ...rest } = validFrontmatter
       expect(() => HomeFrontmatterSchema.parse(rest)).toThrow(ZodError)
     })
 
