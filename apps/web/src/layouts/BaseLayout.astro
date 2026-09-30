@@ -18,7 +18,9 @@ const locale = languages.fromString(Astro.currentLocale)
 const hasSeoHeadSlot = Astro.slots.has('seo-head')
 
 if (!hasSeoHeadSlot) {
-  throw new Error('BaseLayout requires a `seo-head` slot. Add a <PageSEO slot="seo-head" ... /> component to the page.')
+  throw new Error(
+    'BaseLayout requires a `seo-head` slot. Add a SEO component (PageSEO / EntrySEO / ErrorSEO) to the page, e.g. <PageSEO slot="seo-head" ... />.'
+  )
 }
 ---
 

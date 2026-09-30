@@ -75,7 +75,7 @@ La renderización de SEO refleja la estructura de ADR 007: **tres niveles de pá
 
 **Responsabilidad única**: Renderizar hreflang links
 
-- **Usadp por**: PageSEO, EntrySEO (internamente)
+- **Usado por**: PageSEO, EntrySEO (internamente)
 - **Nunca usado por**: ErrorSEO, ninguna otra página
 - **Función**: Generar `<link rel="alternate" hreflang="xx" href="..." />`
 
