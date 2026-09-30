@@ -46,7 +46,7 @@ describe('sitemap', () => {
   })
 
   describe('sectionPathsSitemapEntries', () => {
-    it('generates entries for each section', async () => {
+    it('generates entries for each section', () => {
       const routes = createSectionRoutes(
         {
           blog: { es: 'blog', en: 'blog' },
@@ -55,14 +55,14 @@ describe('sitemap', () => {
         locales
       )
 
-      const entries = await sectionPathsSitemapEntries(routes, locales)
+      const entries = sectionPathsSitemapEntries(routes, locales)
 
       expect(entries.length).toBeGreaterThan(0)
       expect(entries[0].translations).toHaveProperty('es')
       expect(entries[0].translations).toHaveProperty('en')
     })
 
-    it('respects asymmetric section slugs', async () => {
+    it('respects asymmetric section slugs', () => {
       const routes = createSectionRoutes(
         {
           talk: { es: 'charla', en: 'talk' },
@@ -70,7 +70,7 @@ describe('sitemap', () => {
         locales
       )
 
-      const entries = await sectionPathsSitemapEntries(routes, locales)
+      const entries = sectionPathsSitemapEntries(routes, locales)
       const entry = entries[0]
 
       expect(entry.translations.es.href).toContain('charla')

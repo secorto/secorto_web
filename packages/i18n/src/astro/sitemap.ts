@@ -185,10 +185,15 @@ export function detailPathsSitemapEntries<
 
     // Only add if there's at least one accessible entry
     if (hasAccessible) {
+      // Try to extract lastmod from content data if available
+      const firstEntry = group.get(locales.all[0])
+      const lastmod = firstEntry && 'pubDate' in firstEntry.original
+        ? (firstEntry.original as { pubDate?: string }).pubDate
+        : undefined
+
       sitemapEntries.push({
         translations,
-        // Attempt to extract lastmod from content data if available
-        lastmod: (group.get(locales.all[0])?.original as any)?.pubDate,
+        lastmod,
         changefreq: 'monthly' as const,
         priority: 0.6,
       })

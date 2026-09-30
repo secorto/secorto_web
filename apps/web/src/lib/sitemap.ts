@@ -60,6 +60,10 @@ export async function generateSitemap(options: SitemapOptions): Promise<string> 
     // Detail pages are ALWAYS generated without drafts for public sitemaps
     // (ignoring options.includeDrafts). Drafts should never be in public sitemaps.
     // Preview/draft sitemaps would need a separate generation path if needed.
+    if (options.includeDrafts) {
+      console.warn('generateSitemap: includeDrafts option ignored for detail pages; drafts are always excluded from public sitemaps')
+    }
+
     const detailEntries = detailPathsSitemapEntries(
       localizedEntries,
       sectionRoutes,
@@ -84,7 +88,8 @@ export async function generateSitemap(options: SitemapOptions): Promise<string> 
       // Skip draft entries when collecting tags
       if (entry.draft) continue
 
-      const originalData = entry.original.data as any
+      // Safely extract tags from content data
+      const originalData = entry.original.data as { tags?: string[] }
       const tags = originalData.tags || []
 
       if (!tagsByLocale.has(entry.locale)) {

@@ -21,7 +21,11 @@ export async function GET() {
   // Validate the generated XML
   const errors = validateSitemapXml(xml)
   if (errors.length > 0) {
-    console.warn('Sitemap validation errors:', errors)
+    console.error('Sitemap validation errors:', errors)
+    return new Response(
+      `Sitemap generation failed: ${errors.join('; ')}`,
+      { status: 500, headers: { 'Content-Type': 'text/plain' } }
+    )
   }
 
   return new Response(xml, {
