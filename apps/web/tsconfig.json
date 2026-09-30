@@ -11,6 +11,7 @@
       "@utils/*": ["./src/utils/*"],
       "@client/*": ["./src/client/*"],
       "@domain/*": ["./src/domain/*"],
+      "@lib/*": ["./src/lib/*"],
       "@tests/*": ["./tests/*"]
     },
     "types": [
