@@ -89,14 +89,14 @@ export function localePathsSitemapEntries<TLocale extends string>(
  * @param lastmod Optional last modified date
  * @returns Array of sitemap entries
  */
-export async function sectionPathsSitemapEntries<
+export function sectionPathsSitemapEntries<
   TSection extends string,
   TLocale extends string
 >(
   routes: SectionRoutes<TSection, TLocale>,
   locales: Locales<TLocale>,
   lastmod?: string,
-): Promise<SitemapEntry<TLocale>[]> {
+): SitemapEntry<TLocale>[] {
   const entries: SitemapEntry<TLocale>[] = []
 
   for (const sectionKey of routes.getSections()) {
@@ -306,8 +306,9 @@ export function toSitemapXml<TLocale extends string>(
       xml += `    <priority>${entry.priority}</priority>\n`
     }
 
-    // Add hreflang links using locale key directly from allTranslations
-    for (const [locale, { href }] of allTranslations) {
+    // Add hreflang links (excluding draft translations, which may not be publicly accessible)
+    for (const [locale, { href, draft }] of allTranslations) {
+      if (draft) continue // Skip draft translations from hreflang
       xml += `    <xhtml:link rel="alternate" hreflang="${locale}" href="${escapeXml(`${site}${href}`)}" />\n`
     }
 

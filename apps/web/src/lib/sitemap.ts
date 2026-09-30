@@ -42,7 +42,7 @@ export async function generateSitemap(options: SitemapOptions): Promise<string> 
   allEntries.push(...localePaths)
 
   // 2. Add section listing pages (e.g., /es/blog, /en/talk)
-  const sectionPaths = await sectionPathsSitemapEntries(sectionRoutes, languages)
+  const sectionPaths = sectionPathsSitemapEntries(sectionRoutes, languages)
   allEntries.push(...sectionPaths)
 
   // 3. Add detail pages from all sections with asymmetric routing
@@ -57,7 +57,9 @@ export async function generateSitemap(options: SitemapOptions): Promise<string> 
       adaptToLocalizedEntry(entry, languages),
     )
 
-    // Detail pages should never include drafts in public sitemap
+    // Detail pages are ALWAYS generated without drafts for public sitemaps
+    // (ignoring options.includeDrafts). Drafts should never be in public sitemaps.
+    // Preview/draft sitemaps would need a separate generation path if needed.
     const detailEntries = detailPathsSitemapEntries(
       localizedEntries,
       sectionRoutes,
