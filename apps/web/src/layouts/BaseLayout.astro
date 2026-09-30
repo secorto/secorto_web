@@ -2,6 +2,7 @@
 import Header from '../components/Header.astro'
 import Footer from '../components/Footer.astro';
 import SiteLayout from './SiteLayout.astro';
+import SEOHead from '@components/SEOHead.astro'
 import type { TranslationLink } from '@domain/translationLink'
 
 interface Props {
@@ -13,7 +14,9 @@ interface Props {
 const { pageTitle, description, links } = Astro.props
 ---
 <SiteLayout pageTitle={pageTitle} description={description} links={links}>
-  <slot name="seo-head" slot="seo-head" />
+  <slot name="seo-head" slot="seo-head">
+    <SEOHead links={links} />
+  </slot>
   <Header title={pageTitle} />
   <main class="main-content">
     <slot />
