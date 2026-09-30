@@ -101,3 +101,11 @@ export const tagged = {
   work: {en: 'Work tagged with', es: 'Trabajos etiquetados con'},
   community: {en: 'Community tagged with', es: 'Comunidad etiquetada con'}
 } satisfies Record<SectionType, Record<UILanguages, string>>
+
+export const pageDescriptions = {
+  blog: {en: 'Explore blog posts', es: 'Explora entradas del blog'},
+  talk: {en: 'Explore talks', es: 'Explora charlas'},
+  projects: {en: 'Explore projects', es: 'Explora proyectos'},
+  work: {en: 'Explore work', es: 'Explora trabajos'},
+  community: {en: 'Explore community', es: 'Explora la comunidad'}
+} satisfies Record<SectionType, Record<UILanguages, string>>

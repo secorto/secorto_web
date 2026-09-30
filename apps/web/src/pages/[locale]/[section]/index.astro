@@ -5,7 +5,7 @@ import Tags from '@components/Tags.astro'
 import ListContent from '@components/list/ListContent.astro'
 import { getCollection } from 'astro:content'
 import { availableLink, getStaticPathsSections, availableAtLocale } from '@secorto/i18n'
-import { languages, sections } from '@i18n/ui'
+import { languages, sections, pageDescriptions } from '@i18n/ui'
 import { sectionRoutes } from '@domain/section'
 import { tagRoutes } from '@domain/tags'
 
@@ -20,7 +20,7 @@ const { locale } = Astro.params
 const { section } = Astro.props
 const title = sections[section][locale]
 const canonicalURL = new URL(Astro.url.pathname, Astro.site)
-const pageDescription = `Explora ${title.toLowerCase()}`
+const pageDescription = pageDescriptions[section][locale]
 const posts = await getCollection(section, availableAtLocale(locale))
 const links = languages.all.map(lang => availableLink(sectionRoutes.getSectionPath(section, lang), lang))
 const tags = tagRoutes.getTags()
