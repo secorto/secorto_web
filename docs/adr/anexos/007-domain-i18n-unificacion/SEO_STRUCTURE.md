@@ -9,65 +9,123 @@ Esta es su materialización en la capa de presentación (componentes SEO).
 
 ## Estructura de Componentes
 
-La renderización de SEO refleja la estructura de ADR 007:
+La renderización de SEO refleja la estructura de ADR 007: **tres niveles de páginas → tres responsabilidades SEO distintas**
 
-**Dos niveles de páginas → Dos responsabilidades SEO:**
+| Nivel | Casos de uso | Componente | og:type | Alternates |
+| --- | --- | --- | --- | --- |
+| **Estáticas/Listados** | home, about, tags, [section] index | `PageSEO` | `website` | ✅ Sí (hreflang) |
+| **Contenido** | blog post, talk detail, project detail | `EntrySEO` | Dinámico por sección | ✅ Sí (hreflang) |
+| **Errores** | 404, 5xx, error pages | `ErrorSEO` | `website` | ❌ No (sin hreflang) |
 
-1. **Páginas estáticas/listados** (home, about, tags, filtros)
-   - Componente: **PageSEO** → og:type siempre "website"
-
-2. **Páginas de contenido** (blog, talks, work, etc.)
-   - Componente: **EntrySEO** → og:type dinámico según sección
-
-**Patrón**: Ambas delegan hreflang a **Alternates** (componente interno)
+**Punto clave**: Cada tipo tiene responsabilidades distintas. No son intercambiables.
 
 ## Componentes SEO
 
 ### PageSEO
 
-- **Uso**: Páginas estáticas (home, about, índices, filtros)
+**Uso**: Páginas de contenido estático/listados
+
+- **Cuándo usarlo**: home, about, tags index, [section] index, filtros, standalone pages
 - **og:type**: Siempre `"website"`
 - **Props**: title, description, url, links, image (opcional), noindex
-- **Renderiza**: Alternates (hreflang + noindex) + OG tags
+- **Especial**: Renderiza `Alternates` para hreflang multiidioma
+- **Renderiza**:
+  - `<meta name="description">` + canonical
+  - `<meta name="robots">` noindex (si aplica)
+  - Open Graph tags (og:type, title, description, url, image)
+  - Twitter Card tags
+  - `<Alternates>` (hreflang links)
 
 ### EntrySEO
 
-- **Uso**: Detail pages de cualquier sección
-- **og:type**: Dinámico
-  - `"article"` para blog, talk
-  - `"website"` para work, projects, community
+**Uso**: Detail pages de contenido editable
+
+- **Cuándo usarlo**: blog post detail, talk detail, project detail, work detail, community detail
+- **og:type**: Dinámico según sección
+  - `"article"` → blog, talk
+  - `"website"` → work, projects, community
 - **Props**: title, description, url, links, image, section, noindex
-- **Renderiza**: Alternates (hreflang + noindex) + OG tags dinámicos
+- **Especial**: Renderiza `Alternates` para hreflang multiidioma
+- **Renderiza**:
+  - `<meta name="description">` + canonical
+  - `<meta name="robots">` noindex (si aplica)
+  - Open Graph tags (og:type dinámico, title, description, url, image)
+  - Twitter Card tags
+  - `<Alternates>` (hreflang links)
 
-### Alternates (Interno)
+### ErrorSEO
 
-- **Uso**: Renderiza dentro de PageSEO o EntrySEO (no directamente en páginas)
-- **Responsabilidad**: hreflang multiidioma + noindex
+**Uso**: Páginas de error
+
+- **Cuándo usarlo**: 404, 5xx, error pages (renderizado por `ErrorLayout`)
+- **og:type**: Siempre `"website"`
+- **Props**: title, description, url (NO incluye links)
+- **Diferencia**: NO renderiza `Alternates` porque:
+  - Páginas de error pueden no existir en todos los idiomas
+  - No tiene sentido ofrecer links a traducción
+- **Siempre renderiza**: `<meta name="robots" content="noindex" />`
+- **Renderiza**:
+  - `<meta name="description">` + canonical
+  - `<meta name="robots" content="noindex" />` (sin condición)
+  - Open Graph tags (og:type, title, description, url)
+  - Twitter Card tags
+  - **Sin Alternates**
+
+### Alternates (Componente Interno)
+
+**Responsabilidad única**: Renderizar hreflang links
+
+- **Usadp por**: PageSEO, EntrySEO (internamente)
+- **Nunca usado por**: ErrorSEO, ninguna otra página
+- **Función**: Generar `<link rel="alternate" hreflang="xx" href="..." />`
+
+## Matriz de Decisión: ¿Cuál componente usar?
+
+- ¿Es una página de error (404, 5xx)? → Usa **ErrorSEO**
+- ¿Es un artículo/contenido editable (blog post, talk, proyecto)? → Usa **EntrySEO**
+- ¿Es estática/listado (home, tags index, about)? → Usa **PageSEO**
 
 ## Alineación con ADR 007
 
 | Aspecto | ADR 007 | SEO Implementa |
 | --- | --- | --- |
-| Identidad del contenido | Canónica por sección | EntrySEO sabe qué `section` es → decide `og:type` |
-| Multiidioma | Locale es atributo estructural | Alternates renderiza hreflang centralizadamente |
-| Separación | Dominio, routing, traducción distintos | PageSEO/EntrySEO reciben props ya resueltos, sin lógica de routing |
+| Identidad del contenido | Canónica por sección | EntrySEO sabe `section` → decide `og:type`; PageSEO es genérico; ErrorSEO es para excepciones |
+| Multiidioma | Locale es atributo estructural | Alternates renderiza hreflang en PageSEO/EntrySEO; ErrorSEO sin alternates |
+| Separación | Dominio, routing, traducción distintos | Componentes SEO reciben props ya resueltos, sin lógica de routing |
+| Metadatos SEO | Responsibility del layout | **seo-head slot es la fuente única de verdad** en BaseLayout |
 
 ## Implementación en SEO
 
-- **PageSEO única**: Todas las páginas estáticas son `og:type: "website"`
-- **og:type dinámico en EntrySEO**: Según sección (article para blog/talk, website para otros)
-- **Alternates interna**: Centraliza hreflang sin duplicación
-- **SiteLayout limpio**: No renderiza OG tags predeterminados (responsabilidad exclusiva de PageSEO/EntrySEO)
+- **Cada componente SEO es responsable de sus propios metadatos**:
+  - `PageSEO`: description, canonical, og:type="website", Twitter Card, Alternates
+  - `EntrySEO`: description, canonical, og:type dinámico, Twitter Card, Alternates
+  - `ErrorSEO`: description, canonical, og:type="website", noindex siempre, Twitter Card, SIN Alternates
+  
+- **BaseLayout renderiza**: `<slot name="seo-head" />` como **fuente única de verdad** para SEO
+  - No hay fallbacks ni duplicación de metadatos
+  - Cada página/layout debe elegir explícitamente su componente SEO (PageSEO, EntrySEO o ErrorSEO)
+
+- **Patrón obligatorio**: Todo layout debe validar que `seo-head` slot está presente
+  - Esto previene que se olvide renderizar metadatos
 
 ## Ubicación en Código
 
 **Componentes**:
 
-- `apps/web/src/components/seo/PageSEO.astro`
-- `apps/web/src/components/seo/EntrySEO.astro`
-- `apps/web/src/components/seo/Alternates.astro`
+- `apps/web/src/components/seo/PageSEO.astro` — Listados/estáticas
+- `apps/web/src/components/seo/EntrySEO.astro` — Detail pages
+- `apps/web/src/components/seo/ErrorSEO.astro` — Páginas de error
+- `apps/web/src/components/seo/Alternates.astro` — Hreflang interno
 
-**Usadas en**:
+**Dónde se usan**:
 
-- Layouts: `HomeLayout`, `StandalonePageLayout`
-- Páginas: `tags.astro`, `[section]/index.astro`, `[section]/[tag].astro`, `[locale]/[section]/[...id].astro`
+- `PageSEO`:
+  - `tags.astro` (tags index)
+  - `[section]/index.astro` (section list)
+  - `[section]/[tag].astro` (filter by tag)
+  
+- `EntrySEO`:
+  - `[locale]/[section]/[...id].astro` (detail pages)
+  
+- `ErrorSEO`:
+  - `ErrorLayout.astro` (error pages)
