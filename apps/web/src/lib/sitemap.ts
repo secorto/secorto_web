@@ -46,24 +46,31 @@ export async function generateSitemap(options: SitemapOptions): Promise<string> 
   allEntries.push(...sectionPaths)
 
   // 3. Add detail pages from all sections with asymmetric routing
+  // Cache collection results to avoid duplicate fetches
+  const collectionCache = new Map<SectionType, Awaited<ReturnType<typeof getCollection>>>()
+
   for (const sectionKey of sectionRoutes.getSections()) {
     const entries = await getCollection(sectionKey as SectionType)
+    collectionCache.set(sectionKey as SectionType, entries)
+
     const localizedEntries = entries.map(entry =>
       adaptToLocalizedEntry(entry, languages),
     )
 
+    // Detail pages should never include drafts in public sitemap
     const detailEntries = detailPathsSitemapEntries(
       localizedEntries,
       sectionRoutes,
       languages,
-      { ...options, includeDrafts: false }, // Exclude drafts from public sitemap
+      { ...options, includeDrafts: false },
     )
     allEntries.push(...detailEntries)
   }
 
   // 4. Add tag pages (grouped by section and locale)
   for (const sectionKey of sectionRoutes.getSections()) {
-    const entries = await getCollection(sectionKey as SectionType)
+    // Reuse cached collection results
+    const entries = collectionCache.get(sectionKey as SectionType) || await getCollection(sectionKey as SectionType)
     const localizedEntries = entries.map(entry =>
       adaptToLocalizedEntry(entry, languages),
     )

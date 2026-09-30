@@ -67,15 +67,18 @@ export function localePathsSitemapEntries<TLocale extends string>(
   locales: Locales<TLocale>,
   lastmod?: string,
 ): SitemapEntry<TLocale>[] {
-  return locales.all.map(locale => ({
-    translations: locales.all.reduce((acc, loc) => {
-      acc[loc] = { href: locales.getPath(loc), draft: false }
-      return acc
-    }, {} as Record<TLocale, { href: string; draft: boolean }>),
+  // All locale home pages share the same translation group, so return a single entry
+  const translations = locales.all.reduce((acc, loc) => {
+    acc[loc] = { href: locales.getPath(loc), draft: false }
+    return acc
+  }, {} as Record<TLocale, { href: string; draft: boolean }>)
+
+  return [{
+    translations,
     lastmod,
     changefreq: 'daily' as const,
     priority: 0.8,
-  }))
+  }]
 }
 
 /**
@@ -303,13 +306,8 @@ export function toSitemapXml<TLocale extends string>(
       xml += `    <priority>${entry.priority}</priority>\n`
     }
 
-    // Add hreflang links
-    for (const [, { href }] of allTranslations) {
-      // Extract locale from hreflang
-      // Assuming URLs are of the form /es/... or /en/...
-      const urlParts = href.split('/').filter(Boolean)
-      const locale = urlParts[0]
-
+    // Add hreflang links using locale key directly from allTranslations
+    for (const [locale, { href }] of allTranslations) {
       xml += `    <xhtml:link rel="alternate" hreflang="${locale}" href="${escapeXml(`${site}${href}`)}" />\n`
     }
 

@@ -27,10 +27,10 @@ describe('sitemap', () => {
   )
 
   describe('localePathsSitemapEntries', () => {
-    it('generates entries for each locale', () => {
+    it('generates single entry with all locale translations', () => {
       const entries = localePathsSitemapEntries(locales)
 
-      expect(entries).toHaveLength(2)
+      expect(entries).toHaveLength(1)
       expect(entries[0].translations).toHaveProperty('es')
       expect(entries[0].translations).toHaveProperty('en')
     })
