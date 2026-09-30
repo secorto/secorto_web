@@ -1,6 +1,7 @@
 ---
 import type { MarkdownLayoutProps } from 'astro'
 import BaseLayout from '@layouts/BaseLayout.astro'
+import ErrorSEO from '@components/seo/ErrorSEO.astro'
 import { missingLink } from '@secorto/i18n'
 import { languages } from '@i18n/ui'
 
@@ -12,8 +13,16 @@ const { frontmatter } = Astro.props
 const { title } = frontmatter
 
 const links = languages.all.map(l => missingLink(l))
+const canonicalURL = new URL(Astro.url.pathname, Astro.site)
+const description = 'La página que buscas no existe o no está disponible en este momento.'
 ---
 
 <BaseLayout title={title} links={links}>
+  <ErrorSEO
+    slot="seo-head"
+    title={title}
+    description={description}
+    url={canonicalURL.toString()}
+  />
   <slot/>
 </BaseLayout>

@@ -1,0 +1,26 @@
+---
+/**
+ * SEO para páginas de error.
+ * No renderiza alternates porque puede no existir traducción accesible.
+ */
+interface Props {
+  title: string
+  description: string
+  url: string
+}
+
+const { title, description, url } = Astro.props
+---
+
+<meta name="description" content={description} />
+<link rel="canonical" href={url} />
+<meta name="robots" content="noindex" />
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={url} />
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />

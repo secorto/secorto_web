@@ -15,6 +15,11 @@ interface Props {
 
 const { title, links } = Astro.props
 const locale = languages.fromString(Astro.currentLocale)
+const hasSeoHeadSlot = Astro.slots.has('seo-head')
+
+if (!hasSeoHeadSlot) {
+  throw new Error('BaseLayout requires a `seo-head` slot. Add a <PageSEO slot="seo-head" ... /> component to the page.')
+}
 ---
 
 <html lang={locale}>
