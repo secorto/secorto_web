@@ -17,7 +17,7 @@ import {
   type SitemapOptions,
 } from '@secorto/i18n'
 import { sectionRoutes, type SectionType } from '@domain/section'
-import { tagRoutes } from '@domain/tags'
+import { tagRoutes, type Tag } from '@domain/tags'
 import { languages } from '@i18n/ui'
 
 /**
@@ -82,7 +82,7 @@ export async function generateSitemap(options: SitemapOptions): Promise<string> 
     )
 
     // Group tags by locale
-    const tagsByLocale = new Map<typeof languages.all[0], Set<string>>()
+    const tagsByLocale = new Map<typeof languages.all[0], Set<Tag>>()
 
     for (const entry of localizedEntries) {
       // Skip draft entries when collecting tags
@@ -96,13 +96,16 @@ export async function generateSitemap(options: SitemapOptions): Promise<string> 
         tagsByLocale.set(entry.locale, new Set())
       }
 
+      const validTags = tagRoutes.getTags()
       tags.forEach((tag: string) => {
-        tagsByLocale.get(entry.locale)!.add(tag)
+        if (validTags.includes(tag as Tag)) {
+          tagsByLocale.get(entry.locale)!.add(tag as Tag)
+        }
       })
     }
 
     // Convert sets to arrays for the tag routes function
-    const tagsMap = new Map<typeof languages.all[0], readonly string[]>()
+    const tagsMap = new Map<typeof languages.all[0], readonly Tag[]>()
     for (const [locale, tagsSet] of tagsByLocale) {
       tagsMap.set(locale, Array.from(tagsSet))
     }
