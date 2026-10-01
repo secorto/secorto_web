@@ -9,22 +9,11 @@ import {
 import {
   createSectionRoutes,
   createLocales,
-  adaptToLocalizedEntry,
   type LocalizedEntry,
 } from '../../../src'
 
 describe('sitemap', () => {
-  const locales = createLocales(
-    ['es', 'en'] as const,
-    {
-      es: '/es',
-      en: '/en',
-    },
-    (entryId: string) => {
-      const [locale, cleanId] = entryId.split('/')
-      return { locale: locale as 'es' | 'en', cleanId }
-    }
-  )
+  const locales = createLocales(['es', 'en'] as const)
 
   describe('localePathsSitemapEntries', () => {
     it('generates single entry with all locale translations', () => {

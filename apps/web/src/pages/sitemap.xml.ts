@@ -6,6 +6,9 @@
  * - Respects content state (available only, no drafts)
  * - Includes hreflang links for all translations
  * - Groups URLs by translation key for consistency
+ *
+ * Note: Requires SITE to be configured in astro.config.mjs.
+ * If missing, this endpoint will throw an error (intentional—no SSR fallback).
  */
 
 import { generateSitemap, validateSitemapXml } from '@lib/sitemap'

@@ -183,13 +183,19 @@ export function detailPathsSitemapEntries<
       }
     }
 
-    // Only add if there's at least one accessible entry
     if (hasAccessible) {
-      // Try to extract lastmod from content data if available
       const firstEntry = group.get(locales.all[0])
-      const lastmod = firstEntry && 'pubDate' in firstEntry.original
-        ? (firstEntry.original as { pubDate?: string }).pubDate
-        : undefined
+      let lastmod: string | undefined
+      
+      if (firstEntry && 'data' in firstEntry.original) {
+        const data = firstEntry.original.data as Record<string, unknown>
+        const pubDate = data?.pubDate
+        if (pubDate instanceof Date) {
+          lastmod = pubDate.toISOString()
+        } else if (typeof pubDate === 'string') {
+          lastmod = pubDate
+        }
+      }
 
       sitemapEntries.push({
         translations,
@@ -225,7 +231,7 @@ export function tagPathsSitemapEntries<
   sectionKey: TSection,
   tags: Map<TLocale, readonly TTag[]>,
   routes: SectionRoutes<TSection, TLocale>,
-  tagRoutes: TagRoutes<TTag, TLocale>,
+  tagRoutes: TagRoutes<TTag, TSection, TLocale>,
   locales: Locales<TLocale>,
 ): SitemapEntry<TLocale>[] {
   const entries: SitemapEntry<TLocale>[] = []
@@ -280,13 +286,16 @@ export function toSitemapXml<TLocale extends string>(
 ): string {
   const { site } = options
 
+  if (!site) {
+    throw new Error('Sitemap generation requires options.site to be defined')
+  }
+
   let xml =
     '<?xml version="1.0" encoding="UTF-8"?>\n' +
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" ' +
     'xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'
 
   for (const entry of entries) {
-    // Find the primary URL (preferably non-draft)
     const allTranslations = Object.entries(entry.translations) as Array<
       [TLocale, { href: string; draft: boolean }]
     >
@@ -311,9 +320,8 @@ export function toSitemapXml<TLocale extends string>(
       xml += `    <priority>${entry.priority}</priority>\n`
     }
 
-    // Add hreflang links (excluding draft translations, which may not be publicly accessible)
     for (const [locale, { href, draft }] of allTranslations) {
-      if (draft) continue // Skip draft translations from hreflang
+      if (draft) continue
       xml += `    <xhtml:link rel="alternate" hreflang="${locale}" href="${escapeXml(`${site}${href}`)}" />\n`
     }
 

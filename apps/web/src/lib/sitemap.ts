@@ -37,7 +37,7 @@ import { languages } from '@i18n/ui'
 export async function generateSitemap(options: SitemapOptions): Promise<string> {
   const allEntries: SitemapEntry<typeof languages.all[0]>[] = []
 
-  // 1. Add locale root paths (e.g., /, /es, /en)
+  // 1. Add locale root paths (e.g., /es, /en)
   const localePaths = localePathsSitemapEntries(languages)
   allEntries.push(...localePaths)
 
