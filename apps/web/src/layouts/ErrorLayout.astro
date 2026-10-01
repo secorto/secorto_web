@@ -3,7 +3,7 @@ import type { MarkdownLayoutProps } from 'astro'
 import BaseLayout from '@layouts/BaseLayout.astro'
 import ErrorSEO from '@components/seo/ErrorSEO.astro'
 import { missingLink } from '@secorto/i18n'
-import { languages } from '@i18n/ui'
+import { getLocale, languages } from '@i18n/ui'
 
 type Props = MarkdownLayoutProps<{
   title: string
@@ -12,7 +12,7 @@ type Props = MarkdownLayoutProps<{
 const { frontmatter } = Astro.props
 const { title } = frontmatter
 
-const locale = languages.fromString(Astro.currentLocale)
+const locale = getLocale(Astro.currentLocale)
 const links = languages.all.map(l => missingLink(l))
 const canonicalURL = new URL(Astro.url.pathname, Astro.site)
 const description =

@@ -2,7 +2,7 @@
 import '../styles/global.css'
 import Hamburger from '../components/Hamburger.astro'
 import Sidebar from '../components/Sidebar.astro'
-import { languages } from '@i18n/ui'
+import { getLocale } from '@i18n/ui'
 import type { TranslationLink } from '@domain/translationLink'
 
 import Header from '../components/Header.astro'
@@ -14,7 +14,7 @@ interface Props {
 }
 
 const { title, links } = Astro.props
-const locale = languages.fromString(Astro.currentLocale)
+const locale = getLocale(Astro.currentLocale)
 const hasSeoHeadSlot = Astro.slots.has('seo-head')
 
 if (!hasSeoHeadSlot) {
@@ -26,8 +26,8 @@ if (!hasSeoHeadSlot) {
 
 <html lang={locale}>
   <head>
-    <title>{title} | SeCOrTo</title>
     <meta charset="utf-8" />
+    <title>{title} | SeCOrTo</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width" />
     <slot name="seo-head" />

@@ -4,6 +4,9 @@ export const defaultLang = 'es'
 
 export const languages = createLocales(['en', 'es'])
 
+export const getLocale = (currentLocale: string | undefined): UILanguages =>
+  currentLocale ? languages.fromString(currentLocale) : defaultLang
+
 export type UILanguages = typeof languages.all[number]
 
 export const languagesMap: Record<UILanguages, string> = {
