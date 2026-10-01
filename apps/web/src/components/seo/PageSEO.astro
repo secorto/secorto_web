@@ -21,7 +21,7 @@ const { title, description, url, links, ogType = 'website', image, noindex = fal
 const site = import.meta.env.SITE
 
 // Construir URL absoluta de imagen si existe
-const absoluteImageUrl = image ? `${site}${image.src}` : undefined
+const absoluteImageUrl = image ? new URL(image.src, site).toString() : undefined
 ---
 
 <meta name="description" content={description} />
