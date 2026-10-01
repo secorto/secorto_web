@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro'
-import SEOHead from '@components/SEOHead.astro'
+import PageSEO from '@components/seo/PageSEO.astro'
 
 import { languages, sections } from '@i18n/ui'
 import { useTranslations } from '@i18n/utils'
@@ -24,7 +24,9 @@ const { locale } = Astro.params
 
 const t = useTranslations(locale)
 
-const pageTitle = t('tags.index_title')
+const title = t('tags.index_title')
+const pageDescription = t('tags.index_description')
+const canonicalURL = new URL(Astro.url.pathname, Astro.site)
 
 const links = languages.all.map(lang =>
   availableLink(tagRoutes.getTagIndexPath(lang), lang)
@@ -48,11 +50,16 @@ const tagsWithSections = tagRoutes.getTags().map(tag => ({
 ---
 
 <BaseLayout
-  pageTitle={pageTitle}
-  description={t('tags.index_description')}
+  title={title}
   links={links}
 >
-  <SEOHead slot="seo-head" links={links} />
+  <PageSEO
+    slot="seo-head"
+    title={title}
+    description={pageDescription}
+    url={canonicalURL.toString()}
+    links={links}
+  />
 
   <section class="tags-section-wrapper">
     <p class="tags-intro-description" data-testid="tags-description">

@@ -12,7 +12,7 @@ const TagSchema = z.enum(tagRoutes.getTags())
 const createBasePostSchema = (imageHelper: ImageFunction) => z.object({
   title: z.string(),
   tags: z.array(TagSchema).nonempty('Tags are required'),
-  image: imageHelper().optional(),
+  image: imageHelper(),
   excerpt: z.string().optional(),
   description: z.string().optional(),
   translationKey: z.string().optional(),

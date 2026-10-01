@@ -1,7 +1,7 @@
 ---
 import type { MarkdownLayoutProps } from 'astro'
 import BaseLayout from '@layouts/BaseLayout.astro'
-import SEOHead from '@components/SEOHead.astro'
+import PageSEO from '@components/seo/PageSEO.astro'
 import RelatedContent from '@components/related/RelatedContent.astro'
 
 import intro from '@assets/img/intro.inline.svg?raw'
@@ -14,17 +14,26 @@ type Props = MarkdownLayoutProps<HomeFrontmatter>
 const { frontmatter } = Astro.props
 const parsed = HomeFrontmatterSchema.parse(frontmatter)
 
-const { title, subTitle, locale, relatedContent, draft } = parsed
+const { title, subTitle, description, locale, relatedContent, draft } = parsed
 
 const links = languages.all.map(lang =>
   availableLink(`${languages.getPath(lang)}/`, lang)
 )
 
+const canonicalURL = new URL(Astro.url.pathname, Astro.site)
+
 import '../styles/home.css'
 ---
 
-<BaseLayout pageTitle={title} links={links}>
-  <SEOHead slot="seo-head" links={links} noindex={Boolean(draft)} />
+<BaseLayout title={title} links={links}>
+  <PageSEO
+    slot="seo-head"
+    title={title}
+    description={description}
+    url={canonicalURL.toString()}
+    links={links}
+    noindex={Boolean(draft)}
+  />
 
   <section class="home-bio">
     <div class="home-avatar" set:html={intro} />

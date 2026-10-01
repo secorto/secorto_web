@@ -14,6 +14,7 @@ export const RelatedContentSchema = z.object({
 export const HomeFrontmatterSchema = z.object({
   title: z.string(),
   subTitle: z.string(),
+  description: z.string(),
   locale: UILanguagesSchema,
   relatedContent: z.array(RelatedContentSchema).min(1),
   draft: z.boolean().optional()

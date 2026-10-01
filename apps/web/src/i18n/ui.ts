@@ -4,6 +4,9 @@ export const defaultLang = 'es'
 
 export const languages = createLocales(['en', 'es'])
 
+export const getLocale = (currentLocale: string | undefined): UILanguages =>
+  currentLocale ? languages.fromString(currentLocale) : defaultLang
+
 export type UILanguages = typeof languages.all[number]
 
 export const languagesMap: Record<UILanguages, string> = {
@@ -100,4 +103,12 @@ export const tagged = {
   projects: {en: 'Projects tagged with', es: 'Proyectos etiquetados con'},
   work: {en: 'Work tagged with', es: 'Trabajos etiquetados con'},
   community: {en: 'Community tagged with', es: 'Comunidad etiquetada con'}
+} satisfies Record<SectionType, Record<UILanguages, string>>
+
+export const pageDescriptions = {
+  blog: {en: 'Explore blog posts', es: 'Explora entradas del blog'},
+  talk: {en: 'Explore talks', es: 'Explora charlas'},
+  projects: {en: 'Explore projects', es: 'Explora proyectos'},
+  work: {en: 'Explore work', es: 'Explora trabajos'},
+  community: {en: 'Explore community', es: 'Explora la comunidad'}
 } satisfies Record<SectionType, Record<UILanguages, string>>

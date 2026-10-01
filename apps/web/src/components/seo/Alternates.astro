@@ -1,7 +1,7 @@
 ---
 /**
- * Componente unificado para metadatos SEO.
- * Recibe rutas relativas y normaliza a URLs absolutas usando `import.meta.env.SITE`.
+ * Componente para metadatos SEO de alternates multiidioma.
+ * Renderiza hreflang links (x-default + locales).
  */
 import { isAccessible } from '@domain/translationLink'
 import type { TranslationLink } from '@domain/translationLink'
@@ -10,19 +10,17 @@ import { defaultLang } from '@i18n/ui'
 
 interface Props {
   links: TranslationLink[]
-  /** Marcar como noindex cuando aplique */
-  noindex?: boolean
 }
 
-const { links, noindex = false } = Astro.props
+const { links } = Astro.props
 const site = import.meta.env.SITE
 
 const alternates = links.filter(isAccessible)
 const defaultLink = resolveDefaultAccessibleLink(links, defaultLang)
 ---
-{noindex && <meta name="robots" content="noindex" />}
-<link rel="alternate" hreflang="x-default" href={`${site}${defaultLink.href}`} />
+
+<link rel="alternate" hreflang="x-default" href={new URL(defaultLink.href, site).toString()} />
 
 {alternates.map(({ locale, href }) => (
-  <link rel="alternate" hreflang={locale} href={`${site}${href}`} />
+  <link rel="alternate" hreflang={locale} href={new URL(href, site).toString()} />
 ))}

@@ -2,7 +2,7 @@
 import type { MarkdownLayoutProps } from 'astro'
 import BaseLayout from '@layouts/BaseLayout.astro'
 import { createStandalonePageLinks } from '@secorto/i18n'
-import SEOHead from '@components/SEOHead.astro'
+import PageSEO from '@components/seo/PageSEO.astro'
 import { languages } from '@i18n/ui'
 import { standalonePageRoutes } from '@domain/standalonePage'
 import { useTranslations } from '@i18n/utils'
@@ -10,11 +10,12 @@ import PreliminaryIcon from '@assets/img/preliminary.svg'
 
 type Props = MarkdownLayoutProps<{
   title: string
+  description: string
   translationKey: string
 }>
 
 const { frontmatter } = Astro.props
-const { title, translationKey } = frontmatter
+const { title, description, translationKey } = frontmatter
 const path = Astro.url.pathname.slice(1).replace(/\/$/, '')
 
 const links = createStandalonePageLinks(
@@ -27,11 +28,15 @@ const locale = languages.fromString(Astro.currentLocale)
 const page = standalonePageRoutes.getPage(translationKey)
 const draft = standalonePageRoutes.routes[page][locale]?.draft ?? false
 const t = useTranslations(locale)
+const canonicalURL = new URL(Astro.url.pathname, Astro.site)
 ---
 
-<BaseLayout pageTitle={title} links={links}>
-  <SEOHead
+<BaseLayout title={title} links={links}>
+  <PageSEO
     slot="seo-head"
+    title={title}
+    description={description}
+    url={canonicalURL.toString()}
     links={links}
     noindex={Boolean(draft)}
   />

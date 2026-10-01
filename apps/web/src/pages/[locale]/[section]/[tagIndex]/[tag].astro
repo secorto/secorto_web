@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro'
-import SEOHead from '@components/SEOHead.astro'
+import PageSEO from '@components/seo/PageSEO.astro'
 import Tags from '@components/Tags.astro'
 import ListContent from '@components/list/ListContent.astro'
 import { useTranslations } from '@i18n/utils'
@@ -24,8 +24,9 @@ const { section, tag, siblings } = Astro.props
 const t = useTranslations(locale)
 
 const tagSlug = tagRoutes.getTagSlug(tag, locale)
-const pageTitle = `${sections[section][locale]} - ${tagSlug}`
+const title = `${sections[section][locale]} - ${tagSlug}`
 const metaDescription = `${tagged[section][locale]} ${tagSlug}`
+const canonicalURL = new URL(Astro.url.pathname, Astro.site)
 const links = createSectionTagTranslationLinks(
   languages.all,
   siblings,
@@ -41,8 +42,14 @@ const tags = tagRoutes.getTags()
 const postWithTag = posts.filter(withTag(tag))
 ---
 
-<BaseLayout pageTitle={pageTitle} description={metaDescription} links={links}>
-  <SEOHead slot="seo-head" links={links} />
+<BaseLayout title={title} links={links}>
+  <PageSEO
+    slot="seo-head"
+    title={title}
+    description={metaDescription}
+    url={canonicalURL.toString()}
+    links={links}
+  />
   <Tags locale={locale} section={section} tags={tags} current={tag} />
   {postWithTag.length === 0 ? (
     <div class="warning">

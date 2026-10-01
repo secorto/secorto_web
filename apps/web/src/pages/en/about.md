@@ -2,6 +2,7 @@
 title: About me
 layout: "@layouts/StandalonePageLayout.astro"
 translationKey: about
+description: "Systems Engineer specialized in automation, architecture and quality systems design"
 ---
 
 **Systems Engineer specialized in automation and quality systems design.** I design reproducible automation suites

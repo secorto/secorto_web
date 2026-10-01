@@ -1,0 +1,35 @@
+---
+/**
+ * SEO para entries de contenido (blog, talks, work, etc.)
+ * Wrapper sobre PageSEO con ogType dinámico según sección
+ * Soporta: blog, talk, work, projects, community
+ */
+import PageSEO from './PageSEO.astro'
+import type { TranslationLink } from '@domain/translationLink'
+import type { SectionType } from '@domain/section'
+
+interface Props {
+  title: string
+  description: string
+  url: string
+  links: TranslationLink[]
+  image?: ImageMetadata
+  section: SectionType
+  noindex?: boolean
+}
+
+const { title, description, url, links, image, section, noindex = false } = Astro.props
+
+// Determinar og:type según section
+const ogType = section === 'blog' || section === 'talk' ? 'article' : 'website'
+---
+
+<PageSEO
+  ogType={ogType}
+  title={title}
+  description={description}
+  url={url}
+  links={links}
+  image={image}
+  noindex={noindex}
+/>
