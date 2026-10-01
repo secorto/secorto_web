@@ -1,7 +1,6 @@
 import { defineConfig } from 'astro/config'
 const isDev = import.meta.env.DEV
 
-import sitemap from "@astrojs/sitemap"
 import expressiveCode from 'astro-expressive-code'
 import mermaid from 'astro-mermaid'
 
@@ -28,7 +27,6 @@ export default defineConfig({
     '/en/comunidad/nodeco': '/en/comunidad/medellin-contributions',
   },
   integrations: [
-    sitemap(),
     mermaid({
       autoTheme: true,
     }),
