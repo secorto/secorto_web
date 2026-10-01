@@ -6,7 +6,8 @@ Esta es su materialización en la capa de presentación (componentes SEO).
 
 ## Estructura de Componentes
 
-La renderización de SEO refleja la estructura de ADR 007: **tres niveles de páginas → tres responsabilidades SEO distintas**
+La renderización de SEO refleja la estructura de ADR 007:
+**tres niveles de páginas → tres responsabilidades SEO distintas**
 
 | Nivel | Casos de uso | Componente | og:type | Alternates |
 | --- | --- | --- | --- | --- |
@@ -32,6 +33,10 @@ La renderización de SEO refleja la estructura de ADR 007: **tres niveles de pá
   - Open Graph tags (og:type, title, description, url, image)
   - Twitter Card tags
   - `<Alternates>` (hreflang links)
+
+**Nota técnica sobre imágenes**: La prop `image` es opcional. Sin imagen, no
+se renderiza `og:image`. El componente usa `summary_large_image` (Twitter) con
+imagen o `summary` sin ella.
 
 ### EntrySEO
 
@@ -68,6 +73,10 @@ La renderización de SEO refleja la estructura de ADR 007: **tres niveles de pá
   - Twitter Card tags
   - **Sin Alternates**
 
+**Nota técnica sobre la URL canónica**: En `ErrorLayout`, pasa `url` como URL
+absoluta (ej. construida con `new URL(Astro.url.pathname, Astro.site)`). Esto
+evita consolidar autoridad en páginas rotas, según estándares de Google.
+
 ### Alternates (Componente Interno)
 
 **Responsabilidad única**: Renderizar hreflang links
@@ -86,10 +95,10 @@ La renderización de SEO refleja la estructura de ADR 007: **tres niveles de pá
 
 | Aspecto | ADR 007 | SEO Implementa |
 | --- | --- | --- |
-| Identidad del contenido | Canónica por sección | EntrySEO sabe `section` → decide `og:type`; PageSEO es genérico; ErrorSEO es para excepciones |
-| Multiidioma | Locale es atributo estructural | Alternates renderiza hreflang en PageSEO/EntrySEO; ErrorSEO sin alternates |
-| Separación | Dominio, routing, traducción distintos | Componentes SEO reciben props ya resueltos, sin lógica de routing |
-| Metadatos SEO | Responsibility del layout | **seo-head slot es la fuente única de verdad** en BaseLayout |
+| Identidad del contenido | Canónica por sección | EntrySEO decide `og:type` |
+| Multiidioma | Locale es atributo estructural | Alternates renderiza hreflang |
+| Separación | Dominio, routing, traducción | Props ya resueltos, sin routing |
+| Metadatos SEO | Responsibility del layout | seo-head slot es fuente única |
 
 ## Implementación en SEO
 
