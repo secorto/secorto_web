@@ -1,7 +1,4 @@
----
-title: SEO Structure — Anexo a ADR 007
-description: Cómo se materializa la separación de dominio e i18n en componentes SEO
----
+# Anexo técnico - SEO Structure
 
 ADR 007 establece que la **identidad del contenido debe estar separada del idioma**.
 
@@ -100,7 +97,7 @@ La renderización de SEO refleja la estructura de ADR 007: **tres niveles de pá
   - `PageSEO`: description, canonical, og:type="website", Twitter Card, Alternates
   - `EntrySEO`: description, canonical, og:type dinámico, Twitter Card, Alternates
   - `ErrorSEO`: description, canonical, og:type="website", noindex siempre, Twitter Card, SIN Alternates
-  
+
 - **BaseLayout renderiza**: `<slot name="seo-head" />` como **fuente única de verdad** para SEO
   - No hay fallbacks ni duplicación de metadatos
   - Cada página/layout debe elegir explícitamente su componente SEO (PageSEO, EntrySEO o ErrorSEO)
@@ -123,9 +120,9 @@ La renderización de SEO refleja la estructura de ADR 007: **tres niveles de pá
   - `tags.astro` (tags index)
   - `[section]/index.astro` (section list)
   - `[section]/[tag].astro` (filter by tag)
-  
+
 - `EntrySEO`:
   - `[locale]/[section]/[...id].astro` (detail pages)
-  
+
 - `ErrorSEO`:
   - `ErrorLayout.astro` (error pages)
