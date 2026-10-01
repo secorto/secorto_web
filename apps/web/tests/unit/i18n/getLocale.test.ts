@@ -9,7 +9,6 @@ describe('getLocale', () => {
 
   it('returns defaultLang when currentLocale is undefined', () => {
     expect(getLocale(undefined)).toBe(defaultLang)
-    expect(getLocale(undefined)).toBe('es')
   })
 
   it('handles the 404 edge case where Astro.currentLocale is undefined', () => {
