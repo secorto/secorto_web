@@ -8,6 +8,7 @@
       "@components/*": ["./src/components/*"],
       "@i18n/*": ["./src/i18n/*"],
       "@layouts/*": ["./src/layouts/*"],
+      "@lib/*": ["./src/lib/*"],
       "@utils/*": ["./src/utils/*"],
       "@client/*": ["./src/client/*"],
       "@domain/*": ["./src/domain/*"],
