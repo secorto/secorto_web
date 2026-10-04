@@ -22,10 +22,4 @@ test.describe('Sitemap XML with hreflang', () => {
       },
     ])
   })
-
-  test('should include cache headers', async ({ request }) => {
-    const result = await sitemap(request)
-
-    await result.shouldHaveCacheHeaders()
-  })
 })

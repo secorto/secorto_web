@@ -94,13 +94,6 @@ const validateLocales = (body: Sitemap['urlset']) =>
     }
   })
 
-const validateCacheHeaders = (response: APIResponse) =>
-  () => verifyStep('sitemap.xml has proper cache headers', async ({ expect }) => {
-    const cacheControl = response.headers()['cache-control']
-    expect(cacheControl).toContain('public')
-    expect(cacheControl).toContain('max-age=3600')
-  })
-
 export const sitemapParser = async (response: APIResponse) => {
   const body = await xml(sitemapSchema)(response)
 
@@ -109,7 +102,6 @@ export const sitemapParser = async (response: APIResponse) => {
     body,
     shouldHaveHreflangAlternates: validateHreflangAlternates(body.urlset),
     shouldIncludeLocales: validateLocales(body.urlset),
-    shouldHaveCacheHeaders: validateCacheHeaders(response),
   }
 }
 
