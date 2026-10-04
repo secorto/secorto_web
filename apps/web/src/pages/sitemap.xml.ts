@@ -10,7 +10,7 @@
  * - Returns validation errors if generation fails
  */
 
-import { generateSitemap } from '@lib/sitemap-adapter'
+import { generateSitemap } from '@domain/sitemap-adapter'
 
 export async function GET() {
   const xml = await generateSitemap()

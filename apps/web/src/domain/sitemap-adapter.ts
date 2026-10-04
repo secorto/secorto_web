@@ -173,7 +173,6 @@ async function generateSectionTagEntries(
       tagRoutes
     )
     const defaultLink = resolveDefaultAvailableLink(tagLinks, defaultLang)
-    if(defaultLink === undefined) throw new Error(`Failed to resolve default available link for tag: ${tag}`)
     for (const locale of siblings) {
       sitemapEntries.push({
         href: tagRoutes.getSectionTagPath(section, locale, tag),
