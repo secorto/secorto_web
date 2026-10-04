@@ -107,7 +107,7 @@ export function resolveDefaultAvailableLink<TLocale extends string>(
   links: TranslationLink<TLocale>[],
   defaultLang: TLocale
 ): AvailableLink<TLocale> | undefined{
-  if (!links || links.length === 0) throw new Error('resolveDefaultAvailableLink: unexpected empty links array')
+  if (!links || links.length === 0) throw new TypeError('cannot infer default available link from an empty array')
 
   const defaultAny = links.find(l => l.locale === defaultLang)
   if (defaultAny && isAvailable(defaultAny)) return defaultAny
@@ -138,11 +138,14 @@ export function resolveDefaultAccessibleLink<TLocale extends string>(
 ): AccessibleTranslationLink<TLocale> {
   const availableLink = resolveDefaultAvailableLink(links, defaultLang)
   if (availableLink) return availableLink
+  
+  const defaultAny = links.find(l => l.locale === defaultLang)
+  if (defaultAny && isDraft(defaultAny)) return defaultAny
 
   const firstDraft = links.find(isDraft)
   if (firstDraft) return firstDraft
 
   throw new Error(
-    'resolveDefaultAccessibleLink: expected at least one accessible link'
+    'Unable to find an accessible link'
   )
 }
