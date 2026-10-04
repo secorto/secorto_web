@@ -30,7 +30,7 @@ function escapeXml(text: string): string {
  * @param entry Entry with translationLinks for hreflang generation.
  * @returns XML string for one <url> block.
  */
-function generateUrlBlock<TLocale extends string>(entry: SitemapEntry<TLocale>): string {
+export function generateUrlBlock<TLocale extends string>(entry: SitemapEntry<TLocale>): string {
   let xml = '  <url>\n'
   xml += `    <loc>${escapeXml(entry.href)}</loc>\n`
 
@@ -38,28 +38,20 @@ function generateUrlBlock<TLocale extends string>(entry: SitemapEntry<TLocale>):
     xml += `    <lastmod>${escapeXml(entry.lastmod)}</lastmod>\n`
   }
 
-  if (entry.changefreq) {
-    xml += `    <changefreq>${escapeXml(entry.changefreq)}</changefreq>\n`
-  }
-
-  if (entry.priority !== undefined) {
-    xml += `    <priority>${entry.priority.toFixed(1)}</priority>\n`
-  }
+  xml += `    <changefreq>${escapeXml(entry.changefreq)}</changefreq>\n`
+  xml += `    <priority>${entry.priority.toFixed(1)}</priority>\n`
 
   // Add hreflang alternates from translationLinks array
-  if (entry.translationLinks.length > 0) {
-    for (const link of entry.translationLinks) {
-      if(isAvailable(link)) {
-        xml += `    <xhtml:link rel="alternate" hreflang="${escapeXml(link.locale)}" href="${escapeXml(link.href)}" />\n`
+  for (const link of entry.translationLinks) {
+    if(isAvailable(link)) {
+      xml += `    <xhtml:link rel="alternate" hreflang="${escapeXml(link.locale)}" href="${escapeXml(link.href)}" />\n`
 
-      }
-    }
-
-    if (entry.defaultLink) {
-      xml += `    <xhtml:link rel="alternate" hreflang="x-default" href="${escapeXml(entry.defaultLink.href)}" />\n`
     }
   }
 
+  if (entry.defaultLink) {
+    xml += `    <xhtml:link rel="alternate" hreflang="x-default" href="${escapeXml(entry.defaultLink.href)}" />\n`
+  }
   xml += '  </url>\n'
   return xml
 }

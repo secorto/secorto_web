@@ -1,22 +1,27 @@
-import { describe, it, expect } from 'vitest'
-import { generateSitemapXml } from '@secorto/i18n'
-import type { SitemapUrlEntry, TranslationLink } from '@secorto/i18n'
+import { describe, expect, it } from 'vitest'
+import {
+  availableLink,
+  draftLink,
+  generateSitemapXml,
+  type SitemapEntry,
+  type TranslationLink,
+} from '@secorto/i18n'
+import { generateUrlBlock } from '@secorto/i18n'
 
 describe('generateSitemapXml', () => {
   it('generates valid XML structure', () => {
     const translationLinks: TranslationLink<'en' | 'es'>[] = [
-      { locale: 'en', href: 'https://example.com/en/page-1', accessible: true },
+      availableLink('en/page-1', 'en'),
     ]
 
-    const entries: SitemapUrlEntry<'en' | 'es'>[] = [
+    const entries: SitemapEntry<'en' | 'es'>[] = [
       {
-        href: 'https://example.com/en/page-1',
+        href: 'en/page-1',
         locale: 'en',
-        translationKey: 'page-1',
         translationLinks,
         changefreq: 'weekly',
         priority: 0.8,
-        defaultLocale: 'en',
+        defaultLink: availableLink('en/page-1', 'en'),
       },
     ]
 
@@ -24,24 +29,23 @@ describe('generateSitemapXml', () => {
     expect(xml).toContain('<?xml version="1.0"')
     expect(xml).toContain('<urlset')
     expect(xml).toContain('</urlset>')
-    expect(xml).toContain('<loc>https://example.com/en/page-1</loc>')
+    expect(xml).toContain('<loc>en/page-1</loc>')
   })
 
   it('includes hreflang alternates for multiple locales', () => {
     const translationLinks: TranslationLink<'en' | 'es'>[] = [
-      { locale: 'en', href: 'https://example.com/en/page-1', accessible: true },
-      { locale: 'es', href: 'https://example.com/es/pagina-1', accessible: true },
+      availableLink('en/page-1', 'en'),
+      availableLink('es/pagina-1', 'es'),
     ]
 
-    const entries: SitemapUrlEntry<'en' | 'es'>[] = [
+    const entries: SitemapEntry<'en' | 'es'>[] = [
       {
-        href: 'https://example.com/en/page-1',
+        href: 'en/page-1',
         locale: 'en',
-        translationKey: 'page-1',
         translationLinks,
         changefreq: 'weekly',
         priority: 0.8,
-        defaultLocale: 'en',
+        defaultLink: availableLink('en/page-1', 'en'),
       },
     ]
 
@@ -53,16 +57,17 @@ describe('generateSitemapXml', () => {
 
   it('escapes XML special characters in URLs', () => {
     const translationLinks: TranslationLink<'en'>[] = [
-      { locale: 'en', href: 'https://example.com/test?foo=bar&baz=qux', accessible: true },
+      availableLink('test?foo=bar&baz=qux', 'en'),
     ]
 
-    const entries: SitemapUrlEntry<'en'>[] = [
+    const entries: SitemapEntry<'en'>[] = [
       {
-        href: 'https://example.com/test?foo=bar&baz=qux',
+        href: 'test?foo=bar&baz=qux',
         locale: 'en',
-        translationKey: 'test',
         translationLinks,
-        defaultLocale: 'en',
+        changefreq: 'weekly',
+        priority: 0.8,
+        defaultLink: availableLink('test?foo=bar&baz=qux', 'en'),
       },
     ]
 
@@ -72,39 +77,39 @@ describe('generateSitemapXml', () => {
 
   it('renders each translation group once', () => {
     const translationLinks: TranslationLink<'en' | 'es'>[] = [
-      { locale: 'en', href: 'https://example.com/en/page-1', accessible: true },
-      { locale: 'es', href: 'https://example.com/es/pagina-1', accessible: true },
+      availableLink('en/page-1', 'en'),
+      availableLink('es/pagina-1', 'es'),
     ]
 
-    const entries: SitemapUrlEntry<'en' | 'es'>[] = [
+    const entries: SitemapEntry<'en' | 'es'>[] = [
       {
-        href: 'https://example.com/en/page-1',
+        href: 'en/page-1',
         locale: 'en',
-        translationKey: 'page-1',
         translationLinks,
-        defaultLocale: 'en',
+        changefreq: 'weekly',
+        priority: 0.8,
+        defaultLink: availableLink('en/page-1', 'en'),
       },
     ]
 
     const xml = generateSitemapXml(entries)
-    // Should have exactly one <url> block for this translation group
     const urlBlocks = xml.match(/<url>/g)
     expect(urlBlocks).toHaveLength(1)
   })
 
   it('includes priority when provided', () => {
     const translationLinks: TranslationLink<'en'>[] = [
-      { locale: 'en', href: 'https://example.com/en/page-1', accessible: true },
+      availableLink('en/page-1', 'en'),
     ]
 
-    const entries: SitemapUrlEntry<'en'>[] = [
+    const entries: SitemapEntry<'en'>[] = [
       {
-        href: 'https://example.com/en/page-1',
+        href: 'en/page-1',
         locale: 'en',
-        translationKey: 'page-1',
         translationLinks,
+        changefreq: 'weekly',
         priority: 0.9,
-        defaultLocale: 'en',
+        defaultLink: availableLink('en/page-1', 'en'),
       },
     ]
 
@@ -114,17 +119,17 @@ describe('generateSitemapXml', () => {
 
   it('includes changefreq when provided', () => {
     const translationLinks: TranslationLink<'en'>[] = [
-      { locale: 'en', href: 'https://example.com/en/page-1', accessible: true },
+      availableLink('en/page-1', 'en'),
     ]
 
-    const entries: SitemapUrlEntry<'en'>[] = [
+    const entries: SitemapEntry<'en'>[] = [
       {
-        href: 'https://example.com/en/page-1',
+        href: 'en/page-1',
         locale: 'en',
-        translationKey: 'page-1',
         translationLinks,
         changefreq: 'daily',
-        defaultLocale: 'en',
+        priority: 0.8,
+        defaultLink: availableLink('en/page-1', 'en'),
       },
     ]
 
@@ -134,17 +139,18 @@ describe('generateSitemapXml', () => {
 
   it('includes lastmod when provided', () => {
     const translationLinks: TranslationLink<'en'>[] = [
-      { locale: 'en', href: 'https://example.com/en/page-1', accessible: true },
+      availableLink('en/page-1', 'en'),
     ]
 
-    const entries: SitemapUrlEntry<'en'>[] = [
+    const entries: SitemapEntry<'en'>[] = [
       {
-        href: 'https://example.com/en/page-1',
+        href: 'en/page-1',
         locale: 'en',
-        translationKey: 'page-1',
         translationLinks,
+        changefreq: 'weekly',
+        priority: 0.8,
         lastmod: '2024-01-15',
-        defaultLocale: 'en',
+        defaultLink: availableLink('en/page-1', 'en'),
       },
     ]
 
@@ -152,23 +158,62 @@ describe('generateSitemapXml', () => {
     expect(xml).toContain('<lastmod>2024-01-15</lastmod>')
   })
 
-  it('uses defaultLocale for x-default hreflang', () => {
+  it('uses defaultLink for x-default hreflang', () => {
     const translationLinks: TranslationLink<'en' | 'es'>[] = [
-      { locale: 'en', href: 'https://example.com/en/page', accessible: true },
-      { locale: 'es', href: 'https://example.com/es/pagina', accessible: true },
+      availableLink('en/page', 'en'),
+      availableLink('es/pagina', 'es'),
     ]
 
-    const entries: SitemapUrlEntry<'en' | 'es'>[] = [
+    const entries: SitemapEntry<'en' | 'es'>[] = [
       {
-        href: 'https://example.com/en/page',
+        href: 'en/page',
         locale: 'en',
-        translationKey: 'page',
         translationLinks,
-        defaultLocale: 'es',
+        changefreq: 'weekly',
+        priority: 0.8,
+        defaultLink: availableLink('es/pagina', 'es'),
       },
     ]
 
     const xml = generateSitemapXml(entries)
-    expect(xml).toContain('hreflang="x-default" href="https://example.com/es/pagina"')
+    expect(xml).toContain('hreflang="x-default" href="es/pagina"')
+  })
+
+  it('generateUrlBlock ignores draft links in alternates', () => {
+    const entry: SitemapEntry<'en' | 'es'> = {
+      href: 'en/page',
+      locale: 'en',
+      translationLinks: [
+        availableLink('en/page', 'en'),
+        draftLink('es/borrador', 'es'),
+      ],
+      changefreq: 'weekly',
+      priority: 0.8,
+      defaultLink: availableLink('en/page', 'en'),
+    }
+
+    const xml = generateUrlBlock(entry)
+
+    expect(xml).toContain('hreflang="en"')
+    expect(xml).toContain('hreflang="x-default" href="en/page"')
+    expect(xml).not.toContain('hreflang="es"')
+    expect(xml).not.toContain('es/borrador')
+  })
+
+  it('generateUrlBlock omits x-default when defaultLink is undefined', () => {
+    const entry: SitemapEntry<'en' | 'es'> = {
+      href: 'en/page',
+      locale: 'en',
+      translationLinks: [
+        availableLink('en/page', 'en'),
+      ],
+      changefreq: 'weekly',
+      priority: 0.8,
+    }
+
+    const xml = generateUrlBlock(entry)
+
+    expect(xml).toContain('hreflang="en"')
+    expect(xml).not.toContain('hreflang="x-default"')
   })
 })

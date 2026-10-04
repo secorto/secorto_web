@@ -10,7 +10,7 @@ import {
   generateSitemapXml,
   createSectionTagTranslationLinks,
   availableLink,
-  type SitemapUrlEntry,
+  type SitemapEntry,
   createTranslationIndex,
   availableAtLocale,
   withTag,
@@ -31,13 +31,13 @@ import { standalonePageRoutes } from '@domain/standalonePage'
  * building translation links from per-mapper siblings (the translationIndex).
  *
  * @param section Content section type
- * @returns Array of SitemapUrlEntry for all accessible detail entries in this section
+ * @returns Array of SitemapEntry for all accessible detail entries in this section
  */
 async function generateSectionContentEntries(
   section: SectionType,
   rawEntries: CollectionEntry<SectionType>[],
-): Promise<SitemapUrlEntry<UILanguages>[]> {
-  const allEntries: SitemapUrlEntry<UILanguages>[] = []
+): Promise<SitemapEntry<UILanguages>[]> {
+  const allEntries: SitemapEntry<UILanguages>[] = []
 
   const localizedEntries = rawEntries.map(entry =>
     adaptToLocalizedEntry(entry, languages)
@@ -67,7 +67,7 @@ async function generateSectionContentEntries(
  *
  * @returns Locale home page entry with translation links to all locale variants
  */
-function generateLocaleHomeEntries(): SitemapUrlEntry<UILanguages>[] {
+function generateLocaleHomeEntries(): SitemapEntry<UILanguages>[] {
   const localeLinksArray = languages.all.map(locale =>
     availableLink(`${languages.getPath(locale)}/`, locale)
   )
@@ -93,8 +93,8 @@ function generateLocaleHomeEntries(): SitemapUrlEntry<UILanguages>[] {
  *
  * @returns Array of section listing entries (one per section in sectionRoutes)
  */
-function generateSectionListingEntries(section: SectionType): SitemapUrlEntry<UILanguages>[] {
-  const sitemapEntries: SitemapUrlEntry<UILanguages>[] = []
+function generateSectionListingEntries(section: SectionType): SitemapEntry<UILanguages>[] {
+  const sitemapEntries: SitemapEntry<UILanguages>[] = []
   const links = languages.all.map(locale =>
     availableLink(`${sectionRoutes.getSectionPath(section, locale)}`, locale)
   )
@@ -121,8 +121,8 @@ function generateSectionListingEntries(section: SectionType): SitemapUrlEntry<UI
  *
  * @returns Array of all detail entries from all sections
  */
-async function generateSectionEntries(): Promise<SitemapUrlEntry<UILanguages>[]> {
-  const allEntries: SitemapUrlEntry<UILanguages>[] = []
+async function generateSectionEntries(): Promise<SitemapEntry<UILanguages>[]> {
+  const allEntries: SitemapEntry<UILanguages>[] = []
 
   for (const section of sectionRoutes.getSections()) {
     const collection = await getCollection(section)
@@ -148,8 +148,8 @@ async function generateSectionEntries(): Promise<SitemapUrlEntry<UILanguages>[]>
  */
 async function generateSectionTagEntries(
   section: SectionType,
-  contentEntries: CollectionEntry<SectionType>[]): Promise<SitemapUrlEntry<UILanguages>[]> {
-  const sitemapEntries: SitemapUrlEntry<UILanguages>[] = []
+  contentEntries: CollectionEntry<SectionType>[]): Promise<SitemapEntry<UILanguages>[]> {
+  const sitemapEntries: SitemapEntry<UILanguages>[] = []
   
   for (const tag of tagRoutes.getTags()) {
     const entriesWithTag =
@@ -190,7 +190,7 @@ async function generateSectionTagEntries(
 }
 
 function generateTagsIndexEntries() {
-  const tagsIndexEntries: SitemapUrlEntry<UILanguages>[] = []
+  const tagsIndexEntries: SitemapEntry<UILanguages>[] = []
 
   const translationLinks = languages.all.map(locale =>
     availableLink(tagRoutes.getTagIndexPath(locale), locale)
@@ -208,7 +208,7 @@ function generateTagsIndexEntries() {
 }
 
 function generateStandalonePageEntries() {
-  const standalonePageEntries: SitemapUrlEntry<UILanguages>[] = []
+  const standalonePageEntries: SitemapEntry<UILanguages>[] = []
 
   for (const page of standalonePageRoutes.getPages()) {
     const pageRoutes = standalonePageRoutes.routes[page]
@@ -245,7 +245,7 @@ function generateStandalonePageEntries() {
  * @returns XML string ready to serve as sitemap.xml
  */
 export async function generateSitemap(): Promise<string> {
-  const allEntries: SitemapUrlEntry<UILanguages>[] = [
+  const allEntries: SitemapEntry<UILanguages>[] = [
     ...generateLocaleHomeEntries(),
     ...generateTagsIndexEntries(),
     ...generateStandalonePageEntries(),

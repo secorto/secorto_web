@@ -1,7 +1,8 @@
 export type {
-  SitemapEntry as SitemapUrlEntry,
+  SitemapEntry,
 } from './entry'
 
 export {
   generateSitemapXml,
+  generateUrlBlock,
 } from './xml'
