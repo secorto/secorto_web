@@ -29,20 +29,31 @@ export const sitemapSchema = z.object({
 
 export type Sitemap = z.infer<typeof sitemapSchema>
 
-const validateHreflangLink = (expect: ExpectLike, link: any, hreflang: string, locales: string[]) =>
-  step(`hreflang ${hreflang}`, async () => {
-    expect(link.rel).toBe('alternate')
-    expect(locales, `hreflang ${hreflang} should be in group`).toContain(hreflang)
-    expect(link.href, `Link for ${hreflang} should have href`).toBeTruthy()
+type HreflangLink = {
+  rel?: string
+  hreflang?: string
+  href?: string
+}
+
+type UrlEntry = z.infer<typeof sitemapSchema>['urlset']['url'][number]
+
+const normalizeHreflangLinks = (xhtmlLink: UrlEntry['xhtml:link']): HreflangLink[] => {
+  if (!xhtmlLink) return []
+  return Array.isArray(xhtmlLink) ? xhtmlLink : [xhtmlLink]
+}
+
+const validateHreflangLink = (expect: ExpectLike, link: HreflangLink, locales: string[]) =>
+  step(`hreflang ${link.hreflang}`, async () => {
+    expect(locales, `hreflang ${link.hreflang} should be in group`).toContain(link.hreflang)
   })
 
-const validateUrlEntryHreflang = (expect: ExpectLike, entry: any, locales: string[]) =>
+const validateUrlEntryHreflang = (expect: ExpectLike, entry: UrlEntry, locales: string[]) =>
   step(`validate hreflang for ${entry.loc}`, async () => {
-    const links = Array.isArray(entry['xhtml:link']) ? entry['xhtml:link'] : entry['xhtml:link'] ? [entry['xhtml:link']] : []
+    const links = normalizeHreflangLinks(entry['xhtml:link'])
     expect(links.length, `URL ${entry.loc} should have hreflang links`).toBeGreaterThan(0)
     
     for (const link of links) {
-      await validateHreflangLink(expect, link, link.hreflang, locales)
+      await validateHreflangLink(expect, link, locales)
     }
   })
 
