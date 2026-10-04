@@ -16,11 +16,13 @@ import {
   withTag,
   resolveDefaultAvailableLink,
   createDetailTranslationLinks,
+  createStandalonePageLinks,
 } from '@secorto/i18n'
 import { adaptToLocalizedEntry } from '@secorto/i18n'
 import { sectionRoutes, type SectionType } from '@domain/section'
 import { tagRoutes } from '@domain/tags'
 import { languages, defaultLang, type UILanguages } from '@i18n/ui'
+import { standalonePageRoutes } from '@domain/standalonePage'
 
 /**
  * Generates sitemap entries for a single content section.
@@ -187,6 +189,50 @@ async function generateSectionTagEntries(
   return sitemapEntries
 }
 
+function generateTagsIndexEntries() {
+  const tagsIndexEntries: SitemapUrlEntry<UILanguages>[] = []
+
+  const translationLinks = languages.all.map(locale =>
+    availableLink(tagRoutes.getTagIndexPath(locale), locale)
+  )
+  for (const tagIndex of languages.all) {
+    tagsIndexEntries.push({
+      href: tagRoutes.getTagIndexPath(tagIndex),
+      locale: tagIndex,
+      translationLinks: translationLinks,
+      changefreq: 'weekly',
+      priority: 0.6,
+    })
+  }
+  return tagsIndexEntries
+}
+
+function generateStandalonePageEntries() {
+  const standalonePageEntries: SitemapUrlEntry<UILanguages>[] = []
+
+  for (const page of standalonePageRoutes.getPages()) {
+    const pageRoutes = standalonePageRoutes.routes[page]
+    for (const locale of Object.keys(pageRoutes) as UILanguages[]) {
+      const translationLinks = createStandalonePageLinks(
+        `${locale}/${standalonePageRoutes.getPageSlug(page, locale)}`,
+        page,
+        standalonePageRoutes,
+        languages,
+      )
+      const defaultLink = resolveDefaultAvailableLink(translationLinks, defaultLang)
+      standalonePageEntries.push({
+        href: standalonePageRoutes.getPagePath(page, locale),
+        locale,
+        translationLinks: translationLinks,
+        changefreq: 'weekly',
+        priority: 0.6,
+        defaultLink,
+      })
+    }
+  }
+  return standalonePageEntries
+}
+
 /**
  * Generates the complete sitemap XML for the site.
  *
@@ -201,6 +247,8 @@ async function generateSectionTagEntries(
 export async function generateSitemap(): Promise<string> {
   const allEntries: SitemapUrlEntry<UILanguages>[] = [
     ...generateLocaleHomeEntries(),
+    ...generateTagsIndexEntries(),
+    ...generateStandalonePageEntries(),
     ...await generateSectionEntries(),
   ]
 
