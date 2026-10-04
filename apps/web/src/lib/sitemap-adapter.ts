@@ -5,263 +5,204 @@
  * content structure and routing configuration.
  */
 
-import { getCollection } from 'astro:content'
+import { getCollection, type CollectionEntry } from 'astro:content'
 import {
   generateSitemapXml,
-  getStaticPathsSectionTags,
-  createDetailTranslationLinks,
   createSectionTagTranslationLinks,
   availableLink,
-  resolveDefaultAccessibleLink,
-  type LocalizedEntry,
   type SitemapUrlEntry,
+  createTranslationIndex,
+  availableAtLocale,
+  withTag,
+  resolveDefaultAvailableLink,
+  createDetailTranslationLinks,
 } from '@secorto/i18n'
 import { adaptToLocalizedEntry } from '@secorto/i18n'
-import { isAccessible } from '@domain/translationLink'
 import { sectionRoutes, type SectionType } from '@domain/section'
 import { tagRoutes } from '@domain/tags'
-import { languages, defaultLang } from '@i18n/ui'
-
-type Locale = typeof languages.all[number]
-
-type ChangeFreq = 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never'
+import { languages, defaultLang, type UILanguages } from '@i18n/ui'
 
 /**
- * Mapper type: converts LocalizedEntry + metadata into final SitemapUrlEntry.
- */
-type EntryMapper = (
-  entry: LocalizedEntry<SectionType, any, Locale>,
-  href: string,
-  translationKey: string,
-  locale: Locale,
-  translationLinks: Array<import('@secorto/i18n').TranslationLink<Locale>>
-) => SitemapUrlEntry<Locale>
-
-/**
- * Creates a mapper for entries with lastmod.
- */
-function createMapperWithLastmod(changefreq: ChangeFreq, priority: number): EntryMapper {
-  return (entry, href, translationKey, locale, translationLinks) => ({
-    href,
-    translationKey,
-    locale,
-    translationLinks,
-    changefreq,
-    priority,
-    lastmod: (entry.original.data as { date: Date }).date.toISOString().split('T')[0],
-    defaultLocale: defaultLang as Locale,
-  })
-}
-
-/**
- * Creates a mapper for entries without lastmod.
- */
-function createMapperSimple(changefreq: ChangeFreq, priority: number): EntryMapper {
-  return (entry, href, translationKey, locale, translationLinks) => ({
-    href,
-    translationKey,
-    locale,
-    translationLinks,
-    changefreq,
-    priority,
-    defaultLocale: defaultLang as Locale,
-  })
-}
-
-/**
- * Factory for creating a base SitemapUrlEntry with all mandatory parameters.
+ * Generates sitemap entries for a single content section.
  *
- * @param href Path for this entry (relative to site root)
- * @param translationKey Key for grouping translations
- * @param locale Primary locale for this entry
- * @param translationLinks Array of translation links
- * @param changefreq Change frequency hint
- * @param priority Priority value (0.0-1.0)
- * @param lastmod Optional last modification date
- * @returns Complete SitemapUrlEntry
+ * Applies the appropriate mapper (with/without lastmod) based on section type,
+ * building translation links from per-mapper siblings (the translationIndex).
+ *
+ * @param section Content section type
+ * @returns Array of SitemapUrlEntry for all accessible detail entries in this section
  */
-function createSitemapEntry(
-  href: string,
-  translationKey: string,
-  locale: Locale,
-  translationLinks: Array<import('@secorto/i18n').TranslationLink<Locale>>,
-  changefreq: ChangeFreq,
-  priority: number,
-  lastmod?: string
-): SitemapUrlEntry<Locale> {
-  const entry: SitemapUrlEntry<Locale> = {
-    href,
-    translationKey,
-    locale,
-    translationLinks,
-    changefreq,
-    priority,
-    defaultLocale: defaultLang as Locale,
+async function generateSectionContentEntries(
+  section: SectionType,
+  rawEntries: CollectionEntry<SectionType>[],
+): Promise<SitemapUrlEntry<UILanguages>[]> {
+  const allEntries: SitemapUrlEntry<UILanguages>[] = []
+
+  const localizedEntries = rawEntries.map(entry =>
+    adaptToLocalizedEntry(entry, languages)
+  )
+  const translationIndex = createTranslationIndex(localizedEntries)
+
+  for (const entry of localizedEntries) {
+    if(entry.draft) continue
+    const siblings = translationIndex[entry.translationKey]
+    const translationLinks = createDetailTranslationLinks(siblings, sectionRoutes, languages)
+    const defaultLink = resolveDefaultAvailableLink(translationLinks, defaultLang)
+    allEntries.push({
+      href: sectionRoutes.getEntryPath(section, entry.locale, entry.cleanId),
+      locale: entry.locale,
+      translationLinks,
+      changefreq: 'weekly',
+      priority: 0.8,
+      defaultLink,
+    })
   }
 
-  if (lastmod) {
-    entry.lastmod = lastmod
-  }
-
-  return entry
+  return allEntries
 }
 
 /**
- * Section-specific mappers.
+ * Generates sitemap entry for locale home pages (root /, /en, /es).
+ *
+ * @returns Locale home page entry with translation links to all locale variants
  */
-const sectionMappers: Record<SectionType, EntryMapper> = {
-  blog: createMapperWithLastmod('weekly', 0.7),
-  talk: createMapperWithLastmod('monthly', 0.6),
-  work: createMapperSimple('yearly', 0.5),
-  projects: createMapperSimple('monthly', 0.6),
-  community: createMapperSimple('monthly', 0.5),
+function generateLocaleHomeEntries(): SitemapUrlEntry<UILanguages>[] {
+  const localeLinksArray = languages.all.map(locale =>
+    availableLink(`${languages.getPath(locale)}/`, locale)
+  )
+  const defaultLink = availableLink(`${languages.getPath(defaultLang)}/`, defaultLang)
+
+  return languages.all.map(locale => {
+    return {
+      href: `${languages.getPath(locale)}/`,
+      locale: locale,
+      translationLinks: localeLinksArray,
+      changefreq: 'monthly',
+      priority: 1.0,
+      defaultLink,
+    }
+  })
+}
+
+/**
+ * Generates sitemap entries for all section listing pages.
+ *
+ * One entry per section with translation links to localized section paths.
+ * Example: /blog ↔ /bitacora
+ *
+ * @returns Array of section listing entries (one per section in sectionRoutes)
+ */
+function generateSectionListingEntries(section: SectionType): SitemapUrlEntry<UILanguages>[] {
+  const sitemapEntries: SitemapUrlEntry<UILanguages>[] = []
+  const links = languages.all.map(locale =>
+    availableLink(`${sectionRoutes.getSectionPath(section, locale)}`, locale)
+  )
+  const defaultLink = availableLink(`${sectionRoutes.getSectionPath(section, defaultLang)}`, defaultLang)
+  for (const locale of languages.all) {
+    sitemapEntries.push({
+      href: sectionRoutes.getSectionPath(section, locale),
+      locale: locale,
+      translationLinks: links,
+      changefreq: 'weekly',
+      priority: 0.8,
+      defaultLink,
+    })
+  }
+
+  return sitemapEntries
+}
+
+/**
+ * Generates sitemap entries for all detail pages across all sections.
+ *
+ * Each section's detail entries (blog posts, talks, work items, etc.)
+ * are generated via mappers that handle section-specific metadata (lastmod, changefreq).
+ *
+ * @returns Array of all detail entries from all sections
+ */
+async function generateSectionEntries(): Promise<SitemapUrlEntry<UILanguages>[]> {
+  const allEntries: SitemapUrlEntry<UILanguages>[] = []
+
+  for (const section of sectionRoutes.getSections()) {
+    const collection = await getCollection(section)
+    const sectionListingEntries = generateSectionListingEntries(section)
+    allEntries.push(...sectionListingEntries)
+    const sectionEntries = await generateSectionContentEntries(section, collection)
+    allEntries.push(...sectionEntries)
+    const tagEntries = await generateSectionTagEntries(section, collection)
+    allEntries.push(...tagEntries)
+  }
+
+  return allEntries
+}
+
+/**
+ * Generates sitemap entries for all tag pages across all sections.
+ *
+ * Extracts available tag/locale combinations from static path generation,
+ * builds translation links, and creates one sitemap entry per unique tag
+ * (across all its locales).
+ *
+ * @returns Array of tag page entries
+ */
+async function generateSectionTagEntries(
+  section: SectionType,
+  contentEntries: CollectionEntry<SectionType>[]): Promise<SitemapUrlEntry<UILanguages>[]> {
+  const sitemapEntries: SitemapUrlEntry<UILanguages>[] = []
+  
+  for (const tag of tagRoutes.getTags()) {
+    const entriesWithTag =
+          contentEntries.filter(withTag(tag))
+
+    const siblings =
+      languages.all.filter(locale =>
+        entriesWithTag.some(
+          availableAtLocale(locale),
+        ),
+      )
+
+    // Omit tag if there's not content in the section for any locale
+    if(siblings.length === 0) continue
+    
+    const tagLinks = createSectionTagTranslationLinks(
+      languages.all,
+      siblings,
+      section,
+      tag,
+      tagRoutes
+    )
+    const defaultLink = resolveDefaultAvailableLink(tagLinks, defaultLang)
+    if(defaultLink === undefined) throw new Error(`Failed to resolve default available link for tag: ${tag}`)
+    for (const locale of siblings) {
+      sitemapEntries.push({
+        href: tagRoutes.getSectionTagPath(section, locale, tag),
+        locale,
+        translationLinks: tagLinks,
+        changefreq: 'weekly',
+        priority: 0.6,
+        defaultLink,
+      })
+    }
+  }
+
+  return sitemapEntries
 }
 
 /**
  * Generates the complete sitemap XML for the site.
  *
- * Each entry includes translationLinks for all its locale variants,
- * computed upfront per content item.
+ * Orchestrates four levels of sitemap content:
+ * 1. Locale home pages (/)
+ * 2. Section listing pages (/blog, /bitacora, etc.)
+ * 3. Section detail pages (blog posts, talks, work items, etc.)
+ * 4. Tag pages (tags within each section)
  *
- * @param site Base site URL (without trailing slash)
  * @returns XML string ready to serve as sitemap.xml
  */
-export async function generateSitemap(site: string): Promise<string> {
-  const allEntries: SitemapUrlEntry<Locale>[] = []
+export async function generateSitemap(): Promise<string> {
+  const allEntries: SitemapUrlEntry<UILanguages>[] = [
+    ...generateLocaleHomeEntries(),
+    ...await generateSectionEntries(),
+  ]
 
-  // Locale home pages
-  const localeLinksArray = languages.all.map(locale =>
-    availableLink(`${languages.getPath(locale)}/`, locale)
-  )
-  const defaultLink = localeLinksArray.find(link => link.locale === defaultLang)
-  if (defaultLink && defaultLink.href) {
-    allEntries.push({
-      href: defaultLink.href,
-      translationKey: 'locale',
-      locale: defaultLang as Locale,
-      translationLinks: localeLinksArray,
-      changefreq: 'monthly',
-      priority: 1.0,
-      defaultLocale: defaultLang as Locale,
-    })
-  }
-
-  // Section listing pages
-  for (const section of sectionRoutes.getSections()) {
-    const sectionLinksArray = languages.all.map(locale =>
-      availableLink(`${sectionRoutes.getSectionPath(section, locale)}`, locale)
-    )
-    const defaultLink = sectionLinksArray.find(link => link.locale === defaultLang)
-    if (defaultLink && defaultLink.href) {
-      allEntries.push({
-        href: defaultLink.href,
-        translationKey: `section:${String(section)}`,
-        locale: defaultLang as Locale,
-        translationLinks: sectionLinksArray,
-        changefreq: 'weekly',
-        priority: 0.8,
-        defaultLocale: defaultLang as Locale,
-      })
-    }
-  }
-
-  // Detail entries
-  for (const section of sectionRoutes.getSections()) {
-    const entries = await getCollection(section)
-    const mapper = sectionMappers[section]
-
-    // Group entries by translationKey to build siblings map
-    const entriesByKey = new Map<string, LocalizedEntry<SectionType, any, Locale>[]>()
-    for (const entry of entries) {
-      const localizedEntry = adaptToLocalizedEntry(entry, languages) as LocalizedEntry<
-        SectionType,
-        any,
-        Locale
-      >
-      const key = localizedEntry.translationKey
-      if (!entriesByKey.has(key)) {
-        entriesByKey.set(key, [])
-      }
-      entriesByKey.get(key)!.push(localizedEntry)
-    }
-
-    // Process each translation group
-    for (const [translationKey, localeEntries] of entriesByKey) {
-      // Build siblings map for this translation key
-      const siblings = Object.fromEntries(
-        localeEntries.map(entry => [entry.locale, entry])
-      ) as Partial<Record<Locale, LocalizedEntry<SectionType, any, Locale>>>
-
-      // Create proper translation links (available, draft, or missing)
-      const allLinks = createDetailTranslationLinks(siblings, sectionRoutes, languages)
-
-      if (allLinks.length === 0) continue
-
-      // Use resolveDefaultAccessibleLink to get the best entry for sitemap
-      const defaultLink = resolveDefaultAccessibleLink(allLinks, defaultLang as Locale)
-      const locEntryForLink = siblings[defaultLink.locale]
-
-      if (defaultLink.href && locEntryForLink) {
-        allEntries.push(
-          mapper(
-            locEntryForLink,
-            defaultLink.href,
-            translationKey,
-            defaultLink.locale,
-            allLinks
-          )
-        )
-      }
-    }
-  }
-
-  // Tag pages
-  const tagPaths = await getStaticPathsSectionTags(
-    languages,
-    sectionRoutes,
-    tagRoutes,
-    (sec: SectionType) => getCollection(sec) as any,
-  )
-
-  const processedTags = new Set<string>()
-  for (const tagPath of tagPaths) {
-    const section = tagPath.props.section
-    const tag = tagPath.props.tag
-    const key = `tag:${String(section)}:${String(tag)}`
-
-    if (!processedTags.has(key)) {
-      processedTags.add(key)
-
-      // Create proper translation links for tag pages
-      const allLinks = createSectionTagTranslationLinks(
-        languages.all,
-        tagPath.props.siblings,
-        section,
-        tag,
-        tagRoutes
-      )
-
-      if (allLinks.length === 0) continue
-
-      // Use resolveDefaultAccessibleLink to get the best entry for sitemap
-      const defaultLink = resolveDefaultAccessibleLink(allLinks, defaultLang as Locale)
-
-      if (defaultLink.href) {
-        allEntries.push({
-          href: defaultLink.href,
-          translationKey: key,
-          locale: defaultLink.locale,
-          translationLinks: allLinks,
-          changefreq: 'weekly',
-          priority: 0.6,
-          defaultLocale: defaultLang as Locale,
-        })
-      }
-    }
-  }
-
-  // Generate XML from entries
-  const xml = generateSitemapXml(allEntries)
-
-  return xml
+  return generateSitemapXml(allEntries)
 }

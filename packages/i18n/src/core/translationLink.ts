@@ -92,6 +92,31 @@ export function isMissing<TLocale extends string>(link: TranslationLink<TLocale>
 }
 
 /**
+ * Resolves the default available translation link from a collection of links.
+ *
+ * Selection priority:
+ * 1. An `available` link matching `defaultLang`.
+ * 2. The first `available` link.
+ *
+ * @template L Type representing the supported locales.
+ * @param links Translation links to evaluate.
+ * @param defaultLang Preferred locale to prioritize during selection.
+ * @returns The selected available translation link or `undefined` if none is found.
+ */
+export function resolveDefaultAvailableLink<TLocale extends string>(
+  links: TranslationLink<TLocale>[],
+  defaultLang: TLocale
+): AvailableLink<TLocale> | undefined{
+  if (!links || links.length === 0) throw new Error('resolveDefaultAvailableLink: unexpected empty links array')
+
+  const defaultAny = links.find(l => l.locale === defaultLang)
+  if (defaultAny && isAvailable(defaultAny)) return defaultAny
+
+  const firstAvailable = links.find(isAvailable)
+  if (firstAvailable) return firstAvailable
+}
+
+/**
  * Resolves the default accessible translation link from a collection of links.
  *
  * Selection priority:
@@ -111,15 +136,8 @@ export function resolveDefaultAccessibleLink<TLocale extends string>(
   links: TranslationLink<TLocale>[],
   defaultLang: TLocale
 ): AccessibleTranslationLink<TLocale> {
-  if (!links || links.length === 0) throw new Error('resolveDefaultAccessibleLink: unexpected empty links array')
-
-  const defaultAny = links.find(l => l.locale === defaultLang)
-  if (defaultAny && isAvailable(defaultAny)) return defaultAny
-
-  const firstAvailable = links.find(isAvailable)
-  if (firstAvailable) return firstAvailable
-
-  if (defaultAny && isDraft(defaultAny)) return defaultAny
+  const availableLink = resolveDefaultAvailableLink(links, defaultLang)
+  if (availableLink) return availableLink
 
   const firstDraft = links.find(isDraft)
   if (firstDraft) return firstDraft

@@ -13,30 +13,13 @@
 import { generateSitemap } from '@lib/sitemap-adapter'
 
 export async function GET() {
-  const siteUrl = import.meta.env.SITE
+  const xml = await generateSitemap()
 
-  if (!siteUrl) {
-    return new Response(
-      'Error: SITE environment variable is not configured',
-      { status: 500, headers: { 'Content-Type': 'text/plain' } }
-    )
-  }
-
-  try {
-    const xml = await generateSitemap(siteUrl.replace(/\/$/, '')) // Remove trailing slash if present
-
-    return new Response(xml, {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/xml; charset=utf-8',
-        'Cache-Control': 'public, max-age=3600', // Cache for 1 hour
-      },
-    })
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error)
-    return new Response(`Sitemap generation failed: ${message}`, {
-      status: 500,
-      headers: { 'Content-Type': 'text/plain' },
-    })
-  }
+  return new Response(xml, {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/xml; charset=utf-8',
+      'Cache-Control': 'public, max-age=3600', // Cache for 1 hour
+    },
+  })
 }

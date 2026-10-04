@@ -5,7 +5,8 @@
  * so hreflang alternates are built directly from the entry structure.
  */
 
-import type { SitemapUrlEntry } from './entry'
+import { isAvailable } from '../core'
+import type { SitemapEntry } from './entry'
 
 /**
  * Escapes XML special characters in URL and text content.
@@ -29,9 +30,9 @@ function escapeXml(text: string): string {
  * @param entry Entry with translationLinks for hreflang generation.
  * @returns XML string for one <url> block.
  */
-function generateUrlBlock<TLocale extends string>(entry: SitemapUrlEntry<TLocale>): string {
+function generateUrlBlock<TLocale extends string>(entry: SitemapEntry<TLocale>): string {
   let xml = '  <url>\n'
-  xml += `    <loc>${escapeXml(entry.url)}</loc>\n`
+  xml += `    <loc>${escapeXml(entry.href)}</loc>\n`
 
   if (entry.lastmod) {
     xml += `    <lastmod>${escapeXml(entry.lastmod)}</lastmod>\n`
@@ -45,17 +46,18 @@ function generateUrlBlock<TLocale extends string>(entry: SitemapUrlEntry<TLocale
     xml += `    <priority>${entry.priority.toFixed(1)}</priority>\n`
   }
 
-  // Add hreflang alternates if we have multiple translations
-  const locales = Object.keys(entry.translationLinks) as TLocale[]
-  if (locales.length > 1) {
-    for (const locale of locales) {
-      const url = entry.translationLinks[locale]
-      xml += `    <xhtml:link rel="alternate" hreflang="${escapeXml(locale)}" href="${escapeXml(url)}" />\n`
+  // Add hreflang alternates from translationLinks array
+  if (entry.translationLinks.length > 0) {
+    for (const link of entry.translationLinks) {
+      if(isAvailable(link)) {
+        xml += `    <xhtml:link rel="alternate" hreflang="${escapeXml(link.locale)}" href="${escapeXml(link.href)}" />\n`
+
+      }
     }
 
-    // Add x-default link using defaultLocale
-    const defaultUrl = entry.translationLinks[entry.defaultLocale]
-    xml += `    <xhtml:link rel="alternate" hreflang="x-default" href="${escapeXml(defaultUrl)}" />\n`
+    if (entry.defaultLink) {
+      xml += `    <xhtml:link rel="alternate" hreflang="x-default" href="${escapeXml(entry.defaultLink.href)}" />\n`
+    }
   }
 
   xml += '  </url>\n'
@@ -73,7 +75,7 @@ function generateUrlBlock<TLocale extends string>(entry: SitemapUrlEntry<TLocale
  * @returns Complete XML string ready to serve as sitemap.xml.
  */
 export function generateSitemapXml<TLocale extends string>(
-  entries: SitemapUrlEntry<TLocale>[]
+  entries: SitemapEntry<TLocale>[]
 ): string {
   let xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
   xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'
@@ -85,5 +87,3 @@ export function generateSitemapXml<TLocale extends string>(
   xml += '</urlset>\n'
   return xml
 }
-
-

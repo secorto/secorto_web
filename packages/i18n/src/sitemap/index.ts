@@ -1,6 +1,5 @@
 export type {
-  SitemapUrlEntry,
-  LocalizedEntryMapper,
+  SitemapEntry as SitemapUrlEntry,
 } from './entry'
 
 export {
