@@ -62,13 +62,13 @@ describe('resolveDefaultAccessibleLink', () => {
   it('throws when all links are missing', () => {
     const links = [missingLink('en'), missingLink('es')]
     expect(() => resolveDefaultAccessibleLink(links, 'es')).toThrow(
-      'resolveDefaultAccessibleLink: expected at least one accessible link'
+      'Unable to find an accessible link'
     )
   })
 
   it('throws when links array is empty', () => {
     expect(() => resolveDefaultAccessibleLink([], 'es')).toThrow(
-      'resolveDefaultAccessibleLink: unexpected empty links array'
+      'cannot infer default available link from an empty array'
     )
   })
 })

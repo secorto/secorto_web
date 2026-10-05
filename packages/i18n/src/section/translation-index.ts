@@ -56,7 +56,7 @@ export function createTranslationIndex<
   TEntry
 >(
   entries: readonly LocalizedEntry<TSection, TEntry, TLocale>[]
-): TranslationIndex<TSection, TLocale, TEntry> {
+) {
   // Using map to safely mutate internally without lying to TypeScript.
   const map = new Map<string, TranslationGroup<TSection, TLocale, TEntry>>()
 
@@ -77,5 +77,5 @@ export function createTranslationIndex<
     group[locale] = entry
   }
 
-  return Object.fromEntries(map)
+  return Object.fromEntries(map) satisfies TranslationIndex<TSection, TLocale, TEntry>
 }

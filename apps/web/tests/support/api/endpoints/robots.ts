@@ -11,7 +11,7 @@ export const robotsParser = async (response: APIResponse) => {
     shouldBeLoaded: () => verifyStep('robots.txt is loaded', async ({ expect }) => {
       expect(body, 'robots.txt should contain origin').toContain('User-agent: *')
       expect(body, 'robots.txt should allow root').toContain('Allow: /')
-      expect(body, 'robots.txt should declare sitemap').toMatch(/Sitemap:\s+https?:\/\/.+\/sitemap-index\.xml/)
+      expect(body, 'robots.txt should declare sitemap').toMatch(/Sitemap:\s+https?:\/\/.+\/sitemap\.xml/)
     })
   }
 }
