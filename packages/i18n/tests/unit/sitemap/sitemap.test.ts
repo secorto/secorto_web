@@ -178,7 +178,7 @@ describe('generateSitemapXml', () => {
     ]
 
     const xml = generateSitemapXml(site, entries)
-    expect(xml).toContain('hreflang="x-default" href="es/pagina"')
+    expect(xml).toContain('hreflang="x-default" href="https://secorto.com/es/pagina"')
   })
 
   it('generateUrlBlock ignores draft links in alternates', () => {
@@ -191,13 +191,13 @@ describe('generateSitemapXml', () => {
       ],
       changefreq: 'weekly',
       priority: 0.8,
-      defaultLink: availableLink('en/page', 'en'),
+      defaultLink: availableLink('https://secorto.com/en/page', 'en'),
     }
 
     const xml = generateUrlBlock(site, entry)
 
     expect(xml).toContain('hreflang="en"')
-    expect(xml).toContain('hreflang="x-default" href="en/page"')
+    expect(xml).toContain('hreflang="x-default" href="https://secorto.com/en/page"')
     expect(xml).not.toContain('hreflang="es"')
     expect(xml).not.toContain('es/borrador')
   })
