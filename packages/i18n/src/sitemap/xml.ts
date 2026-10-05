@@ -44,13 +44,13 @@ export function generateUrlBlock<TLocale extends string>(site: string, entry: Si
   // Add hreflang alternates from translationLinks array
   for (const link of entry.translationLinks) {
     if(isAvailable(link)) {
-      xml += `    <xhtml:link rel="alternate" hreflang="${escapeXml(link.locale)}" href="${escapeXml(link.href)}" />\n`
+      xml += `    <xhtml:link rel="alternate" hreflang="${escapeXml(link.locale)}" href="${escapeXml(new URL(link.href, site).toString())}" />\n`
 
     }
   }
 
   if (entry.defaultLink) {
-    xml += `    <xhtml:link rel="alternate" hreflang="x-default" href="${escapeXml(entry.defaultLink.href)}" />\n`
+    xml += `    <xhtml:link rel="alternate" hreflang="x-default" href="${escapeXml(new URL(entry.defaultLink.href, site).toString())}" />\n`
   }
   xml += '  </url>\n'
   return xml

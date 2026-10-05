@@ -102,6 +102,7 @@ export function isMissing<TLocale extends string>(link: TranslationLink<TLocale>
  * @param links Translation links to evaluate.
  * @param defaultLang Preferred locale to prioritize during selection.
  * @returns The selected available translation link or `undefined` if none is found.
+ * @throws {Error} If `links` is empty.
  */
 export function resolveDefaultAvailableLink<TLocale extends string>(
   links: TranslationLink<TLocale>[],

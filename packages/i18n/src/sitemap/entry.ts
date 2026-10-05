@@ -1,8 +1,5 @@
 /**
  * Sitemap entry types for asymmetric multilingual routing.
- *
- * Supports generation of sitemap XML with hreflang alternates,
- * grouping URLs by translation key for consistency.
  */
 
 import type { TranslationLink, AvailableLink } from '../core/translationLink'

@@ -7,7 +7,6 @@
  * - Generates the complete sitemap with hreflang alternates
  * - Respects content state (available only, no drafts)
  * - Caches for 1 hour
- * - Returns validation errors if generation fails
  */
 
 import { generateSitemap } from '@domain/sitemap-adapter'
@@ -19,7 +18,7 @@ export async function GET() {
     status: 200,
     headers: {
       'Content-Type': 'application/xml; charset=utf-8',
-      'Cache-Control': 'public, max-age=3600', // Cache for 1 hour
+      'Cache-Control': 'public, max-age=3600',
     },
   })
 }

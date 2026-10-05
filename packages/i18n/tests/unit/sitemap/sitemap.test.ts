@@ -3,10 +3,10 @@ import {
   availableLink,
   draftLink,
   generateSitemapXml,
+  generateUrlBlock,
   type SitemapEntry,
   type TranslationLink,
 } from '@secorto/i18n'
-import { generateUrlBlock } from '@secorto/i18n'
 
 const site = 'https://secorto.com'
 
