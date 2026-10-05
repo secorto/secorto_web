@@ -8,6 +8,8 @@ import {
 } from '@secorto/i18n'
 import { generateUrlBlock } from '@secorto/i18n'
 
+const site = 'https://secorto.com'
+
 describe('generateSitemapXml', () => {
   it('generates valid XML structure', () => {
     const translationLinks: TranslationLink<'en' | 'es'>[] = [
@@ -25,11 +27,11 @@ describe('generateSitemapXml', () => {
       },
     ]
 
-    const xml = generateSitemapXml(entries)
+    const xml = generateSitemapXml(site, entries)
     expect(xml).toContain('<?xml version="1.0"')
     expect(xml).toContain('<urlset')
     expect(xml).toContain('</urlset>')
-    expect(xml).toContain('<loc>en/page-1</loc>')
+    expect(xml).toContain('<loc>https://secorto.com/en/page-1</loc>')
   })
 
   it('includes hreflang alternates for multiple locales', () => {
@@ -49,7 +51,7 @@ describe('generateSitemapXml', () => {
       },
     ]
 
-    const xml = generateSitemapXml(entries)
+    const xml = generateSitemapXml(site, entries)
     expect(xml).toContain('xhtml:link rel="alternate" hreflang="en"')
     expect(xml).toContain('xhtml:link rel="alternate" hreflang="es"')
     expect(xml).toContain('xhtml:link rel="alternate" hreflang="x-default"')
@@ -71,7 +73,7 @@ describe('generateSitemapXml', () => {
       },
     ]
 
-    const xml = generateSitemapXml(entries)
+    const xml = generateSitemapXml(site, entries)
     expect(xml).toContain('&amp;')
   })
 
@@ -92,7 +94,7 @@ describe('generateSitemapXml', () => {
       },
     ]
 
-    const xml = generateSitemapXml(entries)
+    const xml = generateSitemapXml(site, entries)
     const urlBlocks = xml.match(/<url>/g)
     expect(urlBlocks).toHaveLength(1)
   })
@@ -113,7 +115,7 @@ describe('generateSitemapXml', () => {
       },
     ]
 
-    const xml = generateSitemapXml(entries)
+    const xml = generateSitemapXml(site, entries)
     expect(xml).toContain('<priority>0.9</priority>')
   })
 
@@ -133,7 +135,7 @@ describe('generateSitemapXml', () => {
       },
     ]
 
-    const xml = generateSitemapXml(entries)
+    const xml = generateSitemapXml(site, entries)
     expect(xml).toContain('<changefreq>daily</changefreq>')
   })
 
@@ -154,7 +156,7 @@ describe('generateSitemapXml', () => {
       },
     ]
 
-    const xml = generateSitemapXml(entries)
+    const xml = generateSitemapXml(site, entries)
     expect(xml).toContain('<lastmod>2024-01-15</lastmod>')
   })
 
@@ -175,7 +177,7 @@ describe('generateSitemapXml', () => {
       },
     ]
 
-    const xml = generateSitemapXml(entries)
+    const xml = generateSitemapXml(site, entries)
     expect(xml).toContain('hreflang="x-default" href="es/pagina"')
   })
 
@@ -192,7 +194,7 @@ describe('generateSitemapXml', () => {
       defaultLink: availableLink('en/page', 'en'),
     }
 
-    const xml = generateUrlBlock(entry)
+    const xml = generateUrlBlock(site, entry)
 
     expect(xml).toContain('hreflang="en"')
     expect(xml).toContain('hreflang="x-default" href="en/page"')
@@ -211,7 +213,7 @@ describe('generateSitemapXml', () => {
       priority: 0.8,
     }
 
-    const xml = generateUrlBlock(entry)
+    const xml = generateUrlBlock(site, entry)
 
     expect(xml).toContain('hreflang="en"')
     expect(xml).not.toContain('hreflang="x-default"')

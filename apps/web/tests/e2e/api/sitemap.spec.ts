@@ -13,7 +13,7 @@ test.describe('Sitemap XML with hreflang', () => {
 
     await result.shouldHaveHreflangAlternates([
       {
-        paths: ['/en/blog', '/es/bitacora'],
+        paths: ['/en/blog', '/es/blog'],
         locales: ['en', 'es', 'x-default'],
       },
       {

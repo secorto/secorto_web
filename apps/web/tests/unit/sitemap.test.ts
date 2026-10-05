@@ -76,7 +76,7 @@ describe('Sitemap Integration - generateSitemap', () => {
     )
 
     // 5. Ejecución del punto de entrada único (Caja Negra)
-    const sitemapXml = await generateSitemap()
+    const sitemapXml = await generateSitemap('https://secorto.com')
 
     // 6. Aserciones sobre el string XML resultante (Garantiza que generateSitemapXml se ejecutó con éxito)
     expect(sitemapXml).toBeTypeOf('string')
@@ -84,20 +84,20 @@ describe('Sitemap Integration - generateSitemap', () => {
     expect(sitemapXml).toContain('<urlset')
 
     // Validamos que las páginas core / estáticas (Home, Acerca de, Tags) se hayan integrado
-    expect(sitemapXml).toContain('<loc>/es/</loc>')
-    expect(sitemapXml).toContain('<loc>/en/</loc>')
-    expect(sitemapXml).toContain('<loc>/es/acerca-de</loc>')
-    expect(sitemapXml).toContain('<loc>/en/about</loc>')
-    expect(sitemapXml).toContain('<loc>/es/tags</loc>')
-    expect(sitemapXml).toContain('<loc>/en/tags</loc>')
+    expect(sitemapXml).toContain('<loc>https://secorto.com/es/</loc>')
+    expect(sitemapXml).toContain('<loc>https://secorto.com/en/</loc>')
+    expect(sitemapXml).toContain('<loc>https://secorto.com/es/acerca-de</loc>')
+    expect(sitemapXml).toContain('<loc>https://secorto.com/en/about</loc>')
+    expect(sitemapXml).toContain('<loc>https://secorto.com/es/tags</loc>')
+    expect(sitemapXml).toContain('<loc>https://secorto.com/en/tags</loc>')
 
     // Validamos que las rutas dinámicas procesadas asimétricamente existan en el output
-    expect(sitemapXml).toContain('<loc>/es/blog/intro-python</loc>')
-    expect(sitemapXml).toContain('<loc>/en/blog/intro-python</loc>')
-    expect(sitemapXml).toContain('<loc>/es/charla/test-unitarios</loc>')
-    expect(sitemapXml).toContain('<loc>/en/blog/tags/python</loc>')
-    expect(sitemapXml).toContain('<loc>/es/blog/tags/python</loc>')
-    expect(sitemapXml).toContain('<loc>/es/charla/tags/pruebas</loc>')
+    expect(sitemapXml).toContain('<loc>https://secorto.com/es/blog/intro-python</loc>')
+    expect(sitemapXml).toContain('<loc>https://secorto.com/en/blog/intro-python</loc>')
+    expect(sitemapXml).toContain('<loc>https://secorto.com/es/charla/test-unitarios</loc>')
+    expect(sitemapXml).toContain('<loc>https://secorto.com/en/blog/tags/python</loc>')
+    expect(sitemapXml).toContain('<loc>https://secorto.com/es/blog/tags/python</loc>')
+    expect(sitemapXml).toContain('<loc>https://secorto.com/es/charla/tags/pruebas</loc>')
 
 
     // Validamos la inyección correcta de hreflang generados por @secorto/i18n en el XML
@@ -106,6 +106,6 @@ describe('Sitemap Integration - generateSitemap', () => {
     expect(sitemapXml).toContain('hreflang="en"')
 
     // Verificamos que el borrador efectivamente se haya quedado fuera del sitemap
-    expect(sitemapXml).not.toContain('blog/es/borrador')
+    expect(sitemapXml).not.toContain('https://secorto.com/es/blog/borrador')
   })
 })

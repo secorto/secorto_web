@@ -89,7 +89,6 @@ function generateLocaleHomeEntries(): SitemapEntry<UILanguages>[] {
  * Generates sitemap entries for all section listing pages.
  *
  * One entry per section with translation links to localized section paths.
- * Example: /blog ↔ /bitacora
  *
  * @returns Array of section listing entries (one per section in sectionRoutes)
  */
@@ -194,6 +193,7 @@ function generateTagsIndexEntries() {
   const translationLinks = languages.all.map(locale =>
     availableLink(tagRoutes.getTagIndexPath(locale), locale)
   )
+  const defaultLink = availableLink(tagRoutes.getTagIndexPath(defaultLang), defaultLang)
   for (const tagIndex of languages.all) {
     tagsIndexEntries.push({
       href: tagRoutes.getTagIndexPath(tagIndex),
@@ -201,6 +201,7 @@ function generateTagsIndexEntries() {
       translationLinks: translationLinks,
       changefreq: 'weekly',
       priority: 0.6,
+      defaultLink,
     })
   }
   return tagsIndexEntries
@@ -235,15 +236,9 @@ function generateStandalonePageEntries() {
 /**
  * Generates the complete sitemap XML for the site.
  *
- * Orchestrates four levels of sitemap content:
- * 1. Locale home pages (/)
- * 2. Section listing pages (/blog, /bitacora, etc.)
- * 3. Section detail pages (blog posts, talks, work items, etc.)
- * 4. Tag pages (tags within each section)
- *
  * @returns XML string ready to serve as sitemap.xml
  */
-export async function generateSitemap(): Promise<string> {
+export async function generateSitemap(site: string): Promise<string> {
   const allEntries: SitemapEntry<UILanguages>[] = [
     ...generateLocaleHomeEntries(),
     ...generateTagsIndexEntries(),
@@ -251,5 +246,5 @@ export async function generateSitemap(): Promise<string> {
     ...await generateSectionEntries(),
   ]
 
-  return generateSitemapXml(allEntries)
+  return generateSitemapXml(site, allEntries)
 }

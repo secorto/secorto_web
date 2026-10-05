@@ -30,9 +30,9 @@ function escapeXml(text: string): string {
  * @param entry Entry with translationLinks for hreflang generation.
  * @returns XML string for one <url> block.
  */
-export function generateUrlBlock<TLocale extends string>(entry: SitemapEntry<TLocale>): string {
+export function generateUrlBlock<TLocale extends string>(site: string, entry: SitemapEntry<TLocale>): string {
   let xml = '  <url>\n'
-  xml += `    <loc>${escapeXml(entry.href)}</loc>\n`
+  xml += `    <loc>${escapeXml(new URL(entry.href, site).toString())}</loc>\n`
 
   if (entry.lastmod) {
     xml += `    <lastmod>${escapeXml(entry.lastmod)}</lastmod>\n`
@@ -67,13 +67,14 @@ export function generateUrlBlock<TLocale extends string>(entry: SitemapEntry<TLo
  * @returns Complete XML string ready to serve as sitemap.xml.
  */
 export function generateSitemapXml<TLocale extends string>(
+  site: string,
   entries: SitemapEntry<TLocale>[]
 ): string {
   let xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
   xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n'
 
   for (const entry of entries) {
-    xml += generateUrlBlock(entry)
+    xml += generateUrlBlock(site, entry)
   }
 
   xml += '</urlset>\n'

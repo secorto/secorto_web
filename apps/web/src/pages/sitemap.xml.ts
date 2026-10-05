@@ -13,7 +13,7 @@
 import { generateSitemap } from '@domain/sitemap-adapter'
 
 export async function GET() {
-  const xml = await generateSitemap()
+  const xml = await generateSitemap(import.meta.env.SITE)
 
   return new Response(xml, {
     status: 200,
