@@ -27,9 +27,6 @@ import { standalonePageRoutes } from '@domain/standalonePage'
 /**
  * Generates sitemap entries for a single content section.
  *
- * Applies the appropriate mapper (with/without lastmod) based on section type,
- * building translation links from per-mapper siblings (the translationIndex).
- *
  * @param section Content section type
  * @returns Array of SitemapEntry for all accessible detail entries in this section
  */
