@@ -99,7 +99,7 @@ describe('generateSitemapXml', () => {
     expect(urlBlocks).toHaveLength(1)
   })
 
-  it('includes priority when provided', () => {
+  it('includes priority and changefreq on output', () => {
     const translationLinks: TranslationLink<'en'>[] = [
       availableLink('en/page-1', 'en'),
     ]
@@ -117,26 +117,7 @@ describe('generateSitemapXml', () => {
 
     const xml = generateSitemapXml(site, entries)
     expect(xml).toContain('<priority>0.9</priority>')
-  })
-
-  it('includes changefreq when provided', () => {
-    const translationLinks: TranslationLink<'en'>[] = [
-      availableLink('en/page-1', 'en'),
-    ]
-
-    const entries: SitemapEntry<'en'>[] = [
-      {
-        href: 'en/page-1',
-        locale: 'en',
-        translationLinks,
-        changefreq: 'daily',
-        priority: 0.8,
-        defaultLink: availableLink('en/page-1', 'en'),
-      },
-    ]
-
-    const xml = generateSitemapXml(site, entries)
-    expect(xml).toContain('<changefreq>daily</changefreq>')
+    expect(xml).toContain('<changefreq>weekly</changefreq>')
   })
 
   it('includes lastmod when provided', () => {
