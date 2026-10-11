@@ -10,7 +10,7 @@ excerpt: "Una guía de referencia rápida y progresiva para dominar Python: Desd
 Su objetivo es servir como una **hoja de trucos (Cheatsheet) de referencia rápida y progresiva**
 sobre los estándares modernos de Python, conectando la sintaxis básica con la arquitectura de objetos profesional.
 
-## Módulo de Introducción y Sintaxis Esencial
+## Módulo 1: Introducción y Sintaxis Esencial
 
 Python es un lenguaje de programación interpretado que destaca por su facilidad de lectura,
 su limpia curva de aprendizaje y su versatilidad.
@@ -74,14 +74,14 @@ mensaje: str = saludar("Sergio")
 Ahora que entiendes la base, abre el primer laboratorio interactivo en Google Colab
 para experimentar, modificar y ejecutar el código de sintaxis esencial en vivo:
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/gist/Scot3004/8c8d0251641a2070891067233298c838)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/secorto/notebooks/blob/main/spanish/intro-python.ipynb)
 
 *(Nota: Al final de este primer laboratorio en Colab encontrarás un enlace para regresar directamente a esta guía
   y continuar con el módulo de objetos).*
 
 ---
 
-## Módulo de Programación Orientada a Objetos Moderna
+## Módulo 2: Programación Orientada a Objetos Moderna
 
 Cuando las estructuras de datos esenciales no bastan, escalamos hacia el paradigma orientado a objetos (POO)
 para modelar problemas complejos, encapsulando estados (atributos) y acciones (métodos).
@@ -191,10 +191,9 @@ resultado = Punto(2, 4) + Punto(3, 1)
 ## 🏁 Siguientes Pasos
 
 Este artículo es un resumen de referencia rápida. Para ver las explicaciones profundas,
-interactuar con el código, ver casos de borde y acceder al laboratorio de experimentación completo,
-[ejecuta el Jupyter Notebook oficial directamente en Google Colab](https://colab.research.google.com/gist/Scot3004/19458c05fe160d0b7509a380f1030eaf/introduccion_python_moderno.ipynb)
+interactuar con el código, ver casos de borde y acceder al laboratorio de experimentación completo:
 
----
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/secorto/notebooks/blob/main/spanish/poo-python.ipynb)
 
 ### 🔄 Historial y Archivo de esta Guía
 
@@ -202,12 +201,9 @@ Este artículo unifica, actualiza y reemplaza nuestras publicaciones independien
 Si por motivos académicos o curiosidad técnica deseas revisar los repositorios interactivos
 que dieron origen a este post, puedes acceder a ellos aquí:
 
-* **Gist Histórico - Introducción a Python (Julio 2022):** Consulta el repositorio original enfocado en sintaxis básica
-  y flujos iniciales en
-  [GitHub Gist](https://colab.research.google.com/gist/Scot3004/c5a562df9ca6509820f6320b5e4c6900).
 * **Gist Histórico - POO en Python con PlantUML (Agosto 2022):** Accede al repositorio antiguo donde estructuramos
   por primera vez el paradigma orientado a objetos en
-  [GitHub Gist](https://colab.research.google.com/gist/Scot3004//5d57573d97ed859afc5dd662556bf14c).
+  [2022 Poo python with plantuml](https://colab.research.google.com/github/secorto/notebooks/blob/main/spanish/archive/2022-poo_en_python_with_plant.ipynb).
 
 *Nota: Los repositorios históricos de 2022 no cuentan con la implementación moderna
   de Dataclasses ni indicaciones de tipo estáticas (PEP 484).*
