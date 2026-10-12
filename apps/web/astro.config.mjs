@@ -25,6 +25,8 @@ export default defineConfig({
     '/es/comunidad/nodeco': '/es/comunidad/contribuciones-medellin',
     '/en/comunidad/jamstack': '/en/comunidad/medellin-contributions',
     '/en/comunidad/nodeco': '/en/comunidad/medellin-contributions',
+    // Consolidación guias python
+    '/es/blog/2022-08-14-poo-python': '/es/blog/2022-07-11-intro-python',
   },
   integrations: [
     mermaid({
