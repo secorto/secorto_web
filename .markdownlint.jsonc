@@ -3,7 +3,8 @@
 // - severity: "warning": reported but doesn't fail (non-blocking)
 // - severity: "error": fails validation (default, if not specified)
 
-// WARNINGS: Non-blocking formatting suggestions (for compatibility with existing content)
+// OVERRIDES: project-specific adjustments (all other enabled markdownlint rules use default severity: "error")
+// Rationale / hardening plan: docs/adr/009-markdown-validation.md
 {
   "line-length": {
     "severity": "error",
