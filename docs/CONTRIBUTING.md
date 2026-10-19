@@ -139,7 +139,7 @@ En resumen, asegúrate de:
 Si usas asistentes de IA (GitHub Copilot, Claude, etc.):
 
 - Lee [adr/005-ia-development-integration.md](./adr/005-ia-development-integration.md) — política de integración
-- Consulta [.github/copilot-instructions.md](../.github/copilot-instructions.md) — guías específicas
+- Consulta [AI_POLICY.md](AI_POLICY.md) — politica y guardrails de IA
 - Recuerda: **IA es acelerador, no decisor** — toda sugerencia requiere review y validación
 
 ## Pull Requests

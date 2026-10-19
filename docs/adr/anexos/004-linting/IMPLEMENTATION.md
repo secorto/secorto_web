@@ -68,7 +68,7 @@ La configuración se basa en los siguientes plugins:
 - Imports validados y menos errores silenciosos en rutas o alias.
 - Accesibilidad mínima garantizada en componentes.
 - CI más confiable al detectar problemas semánticos antes de ejecutar tests.
-- Código generado por IA alineado mediante reglas en `.github/copilot-instructions.md`.
+- Codigo generado por IA alineado mediante instrucciones por herramienta (`CLAUDE.md`, `.github/copilot-instructions.md`).
 
 ## Análisis detallado
 
@@ -94,13 +94,13 @@ reemplazar el parámetro `win: any` por un tipo más seguro. Queda una nota
 pendiente para revisar `src/env.d.ts` y retirar su `eslint-disable` una vez
 que la override para `.d.ts` esté consolidada.
 
-**Regla en `copilot-instructions.md`:**
+**Regla en instrucciones para asistentes IA:**
 
 ```markdown
 - **Types:** Avoid `any` type; always define custom types or interfaces
 ```
 
-Esto asegura que Copilot tampoco genere código con `any`.
+Esto asegura que los asistentes IA tampoco generen codigo con `any`.
 
 ## Configuración actual de ESLint
 

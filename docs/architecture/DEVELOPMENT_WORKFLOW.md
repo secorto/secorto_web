@@ -153,7 +153,7 @@ El flujo anterior es tu workflow:
 3. **Después de generar:** Ejecuta validaciones locales (`npm run lint`, `npm run test:*`)
 4. **Propón PR:** Si todo pasa, propón con descripción clara
 
-**Instrucciones completas:** [.github/copilot-instructions.md](../../.github/copilot-instructions.md)
+**Instrucciones completas:** [AI_POLICY.md](../AI_POLICY.md)
 
 ---
 
@@ -164,4 +164,4 @@ El flujo anterior es tu workflow:
 - [FLOWS.md](./FLOWS.md) — Flujos E2E: Page Objects (UI) y endpoints (API)
 - [CODING_GUIDELINES.md](../CODING_GUIDELINES.md) — Reglas de código
 - [adr/](../adr/) — Decisiones que sustentan este workflow
-- [.github/copilot-instructions.md](../../.github/copilot-instructions.md) — Instrucciones para AI
+- [AI_POLICY.md](../AI_POLICY.md) — Politica de uso de asistentes IA

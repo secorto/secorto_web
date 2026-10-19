@@ -75,7 +75,7 @@ Antes de enviar un PR:
 
 - [ADR‑005](./adr/005-ia-development-integration.md) — Integración de IA en el flujo de desarrollo.
 - [COMMON_AI_MISTAKES.md](./COMMON_AI_MISTAKES.md).
-- [.github/copilot-instructions.md](../.github/copilot-instructions.md).
+- [CLAUDE.md](../CLAUDE.md) (Claude CLI) / [.github/copilot-instructions.md](../.github/copilot-instructions.md) (Copilot).
 - [DEVELOPMENT_WORKFLOW.md](./architecture/DEVELOPMENT_WORKFLOW.md).
 - [ARCHITECTURE.md](./ARCHITECTURE.md).
 - [CONTRIBUTING.md](./CONTRIBUTING.md).

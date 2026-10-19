@@ -46,7 +46,7 @@ Este documento contiene las reglas y convenciones de codificación del proyecto 
   trasladar lógica a TypeScript facilita escribir tests unitarios y mantener la cobertura.
 
 Referencias: para flujo de trabajo y contribuciones, ver [README.md](../README.md),
-[.github/copilot-instructions.md](../.github/copilot-instructions.md) y [docs/CONTRIBUTING.md](CONTRIBUTING.md).
+[AI_POLICY.md](AI_POLICY.md) y [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## TypeScript: ignores y referencias triple-slash
 

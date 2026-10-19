@@ -37,5 +37,5 @@
   de formato que **reemplazan completamente** `blockquotes` por `frontmatter`
   YAML,
   sin mezcla de ambos formatos).
-- Actualizar `.github/copilot-instructions.md` para que asistentes IA generen ADRs conformes
-  con `frontmatter` YAML desde el inicio.
+- Actualizar instrucciones de asistentes IA (`CLAUDE.md`, `.github/copilot-instructions.md`)
+  para que generen ADRs conformes con `frontmatter` YAML desde el inicio.
