@@ -164,4 +164,4 @@ El flujo anterior es tu workflow:
 - [FLOWS.md](./FLOWS.md) — Flujos E2E: Page Objects (UI) y endpoints (API)
 - [CODING_GUIDELINES.md](../CODING_GUIDELINES.md) — Reglas de código
 - [adr/](../adr/) — Decisiones que sustentan este workflow
-- [AI_POLICY.md](../AI_POLICY.md) — Politica de uso de asistentes IA
+- [AI_POLICY.md](../AI_POLICY.md) — Política de uso de asistentes de IA

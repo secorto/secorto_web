@@ -68,7 +68,7 @@ La configuración se basa en los siguientes plugins:
 - Imports validados y menos errores silenciosos en rutas o alias.
 - Accesibilidad mínima garantizada en componentes.
 - CI más confiable al detectar problemas semánticos antes de ejecutar tests.
-- Codigo generado por IA alineado mediante instrucciones por herramienta (`CLAUDE.md`, `.github/copilot-instructions.md`).
+- Código generado por IA alineado mediante instrucciones por herramienta (`CLAUDE.md`, `.github/copilot-instructions.md`).
 
 ## Análisis detallado
 
@@ -100,7 +100,7 @@ que la override para `.d.ts` esté consolidada.
 - **Types:** Avoid `any` type; always define custom types or interfaces
 ```
 
-Esto asegura que los asistentes IA tampoco generen codigo con `any`.
+Esto asegura que los asistentes de IA tampoco generen código con `any`.
 
 ## Configuración actual de ESLint
 

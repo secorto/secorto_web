@@ -9,7 +9,7 @@
 - **Node:** >=24 (ver `.nvmrc`)
 - **Estilo:** sin punto y coma salvo necesario
 
-## Comandos clave (desde raiz)
+## Comandos clave (desde raíz)
 
 ```bash
 pnpm install              # instalar dependencias
@@ -26,25 +26,25 @@ pnpm run test:coverage    # vitest con cobertura
 
 Testing integrado en cada capa. Tres principios lo habilitan:
 
-1. **Separacion de responsabilidades** -- logica pura en `src/domain/`, presentacion en componentes Astro
-2. **DRY** -- configuracion centralizada, una fuente de verdad
-3. **Type Safety** -- TypeScript strict, sin `any`, validacion en build time
+1. **Separación de responsabilidades** -- lógica pura en `src/domain/`, presentación en componentes Astro
+2. **DRY** -- configuración centralizada, una fuente de verdad
+3. **Type Safety** -- TypeScript strict, sin `any`, validación en build time
 
-## Documentacion del proyecto
+## Documentación del proyecto
 
 | Necesidad | Documento |
 | --- | --- |
-| Principios arquitectonicos | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
+| Principios arquitectónicos | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
 | Decisiones (ADRs) | [docs/adr/README.md](docs/adr/README.md) |
 | Coding guidelines | [docs/CODING_GUIDELINES.md](docs/CODING_GUIDELINES.md) |
 | Testing strategy | [docs/architecture/TESTING_STRATEGY.md](docs/architecture/TESTING_STRATEGY.md) |
 | Flujos E2E | [docs/architecture/FLOWS.md](docs/architecture/FLOWS.md) |
-| Politica de IA | [docs/AI_POLICY.md](docs/AI_POLICY.md) |
+| Política de IA | [docs/AI_POLICY.md](docs/AI_POLICY.md) |
 | Antipatrones comunes con IA | [docs/COMMON_AI_MISTAKES.md](docs/COMMON_AI_MISTAKES.md) |
 | Workflow pre-PR | [docs/architecture/DEVELOPMENT_WORKFLOW.md](docs/architecture/DEVELOPMENT_WORKFLOW.md) |
 | Contenido y traducciones | [docs/CONTENT_POLICY.md](docs/CONTENT_POLICY.md) |
 
-## Antes de generar codigo
+## Antes de generar código
 
 1. Lee el ADR relevante si existe (`docs/adr/`)
 2. Consulta [COMMON_AI_MISTAKES.md](docs/COMMON_AI_MISTAKES.md) para evitar antipatrones conocidos
