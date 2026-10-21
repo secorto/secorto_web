@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm run build)",
+      "Bash(pnpm run dev)",
+      "Bash(pnpm run start)",
+      "Bash(pnpm run preview)",
+      "Bash(pnpm run lint)",
+      "Bash(pnpm run lint:js)",
+      "Bash(pnpm run lint:md)",
+      "Bash(pnpm run lint:md:fix)",
+      "Bash(pnpm run test)",
+      "Bash(pnpm run test:unit)",
+      "Bash(pnpm run test:unit:watch)",
+      "Bash(pnpm run test:unit:ui)",
+      "Bash(pnpm run test:e2e)",
+      "Bash(pnpm run test:coverage)",
+      "Bash(pnpm run clean)",
+      "Bash(pnpm install)"
+    ]
+  }
+}

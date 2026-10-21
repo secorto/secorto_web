@@ -69,7 +69,7 @@ const parseEntry = (entry: EntryData): Computed => { /* ... */ }
 **Referencias:**
 
 - [ADR 004: Linting, tipo `any` y convenciones](./adr/004-linting.md)
-- [copilot-instructions.md](../.github/copilot-instructions.md) — "Avoid `any` type"
+- [AI_POLICY.md](AI_POLICY.md) — política de uso de asistentes de IA
 
 ---
 
@@ -201,7 +201,7 @@ no hay validación automática de estructura.
 **Referencias:**
 
 - [ADR 010: Plantilla estándar ADRs](./adr/010-plantilla-estandar-adr.md)
-- [.github/copilot-instructions.md](../.github/copilot-instructions.md) — ADR guidelines
+- [AI_POLICY.md](AI_POLICY.md) — política de uso de asistentes de IA
 
 ---
 
@@ -409,6 +409,6 @@ debuggeando.
 ## Referencias cruzadas
 
 - [CODING_GUIDELINES.md](./CODING_GUIDELINES.md) — reglas de código
-- [.github/copilot-instructions.md](../.github/copilot-instructions.md) — instrucciones para IA
+- [AI_POLICY.md](AI_POLICY.md) — política de uso de asistentes de IA
 - [docs/adr/](./adr/) — decisiones que originaron estas reglas
 - [docs/architecture/](./architecture/) — detalles de implementación

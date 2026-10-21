@@ -55,5 +55,5 @@ Integrar asistentes IA como herramientas de apoyo en el desarrollo, bajo los sig
 
 - [AI_POLICY.md](../AI_POLICY.md) — política operativa de IA.
 - [COMMON_AI_MISTAKES.md](../COMMON_AI_MISTAKES.md)
-- [copilot-instructions.md](../../.github/copilot-instructions.md)
+- Instrucciones por herramienta: [CLAUDE.md](../../CLAUDE.md), [.github/copilot-instructions.md](../../.github/copilot-instructions.md)
 - [DEVELOPMENT_WORKFLOW.md](../architecture/DEVELOPMENT_WORKFLOW.md)
