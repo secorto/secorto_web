@@ -7,6 +7,14 @@ export const standalonePageRoutes = createStandalonePageRoutes(
       en: { slug: 'about' },
       es: { slug: 'acerca-de' },
     },
+    architecture: {
+      en: { slug: 'architecture' },
+      es: { slug: 'arquitectura' },
+    },
+    'testing-foundation': {
+      en: { slug: 'testing-foundation' },
+      es: { slug: 'testing-foundation' },
+    },
   },
   languages,
 )

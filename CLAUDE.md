@@ -1,56 +1,76 @@
-# Instrucciones para Claude CLI
+# Instructions for Claude CLI
 
 ## Stack
 
-- **Monorepo** gestionado con pnpm workspaces (`apps/web`, `packages/i18n`, `packages/step`, `packages/wait-netlify`)
+- **Monorepo** managed with pnpm workspaces (`apps/web`, `packages/i18n`, `packages/step`, `packages/wait-netlify`)
 - **Framework:** Astro 7 (TypeScript, SSG)
 - **Tests:** Vitest (unit) + Playwright (E2E)
 - **Linting:** ESLint + markdownlint-cli2
-- **Node:** >=24 (ver `.nvmrc`)
-- **Estilo:** sin punto y coma salvo necesario
+- **Node:** >=24 (see `.nvmrc`)
+- **Style:** no semicolons except when necessary
 
-## Comandos clave (desde raíz)
+## Key Commands (from root)
 
 ```bash
-pnpm install              # instalar dependencias
-pnpm run build            # type check + build (todos los workspaces)
-pnpm run dev              # dev server (Astro en apps/web)
+pnpm install              # install dependencies
+pnpm run build            # type check + build (all workspaces)
+pnpm run dev              # dev server (Astro in apps/web)
 pnpm run lint             # ESLint + markdownlint
 pnpm run test             # vitest --run
-pnpm run test:unit        # unit tests (todos los workspaces)
+pnpm run test:unit        # unit tests (all workspaces)
 pnpm run test:e2e         # Playwright E2E (apps/web)
-pnpm run test:coverage    # vitest con cobertura
+pnpm run test:coverage    # vitest with coverage
 ```
 
-## Principio rector: Quality by Design
+## Core Principle: Quality by Design
 
-Testing integrado en cada capa. Tres principios lo habilitan:
+Testing integrated at each layer. Three principles enable it:
 
-1. **Separación de responsabilidades** -- lógica pura en `src/domain/`, presentación en componentes Astro
-2. **DRY** -- configuración centralizada, una fuente de verdad
-3. **Type Safety** -- TypeScript strict, sin `any`, validación en build time
+1. **Separation of Concerns** — pure logic in `src/domain/`, presentation in Astro components
+2. **DRY** — centralized configuration, single source of truth
+3. **Type Safety** — TypeScript strict, no `any`, validation at build time
 
-## Documentación del proyecto
+## Project Documentation
 
-| Necesidad | Documento |
+| Need | Document |
 | --- | --- |
-| Principios arquitectónicos | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
-| Decisiones (ADRs) | [docs/adr/README.md](docs/adr/README.md) |
+| Architectural principles | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
+| Decisions (ADRs) | [docs/adr/README.md](docs/adr/README.md) |
 | Coding guidelines | [docs/CODING_GUIDELINES.md](docs/CODING_GUIDELINES.md) |
 | Testing strategy | [docs/architecture/TESTING_STRATEGY.md](docs/architecture/TESTING_STRATEGY.md) |
-| Flujos E2E | [docs/architecture/FLOWS.md](docs/architecture/FLOWS.md) |
-| Política de IA | [docs/AI_POLICY.md](docs/AI_POLICY.md) |
-| Antipatrones comunes con IA | [docs/COMMON_AI_MISTAKES.md](docs/COMMON_AI_MISTAKES.md) |
-| Workflow pre-PR | [docs/architecture/DEVELOPMENT_WORKFLOW.md](docs/architecture/DEVELOPMENT_WORKFLOW.md) |
-| Contenido y traducciones | [docs/CONTENT_POLICY.md](docs/CONTENT_POLICY.md) |
+| E2E flows | [docs/architecture/FLOWS.md](docs/architecture/FLOWS.md) |
+| AI policy | [docs/AI_POLICY.md](docs/AI_POLICY.md) |
+| Common AI mistakes | [docs/COMMON_AI_MISTAKES.md](docs/COMMON_AI_MISTAKES.md) |
+| Pre-PR workflow | [docs/architecture/DEVELOPMENT_WORKFLOW.md](docs/architecture/DEVELOPMENT_WORKFLOW.md) |
+| Content and translations | [docs/CONTENT_POLICY.md](docs/CONTENT_POLICY.md) |
 
-## Antes de generar código
+## Before Writing Code
 
-1. Lee el ADR relevante si existe (`docs/adr/`)
-2. Consulta [COMMON_AI_MISTAKES.md](docs/COMMON_AI_MISTAKES.md) para evitar antipatrones conocidos
-3. Sigue [CODING_GUIDELINES.md](docs/CODING_GUIDELINES.md) para estilo y convenciones
+1. Read the relevant ADR if it exists (`docs/adr/`)
+2. Consult [COMMON_AI_MISTAKES.md](docs/COMMON_AI_MISTAKES.md) to avoid known antipatterns
+3. Follow [CODING_GUIDELINES.md](docs/CODING_GUIDELINES.md) for style and conventions
 
-## Antes de proponer PR
+## Markdown Guidelines
+
+- **Line length**: Keep lines ≤120 characters (enforced by markdownlint)
+- Long lines must be broken into multiple lines before validation
+- This applies to all `.md` files: posts, documentation, ADRs, etc.
+
+## When You Create Content
+
+**Standalone pages:**
+
+- Create in `/apps/web/src/pages/{en,es}/filename.md`
+- REQUIRED: update `apps/web/src/domain/standalonePage.ts` with localized slugs
+- Validate: `pnpm run build`
+
+**Tags in content:**
+
+- Use ONLY tags from registry: `apps/web/src/domain/tags.ts`
+- Don't invent new tags
+- If you need a tag: add it first to `tags.ts` with ES/EN translations
+
+## Before Proposing PR
 
 ```bash
 pnpm run build
@@ -59,4 +79,13 @@ pnpm run test:unit
 pnpm run test:e2e
 ```
 
-Checklist completo en [DEVELOPMENT_WORKFLOW.md](docs/architecture/DEVELOPMENT_WORKFLOW.md#-checklist-antes-de-pr).
+**Checklist:**
+
+- [ ] Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — understand the 3 principles
+- [ ] Read relevant ADR (`docs/adr/`) — understand previous decisions
+- [ ] Follow [docs/CODING_GUIDELINES.md](docs/CODING_GUIDELINES.md) — style + type safety
+- [ ] **If AI generated code**, reviewed [docs/COMMON_AI_MISTAKES.md](docs/COMMON_AI_MISTAKES.md) to avoid
+  antipatterns
+- [ ] Ran complete pipeline: commands above
+- [ ] All tests pass locally
+- [ ] PR has clear description (what, why, references to ADRs)

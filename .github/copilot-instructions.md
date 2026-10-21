@@ -1,46 +1,72 @@
-# Copilot — Instrucciones Breves
+# Copilot — Brief Instructions
 
-**PUNTO DE ENTRADA:** [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md) — principios y navegación a toda la documentación
+**ENTRY POINT:** [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md) — principles and navigation to all documentation
 
-**Flujo de desarrollo visual:**
+**Visual development flow:**
 [docs/architecture/DEVELOPMENT_WORKFLOW.md](../docs/architecture/DEVELOPMENT_WORKFLOW.md) —
-cómo Quality by Design se valida en cada paso.
+how Quality by Design validates at each step.
 
-**¿Necesitas hacer algo específico?**
-Los documentos se auto-referencian. Ej: en
-[TESTING_STRATEGY.md](../docs/architecture/TESTING_STRATEGY.md) encontrarás links a
-FLOWS.md y ADRs relevantes. En [CODING_GUIDELINES.md](../docs/CODING_GUIDELINES.md)
-referencias a testing y contenido.
+**Need to do something specific?**
+Documents self-reference. E.g., in
+[TESTING_STRATEGY.md](../docs/architecture/TESTING_STRATEGY.md) you'll find links to
+FLOWS.md and relevant ADRs. In [CODING_GUIDELINES.md](../docs/CODING_GUIDELINES.md)
+references to testing and content.
 
-## Stack & Convenciones
+## Stack & Conventions
 
-- Proyecto: TypeScript + Astro
-- Tests: Vitest (unit) y Playwright (E2E)
-- Estilo: sin punto y coma salvo necesario
+- Project: TypeScript + Astro
+- Tests: Vitest (unit) and Playwright (E2E)
+- Style: no semicolons except when necessary
 
-## Workflow Pre-PR
+## Core Principle: Quality by Design
 
-**Ver checklist completo:** [docs/architecture/DEVELOPMENT_WORKFLOW.md](../docs/architecture/DEVELOPMENT_WORKFLOW.md#-checklist-antes-de-pr)
+Testing integrated at each layer:
 
-En resumen, antes de proponer PR:
+1. **Separation of Concerns** — pure logic in `src/domain/`, presentation in Astro components
+2. **DRY** — centralized configuration, single source of truth
+3. **Type Safety** — TypeScript strict, no `any`, validation at build time
 
-1. Asegura que el código sigue [docs/CODING_GUIDELINES.md](../docs/CODING_GUIDELINES.md)
-2. Asegura que todo cumple [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md)
-3. Ejecuta el pipeline de validación (comandos en DEVELOPMENT_WORKFLOW.md)
-4. Si IA generó código, revisa [docs/COMMON_AI_MISTAKES.md](../docs/COMMON_AI_MISTAKES.md) para evitar antipatrones
+## When You Create Content
 
-## Errores comunes — Lee esto primero
+- **Blog posts, talks, work, projects, community** → [docs/CONTENT_POLICY.md](../docs/CONTENT_POLICY.md)
+  File structure, naming, frontmatter, translationKey, redirects, tags.
+- **Standalone pages** (static compiled routes in `/pages/{en,es}/`) → Update `src/domain/standalonePage.ts`
+  with localized slugs, run `pnpm run build` to validate
 
-Antes de abrir PR, revisa [docs/COMMON_AI_MISTAKES.md](../docs/COMMON_AI_MISTAKES.md).
-Documenta patrones reales de errores que evitar (cualquier `any`, referencias rotas, Markdown malformateado, etc.).
+## Markdown Guidelines
 
-## Cuando escribas ADRs
+- **Line length**: Keep lines ≤120 characters (enforced by markdownlint)
+- Long lines must be broken into multiple lines before validation
+- This applies to all `.md` files: posts, documentation, ADRs, etc.
 
-- Usa [docs/adr/TEMPLATE.md](../docs/adr/TEMPLATE.md) como plantilla canónica
-- **Mantén la decisión agnóstica a implementación concreta:**
-  - Usa conceptos abstractos (no nombres de clases: p.ej. "especialización por responsabilidad", no "ContentListPage")
-  - Referencias a detalles concretos van en archivos de arquitectura (docs/architecture/) o anexos técnicos, no en el ADR
-  - Así el ADR sigue siendo válido cuando refactoriza la implementación
-- Requiere frontmatter YAML con metadatos mínimos: `id`, `title`, `status`, `date`, `last_updated`, `categories`
-- Estructura recomendada: Contexto, Objetivo, Decisión, Motivación, Implementación, Consecuencias, Referencias, Anexos
-- En Consecuencias usa un único formato: Positivas, A considerar, Contras (Trade-offs), Alternativas Rechazadas
+## When You Write ADRs
+
+- Use [docs/adr/TEMPLATE.md](../docs/adr/TEMPLATE.md) as canonical template
+- **Keep decisions implementation-agnostic:**
+  - Use abstract concepts (no class names: e.g., "specialization by responsibility", not "ContentListPage")
+  - References to concrete details go in architecture files (docs/architecture/) or technical annexes, not in the ADR
+  - This way the ADR remains valid when implementation is refactored
+- Requires YAML frontmatter with minimum metadata: `id`, `title`, `status`, `date`, `last_updated`, `categories`
+- Recommended structure: Context, Objective, Decision, Motivation, Implementation, Consequences, References, Annexes
+- In Consequences use single format: Positive, To Consider, Trade-offs, Rejected Alternatives
+
+## Final Validation Before PR
+
+Before proposing a PR, follow this checklist:
+
+```bash
+pnpm run build            # type check + build (all workspaces)
+pnpm run lint             # ESLint + markdownlint
+pnpm run test:unit        # unit tests (all workspaces)
+pnpm run test:e2e         # Playwright E2E (apps/web)
+```
+
+**Checklist:**
+
+- [ ] Read [docs/ARCHITECTURE.md](../docs/ARCHITECTURE.md) — understand the 3 principles
+- [ ] Read relevant ADR (`docs/adr/`) — understand previous decisions
+- [ ] Follow [docs/CODING_GUIDELINES.md](../docs/CODING_GUIDELINES.md) — style + type safety
+- [ ] **If AI generated code**, reviewed [docs/COMMON_AI_MISTAKES.md](../docs/COMMON_AI_MISTAKES.md) to avoid antipatterns
+- [ ] Ran complete pipeline: commands above
+- [ ] All tests pass locally
+- [ ] PR has clear description (what, why, references to ADRs)

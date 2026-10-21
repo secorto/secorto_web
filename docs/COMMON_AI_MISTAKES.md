@@ -393,6 +393,151 @@ debuggeando.
 
 ---
 
+## 9. Crear Standalone Pages sin actualizar el índice en domain
+
+### El problema
+
+La IA crea nuevas páginas standalone (ej: `architecture.md`) sin agregar
+la referencia correspondiente a `src/domain/standalonePage.ts`:
+
+```typescript
+// ❌ La página existe en /pages/en/architecture.md pero...
+// standalonePage.ts NO fue actualizado
+export const standalonePageRoutes = createStandalonePageRoutes(
+  {
+    about: {
+      en: { slug: 'about' },
+      es: { slug: 'acerca-de' },
+    },
+    // ❌ falta agregar architecture aquí
+  },
+  languages,
+)
+```
+
+**Por qué ocurre:** La IA genera la página pero no sabe que existe un
+registro centralizado de rutas.
+
+**Impacto real:** La página existe pero no está en la navegación, SEO
+incompleto, rutas dinámicas no validadas.
+
+### La solución
+
+Cuando se crea una nueva standalone page, SIEMPRE actualizar
+`src/domain/standalonePage.ts`:
+
+```typescript
+// ✅ Correcto
+export const standalonePageRoutes = createStandalonePageRoutes(
+  {
+    about: {
+      en: { slug: 'about' },
+      es: { slug: 'acerca-de' },
+    },
+    architecture: {
+      en: { slug: 'architecture' },
+      es: { slug: 'arquitectura' },
+    },
+  },
+  languages,
+)
+```
+
+**Checklist:**
+
+- Crear archivo en `/pages/en/` e `/pages/es/` ✅
+- Usar `translationKey` único en frontmatter ✅
+- **Agregar entrada a `standalonePage.ts` con slugs localizados** ✅
+- Ejecutar `pnpm run build` para validar rutas ✅
+
+**Referencias:**
+
+- [ADR 016: Monorepo Architecture](./adr/016-monorepo-architecture.md)
+- [src/domain/standalonePage.ts](../apps/web/src/domain/standalonePage.ts)
+
+---
+
+## 10. Usar tags no registrados en el índice
+
+### El problema
+
+La IA asigna tags a contenido (posts, pages) que no están definidos en
+`src/domain/tags.ts`, inventando tags nuevos:
+
+```markdown
+<!-- ❌ Archivo markdown -->
+---
+title: Mi Post
+tags: [ai, containers, quantum, neuromorphic]  # ❌ "quantum" y "neuromorphic" no existen
+---
+```
+
+```typescript
+// ❌ Esto falla en build porque tags no están en el registro
+export const tagRoutes = createTagRoutes(
+  sectionRoutes,
+  { en: 'tags', es: 'tags' },
+  {
+    ai: { en: 'ai', es: 'ia' },
+    containers: { en: 'containers', es: 'containers' },
+    // ❌ falta "quantum" y "neuromorphic"
+  },
+  languages,
+)
+```
+
+**Por qué ocurre:** La IA no consulta el registro centralizado de tags
+disponibles.
+
+**Impacto real:** Build falla con error de validación; requiere corrección
+manual; violación de DRY (fuente de verdad única).
+
+### La solución
+
+Verificar `src/domain/tags.ts` ANTES de asignar tags. Solo usar tags
+pre-registrados:
+
+```typescript
+// ✅ Tags disponibles actuales (en src/domain/tags.ts)
+{
+  ai: { en: 'ai', es: 'ia' },
+  containers: { en: 'containers', es: 'containers' },
+  dev: { en: 'dev', es: 'desarrollo' },
+  frontend: { en: 'frontend', es: 'frontend' },
+  gis: { en: 'gis', es: 'gis' },
+  jamstack: { en: 'jamstack', es: 'jamstack' },
+  java: { en: 'java', es: 'java' },
+  javascript: { en: 'javascript', es: 'javascript' },
+  linux: { en: 'linux', es: 'linux' },
+  opensource: { en: 'opensource', es: 'codigo-abierto' },
+  python: { en: 'python', es: 'python' },
+  secorto: { en: 'secorto', es: 'secorto' },
+  testing: { en: 'testing', es: 'pruebas' },
+}
+```
+
+```markdown
+<!-- ✅ Correcto: solo tags registrados -->
+---
+title: Mi Post sobre IA en Containers
+tags: [ai, containers]  # ambos están en el registro
+---
+```
+
+**Checklist:**
+
+- Consultar `src/domain/tags.ts` antes de asignar tags ✅
+- Solo usar tags del objeto `tagRoutes` ✅
+- Si necesitas un tag nuevo, agregarlo PRIMERO a `tags.ts`, LUEGO al contenido ✅
+- Ejecutar `pnpm run build` para validar ✅
+
+**Referencias:**
+
+- [src/domain/tags.ts](../apps/web/src/domain/tags.ts) — registro autoritativo de tags
+- [ADR 007: Domain + i18n unification](./adr/007-domain-i18n-unificacion.md)
+
+---
+
 ## Cómo usar este documento
 
 **Cada patrón tiene:**

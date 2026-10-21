@@ -1,12 +1,16 @@
 ---
 import { useTranslations } from '@i18n/utils'
 import { languages } from '@i18n/ui'
+import { standalonePageRoutes } from '@domain/standalonePage'
 import { tagRoutes } from '@domain/tags'
 
 type Props = Record<string, never>
 const locale = languages.fromString(Astro.currentLocale)
 const t = useTranslations(locale)
 const site = import.meta.env.SITE
+const architecturePath = standalonePageRoutes.getPagePath('architecture', locale)
+const testingFoundationPath = standalonePageRoutes.getPagePath('testing-foundation', locale)
+const secortoProjectPath = tagRoutes.getSectionTagPath('projects', locale, 'secorto')
 ---
 <footer class="footer">
   <div class="footer-container">
@@ -25,6 +29,14 @@ const site = import.meta.env.SITE
           <a href="https://linkedin.com/in/scot3004" target="_blank" rel="noopener noreferrer">LinkedIn</a>
         </div>
         <p>
+        </p>
+        <p>
+          <a href={architecturePath}>{t('footer.architecture')}</a>
+          <span> · </span>
+          <a href={testingFoundationPath}>{t('footer.testing')}</a>
+          <span> · </span>
+          <a href={secortoProjectPath}>{t('footer.secorto')}</a>
+          <span> · </span>
           <a href={tagRoutes.getTagIndexPath(locale)}>{t('footer.tags')}</a>
         </p>
       </div>
